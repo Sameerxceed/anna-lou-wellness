@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_sections_press_strips",
+  "info": {
+    "displayName": "Press / Logo Strip",
+    "icon": "award",
+    "description": "Row of press logos, certifications, or brand partnerships"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "logos": {
+      "type": "json",
+      "required": true
+    }
+  }
+}

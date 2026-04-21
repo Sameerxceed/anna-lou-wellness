@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Anna Lou of London</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--gold); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); display: inline-block;
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black); transition: color 0.4s;
+    }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s; position: relative;
+    }
+    .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: var(--black); font-weight: 500; }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); background: none; }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+    .btn-gold { background: var(--gold); color: var(--black); border-color: var(--gold); }
+    .btn-gold:hover { background: #f0c060; }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+    .rd5 { transition-delay: 0.40s; } .rd6 { transition-delay: 0.48s; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ═══ SHOP HERO ═══ */
+    .shop-hero {
+      background: var(--warm-neutral);
+      padding: 10rem 2rem 4rem;
+      text-align: center;
+    }
+    .shop-hero h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      color: var(--black); line-height: 1; letter-spacing: 0.03em;
+      margin-bottom: 0.8rem;
+    }
+    .shop-hero .subtitle {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: var(--mid-grey); line-height: 1.6;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* ═══ CATEGORY FILTERS ═══ */
+    .filters {
+      display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+      padding: 0 2rem 3rem;
+      background: var(--warm-neutral);
+    }
+    .filter-pill {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.5rem 1.2rem; border-radius: 50px;
+      border: 1px solid rgba(0,0,0,0.08); background: transparent;
+      color: var(--dark-grey); cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    }
+    .filter-pill:hover { border-color: var(--gold); color: var(--black); }
+    .filter-pill.active {
+      background: var(--gold); border-color: var(--gold);
+      color: var(--black); font-weight: 500;
+    }
+
+    /* ═══ PRODUCT GRID ═══ */
+    .product-grid-section { background: #fff; padding: 4rem 2rem 5rem; }
+    .product-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    @media (min-width: 1200px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .p-card {
+      border-radius: 12px; overflow: hidden; cursor: pointer;
+      background: var(--warm-neutral);
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), box-shadow 0.45s;
+    }
+    .p-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.09); }
+    .p-img { aspect-ratio: 1; position: relative; overflow: hidden; }
+    .p-img-bg {
+      width: 100%; height: 100%;
+      background: linear-gradient(180deg, #eae5dd, #ddd5ca);
+      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .p-card:hover .p-img-bg { transform: scale(1.06); }
+    .p-badge {
+      position: absolute; top: 0.7rem; left: 0.7rem; z-index: 1;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.45rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--gold); color: var(--black);
+      padding: 0.2rem 0.5rem; border-radius: 20px;
+    }
+    .p-badge.badge-red { background: var(--red); color: #fff; }
+    .p-info { padding: 0.9rem 1.1rem 1.2rem; }
+    .p-name { font-family: var(--font-editorial); font-size: 1rem; color: var(--black); margin-bottom: 0.25rem; }
+    .p-price { font-family: var(--font-ui); font-weight: 400; font-size: 0.82rem; color: var(--dark-grey); }
+
+    /* ═══ EDITORIAL SECTION ═══ */
+    .esj-story {
+      background: var(--warm-neutral); padding: 6rem 2rem;
+    }
+    .esj-story-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      max-width: 1100px; margin: 0 auto; align-items: center;
+    }
+    .esj-story-img {
+      aspect-ratio: 4/5; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(160deg, #e8ddd0, #d4c5b3, #c8bba8);
+      position: relative;
+    }
+    .esj-story-img::after {
+      content: 'Jewellery Editorial'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.55rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+    .esj-story-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.8rem;
+    }
+    .esj-story-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+      color: var(--black); line-height: 1.2; margin-bottom: 1.2rem;
+    }
+    .esj-story-body {
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 1.05rem; line-height: 1.85; color: var(--dark-grey);
+      margin-bottom: 1.5rem;
+    }
+    .esj-story-quote {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1.15rem; color: var(--dark-grey);
+      border-left: 2px solid var(--gold); padding-left: 1.5rem;
+      margin-bottom: 2rem; line-height: 1.7;
+    }
+    .esj-story-link {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--black); display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: gap 0.3s, color 0.3s;
+    }
+    .esj-story-link:hover { gap: 0.7rem; color: var(--gold); }
+
+    /* ═══ NEWSLETTER ═══ */
+    .newsletter {
+      background: var(--red); padding: 5rem 2rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .newsletter::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.06), transparent 50%, rgba(0,0,0,0.08));
+    }
+    .nl-inner { position: relative; z-index: 1; }
+    .nl-inner h2 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+      color: #fff; letter-spacing: 0.03em; margin-bottom: 0.5rem;
+    }
+    .nl-inner .nl-sub {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1rem; color: rgba(255,255,255,0.6); margin-bottom: 1.8rem;
+    }
+    .nl-form { display: flex; gap: 0; max-width: 400px; margin: 0 auto; }
+    .nl-input {
+      flex: 1; padding: 0.75rem 1rem;
+      font-family: var(--font-ui); font-size: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.2); border-right: none;
+      border-radius: 50px 0 0 50px;
+      background: rgba(255,255,255,0.08); color: #fff; outline: none;
+    }
+    .nl-input::placeholder { color: rgba(255,255,255,0.3); }
+    .nl-input:focus { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); }
+    .nl-btn {
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: #fff; color: var(--red); border: 1px solid #fff;
+      border-radius: 0 50px 50px 0; padding: 0 1.3rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .nl-btn:hover { background: var(--black); color: #fff; border-color: var(--black); }
+    .nl-schedule {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.52rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-top: 1rem;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .esj-story-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .product-grid { grid-template-columns: 1fr; }
+      .filters { gap: 0.35rem; }
+      .filter-pill { font-size: 0.5rem; padding: 0.4rem 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- BANNER -->
+<div class="launch-banner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">Friday ESJ</span><span class="dot"></span>
+    <span>New Emotional Support Jewellery drops every Friday</span>
+    <span class="dot"></span>
+    <a href="#" style="color:var(--gold);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Shop This Week&rsquo;s Drop &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="workshops.html">Workshops</a></li>
+      <li><a href="#">Coaching</a></li>
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="#">Media</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- SHOP HERO -->
+<section class="shop-hero">
+  <h1 class="reveal">Shop</h1>
+  <p class="subtitle reveal rd1">Every piece carries meaning. Every purchase is a reset.</p>
+</section>
+
+<!-- CATEGORY FILTERS -->
+<div class="filters">
+  <button class="filter-pill active">All</button>
+  <button class="filter-pill">Crystals</button>
+  <button class="filter-pill">Crystal Jewellery</button>
+  <button class="filter-pill">Emotional Support Jewellery</button>
+  <button class="filter-pill">Digital Downloads</button>
+  <button class="filter-pill">Gifts</button>
+</div>
+
+<!-- PRODUCT GRID -->
+<section class="product-grid-section">
+  <div class="product-grid">
+
+    <a href="product.html" class="p-card reveal">
+      <div class="p-img">
+        <span class="p-badge">Friday ESJ</span>
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#eae5dd,#ddd5ca);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Moonstone Pendant</p>
+        <p class="p-price">&pound;48.00</p>
+      </div>
+    </a>
+
+    <div class="p-card reveal rd1">
+      <div class="p-img">
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e8e3db,#dbd4ca);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Clear Quartz Point</p>
+        <p class="p-price">&pound;28.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd2">
+      <div class="p-img">
+        <span class="p-badge badge-red">New</span>
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#ebe6de,#ddd6cc);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Rose Quartz Bracelet</p>
+        <p class="p-price">&pound;35.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd3">
+      <div class="p-img">
+        <span class="p-badge">Digital</span>
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e5e0d8,#d8d1c7);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Crystal Guide</p>
+        <p class="p-price">&pound;15.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal">
+      <div class="p-img">
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e3ddd5,#d6cfc5);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Amethyst Cluster</p>
+        <p class="p-price">&pound;42.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd1">
+      <div class="p-img">
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#ede8e0,#e0d9cf);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Sage &amp; Palo Santo Bundle</p>
+        <p class="p-price">&pound;18.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd2">
+      <div class="p-img">
+        <span class="p-badge">Friday ESJ</span>
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e7e1d9,#dad3c9);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Personalised Intention Necklace</p>
+        <p class="p-price">&pound;65.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd3">
+      <div class="p-img">
+        <span class="p-badge">Digital</span>
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e9e4dc,#dcd5cb);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Nervous System Reset Guide</p>
+        <p class="p-price">&pound;15.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal">
+      <div class="p-img">
+        <span class="p-badge badge-red">New</span>
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e6e0d7,#d9d2c8);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Labradorite Ring</p>
+        <p class="p-price">&pound;55.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd1">
+      <div class="p-img">
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#ebe5dd,#ded7cd);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Selenite Wand</p>
+        <p class="p-price">&pound;22.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd2">
+      <div class="p-img">
+        <span class="p-badge">Friday ESJ</span>
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e4dfd7,#d7d0c6);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Citrine Courage Earrings</p>
+        <p class="p-price">&pound;38.00</p>
+      </div>
+    </div>
+
+    <div class="p-card reveal rd3">
+      <div class="p-img">
+        <div class="p-img-bg" style="background:linear-gradient(180deg,#e8e2da,#dbd4ca);"></div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">Black Tourmaline Protection Set</p>
+        <p class="p-price">&pound;32.00</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ESJ EDITORIAL STORY -->
+<section class="esj-story grain">
+  <div class="esj-story-grid">
+    <div class="esj-story-img reveal"></div>
+    <div class="reveal rd2">
+      <p class="esj-story-label">The Story</p>
+      <h2 class="esj-story-heading">Emotional Support Jewellery is not just jewellery</h2>
+      <p class="esj-story-body">Every piece in the ESJ collection is designed to be a physical anchor &mdash; something you can touch, hold, or see that connects you back to an intention you&rsquo;ve set for yourself. It&rsquo;s not about decoration. It&rsquo;s about return.</p>
+      <p class="esj-story-body">Born from Anna&rsquo;s coaching practice, each piece carries the energy of a specific crystal and is paired with a guided intention. When the world gets loud, your jewellery becomes your quiet reminder: <em>I am here. I am safe. I am enough.</em></p>
+      <blockquote class="esj-story-quote">&ldquo;I designed the first piece for myself during the hardest year of my life. I needed something to hold onto. That&rsquo;s what ESJ is &mdash; something to hold onto.&rdquo;</blockquote>
+      <a href="#" class="esj-story-link">Read Anna&rsquo;s story <span>&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter grain">
+  <div class="nl-inner">
+    <h2 class="reveal">Reset Letters</h2>
+    <p class="nl-sub reveal rd1">Stories, insights, and healing &mdash; delivered to your inbox</p>
+    <form class="nl-form reveal rd2" onsubmit="return false;">
+      <input type="email" class="nl-input" placeholder="Your email address">
+      <button class="nl-btn">Subscribe</button>
+    </form>
+    <p class="nl-schedule reveal rd3">Sunday Reset &middot; Wednesday Signal &middot; Friday ESJ</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="#">Blog</a><a href="#">Coaching</a><a href="shop.html">Shop</a><a href="workshops.html">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="#">Community</a><a href="#">About</a><a href="#">Contact</a><a href="#">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Filter pills
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

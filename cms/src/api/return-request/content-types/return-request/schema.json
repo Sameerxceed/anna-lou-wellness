@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "return_requests",
+  "info": {
+    "singularName": "return-request",
+    "pluralName": "return-requests",
+    "displayName": "Return Requests"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order.order",
+      "inversedBy": "return_requests"
+    },
+    "customer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::customer.customer"
+    },
+    "items": {
+      "type": "json",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["requested", "approved", "received", "refunded", "rejected"],
+      "default": "requested"
+    },
+    "reason": {
+      "type": "enumeration",
+      "enum": ["damaged", "wrong_item", "not_as_described", "changed_mind", "other"],
+      "required": true
+    },
+    "notes": {
+      "type": "text"
+    },
+    "refund_amount": {
+      "type": "decimal"
+    },
+    "refund_method": {
+      "type": "enumeration",
+      "enum": ["original_payment", "store_credit"]
+    }
+  }
+}

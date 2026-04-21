@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shipping_methods",
+  "info": {
+    "singularName": "shipping-method",
+    "pluralName": "shipping-methods",
+    "displayName": "Shipping Methods"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "shipping_zone": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::shipping-zone.shipping-zone",
+      "inversedBy": "shipping_methods"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["flat_rate", "weight_based", "free_above_threshold"],
+      "required": true
+    },
+    "rate": {
+      "type": "decimal",
+      "required": true
+    },
+    "free_threshold": {
+      "type": "decimal"
+    },
+    "min_weight": {
+      "type": "integer"
+    },
+    "max_weight": {
+      "type": "integer"
+    },
+    "estimated_days": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

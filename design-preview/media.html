@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media — Anna Lou Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--red); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); display: inline-block;
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black);
+    }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s; position: relative;
+    }
+    .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: var(--pink); }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-pink { background: var(--pink); color: #fff; border-color: var(--pink); }
+    .btn-pink:hover { background: #e06a96; border-color: #e06a96; }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); background: transparent; }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+
+    /* ═══ SECTIONS ═══ */
+    .section { padding: 6rem 2rem; position: relative; }
+    .section-narrow { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+    .section-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      color: var(--black); line-height: 1.15; letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ PAGE HERO ═══ */
+    .page-hero {
+      padding: 10rem 2rem 5rem;
+      background: var(--soft-pink);
+      text-align: center;
+      position: relative;
+    }
+    .page-hero h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      color: var(--black); line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .page-hero .subtitle {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: var(--dark-grey); line-height: 1.6;
+      max-width: 500px; margin: 0 auto;
+    }
+
+    /* ═══ TABS ═══ */
+    .tabs {
+      display: flex; gap: 2rem; justify-content: center;
+      margin-top: 2.5rem;
+    }
+    .tab {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); padding-bottom: 0.5rem;
+      border-bottom: 2px solid transparent;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .tab.active {
+      color: var(--pink); border-bottom-color: var(--pink);
+    }
+    .tab:hover { color: var(--pink); }
+
+    /* ═══ YOUTUBE SECTION ═══ */
+    .yt-section { background: #fff; }
+    .featured-video {
+      max-width: 800px; margin: 0 auto 3rem;
+      border: 2px solid var(--pink); border-radius: 12px;
+      overflow: hidden;
+    }
+    .video-placeholder {
+      aspect-ratio: 16/9;
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; cursor: pointer;
+    }
+    .play-btn {
+      width: 70px; height: 70px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .play-btn:hover { border-color: var(--pink); background: rgba(242,128,170,0.15); }
+    .play-btn svg { width: 28px; height: 28px; fill: #fff; margin-left: 4px; }
+    .featured-video-info {
+      padding: 1.2rem 1.5rem;
+      background: var(--warm-neutral);
+    }
+    .featured-video-info h3 {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.2rem; color: var(--black);
+    }
+    .featured-video-info p {
+      font-family: var(--font-ui); font-size: 0.7rem;
+      color: var(--mid-grey); margin-top: 0.3rem;
+    }
+
+    /* ═══ PLAYLISTS ═══ */
+    .playlists-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1.4rem; color: var(--black);
+      margin-bottom: 1.5rem;
+    }
+    .playlists-scroll {
+      display: flex; gap: 1rem;
+      overflow-x: auto; padding-bottom: 1rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .playlists-scroll::-webkit-scrollbar { height: 4px; }
+    .playlists-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.03); border-radius: 4px; }
+    .playlists-scroll::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 4px; }
+    .playlist-card {
+      flex: 0 0 260px; scroll-snap-align: start;
+      border-radius: 12px; padding: 2rem 1.5rem;
+      position: relative; overflow: hidden;
+      cursor: pointer; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s;
+      min-height: 160px; display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .playlist-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+    .playlist-card:nth-child(1) { background: linear-gradient(135deg, #FCE8EF, #F8D0DE); }
+    .playlist-card:nth-child(2) { background: linear-gradient(135deg, #FFF0D2, #F5E0B8); }
+    .playlist-card:nth-child(3) { background: linear-gradient(135deg, #FCE8EF, #E9EBF6); }
+    .playlist-card:nth-child(4) { background: linear-gradient(135deg, #E1F5EE, #D0E8DF); }
+    .playlist-play-icon {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .playlist-play-icon svg { width: 12px; height: 12px; fill: var(--black); margin-left: 2px; }
+    .playlist-card h4 {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.1rem; color: var(--black); margin-bottom: 0.3rem;
+    }
+    .playlist-card .ep-count {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dark-grey); opacity: 0.6;
+    }
+
+    /* ═══ PODCAST SECTION ═══ */
+    .podcast-section { background: var(--warm-neutral); }
+    .podcast-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      color: var(--black); margin-bottom: 0.5rem;
+    }
+    .podcast-sub {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1rem; color: var(--mid-grey); margin-bottom: 2.5rem;
+    }
+    .episode-list { max-width: 750px; margin: 0 auto; }
+    .episode {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      cursor: pointer; transition: background 0.3s;
+    }
+    .episode:hover { background: rgba(255,255,255,0.5); margin: 0 -1rem; padding-left: 1rem; padding-right: 1rem; border-radius: 8px; }
+    .ep-number {
+      flex-shrink: 0;
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.5rem; letter-spacing: 0.08em;
+      background: var(--soft-pink); color: var(--pink);
+      padding: 0.25rem 0.6rem; border-radius: 20px;
+    }
+    .ep-info { flex: 1; }
+    .ep-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.05rem; color: var(--black); line-height: 1.3;
+      margin-bottom: 0.2rem;
+    }
+    .ep-meta {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.06em; color: var(--mid-grey);
+    }
+    .ep-play {
+      flex-shrink: 0; width: 36px; height: 36px;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .ep-play:hover { border-color: var(--pink); background: var(--soft-pink); }
+    .ep-play svg { width: 12px; height: 12px; fill: var(--black); margin-left: 2px; }
+
+    /* ═══ SUBSTACK SECTION ═══ */
+    .substack-section { background: #fff; }
+    .tiers-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      max-width: 700px; margin: 0 auto 3rem;
+    }
+    .tier-card {
+      background: var(--warm-neutral); border-radius: 12px; padding: 2rem;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .tier-card h4 {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: 0.9rem; color: var(--black); margin-bottom: 0.8rem;
+    }
+    .tier-card ul {
+      list-style: none; margin-bottom: 1rem;
+    }
+    .tier-card ul li {
+      font-family: var(--font-editorial); font-size: 0.9rem;
+      color: var(--dark-grey); line-height: 1.8;
+      padding-left: 1.2rem; position: relative;
+    }
+    .tier-card ul li::before {
+      content: ''; position: absolute; left: 0; top: 0.55rem;
+      width: 5px; height: 5px; border-radius: 50%;
+    }
+    .tier-free ul li::before { background: var(--green); }
+    .tier-paid ul li::before { background: var(--gold); }
+    .tier-paid { border-color: var(--gold); }
+    .tier-label {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.48rem; letter-spacing: 0.15em; text-transform: uppercase;
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px;
+      margin-bottom: 1rem;
+    }
+    .tier-free .tier-label { background: var(--mint); color: var(--green); }
+    .tier-paid .tier-label { background: var(--cream); color: #c8960a; }
+
+    .signup-form {
+      max-width: 420px; margin: 0 auto;
+      display: flex; gap: 0;
+    }
+    .signup-input {
+      flex: 1; padding: 0.75rem 1rem;
+      font-family: var(--font-ui); font-size: 0.75rem;
+      border: 1px solid rgba(0,0,0,0.1); border-right: none;
+      border-radius: 50px 0 0 50px;
+      background: var(--warm-neutral); color: var(--black); outline: none;
+    }
+    .signup-input::placeholder { color: var(--mid-grey); }
+    .signup-input:focus { border-color: var(--pink); }
+    .signup-btn {
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--pink); color: #fff; border: 1px solid var(--pink);
+      border-radius: 0 50px 50px 0; padding: 0 1.3rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .signup-btn:hover { background: #e06a96; border-color: #e06a96; }
+    .content-schedule {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--mid-grey); text-align: center; margin-top: 1.5rem;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .tiers-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .playlist-card { flex: 0 0 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="index.html#coaching" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="index.html#blog">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="index.html#workshops">Workshops</a></li>
+      <li><a href="index.html#coaching">Coaching</a></li>
+      <li><a href="index.html#shop">Shop</a></li>
+      <li><a href="media.html" class="active">Media</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero grain">
+  <h1>Media</h1>
+  <p class="subtitle">Watch, listen, and subscribe &mdash; The Reset with Anna</p>
+  <div class="tabs">
+    <span class="tab active" onclick="showTab('youtube')">YouTube</span>
+    <span class="tab" onclick="showTab('podcast')">Podcast &amp; Substack</span>
+  </div>
+</section>
+
+<!-- YOUTUBE TAB -->
+<section class="section yt-section" id="youtube-tab">
+  <div class="section-narrow">
+    <!-- Featured Video -->
+    <div class="featured-video reveal">
+      <div class="video-placeholder">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg>
+        </div>
+      </div>
+      <div class="featured-video-info">
+        <h3>The Reset with Anna</h3>
+        <p>Latest episode &middot; Watch on YouTube</p>
+      </div>
+    </div>
+
+    <!-- Playlists -->
+    <h3 class="playlists-heading reveal">Playlists</h3>
+    <div class="playlists-scroll reveal rd1">
+      <div class="playlist-card">
+        <div class="playlist-play-icon"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+        <h4>Reset Talks</h4>
+        <span class="ep-count">12 episodes</span>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-play-icon"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+        <h4>Jewellery with Meaning</h4>
+        <span class="ep-count">8 episodes</span>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-play-icon"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+        <h4>Come Back to Yourself</h4>
+        <span class="ep-count">15 episodes</span>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-play-icon"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+        <h4>Houseboat Life</h4>
+        <span class="ep-count">6 episodes</span>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:2.5rem;">
+      <a class="btn btn-pink reveal" href="#">Subscribe on YouTube</a>
+    </div>
+  </div>
+</section>
+
+<!-- PODCAST & SUBSTACK TAB -->
+<section class="section podcast-section" id="podcast-tab">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2rem;">
+    <p class="section-label reveal" style="color:var(--pink);">Podcast</p>
+    <h2 class="podcast-heading reveal rd1">Podcast &amp; Substack &mdash; Reset Letters</h2>
+    <p class="podcast-sub reveal rd2">Conversations about coming back to yourself</p>
+  </div>
+
+  <div class="episode-list">
+    <div class="episode reveal">
+      <span class="ep-number">EP 24</span>
+      <div class="ep-info">
+        <h4 class="ep-title">Coming back to your body after burnout</h4>
+        <p class="ep-meta">March 30, 2026 &middot; 42 min</p>
+      </div>
+      <div class="ep-play"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+    </div>
+    <div class="episode reveal rd1">
+      <span class="ep-number">EP 23</span>
+      <div class="ep-info">
+        <h4 class="ep-title">The dating rule that changed everything</h4>
+        <p class="ep-meta">March 23, 2026 &middot; 38 min</p>
+      </div>
+      <div class="ep-play"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+    </div>
+    <div class="episode reveal rd2">
+      <span class="ep-number">EP 22</span>
+      <div class="ep-info">
+        <h4 class="ep-title">Why your nervous system is running the show</h4>
+        <p class="ep-meta">March 16, 2026 &middot; 45 min</p>
+      </div>
+      <div class="ep-play"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+    </div>
+    <div class="episode reveal rd3">
+      <span class="ep-number">EP 21</span>
+      <div class="ep-info">
+        <h4 class="ep-title">Spiritual hygiene &mdash; the practice nobody talks about</h4>
+        <p class="ep-meta">March 9, 2026 &middot; 36 min</p>
+      </div>
+      <div class="ep-play"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+    </div>
+    <div class="episode reveal rd4">
+      <span class="ep-number">EP 20</span>
+      <div class="ep-info">
+        <h4 class="ep-title">From Portobello Market to healing &mdash; my whole story</h4>
+        <p class="ep-meta">March 2, 2026 &middot; 52 min</p>
+      </div>
+      <div class="ep-play"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+    </div>
+    <div class="episode reveal">
+      <span class="ep-number">EP 19</span>
+      <div class="ep-info">
+        <h4 class="ep-title">The crystal that cracked me open</h4>
+        <p class="ep-meta">February 23, 2026 &middot; 34 min</p>
+      </div>
+      <div class="ep-play"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBSTACK SIGNUP -->
+<section class="section substack-section" style="background:#fff;">
+  <div class="section-narrow" style="text-align:center;">
+    <p class="section-label reveal" style="color:var(--pink);">Substack</p>
+    <h2 class="section-heading reveal rd1">Reset Letters</h2>
+    <p style="font-family:var(--font-editorial);font-style:italic;font-size:1.05rem;color:var(--dark-grey);margin-bottom:2.5rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;" class="reveal rd2">Stories, insights, and deeper healing &mdash; delivered weekly to your inbox</p>
+
+    <div class="tiers-grid">
+      <div class="tier-card tier-free reveal">
+        <span class="tier-label">Free</span>
+        <h4>Free Tier</h4>
+        <ul>
+          <li>Sunday Reset Story</li>
+          <li>Light insights &amp; reflections</li>
+          <li>Jewellery meaning &amp; symbolism</li>
+        </ul>
+      </div>
+      <div class="tier-card tier-paid reveal rd1">
+        <span class="tier-label">Paid</span>
+        <h4>Paid Tier</h4>
+        <ul>
+          <li>Deeper healing breakdowns</li>
+          <li>Personal process stories</li>
+          <li>Live session invitations</li>
+        </ul>
+      </div>
+    </div>
+
+    <form class="signup-form reveal rd2" onsubmit="return false;">
+      <input type="email" class="signup-input" placeholder="Your email address">
+      <button class="signup-btn">Subscribe</button>
+    </form>
+    <p class="content-schedule reveal rd3">Sunday Reset &middot; Wednesday Signal &middot; Friday ESJ</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="index.html#blog">Blog</a><a href="index.html#coaching">Coaching</a><a href="index.html#shop">Shop</a><a href="index.html#workshops">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="community.html">Community</a><a href="about.html">About</a><a href="about.html#contact">Contact</a><a href="media.html">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Tab switching
+  function showTab(tab) {
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    if (tab === 'youtube') {
+      tabs[0].classList.add('active');
+      document.getElementById('youtube-tab').style.display = '';
+      document.getElementById('podcast-tab').style.display = 'none';
+    } else {
+      tabs[1].classList.add('active');
+      document.getElementById('youtube-tab').style.display = 'none';
+      document.getElementById('podcast-tab').style.display = '';
+    }
+    // Re-trigger reveals for newly visible section
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+  }
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

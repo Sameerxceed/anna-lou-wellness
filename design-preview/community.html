@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community — Anna Lou Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--red); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); display: inline-block;
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black);
+    }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s; position: relative;
+    }
+    .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: var(--blue); }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); background: transparent; }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+    .btn-blue { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .btn-blue:hover { background: #6a9dc8; border-color: #6a9dc8; }
+
+    /* ═══ SECTIONS ═══ */
+    .section { padding: 6rem 2rem; position: relative; }
+    .section-narrow { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+    .section-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      color: var(--black); line-height: 1.15; letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ PAGE HERO ═══ */
+    .page-hero {
+      padding: 10rem 2rem 5rem;
+      background: var(--lavender);
+      text-align: center;
+      position: relative;
+    }
+    .page-hero h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: var(--black); line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .page-hero .subtitle {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+      color: var(--dark-grey); line-height: 1.7;
+      max-width: 560px; margin: 0 auto;
+    }
+
+    /* ═══ TIERS COMPARISON ═══ */
+    .tiers-section { background: #fff; }
+    .tiers-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      max-width: 850px; margin: 0 auto;
+    }
+    .tier-card {
+      border-radius: 12px; padding: 2.5rem 2rem;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s;
+    }
+    .tier-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.07); }
+    .tier-free {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .tier-paid {
+      background: #fff;
+      border: 2px solid var(--gold);
+      position: relative;
+    }
+    .tier-badge {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.45rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.2rem 0.7rem; border-radius: 20px;
+      display: inline-block; margin-bottom: 1.2rem;
+    }
+    .tier-free .tier-badge { background: var(--mint); color: var(--green); }
+    .tier-paid .tier-badge { background: var(--cream); color: #c8960a; }
+    .tier-card h3 {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: 1.2rem; color: var(--black); margin-bottom: 0.5rem;
+    }
+    .tier-card .tier-desc {
+      font-family: var(--font-editorial); font-size: 0.9rem;
+      color: var(--mid-grey); line-height: 1.6; margin-bottom: 1.5rem;
+    }
+    .tier-card ul {
+      list-style: none; margin-bottom: 1.8rem;
+    }
+    .tier-card ul li {
+      font-family: var(--font-editorial); font-size: 0.92rem;
+      color: var(--dark-grey); line-height: 2;
+      padding-left: 1.4rem; position: relative;
+    }
+    .tier-card ul li::before {
+      content: ''; position: absolute; left: 0; top: 0.65rem;
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .tier-free ul li::before { background: var(--blue); opacity: 0.4; }
+    .tier-paid ul li::before { background: var(--gold); }
+    .tier-price {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1.4rem; color: var(--black); margin-bottom: 0.3rem;
+    }
+    .tier-trial {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.08em;
+      color: var(--mid-grey); margin-bottom: 1.2rem;
+    }
+
+    /* ═══ RETURNING CIRCLE ═══ */
+    .circle-section { background: var(--warm-neutral); }
+    .circle-inner {
+      max-width: 750px; margin: 0 auto; text-align: center;
+    }
+    .circle-inner .circle-desc {
+      font-family: var(--font-editorial); font-size: 1.05rem;
+      color: var(--dark-grey); line-height: 1.85;
+      margin-bottom: 2rem; max-width: 550px; margin-left: auto; margin-right: auto;
+    }
+    .next-session {
+      display: inline-flex; align-items: center; gap: 1rem;
+      background: #fff; border-radius: 12px; padding: 1.2rem 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .next-session-date {
+      text-align: center;
+    }
+    .next-session-date .day {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 2rem; color: var(--blue); line-height: 1;
+    }
+    .next-session-date .month {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey);
+    }
+    .next-session-info {
+      text-align: left;
+    }
+    .next-session-info h4 {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1rem; color: var(--black); margin-bottom: 0.2rem;
+    }
+    .next-session-info p {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.6rem; color: var(--mid-grey); letter-spacing: 0.05em;
+    }
+    .circle-quote {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1.15rem; color: var(--dark-grey);
+      border-left: 2px solid var(--blue); padding-left: 1.5rem;
+      margin: 2.5rem auto 0; max-width: 450px; text-align: left;
+      line-height: 1.7;
+    }
+
+    /* ═══ RESOURCE LIBRARY ═══ */
+    .resources-section { background: #fff; }
+    .resources-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .resource-card {
+      background: var(--warm-neutral); border-radius: 12px;
+      overflow: hidden; cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s;
+    }
+    .resource-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.07); }
+    .resource-thumb {
+      width: 100%; aspect-ratio: 16/10;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .resource-card:nth-child(1) .resource-thumb { background: linear-gradient(135deg, var(--mint), #c8ece0); }
+    .resource-card:nth-child(2) .resource-thumb { background: linear-gradient(135deg, var(--cream), #f5e0b8); }
+    .resource-card:nth-child(3) .resource-thumb { background: linear-gradient(135deg, var(--lavender), #d8daf0); }
+    .resource-card:nth-child(4) .resource-thumb { background: linear-gradient(135deg, var(--soft-pink), #f0c8d8); }
+    .resource-card:nth-child(5) .resource-thumb { background: linear-gradient(135deg, var(--mint), var(--lavender)); }
+    .resource-card:nth-child(6) .resource-thumb { background: linear-gradient(135deg, var(--cream), var(--soft-pink)); }
+    .resource-thumb svg {
+      width: 36px; height: 36px; stroke-width: 1;
+      stroke: rgba(0,0,0,0.15); fill: none;
+    }
+    .resource-body { padding: 1.2rem; }
+    .resource-badge {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.18rem 0.5rem; border-radius: 20px;
+      display: inline-block; margin-bottom: 0.5rem;
+    }
+    .badge-free { background: var(--mint); color: var(--green); }
+    .badge-paid { background: var(--cream); color: #c8960a; }
+    .resource-body h4 {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1rem; color: var(--black); margin-bottom: 0.3rem; line-height: 1.3;
+    }
+    .resource-body p {
+      font-family: var(--font-editorial); font-size: 0.82rem;
+      color: var(--mid-grey); line-height: 1.5;
+    }
+
+    /* ═══ EVENTS BOARD ═══ */
+    .events-section { background: var(--warm-neutral); }
+    .events-list {
+      max-width: 750px; margin: 0 auto;
+    }
+    .event-item {
+      display: flex; align-items: center; gap: 1.2rem;
+      padding: 1.3rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .event-date-block {
+      flex-shrink: 0; width: 55px; text-align: center;
+    }
+    .event-date-block .e-day {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1.6rem; color: var(--blue); line-height: 1;
+    }
+    .event-date-block .e-month {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey);
+    }
+    .event-info { flex: 1; }
+    .event-info h4 {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1rem; color: var(--black); margin-bottom: 0.2rem;
+    }
+    .event-info p {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.6rem; color: var(--mid-grey); letter-spacing: 0.04em;
+    }
+    .event-badge {
+      flex-shrink: 0;
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.6rem; border-radius: 20px;
+    }
+    .badge-member { background: var(--lavender); color: var(--blue); }
+    .badge-open { background: var(--mint); color: var(--green); }
+
+    /* ═══ MEMBER SPACE TEASER ═══ */
+    .member-teaser {
+      background: var(--lavender); text-align: center;
+    }
+    .teaser-box {
+      max-width: 500px; margin: 0 auto;
+      background: #fff; border-radius: 12px; padding: 3rem 2rem;
+      border: 1px dashed rgba(123,175,221,0.3);
+    }
+    .teaser-box h3 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1.4rem; color: var(--black); margin-bottom: 0.5rem;
+    }
+    .teaser-box p {
+      font-family: var(--font-editorial); font-size: 0.95rem;
+      color: var(--mid-grey); line-height: 1.7; margin-bottom: 1.5rem;
+    }
+    .teaser-coming {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 1.5rem; display: block;
+    }
+    .waitlist-form {
+      display: flex; gap: 0; max-width: 360px; margin: 0 auto;
+    }
+    .waitlist-input {
+      flex: 1; padding: 0.7rem 1rem;
+      font-family: var(--font-ui); font-size: 0.72rem;
+      border: 1px solid rgba(0,0,0,0.08); border-right: none;
+      border-radius: 50px 0 0 50px;
+      background: var(--warm-neutral); color: var(--black); outline: none;
+    }
+    .waitlist-input::placeholder { color: var(--mid-grey); }
+    .waitlist-input:focus { border-color: var(--blue); }
+    .waitlist-btn {
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--blue); color: #fff; border: 1px solid var(--blue);
+      border-radius: 0 50px 50px 0; padding: 0 1.2rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .waitlist-btn:hover { background: #6a9dc8; border-color: #6a9dc8; }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .tiers-grid { grid-template-columns: 1fr; }
+      .resources-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .resources-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="index.html#coaching" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="index.html#blog">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="index.html#workshops">Workshops</a></li>
+      <li><a href="index.html#coaching">Coaching</a></li>
+      <li><a href="index.html#shop">Shop</a></li>
+      <li><a href="media.html">Media</a></li>
+      <li><a href="community.html" class="active">Community</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero grain">
+  <h1>Come back to yourself &mdash; together</h1>
+  <p class="subtitle">A space for women on the journey. Free resources, live circles, and the Crystal Clear Collective.</p>
+</section>
+
+<!-- FREE vs PAID TIERS -->
+<section class="section tiers-section">
+  <div class="section-narrow" style="text-align:center; margin-bottom:3rem;">
+    <p class="section-label reveal" style="color:var(--blue);">Membership</p>
+    <h2 class="section-heading reveal rd1">Choose your level</h2>
+  </div>
+  <div class="tiers-grid">
+    <!-- FREE -->
+    <div class="tier-card tier-free reveal">
+      <span class="tier-badge">Free</span>
+      <h3>Community Access</h3>
+      <p class="tier-desc">Everything you need to start your return</p>
+      <ul>
+        <li>Resource library (free guides)</li>
+        <li>The Returning Circle (weekly live, donation-based)</li>
+        <li>Community events board</li>
+        <li>Blog comments &amp; discussion</li>
+      </ul>
+      <a class="btn btn-outline" href="#">Join for Free</a>
+    </div>
+    <!-- PAID -->
+    <div class="tier-card tier-paid reveal rd1">
+      <span class="tier-badge">Recommended</span>
+      <h3>Crystal Clear Collective</h3>
+      <p class="tier-desc">For women ready to go deeper</p>
+      <ul>
+        <li>Everything in Free</li>
+        <li>Session replays &amp; archives</li>
+        <li>Paid resources &amp; deep-dives</li>
+        <li>Workshop replays</li>
+        <li>Member-only events</li>
+        <li>Monthly group reset call</li>
+      </ul>
+      <p class="tier-price">&pound;XX/month</p>
+      <p class="tier-trial">14-day free trial</p>
+      <a class="btn btn-red" href="#">Start Free Trial</a>
+    </div>
+  </div>
+</section>
+
+<!-- THE RETURNING CIRCLE -->
+<section class="section circle-section grain">
+  <div class="circle-inner">
+    <p class="section-label reveal" style="color:var(--blue);">Weekly Live</p>
+    <h2 class="section-heading reveal rd1">The Returning Circle</h2>
+    <p class="circle-desc reveal rd2">A weekly live gathering for women who are ready to be held &mdash; not fixed. We sit, we share, we return. Donation-based and open to all community members. No recording, no replays &mdash; just presence.</p>
+
+    <div class="next-session reveal rd3">
+      <div class="next-session-date">
+        <span class="day">9</span>
+        <span class="month">April</span>
+      </div>
+      <div style="width:1px;height:40px;background:rgba(0,0,0,0.06);"></div>
+      <div class="next-session-info">
+        <h4>Next Returning Circle</h4>
+        <p>Wednesday 9 April &middot; 7:30 PM GMT &middot; Zoom</p>
+      </div>
+    </div>
+
+    <div><a class="btn btn-blue reveal" href="#">RSVP</a></div>
+
+    <blockquote class="circle-quote reveal rd4">"I came expecting a workshop. What I found was a room full of women who understood without me having to explain. I keep coming back."</blockquote>
+  </div>
+</section>
+
+<!-- RESOURCE LIBRARY -->
+<section class="section resources-section">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal" style="color:var(--blue);">Resources</p>
+    <h2 class="section-heading reveal rd1">Resource Library</h2>
+  </div>
+  <div class="resources-grid">
+    <div class="resource-card reveal">
+      <div class="resource-thumb">
+        <svg viewBox="0 0 40 40"><path d="M10 30V12a2 2 0 012-2h16a2 2 0 012 2v18" stroke-linecap="round"/><path d="M7 30h26" stroke-linecap="round"/><path d="M15 16h10M15 20h7" stroke-linecap="round"/></svg>
+      </div>
+      <div class="resource-body">
+        <span class="resource-badge badge-free">Free</span>
+        <h4>Nervous System 101 Guide</h4>
+        <p>Understanding your body&rsquo;s stress response &mdash; a gentle introduction</p>
+      </div>
+    </div>
+    <div class="resource-card reveal rd1">
+      <div class="resource-thumb">
+        <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="10"/><circle cx="20" cy="20" r="3"/><path d="M20 10v3M20 27v3M10 20h3M27 20h3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="resource-body">
+        <span class="resource-badge badge-paid">&pound;15</span>
+        <h4>Crystal Healing Deep Dive</h4>
+        <p>How to choose, cleanse, and work with crystals for emotional support</p>
+      </div>
+    </div>
+    <div class="resource-card reveal rd2">
+      <div class="resource-thumb">
+        <svg viewBox="0 0 40 40"><path d="M12 28l4-8 4 5 4-10 4 6" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="10" width="24" height="20" rx="2"/></svg>
+      </div>
+      <div class="resource-body">
+        <span class="resource-badge badge-free">Free</span>
+        <h4>Spiritual Hygiene Toolkit</h4>
+        <p>Daily practices for energetic boundaries and spiritual maintenance</p>
+      </div>
+    </div>
+    <div class="resource-card reveal rd3">
+      <div class="resource-thumb">
+        <svg viewBox="0 0 40 40"><path d="M14 10l6 10-6 10M26 10l-6 10 6 10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="20" r="2"/></svg>
+      </div>
+      <div class="resource-body">
+        <span class="resource-badge badge-paid">&pound;15</span>
+        <h4>The Signal Method Workbook</h4>
+        <p>A structured guide to separating signal from noise in your life and business</p>
+      </div>
+    </div>
+    <div class="resource-card reveal rd4">
+      <div class="resource-thumb">
+        <svg viewBox="0 0 40 40"><path d="M8 20s6-10 12-10 12 10 12 10-6 10-12 10-12-10-12-10z" stroke-linecap="round"/><circle cx="20" cy="20" r="4"/></svg>
+      </div>
+      <div class="resource-body">
+        <span class="resource-badge badge-free">Free</span>
+        <h4>Somatic Check-In Template</h4>
+        <p>A printable daily body-scan practice for reconnection</p>
+      </div>
+    </div>
+    <div class="resource-card reveal">
+      <div class="resource-thumb">
+        <svg viewBox="0 0 40 40"><path d="M20 8v24M12 16l8-8 8 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 32h20" stroke-linecap="round"/></svg>
+      </div>
+      <div class="resource-body">
+        <span class="resource-badge badge-paid">&pound;15</span>
+        <h4>Attachment Style Deep Dive</h4>
+        <p>Understanding your patterns in relationships &mdash; a compassionate guide</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS BOARD -->
+<section class="section events-section">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal" style="color:var(--blue);">Events</p>
+    <h2 class="section-heading reveal rd1">Upcoming Events</h2>
+  </div>
+  <div class="events-list">
+    <div class="event-item reveal">
+      <div class="event-date-block">
+        <span class="e-day">9</span>
+        <span class="e-month">Apr</span>
+      </div>
+      <div class="event-info">
+        <h4>The Returning Circle</h4>
+        <p>Wednesday &middot; 7:30 PM GMT &middot; Zoom</p>
+      </div>
+      <span class="event-badge badge-open">Open</span>
+    </div>
+    <div class="event-item reveal rd1">
+      <div class="event-date-block">
+        <span class="e-day">12</span>
+        <span class="e-month">Apr</span>
+      </div>
+      <div class="event-info">
+        <h4>Monthly Group Reset Call</h4>
+        <p>Saturday &middot; 11:00 AM GMT &middot; Zoom</p>
+      </div>
+      <span class="event-badge badge-member">Member Only</span>
+    </div>
+    <div class="event-item reveal rd2">
+      <div class="event-date-block">
+        <span class="e-day">16</span>
+        <span class="e-month">Apr</span>
+      </div>
+      <div class="event-info">
+        <h4>The Returning Circle</h4>
+        <p>Wednesday &middot; 7:30 PM GMT &middot; Zoom</p>
+      </div>
+      <span class="event-badge badge-open">Open</span>
+    </div>
+    <div class="event-item reveal rd3">
+      <div class="event-date-block">
+        <span class="e-day">26</span>
+        <span class="e-month">Apr</span>
+      </div>
+      <div class="event-info">
+        <h4>Nervous System Reset &mdash; Half Day Workshop</h4>
+        <p>Saturday &middot; 10:00 AM GMT &middot; In Person, London</p>
+      </div>
+      <span class="event-badge badge-open">Open</span>
+    </div>
+    <div class="event-item reveal rd4">
+      <div class="event-date-block">
+        <span class="e-day">3</span>
+        <span class="e-month">May</span>
+      </div>
+      <div class="event-info">
+        <h4>Member Q&amp;A: Crystal Working</h4>
+        <p>Saturday &middot; 3:00 PM GMT &middot; Zoom</p>
+      </div>
+      <span class="event-badge badge-member">Member Only</span>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBER SPACE TEASER -->
+<section class="section member-teaser">
+  <div class="teaser-box reveal">
+    <span class="teaser-coming">Coming Soon</span>
+    <h3>Member Space</h3>
+    <p>A private forum for connection, accountability pairs, and deeper conversation. A place to be seen without performing.</p>
+    <form class="waitlist-form" onsubmit="return false;">
+      <input type="email" class="waitlist-input" placeholder="Your email address">
+      <button class="waitlist-btn">Join Waitlist</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="index.html#blog">Blog</a><a href="index.html#coaching">Coaching</a><a href="index.html#shop">Shop</a><a href="index.html#workshops">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="community.html">Community</a><a href="about.html">About</a><a href="about.html#contact">Contact</a><a href="media.html">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

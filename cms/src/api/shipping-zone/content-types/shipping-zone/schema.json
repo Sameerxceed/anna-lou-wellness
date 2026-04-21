@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shipping_zones",
+  "info": {
+    "singularName": "shipping-zone",
+    "pluralName": "shipping-zones",
+    "displayName": "Shipping Zones"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "countries": {
+      "type": "json",
+      "required": true
+    },
+    "shipping_methods": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::shipping-method.shipping-method",
+      "mappedBy": "shipping_zone"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

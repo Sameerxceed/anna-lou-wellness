@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_sections_featured_products",
+  "info": {
+    "displayName": "Featured Products",
+    "icon": "shopping-cart",
+    "description": "Showcase selected products from the shop"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product.product"
+    },
+    "columns": {
+      "type": "enumeration",
+      "enum": ["2", "3", "4"],
+      "default": "4"
+    }
+  }
+}

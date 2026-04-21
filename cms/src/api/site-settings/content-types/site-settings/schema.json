@@ -1,0 +1,138 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-settings",
+    "pluralName": "site-settings-list",
+    "displayName": "Site Settings",
+    "description": "Global site configuration — branding, payments, commerce, social links"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "site_name": {
+      "type": "string",
+      "default": "My Website",
+      "required": true
+    },
+    "site_tagline": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "logo_dark": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "favicon": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "og_default_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "seo_description": {
+      "type": "text"
+    },
+    "seo_keywords": {
+      "type": "text"
+    },
+    "instagram_url": {
+      "type": "string"
+    },
+    "facebook_url": {
+      "type": "string"
+    },
+    "pinterest_url": {
+      "type": "string"
+    },
+    "tiktok_url": {
+      "type": "string"
+    },
+    "youtube_url": {
+      "type": "string"
+    },
+    "stripe_publishable_key": {
+      "type": "string"
+    },
+    "paypal_client_id": {
+      "type": "string"
+    },
+    "payment_bank_name": {
+      "type": "string"
+    },
+    "payment_account_name": {
+      "type": "string"
+    },
+    "payment_iban": {
+      "type": "string"
+    },
+    "payment_bic": {
+      "type": "string"
+    },
+    "payment_reference_instruction": {
+      "type": "string",
+      "default": "Use your order number as payment reference"
+    },
+    "default_currency": {
+      "type": "string",
+      "default": "EUR"
+    },
+    "supported_currencies": {
+      "type": "json",
+      "default": ["EUR"]
+    },
+    "auto_currency_conversion": {
+      "type": "boolean",
+      "default": false
+    },
+    "tax_included_in_prices": {
+      "type": "boolean",
+      "default": true
+    },
+    "low_stock_threshold": {
+      "type": "integer",
+      "default": 5
+    },
+    "review_moderation_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "abandoned_cart_email_delay_hours": {
+      "type": "integer",
+      "default": 24
+    },
+    "notification_email": {
+      "type": "email"
+    },
+    "shop_email": {
+      "type": "email"
+    },
+    "google_analytics_id": {
+      "type": "string"
+    },
+    "cookie_banner_text": {
+      "type": "text",
+      "default": "We use cookies to improve your experience. By continuing to visit this site, you agree to our use of cookies."
+    },
+    "footer_copyright": {
+      "type": "string"
+    },
+    "maintenance_mode": {
+      "type": "boolean",
+      "default": false
+    },
+    "maintenance_message": {
+      "type": "text",
+      "default": "We're making some improvements. Please check back shortly."
+    }
+  }
+}

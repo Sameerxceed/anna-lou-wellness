@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_sections_text_blocks",
+  "info": {
+    "displayName": "Text Block",
+    "icon": "file-alt",
+    "description": "Heading, rich text body, optional image with layout control"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "body": {
+      "type": "richtext",
+      "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "layout": {
+      "type": "enumeration",
+      "enum": ["left", "right", "center", "full"],
+      "default": "left"
+    }
+  }
+}

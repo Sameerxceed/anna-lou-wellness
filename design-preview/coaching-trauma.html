@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trauma Release — Anna Lou Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* GRAIN TEXTURE */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* LAUNCH BANNER */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--red); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); flex-shrink: 0; display: inline-block;
+    }
+
+    /* NAVIGATION — transparent over dark hero */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(245,243,239,0.8); transition: color 0.4s;
+    }
+    .nav.scrolled .nav-logo { color: var(--black); }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); transition: color 0.3s; position: relative;
+    }
+    .nav.scrolled .nav-center a { color: var(--mid-grey); }
+    .nav-center a:hover { color: #fff; }
+    .nav.scrolled .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: var(--blue); }
+    .nav.scrolled .nav-center a.active { color: var(--blue); }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav.scrolled .nav-btn { color: var(--mid-grey); border-color: rgba(0,0,0,0.08); }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* BUTTONS */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; box-shadow: 0 8px 30px rgba(238,49,47,0.25); }
+    .btn-red-lg {
+      background: var(--red); color: #fff; border-color: var(--red);
+      padding: 1.1rem 2.8rem; font-size: 0.72rem; letter-spacing: 0.16em;
+    }
+    .btn-red-lg:hover { background: #d42a28; border-color: #d42a28; box-shadow: 0 8px 30px rgba(238,49,47,0.25); }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-outline-light { color: rgba(245,243,239,0.6); border-color: rgba(245,243,239,0.15); }
+    .btn-outline-light:hover { color: #fff; border-color: rgba(245,243,239,0.4); background: rgba(245,243,239,0.05); }
+
+    /* SECTIONS */
+    .section { padding: 6rem 2rem; position: relative; }
+    .section-narrow { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+    .section-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      color: var(--black); line-height: 1.15; letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
+    }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+    .rd5 { transition-delay: 0.40s; } .rd6 { transition-delay: 0.48s; }
+    .rd7 { transition-delay: 0.56s; }
+
+    /* ═══════════════════════════════════════
+       DARK HERO — Full viewport cinematic
+       ═══════════════════════════════════════ */
+    .dark-hero {
+      position: relative; min-height: 100vh; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--black);
+    }
+    .dark-hero-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 55%, rgba(123,175,221,0.1), transparent 70%),
+        radial-gradient(ellipse 40% 40% at 30% 70%, rgba(123,175,221,0.05), transparent 60%),
+        radial-gradient(ellipse 35% 35% at 70% 40%, rgba(233,235,246,0.04), transparent 60%);
+      animation: heroGlowPulse 10s ease-in-out infinite alternate;
+    }
+    @keyframes heroGlowPulse {
+      0% { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.08); }
+    }
+    .dark-hero-content {
+      position: relative; z-index: 5; text-align: center;
+      max-width: 750px; padding: 0 2rem;
+    }
+    .dark-hero-label {
+      font-family: var(--font-ui); font-weight: 200;
+      font-size: 0.58rem; letter-spacing: 0.4em; text-transform: uppercase;
+      color: rgba(123,175,221,0.5);
+      margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards;
+    }
+    .dark-hero h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(3.2rem, 9vw, 7rem);
+      color: var(--warm-neutral); line-height: 0.95;
+      margin-bottom: 1.5rem;
+      opacity: 0; animation: titleReveal 1.6s cubic-bezier(0.22,1,0.36,1) 0.5s forwards;
+    }
+    @keyframes titleReveal {
+      from { opacity: 0; transform: translateY(50px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    .dark-hero-line {
+      width: 60px; height: 1.5px; margin: 0 auto 2rem;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      opacity: 0; animation: lineGrow 0.8s ease 1.2s forwards;
+    }
+    @keyframes lineGrow {
+      from { opacity: 0; width: 0; }
+      to { opacity: 1; width: 60px; }
+    }
+    .dark-hero-tagline {
+      font-family: var(--font-editorial); font-weight: 400; font-style: italic;
+      font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+      color: rgba(245,243,239,0.45); line-height: 1.8;
+      max-width: 520px; margin: 0 auto 2.8rem;
+      opacity: 0; animation: fadeUp 1s ease 1.5s forwards;
+    }
+    .dark-hero-cta {
+      opacity: 0; animation: fadeUp 0.8s ease 1.8s forwards;
+    }
+    .scroll-cue {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 5; display: flex; flex-direction: column; align-items: center;
+      gap: 0.5rem; opacity: 0; animation: fadeIn 1s ease 2.5s forwards;
+    }
+    .scroll-line {
+      width: 1px; height: 35px;
+      background: linear-gradient(to bottom, rgba(245,243,239,0.2), transparent);
+      animation: scrollPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(1); opacity: 0.3; }
+      50% { transform: scaleY(1.4); opacity: 0.6; }
+    }
+    .scroll-cue small {
+      font-size: 0.45rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.12);
+    }
+
+    /* ═══════════════════════════════════════
+       STORY SECTION — Editorial letter
+       ═══════════════════════════════════════ */
+    .story {
+      background: var(--warm-neutral);
+      padding: 8rem 2rem;
+    }
+    .story-inner {
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    .story-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.52rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 2rem;
+    }
+    .story-text {
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 1.15rem; line-height: 2; color: var(--dark-grey);
+      margin-bottom: 2rem;
+    }
+    .story-text:last-of-type { margin-bottom: 0; }
+    .pull-quote {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+      color: var(--black); line-height: 1.6;
+      border-left: 3px solid var(--blue);
+      padding: 1rem 0 1rem 2rem;
+      margin: 3rem 0;
+    }
+
+    /* ═══════════════════════════════════════
+       WHAT'S INCLUDED — Modalities grid
+       ═══════════════════════════════════════ */
+    .modalities {
+      background: #fff;
+      padding: 7rem 2rem;
+    }
+    .modalities-header {
+      text-align: center; max-width: 600px; margin: 0 auto 3.5rem;
+    }
+    .modalities-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+      max-width: 960px; margin: 0 auto;
+    }
+    .mod-card {
+      padding: 1.8rem; border-radius: 12px;
+      background: var(--warm-neutral);
+      border: 1px solid rgba(0,0,0,0.03);
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .mod-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); }
+    .mod-icon {
+      width: 36px; height: 36px; margin-bottom: 0.8rem;
+      background: rgba(123,175,221,0.08); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mod-icon svg { width: 18px; height: 18px; }
+    .mod-title {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: 0.82rem; color: var(--black); margin-bottom: 0.4rem;
+      letter-spacing: 0.01em;
+    }
+    .mod-desc {
+      font-family: var(--font-editorial); font-size: 0.85rem;
+      color: var(--mid-grey); line-height: 1.55;
+    }
+    /* 7th card spans remaining space */
+    .modalities-grid .mod-card:nth-child(7) {
+      grid-column: 2;
+    }
+
+    /* ═══════════════════════════════════════
+       MID-PAGE TESTIMONIAL — Dark strip
+       ═══════════════════════════════════════ */
+    .mid-testi {
+      background: var(--black); padding: 6rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .mid-testi-glow {
+      position: absolute; width: 500px; height: 500px;
+      border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(123,175,221,0.06), transparent 70%);
+    }
+    .mid-testi-inner {
+      position: relative; z-index: 2;
+      max-width: 650px; margin: 0 auto; text-align: center;
+    }
+    .mid-testi-mark {
+      font-family: var(--font-editorial); font-size: 5rem; line-height: 0.8;
+      color: rgba(123,175,221,0.15); margin-bottom: 0.5rem;
+    }
+    .mid-testi-quote {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      color: rgba(245,243,239,0.75); line-height: 1.65;
+      margin-bottom: 1.8rem;
+    }
+    .mid-testi-author {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* ═══════════════════════════════════════
+       PRICING
+       ═══════════════════════════════════════ */
+    .pricing {
+      background: var(--warm-neutral);
+      padding: 7rem 2rem;
+    }
+    .pricing-inner {
+      max-width: 700px; margin: 0 auto; text-align: center;
+    }
+    .pricing-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 0.8rem;
+    }
+    .pricing-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      color: var(--black); margin-bottom: 2.5rem;
+    }
+    .pricing-cards {
+      display: flex; flex-direction: column; gap: 1rem;
+      max-width: 500px; margin: 0 auto 2.5rem;
+    }
+    .price-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 1.8rem;
+      background: #fff; border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+    .price-row:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
+    .price-row-left {
+      text-align: left;
+    }
+    .price-name {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: 0.9rem; color: var(--black); margin-bottom: 0.2rem;
+    }
+    .price-detail {
+      font-family: var(--font-editorial); font-size: 0.82rem;
+      color: var(--mid-grey);
+    }
+    .price-amount {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: 1.2rem; color: var(--black);
+    }
+    .pricing-ctas {
+      display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+    .pricing-note {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: var(--mid-grey);
+    }
+
+    /* ═══════════════════════════════════════
+       RELATED CONTENT — Blog + Products
+       ═══════════════════════════════════════ */
+    .related {
+      background: #fff; padding: 6rem 2rem;
+    }
+    .related-header {
+      text-align: center; margin-bottom: 2.5rem;
+    }
+    .related-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .related-card {
+      border-radius: 12px; overflow: hidden; cursor: pointer;
+      background: var(--warm-neutral);
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), box-shadow 0.45s;
+    }
+    .related-card:hover { transform: translateY(-5px); box-shadow: 0 18px 45px rgba(0,0,0,0.08); }
+    .related-card-img {
+      width: 100%; aspect-ratio: 4/3; position: relative; overflow: hidden;
+    }
+    .related-card-img-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .related-card:hover .related-card-img-bg { transform: scale(1.06); }
+    .related-card-body { padding: 1.2rem; }
+    .related-card-cat {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.45rem; letter-spacing: 0.14em; text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .related-card-cat.blog-cat { color: var(--red); }
+    .related-card-cat.product-cat { color: var(--gold); }
+    .related-card-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1rem; color: var(--black); line-height: 1.3; margin-bottom: 0.3rem;
+    }
+    .related-card-excerpt {
+      font-family: var(--font-editorial); font-size: 0.82rem;
+      color: var(--mid-grey); line-height: 1.5;
+    }
+    .related-card-price {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.82rem;
+      color: var(--dark-grey); margin-top: 0.3rem;
+    }
+
+    /* ═══════════════════════════════════════
+       FINAL CTA — Full-width dark
+       ═══════════════════════════════════════ */
+    .final-cta {
+      background: var(--black); padding: 8rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .final-cta-glow {
+      position: absolute; width: 600px; height: 600px;
+      border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(238,49,47,0.06), transparent 70%);
+    }
+    .final-cta-inner {
+      position: relative; z-index: 2;
+      max-width: 600px; margin: 0 auto; text-align: center;
+    }
+    .final-cta h2 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--warm-neutral); line-height: 1.1;
+      margin-bottom: 2rem;
+    }
+    .final-cta-btn { margin-bottom: 1.5rem; }
+    .final-cta-sub {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1.1rem; color: rgba(245,243,239,0.35);
+      line-height: 1.7;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; border-top: 1px solid rgba(245,243,239,0.03); }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .modalities-grid { grid-template-columns: repeat(2, 1fr); }
+      .modalities-grid .mod-card:nth-child(7) { grid-column: auto; }
+      .related-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .modalities-grid { grid-template-columns: 1fr; }
+      .related-grid { grid-template-columns: 1fr; }
+      .pricing-ctas { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner" id="launchBanner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="#" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV — transparent over dark hero -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="#">Workshops</a></li>
+      <li><a href="coaching.html" class="active">Coaching</a></li>
+      <li><a href="#">Shop</a></li>
+      <li><a href="#">Media</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     DARK HERO
+     ═══════════════════════════════════════════ -->
+<section class="dark-hero grain">
+  <div class="dark-hero-glow"></div>
+  <div class="dark-hero-content">
+    <p class="dark-hero-label">Coaching &middot; Somatic Healing</p>
+    <h1>Trauma<br>Release</h1>
+    <div class="dark-hero-line"></div>
+    <p class="dark-hero-tagline">You&rsquo;ve been holding everything. Your body remembers what your mind tries to forget.</p>
+    <div class="dark-hero-cta">
+      <a href="#pricing" class="btn btn-red-lg">Book a Session</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="scroll-line"></div><small>Scroll</small></div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     STORY SECTION — Anna's letter
+     ═══════════════════════════════════════════ -->
+<section class="story">
+  <div class="story-inner">
+    <p class="story-label reveal">From Anna</p>
+
+    <p class="story-text reveal rd1">
+      I know what it feels like to carry something you can&rsquo;t name. The tightness in your chest that arrives without warning. The hypervigilance that disguises itself as being &ldquo;on top of things.&rdquo; The way you can hold an entire room together while quietly falling apart inside. I know, because I&rsquo;ve been there. And I know that most of the world tells you to push through it, to be strong, to keep going. But your body is keeping score, even when you think you&rsquo;ve moved on.
+    </p>
+
+    <blockquote class="pull-quote reveal rd2">
+      Healing isn&rsquo;t about going back to who you were before. It&rsquo;s about finally meeting who you&rsquo;ve been underneath the armour.
+    </blockquote>
+
+    <p class="story-text reveal rd3">
+      Trauma release work isn&rsquo;t talk therapy. It&rsquo;s not about reliving every detail or performing your pain for someone else&rsquo;s understanding. It&rsquo;s body-first work &mdash; somatic, gentle, and profoundly effective. We work with your nervous system, not against it. Through TRE, Flash EMDR, Brainspotting, and IFS, we create space for your body to finally let go of what it&rsquo;s been holding. The shaking, the tears, the relief &mdash; they come when your system feels safe enough to release. And I will be there, holding that space, every step of the way.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     WHAT'S INCLUDED — Modalities
+     ═══════════════════════════════════════════ -->
+<section class="modalities">
+  <div class="modalities-header">
+    <p class="section-label reveal" style="color:var(--blue);">What&rsquo;s included</p>
+    <h2 class="section-heading reveal rd1">Modalities we work with</h2>
+  </div>
+  <div class="modalities-grid">
+    <div class="mod-card reveal">
+      <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M12 3c0 0-5 3-5 9s5 9 5 9"/><path d="M12 3c0 0 5 3 5 9s-5 9-5 9"/><path d="M7 12h10"/></svg></div>
+      <h3 class="mod-title">TRE</h3>
+      <p class="mod-desc">Trauma Release Exercises &mdash; guided somatic tremoring that helps your body discharge stored tension and stress.</p>
+    </div>
+    <div class="mod-card reveal rd1">
+      <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 5v2M12 17v2M5 12h2M17 12h2"/><path d="M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/></svg></div>
+      <h3 class="mod-title">Flash EMDR</h3>
+      <p class="mod-desc">A gentler form of EMDR that processes traumatic memories without full emotional re-exposure.</p>
+    </div>
+    <div class="mod-card reveal rd2">
+      <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><circle cx="12" cy="12" r="2"/><path d="M12 4v4M12 16v4"/><circle cx="12" cy="12" r="8" opacity="0.3"/></svg></div>
+      <h3 class="mod-title">Brainspotting</h3>
+      <p class="mod-desc">Using eye position to access and process trauma held in the subcortical brain. Deep, focused, transformative.</p>
+    </div>
+    <div class="mod-card reveal rd3">
+      <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><circle cx="12" cy="8" r="3"/><circle cx="8" cy="16" r="2.5"/><circle cx="16" cy="16" r="2.5"/><path d="M12 11v2M10 14l-1 1M14 14l1 1"/></svg></div>
+      <h3 class="mod-title">IFS</h3>
+      <p class="mod-desc">Internal Family Systems &mdash; working with the different parts of yourself to find compassion, safety, and integration.</p>
+    </div>
+    <div class="mod-card reveal rd4">
+      <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M12 3v18"/><path d="M6 8c2-2 4-2 6 0s4 2 6 0"/><path d="M6 16c2-2 4-2 6 0s4 2 6 0"/></svg></div>
+      <h3 class="mod-title">Domestic Abuse Recovery</h3>
+      <p class="mod-desc">Specialist support for women healing from coercive control, narcissistic abuse, and domestic violence.</p>
+    </div>
+    <div class="mod-card reveal rd5">
+      <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M12 3l-2 7h4l-2 7"/><circle cx="12" cy="12" r="9" opacity="0.2"/></svg></div>
+      <h3 class="mod-title">Subconscious Healing</h3>
+      <p class="mod-desc">Accessing and reprogramming deep-seated beliefs that keep you stuck in survival patterns.</p>
+    </div>
+    <div class="mod-card reveal rd6">
+      <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M12 3v4M12 17v4"/><circle cx="12" cy="12" r="4"/><path d="M4 12h3M17 12h3"/></svg></div>
+      <h3 class="mod-title">Pendulum &amp; Belief Repatterning</h3>
+      <p class="mod-desc">Gentle muscle-testing and energetic tools to identify and shift limiting beliefs at the subconscious level.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     MID-PAGE TESTIMONIAL
+     ═══════════════════════════════════════════ -->
+<section class="mid-testi grain">
+  <div class="mid-testi-glow"></div>
+  <div class="mid-testi-inner reveal">
+    <div class="mid-testi-mark">&ldquo;</div>
+    <blockquote class="mid-testi-quote">I walked in carrying twenty years of held grief and walked out feeling lighter than I have since I was a child. Anna&rsquo;s trauma work isn&rsquo;t just therapy &mdash; it&rsquo;s liberation. My body finally stopped bracing.</blockquote>
+    <p class="mid-testi-author">Kate D. &mdash; Surrey</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PRICING
+     ═══════════════════════════════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <p class="pricing-label reveal">Pricing</p>
+    <h2 class="pricing-heading reveal rd1">1:1 Sessions</h2>
+
+    <div class="pricing-cards">
+      <div class="price-row reveal rd2">
+        <div class="price-row-left">
+          <p class="price-name">Single Session</p>
+          <p class="price-detail">90 minutes &middot; In-person or virtual</p>
+        </div>
+        <span class="price-amount">&pound;180</span>
+      </div>
+      <div class="price-row reveal rd3">
+        <div class="price-row-left">
+          <p class="price-name">4-Session Package</p>
+          <p class="price-detail">4 &times; 90 min &middot; Fortnightly cadence</p>
+        </div>
+        <span class="price-amount">&pound;650</span>
+      </div>
+      <div class="price-row reveal rd4">
+        <div class="price-row-left">
+          <p class="price-name">12-Week Reset Programme</p>
+          <p class="price-detail">12 sessions &middot; Weekly &middot; Full integration support</p>
+        </div>
+        <span class="price-amount">From &pound;2,400</span>
+      </div>
+    </div>
+
+    <div class="pricing-ctas reveal rd5">
+      <a href="#" class="btn btn-red">Book a Session</a>
+      <a href="#" class="btn btn-outline">Book Free Discovery Call</a>
+    </div>
+    <p class="pricing-note reveal rd6">Not sure? Book a free 15-minute call first &mdash; no commitment, just a conversation.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     RELATED CONTENT
+     ═══════════════════════════════════════════ -->
+<section class="related">
+  <div class="related-header">
+    <p class="section-label reveal" style="color:var(--blue);">You might also explore</p>
+  </div>
+  <div class="related-grid">
+    <!-- Blog post 1 -->
+    <div class="related-card reveal">
+      <div class="related-card-img">
+        <div class="related-card-img-bg" style="background: linear-gradient(140deg, var(--blush), var(--soft-pink), var(--cream));"></div>
+      </div>
+      <div class="related-card-body">
+        <p class="related-card-cat blog-cat">Reset Stories</p>
+        <h3 class="related-card-title">You&rsquo;re holding everything and nobody sees it</h3>
+        <p class="related-card-excerpt">The strong one. The one who keeps going. But what happens when your body starts keeping score?</p>
+      </div>
+    </div>
+    <!-- Blog post 2 -->
+    <div class="related-card reveal rd1">
+      <div class="related-card-img">
+        <div class="related-card-img-bg" style="background: linear-gradient(135deg, var(--lavender), var(--warm-neutral));"></div>
+      </div>
+      <div class="related-card-body">
+        <p class="related-card-cat blog-cat">Reset Stories</p>
+        <h3 class="related-card-title">Signal vs Noise &mdash; what your body is telling you</h3>
+        <p class="related-card-excerpt">Your nervous system already knows. Here&rsquo;s how to listen.</p>
+      </div>
+    </div>
+    <!-- Product 1 -->
+    <div class="related-card reveal rd2">
+      <div class="related-card-img">
+        <div class="related-card-img-bg" style="background: linear-gradient(180deg, #eae5dd, #ddd5ca);"></div>
+      </div>
+      <div class="related-card-body">
+        <p class="related-card-cat product-cat">Emotional Support Jewellery</p>
+        <h3 class="related-card-title">Moonstone Pendant</h3>
+        <p class="related-card-excerpt">Come back to self. Moonstone for intuition, calm, and new beginnings.</p>
+        <p class="related-card-price">&pound;48.00</p>
+      </div>
+    </div>
+    <!-- Product 2 -->
+    <div class="related-card reveal rd3">
+      <div class="related-card-img">
+        <div class="related-card-img-bg" style="background: linear-gradient(180deg, #e8e3db, #dbd4ca);"></div>
+      </div>
+      <div class="related-card-body">
+        <p class="related-card-cat product-cat">Emotional Support Jewellery</p>
+        <h3 class="related-card-title">Rose Quartz Bracelet</h3>
+        <p class="related-card-excerpt">Heart healing. Rose quartz for self-love, compassion, and tenderness.</p>
+        <p class="related-card-price">&pound;35.00</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FINAL CTA
+     ═══════════════════════════════════════════ -->
+<section class="final-cta grain">
+  <div class="final-cta-glow"></div>
+  <div class="final-cta-inner">
+    <h2 class="reveal">Your reset<br>starts here.</h2>
+    <div class="final-cta-btn reveal rd1">
+      <a href="#" class="btn btn-red-lg">Book a Session</a>
+    </div>
+    <p class="final-cta-sub reveal rd2">You don&rsquo;t have to carry this alone.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="#">Blog</a><a href="coaching.html">Coaching</a><a href="#">Shop</a><a href="#">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="#">Community</a><a href="#">About</a><a href="#">Contact</a><a href="#">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll — switches from transparent to solid
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

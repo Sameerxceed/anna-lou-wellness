@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_sections_embeds",
+  "info": {
+    "displayName": "Embed",
+    "icon": "code",
+    "description": "Embed external content (Calendly, podcast players, maps, etc.)"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "embed_code": {
+      "type": "text",
+      "required": true
+    }
+  }
+}

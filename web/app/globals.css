@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══ Google Fonts — Anna Lou Wellness Typography ═══ */
+/* Nobel: not on Google Fonts — use @font-face or Adobe Fonts in production */
+/* EB Garamond: closest Google Fonts match for Garamond */
+/* Proxima Nova: not on Google Fonts — use @font-face or Adobe Fonts in production */
+/* Fallback: load EB Garamond from Google Fonts for editorial use */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+/* ═══ @font-face placeholders — replace with actual font files ═══ */
+/* When font files are available, uncomment and update paths:
+@font-face {
+  font-family: 'Nobel';
+  src: url('/fonts/Nobel-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nobel';
+  src: url('/fonts/Nobel-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('/fonts/ProximaNova-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('/fonts/ProximaNova-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('/fonts/ProximaNova-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply font-body text-ink bg-warm-neutral overflow-x-hidden;
+    font-weight: 400;
+  }
+  a {
+    text-decoration: none;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+  }
+  /* Brand rule: sentence case always, never ALL CAPS in body copy */
+}
+
+@layer components {
+  /* Section typography — Anna Lou Wellness */
+  .section-label {
+    @apply font-sans font-light text-label tracking-[0.4em] uppercase text-mid-grey mb-6;
+  }
+  .section-heading {
+    font-family: 'Nobel', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    letter-spacing: 0.05em;
+    @apply text-ink leading-tight mb-6;
+  }
+  .section-body {
+    @apply font-body text-base leading-relaxed text-dark-grey max-w-[600px];
+    line-height: 1.9;
+  }
+  /* Editorial text — Garamond */
+  .editorial-text {
+    font-family: 'EB Garamond', Garamond, Georgia, serif;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+  .editorial-text em {
+    font-style: italic;
+  }
+
+  /* Buttons — Anna Lou Wellness */
+  .btn {
+    @apply inline-block font-sans font-light text-[0.72rem] tracking-wide-xl uppercase py-4 px-10 cursor-pointer border-none;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-outline {
+    @apply text-ink bg-transparent;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+  }
+  .btn-outline:hover {
+    @apply bg-ink text-warm-neutral border-ink;
+  }
+  .btn-outline-light {
+    @apply text-warm-neutral bg-transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+  .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  .btn-accent {
+    @apply text-white bg-accent border border-accent;
+    border-radius: 4px;
+  }
+  .btn-accent:hover {
+    @apply bg-accent-dark border-accent-dark;
+  }
+  .btn-brand {
+    @apply text-white bg-brand-red border border-brand-red;
+    border-radius: 4px;
+  }
+  .btn-brand:hover {
+    background: #CC2A28;
+    border-color: #CC2A28;
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Skeleton loading state */
+  .skeleton {
+    background: linear-gradient(90deg, #F5F3EF 25%, #D5D0C8 50%, #F5F3EF 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Focus styles for accessibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid #EE312F;
+    outline-offset: 2px;
+  }
+
+  /* Selection colour — brand red tint */
+  ::selection {
+    background: rgba(238, 49, 47, 0.15);
+    color: #231F20;
+  }
+}

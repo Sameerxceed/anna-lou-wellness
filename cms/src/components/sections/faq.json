@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_sections_faqs",
+  "info": {
+    "displayName": "FAQ Accordion",
+    "icon": "question-circle",
+    "description": "Expandable FAQ section with question-answer pairs"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "items": {
+      "type": "json",
+      "required": true
+    }
+  }
+}

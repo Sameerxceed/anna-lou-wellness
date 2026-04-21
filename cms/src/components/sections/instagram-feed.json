@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_sections_instagram_feeds",
+  "info": {
+    "displayName": "Instagram Feed",
+    "icon": "camera",
+    "description": "Display curated Instagram posts or social media images"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "posts": {
+      "type": "json",
+      "required": true
+    }
+  }
+}

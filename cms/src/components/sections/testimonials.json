@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_sections_testimonials",
+  "info": {
+    "displayName": "Testimonials",
+    "icon": "quote-right",
+    "description": "Customer testimonials with quote, name, role, and image"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "items": {
+      "type": "json",
+      "required": true
+    },
+    "style": {
+      "type": "enumeration",
+      "enum": ["slider", "grid"],
+      "default": "grid"
+    }
+  }
+}

@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anna Lou Wellness — Design Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner-inner {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight {
+      color: var(--red); font-weight: 500;
+    }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); flex-shrink: 0;
+    }
+    .launch-banner .close-banner {
+      position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: rgba(245,243,239,0.3);
+      font-size: 0.9rem; cursor: pointer; z-index: 1;
+      transition: color 0.3s;
+    }
+    .launch-banner .close-banner:hover { color: var(--red); }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.no-banner { top: 0; }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-radius: 0; transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      margin: 0;
+      border-radius: 0;
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav.scrolled { top: 28px; }
+    .nav.scrolled.no-banner { top: 0; }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(245,243,239,0.8); transition: color 0.4s;
+    }
+    .nav.scrolled .nav-logo { color: var(--black); }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); transition: color 0.3s; position: relative;
+    }
+    .nav.scrolled .nav-center a { color: var(--mid-grey); }
+    .nav-center a:hover { color: #fff; }
+    .nav.scrolled .nav-center a:hover { color: var(--red); }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav.scrolled .nav-btn { color: var(--mid-grey); border-color: rgba(0,0,0,0.08); }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ HERO — CINEMATIC BANNER ═══ */
+    .hero {
+      position: relative; min-height: 105vh; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--black);
+    }
+    /* Multi-layer animated background */
+    .hero-layer { position: absolute; inset: 0; }
+    .hero-layer-1 {
+      background:
+        conic-gradient(from 180deg at 30% 70%, rgba(238,49,47,0.12) 0deg, transparent 60deg, transparent 360deg),
+        conic-gradient(from 0deg at 70% 30%, rgba(250,162,27,0.08) 0deg, transparent 90deg, transparent 360deg),
+        conic-gradient(from 270deg at 50% 50%, rgba(123,175,221,0.05) 0deg, transparent 120deg, transparent 360deg);
+      animation: heroRotate 20s linear infinite;
+      transform-origin: center;
+    }
+    @keyframes heroRotate {
+      0% { transform: rotate(0deg) scale(1.5); }
+      100% { transform: rotate(360deg) scale(1.5); }
+    }
+    .hero-layer-2 {
+      background:
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(242,128,170,0.08), transparent),
+        radial-gradient(ellipse 40% 50% at 80% 20%, rgba(255,208,122,0.06), transparent);
+      animation: heroPulse 8s ease-in-out infinite alternate;
+    }
+    @keyframes heroPulse {
+      0% { opacity: 0.5; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.1); }
+    }
+    /* Horizontal light streaks */
+    .hero-streaks {
+      position: absolute; inset: 0; z-index: 1; overflow: hidden;
+    }
+    .streak {
+      position: absolute; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,243,239,0.06), transparent);
+      animation: streakMove linear infinite;
+    }
+    @keyframes streakMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    /* Large crown watermark */
+    .hero-watermark {
+      position: absolute; z-index: 1;
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 35vw; line-height: 1;
+      color: rgba(245,243,239,0.012);
+      top: 50%; left: 50%; transform: translate(-50%, -55%);
+      user-select: none; pointer-events: none;
+    }
+    /* Particles */
+    .hero-particles { position: absolute; inset: 0; z-index: 1; }
+    .particle {
+      position: absolute; border-radius: 50%;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      15% { opacity: 1; transform: translateY(80vh) scale(1); }
+      85% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+    }
+    /* Content */
+    .hero-content {
+      position: relative; z-index: 5; text-align: center;
+      max-width: 800px; padding: 0 2rem;
+    }
+    .hero-crown-icon {
+      width: 40px; height: 40px; margin: 0 auto 2rem;
+      opacity: 0; animation: crownReveal 1s ease 0.2s forwards;
+    }
+    .hero-crown-icon svg {
+      width: 100%; height: 100%; fill: none; stroke: rgba(245,243,239,0.2); stroke-width: 1;
+    }
+    @keyframes crownReveal {
+      from { opacity: 0; transform: translateY(15px) scale(0.8); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .hero-pre {
+      font-family: var(--font-ui); font-weight: 200;
+      font-size: 0.62rem; letter-spacing: 0.45em; text-transform: uppercase;
+      color: rgba(245,243,239,0.25);
+      margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      color: var(--warm-neutral); line-height: 0.95;
+      margin-bottom: 0.3rem;
+      opacity: 0; animation: titleReveal 1.6s cubic-bezier(0.22,1,0.36,1) 0.7s forwards;
+    }
+    .hero-title .title-line-2 {
+      display: block; font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.55em; font-weight: 400; letter-spacing: 0.02em;
+      color: rgba(245,243,239,0.6);
+    }
+    @keyframes titleReveal {
+      from { opacity: 0; transform: translateY(50px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    .hero-line {
+      width: 60px; height: 1.5px; margin: 1.8rem auto;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0; animation: lineGrow 0.8s ease 1.5s forwards;
+    }
+    @keyframes lineGrow {
+      from { opacity: 0; width: 0; }
+      to { opacity: 1; width: 60px; }
+    }
+    .hero-tagline {
+      font-family: var(--font-editorial); font-weight: 400; font-style: italic;
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+      color: rgba(245,243,239,0.45); line-height: 1.8;
+      max-width: 480px; margin: 0 auto 2.5rem;
+      opacity: 0; animation: fadeUp 1s ease 1.8s forwards;
+    }
+    .hero-ctas {
+      display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.8s ease 2.1s forwards;
+    }
+    .hero-cta {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .hero-cta-primary {
+      background: var(--red); color: #fff; border: 1px solid var(--red);
+    }
+    .hero-cta-primary:hover {
+      background: transparent; border-color: var(--red);
+      box-shadow: 0 0 40px rgba(238,49,47,0.25);
+    }
+    .hero-cta-ghost {
+      background: transparent; color: rgba(245,243,239,0.4);
+      border: 1px solid rgba(245,243,239,0.1);
+    }
+    .hero-cta-ghost:hover {
+      color: var(--warm-neutral); border-color: rgba(245,243,239,0.3);
+      background: rgba(245,243,239,0.04);
+    }
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 5; display: flex; flex-direction: column; align-items: center;
+      gap: 0.5rem; opacity: 0; animation: fadeIn 1s ease 3s forwards;
+    }
+    .scroll-line {
+      width: 1px; height: 35px;
+      background: linear-gradient(to bottom, rgba(245,243,239,0.2), transparent);
+      animation: scrollPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(1); opacity: 0.3; }
+      50% { transform: scaleY(1.4); opacity: 0.6; }
+    }
+    .scroll-cue small {
+      font-size: 0.45rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.12);
+    }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+    .btn-amber { background: var(--amber); color: var(--black); border-color: var(--amber); }
+    .btn-amber:hover { background: #e09218; }
+    .btn-gold { background: var(--gold); color: var(--black); border-color: var(--gold); }
+    .btn-gold:hover { background: #f0c060; }
+
+    /* ═══ SECTIONS ═══ */
+    .section { padding: 6rem 2rem; position: relative; }
+    .section-narrow { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+    .section-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      color: var(--black); line-height: 1.15; letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
+    }
+    .section-body {
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 1.05rem; line-height: 1.85; color: var(--dark-grey);
+      max-width: 500px;
+    }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ INTRO ═══ */
+    .intro { background: var(--warm-neutral); }
+    .intro-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
+      align-items: center; max-width: 1100px; margin: 0 auto;
+    }
+    .intro .section-label { color: var(--red); }
+    .intro-quote {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1.2rem; color: var(--dark-grey);
+      border-left: 2px solid var(--red); padding-left: 1.5rem;
+      margin-top: 1.5rem; line-height: 1.7;
+    }
+    .intro-img {
+      aspect-ratio: 3/4; border-radius: 8px; overflow: hidden;
+      background: linear-gradient(160deg, #e8ddd0, #d4c5b3);
+      position: relative;
+    }
+    .intro-img::after {
+      content: 'Photo of Anna'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.55rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+
+    /* ═══ PATHWAYS ═══ */
+    .pathways { background: #fff; }
+    .pathways-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .pw-card {
+      position: relative; overflow: hidden; border-radius: 12px;
+      aspect-ratio: 3/4; cursor: pointer;
+      transition: transform 0.6s cubic-bezier(0.22,1,0.36,1), box-shadow 0.6s;
+    }
+    .pw-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
+    .pw-bg { position: absolute; inset: 0; transition: transform 0.8s cubic-bezier(0.22,1,0.36,1); }
+    .pw-card:hover .pw-bg { transform: scale(1.08); }
+    .pw-card:nth-child(1) .pw-bg { background: linear-gradient(160deg, #5a8fb8, #3d6e94, #2a4d68); }
+    .pw-card:nth-child(2) .pw-bg { background: linear-gradient(160deg, #d4a86a, #b8924e, #957538); }
+    .pw-card:nth-child(3) .pw-bg { background: linear-gradient(160deg, #EE312F, #c4281f, #8e1d16); }
+    .pw-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(180deg, rgba(35,31,32,0.02) 0%, rgba(35,31,32,0.75) 100%);
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem;
+    }
+    .pw-num {
+      position: absolute; top: 1.5rem; left: 1.5rem;
+      font-family: var(--font-display); font-weight: 200; font-size: 3rem;
+      color: rgba(255,255,255,0.06);
+    }
+    .pw-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.48rem; letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); margin-bottom: 0.3rem;
+    }
+    .pw-title {
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 1.6rem; color: #fff; line-height: 1.2; margin-bottom: 0.5rem;
+    }
+    .pw-desc {
+      font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(255,255,255,0.45); line-height: 1.5; margin-bottom: 0.8rem;
+    }
+    .pw-arrow {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.55rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.55);
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: gap 0.3s, color 0.3s;
+    }
+    .pw-card:hover .pw-arrow { gap: 0.7rem; color: #fff; }
+
+    /* ═══ TESTIMONIALS ═══ */
+    .testi {
+      background: var(--black); padding: 7rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .testi-glow {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, rgba(238,49,47,0.07), transparent 70%);
+      animation: glowDrift 10s ease-in-out infinite alternate;
+    }
+    .testi-glow-1 { width: 500px; height: 500px; top: 20%; left: 10%; }
+    .testi-glow-2 { width: 350px; height: 350px; bottom: 10%; right: 15%; background: radial-gradient(circle, rgba(255,208,122,0.05), transparent 70%); animation-direction: alternate-reverse; animation-duration: 12s; }
+    @keyframes glowDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -20px) scale(1.15); }
+    }
+    .testi-inner {
+      position: relative; z-index: 2; max-width: 650px; margin: 0 auto; text-align: center;
+    }
+    .testi-mark {
+      font-family: var(--font-editorial); font-size: 5rem; line-height: 0.8;
+      color: rgba(238,49,47,0.15); margin-bottom: 0.5rem;
+    }
+    .testi-quote {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      color: rgba(245,243,239,0.75); line-height: 1.65;
+      margin-bottom: 1.8rem;
+    }
+    .testi-author {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold);
+    }
+    .testi-dots { display: flex; gap: 0.35rem; justify-content: center; margin-top: 2.5rem; }
+    .testi-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(245,243,239,0.08); cursor: pointer; transition: all 0.3s;
+    }
+    .testi-dot.active { background: var(--red); width: 22px; border-radius: 3px; }
+
+    /* ═══ PRESS ═══ */
+    .press {
+      background: #fff; padding: 2rem 2rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 3rem; flex-wrap: wrap;
+      border-top: 1px solid rgba(0,0,0,0.03); border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+    .press span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--warm-cream);
+    }
+    .press .serif { font-family: var(--font-editorial); font-style: italic; font-size: 0.9rem; letter-spacing: 0; }
+
+    /* ═══ COACHING ═══ */
+    .coaching { background: var(--lavender); }
+    .coaching-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.8rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .c-card {
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
+      border-radius: 12px; padding: 1.8rem 1rem; text-align: center;
+      cursor: pointer; transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+      border: 1px solid rgba(255,255,255,0.6); position: relative; overflow: hidden;
+    }
+    .c-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: var(--blue); transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); transform-origin: center;
+    }
+    .c-card:hover::after { transform: scaleX(1); }
+    .c-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.06); background: #fff; }
+    .c-card-icon {
+      width: 48px; height: 48px; margin: 0 auto 0.8rem;
+      background: rgba(123,175,221,0.08); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s;
+    }
+    .c-card-icon svg { width: 26px; height: 26px; }
+    .c-card:hover .c-card-icon { background: rgba(123,175,221,0.15); }
+    .c-card h3 {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: 0.8rem; letter-spacing: 0.02em; color: var(--black); margin-bottom: 0.4rem;
+    }
+    .c-card p {
+      font-family: var(--font-editorial); font-size: 0.8rem;
+      color: var(--mid-grey); line-height: 1.45;
+    }
+
+    /* ═══ BLOG ═══ */
+    .blog { background: var(--warm-neutral); }
+    .blog-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .blog-featured {
+      grid-row: span 2; border-radius: 12px; overflow: hidden;
+      background: #fff; cursor: pointer; transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .blog-featured:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.07); }
+    .blog-featured-img {
+      width: 100%; aspect-ratio: 4/3;
+      background: linear-gradient(140deg, var(--blush), var(--soft-pink), var(--cream));
+    }
+    .blog-featured-body { padding: 1.8rem; }
+    .blog-sm {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      display: flex; cursor: pointer; transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .blog-sm:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); }
+    .blog-sm-img { width: 130px; flex-shrink: 0; }
+    .blog-sm:nth-child(2) .blog-sm-img { background: linear-gradient(135deg, var(--cream), #efe6d5); }
+    .blog-sm:nth-child(3) .blog-sm-img { background: linear-gradient(135deg, var(--mint), var(--lavender)); }
+    .blog-sm-body { padding: 1.2rem; }
+    .b-cat {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.48rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.35rem;
+    }
+    .b-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      color: var(--black); line-height: 1.3; margin-bottom: 0.35rem;
+    }
+    .blog-featured .b-title { font-size: 1.5rem; }
+    .blog-sm .b-title { font-size: 1.05rem; }
+    .b-excerpt {
+      font-family: var(--font-editorial); font-size: 0.88rem;
+      color: var(--mid-grey); line-height: 1.6;
+    }
+    .b-meta {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.5rem; letter-spacing: 0.08em;
+      color: var(--warm-cream); margin-top: 0.6rem; text-transform: uppercase;
+    }
+
+    /* ═══ SHOP ═══ */
+    .shop { background: #fff; }
+    .shop-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .p-card {
+      border-radius: 12px; overflow: hidden; cursor: pointer;
+      background: var(--warm-neutral);
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), box-shadow 0.45s;
+    }
+    .p-card:hover { transform: translateY(-5px); box-shadow: 0 18px 45px rgba(0,0,0,0.08); }
+    .p-img { aspect-ratio: 1; position: relative; overflow: hidden; }
+    .p-img-bg {
+      width: 100%; height: 100%;
+      background: linear-gradient(180deg, #eae5dd, #ddd5ca);
+      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .p-card:hover .p-img-bg { transform: scale(1.06); }
+    .p-badge {
+      position: absolute; top: 0.7rem; left: 0.7rem; z-index: 1;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.45rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--gold); color: var(--black);
+      padding: 0.2rem 0.5rem; border-radius: 20px;
+    }
+    .p-info { padding: 0.9rem 1.1rem 1.2rem; }
+    .p-name { font-family: var(--font-editorial); font-size: 0.95rem; color: var(--black); margin-bottom: 0.2rem; }
+    .p-price { font-family: var(--font-ui); font-weight: 400; font-size: 0.82rem; color: var(--dark-grey); }
+
+    /* ═══ WORKSHOPS ═══ */
+    .workshops { background: var(--warm-neutral); }
+    .ws-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .ws-card {
+      background: #fff; border-radius: 12px; overflow: hidden; cursor: pointer;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .ws-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.07); }
+    .ws-img { width: 100%; aspect-ratio: 16/9; }
+    .ws-card:nth-child(1) .ws-img { background: linear-gradient(135deg, var(--cream), var(--warm-neutral)); }
+    .ws-card:nth-child(2) .ws-img { background: linear-gradient(135deg, var(--lavender), var(--warm-neutral)); }
+    .ws-card:nth-child(3) .ws-img { background: linear-gradient(135deg, var(--mint), var(--cream)); }
+    .ws-body { padding: 1.3rem; }
+    .ws-date {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 0.4rem;
+    }
+    .ws-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.05rem; color: var(--black); margin-bottom: 0.4rem; line-height: 1.3;
+    }
+    .ws-desc {
+      font-family: var(--font-editorial); font-size: 0.82rem;
+      color: var(--mid-grey); line-height: 1.5; margin-bottom: 0.8rem;
+    }
+    .ws-prices { display: flex; gap: 0.35rem; }
+    .ws-pill {
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.48rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.25rem 0.55rem; border-radius: 20px;
+    }
+    .ws-pill-full { background: var(--amber); color: var(--black); }
+    .ws-pill-sum { border: 1px solid rgba(0,0,0,0.1); color: var(--dark-grey); }
+
+    /* ═══ NEWSLETTER ═══ */
+    .newsletter {
+      background: var(--red); padding: 5rem 2rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .newsletter::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.06), transparent 50%, rgba(0,0,0,0.08));
+    }
+    .nl-inner { position: relative; z-index: 1; }
+    .nl-inner h2 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+      color: #fff; letter-spacing: 0.03em; margin-bottom: 0.5rem;
+    }
+    .nl-inner .nl-sub {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1rem; color: rgba(255,255,255,0.6); margin-bottom: 1.8rem;
+    }
+    .nl-form { display: flex; gap: 0; max-width: 400px; margin: 0 auto; }
+    .nl-input {
+      flex: 1; padding: 0.75rem 1rem;
+      font-family: var(--font-ui); font-size: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.2); border-right: none;
+      border-radius: 50px 0 0 50px;
+      background: rgba(255,255,255,0.08); color: #fff; outline: none;
+    }
+    .nl-input::placeholder { color: rgba(255,255,255,0.3); }
+    .nl-input:focus { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); }
+    .nl-btn {
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: #fff; color: var(--red); border: 1px solid #fff;
+      border-radius: 0 50px 50px 0; padding: 0 1.3rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .nl-btn:hover { background: var(--black); color: #fff; border-color: var(--black); }
+    .nl-schedule {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.52rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-top: 1rem;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .pathways-grid, .pw-card { grid-template-columns: 1fr; }
+      .pw-card { aspect-ratio: 16/9; }
+      .intro-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .intro-img { max-height: 320px; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .blog-featured { grid-row: auto; }
+      .blog-sm { flex-direction: column; }
+      .blog-sm-img { width: 100%; height: 150px; }
+      .shop-grid { grid-template-columns: repeat(2, 1fr); }
+      .coaching-grid { grid-template-columns: repeat(2, 1fr); }
+      .ws-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .press { gap: 1.2rem; }
+      .pathways-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .coaching-grid, .shop-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!--
+  ════════════════════════════════════════════════════════════════
+  DESIGN RATIONALE — Anna Lou Wellness Homepage
+  ════════════════════════════════════════════════════════════════
+
+  WHY THIS LAYOUT:
+  Anna's brief says the site should feel "aspirational, intuitive, and editorial"
+  where content, coaching, and products work as ONE journey. The homepage is
+  structured as a guided scroll: emotion first → pathways → proof → content → shop.
+
+  WHY THESE FONTS:
+  - Inter (stand-in for Nobel) = clean, modern headings — authority without coldness
+  - EB Garamond = editorial warmth — every tagline and quote feels personal, not corporate
+  - Inter UI weight = navigation/prices — functional, scannable
+
+  WHY THIS COLOUR SYSTEM:
+  Each section uses its own accent colour from the brand palette so users
+  subconsciously know where they are. Red = blog. Blue = coaching. Gold = shop.
+  Amber = workshops. This creates visual wayfinding across the whole site.
+
+  WHY WARM NEUTRAL (#F5F3EF) NOT WHITE:
+  Pure white feels clinical. Anna's brand is about warmth, safety, and return.
+  The cream foundation creates that "held" feeling — like linen, not a lab coat.
+
+  WHY FILM GRAIN TEXTURE:
+  Anna referenced "rustic/retro" and Cup of Jo's warmth. The subtle grain overlay
+  on dark sections adds organic texture — it feels handmade, not templated.
+  ════════════════════════════════════════════════════════════════
+-->
+
+<!-- LAUNCH BANNER
+     WHY: Creates urgency and highlights key offerings on first visit.
+     Static, not scrolling — wellness brand, not e-commerce flash sale.
+     Dismissable so it doesn't feel pushy. -->
+<div class="launch-banner" id="launchBanner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="#coaching" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+  </div>
+
+<!-- NAV
+     WHY THIS STYLE: Transparent on hero so the cinematic opening isn't interrupted.
+     On scroll: becomes a clean white bar pinned to top — full-width, not floating pill.
+     This is simpler and more editorial (like Cup of Jo / Rose Inc) than a floating bubble.
+     8 nav items match the sitemap. Cart is red pill to draw the eye. -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="#workshops">Workshops</a></li>
+      <li><a href="#coaching">Coaching</a></li>
+      <li><a href="#shop">Shop</a></li>
+      <li><a href="#">Media</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO
+     WHY CINEMATIC: Anna's audience are high-achieving women (30s-40s) who respond to
+     premium, aspirational design. The animated gradients and particles create a
+     "wow moment" on first load — like walking into a beautifully lit space.
+     WHY "Beautifully" + "Whole" SPLIT: Two fonts (sans + serif italic) creates tension
+     and elegance. "Beautifully" is structured (the ambition), "Whole" is organic (the goal).
+     WHY RED PRIMARY CTA: "Work With Me" is the #1 conversion goal. Red draws the eye
+     immediately. Ghost buttons for Shop/Stories let them be secondary without disappearing.
+     WHY CROWN WATERMARK: Subtle brand reinforcement — the 'a' monogram from the logo
+     appears as a giant ghosted backdrop, tying the hero to the brand identity. -->
+<section class="hero grain">
+  <div class="hero-layer hero-layer-1"></div>
+  <div class="hero-layer hero-layer-2"></div>
+  <div class="hero-streaks" id="streaks"></div>
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-watermark">a</div>
+  <div class="hero-content">
+    <div class="hero-crown-icon">
+      <svg viewBox="0 0 40 40"><path d="M20 8 L10 18 L14 18 L8 28 L32 28 L26 18 L30 18 Z" /><circle cx="20" cy="5" r="2" /><circle cx="12" cy="10" r="1.5" /><circle cx="28" cy="10" r="1.5" /></svg>
+    </div>
+    <p class="hero-pre">Anna Lou Wellness</p>
+    <h1 class="hero-title">Beautifully<span class="title-line-2">Whole</span></h1>
+    <div class="hero-line"></div>
+    <p class="hero-tagline">Coaching, healing, and transformation for women ready to come back to themselves.</p>
+    <div class="hero-ctas">
+      <a href="#coaching" class="hero-cta hero-cta-primary">Work With Me</a>
+      <a href="#shop" class="hero-cta hero-cta-ghost">Shop</a>
+      <a href="#blog" class="hero-cta hero-cta-ghost">Reset Stories</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="scroll-line"></div><small>Scroll</small></div>
+</section>
+
+<!-- EDITORIAL INTRO
+     WHY THIS SECTION: Before showing any products or services, we establish the
+     emotional connection. This is Anna speaking directly to her visitor. Cup of Jo
+     does this brilliantly — the site feels like a conversation, not a catalogue.
+     WHY 2-COLUMN WITH PHOTO: The left column is text (Garamond italic quote = personal),
+     the right is a portrait placeholder. When Anna's photo is here, it creates
+     immediate trust — "this is a real person with a real story."
+     WHY RED LEFT BORDER ON QUOTE: Subtle brand accent on editorial content. -->
+<section class="section intro grain">
+  <div class="intro-grid">
+    <div class="reveal">
+      <p class="section-label">Reset Stories</p>
+      <h2 class="section-heading">Come back to yourself</h2>
+      <p class="section-body">A space for women who feel ready. Ready to put down the weight. Ready to stop performing strength and start feeling it. Ready to return to the version of themselves that was always whole.</p>
+      <blockquote class="intro-quote reveal rd2">"Your reset starts here. Not with fixing &mdash; with returning."</blockquote>
+    </div>
+    <div class="intro-img reveal rd3"></div>
+  </div>
+</section>
+
+<!-- THREE PATHWAYS
+     WHY THREE CARDS: Anna's brief says visitors should immediately know where to go.
+     Three is the magic number — coaching, shop, stories covers every visitor intent.
+     WHY COLOUR-CODED: Blue (coaching = trust), Gold (shop = value), Red (stories = passion).
+     These colours carry meaning and match the section-colour system used throughout.
+     WHY TALL ASPECT RATIO (3:4): Portrait-format cards feel more editorial/magazine-like
+     than landscape. They demand attention and create vertical rhythm.
+     WHY NUMBERED (01, 02, 03): Adds structure and sophistication. Signals "this is curated,
+     not random" — important for Anna's premium positioning. -->
+<section class="section pathways">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal">Your journey starts here</p>
+    <h2 class="section-heading reveal rd1">Three ways in</h2>
+  </div>
+  <div class="pathways-grid">
+    <div class="pw-card reveal">
+      <div class="pw-bg"></div>
+      <div class="pw-overlay">
+        <span class="pw-num">01</span>
+        <span class="pw-label">Coaching</span>
+        <h3 class="pw-title">Start your reset</h3>
+        <p class="pw-desc">Somatic healing, trauma release, and coaching for women ready to come back to themselves.</p>
+        <span class="pw-arrow">Explore <span>&rarr;</span></span>
+      </div>
+    </div>
+    <div class="pw-card reveal rd1">
+      <div class="pw-bg"></div>
+      <div class="pw-overlay">
+        <span class="pw-num">02</span>
+        <span class="pw-label">Shop</span>
+        <h3 class="pw-title">Symbolic pieces</h3>
+        <p class="pw-desc">Crystals, Emotional Support Jewellery, and meaningful objects for your journey.</p>
+        <span class="pw-arrow">Browse <span>&rarr;</span></span>
+      </div>
+    </div>
+    <div class="pw-card reveal rd2">
+      <div class="pw-bg"></div>
+      <div class="pw-overlay">
+        <span class="pw-num">03</span>
+        <span class="pw-label">Reset Stories</span>
+        <h3 class="pw-title">Read the stories</h3>
+        <p class="pw-desc">Real transformation, lifestyle, and the journey from holding everything to letting go.</p>
+        <span class="pw-arrow">Read <span>&rarr;</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS
+     WHY DARK BACKGROUND: Contrast break. After light sections, a dark testimonial creates
+     dramatic emphasis — the quote literally stands out. Also mirrors the hero's darkness,
+     creating visual bookends.
+     WHY LARGE GARAMOND ITALIC: Testimonials should feel like someone is speaking to you.
+     Garamond italic at large size is intimate and persuasive. Serif = credibility.
+     WHY GOLD AUTHOR NAME: Gold = value, trust. Makes the real person's name feel precious.
+     WHY GLOWING ORBS: Subtle coloured glows (red, gold) in the background create warmth
+     and depth — the section breathes rather than feeling flat black. -->
+<section class="testi grain">
+  <div class="testi-glow testi-glow-1"></div>
+  <div class="testi-glow testi-glow-2"></div>
+  <div class="testi-inner reveal">
+    <div class="testi-mark">&ldquo;</div>
+    <blockquote class="testi-quote">Anna helped me come back to myself when I didn&rsquo;t know who I was anymore. The somatic work unlocked something I&rsquo;d been carrying for years.</blockquote>
+    <p class="testi-author">Sarah M. &mdash; London</p>
+    <div class="testi-dots">
+      <span class="testi-dot active"></span><span class="testi-dot"></span><span class="testi-dot"></span><span class="testi-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- PRESS & CREDENTIALS
+     WHY HERE (after testimonials): The emotional proof (quote) followed by institutional
+     proof (ICF, Harrods, Selfridges) creates a one-two punch of credibility.
+     WHY SUBTLE GREY: Credentials should reassure, not shout. Muted logos say
+     "I don't need to prove anything" — which is the most powerful proof of all.
+     WHY SERIF FOR RETAIL BRANDS: Harrods/Selfridges in italic serif feels appropriate
+     to their luxury positioning, while certifications stay in sans-serif (functional). -->
+<section class="press">
+  <span>ICF Accredited</span><span>CPD Certified</span><span>TRE Provider</span>
+  <span class="serif">Harrods</span><span class="serif">Selfridges</span><span class="serif">Harvey Nichols</span><span class="serif">Disney</span>
+</section>
+
+<!-- COACHING PREVIEW
+     WHY LAVENDER BACKGROUND: Blue/lavender = calm, trust, safety. Coaching is about
+     vulnerability — the background should feel safe, not stimulating.
+     WHY QUIZ CTA: Anna's sitemap includes "Which coaching is right for me?" quiz.
+     Leading with this removes decision paralysis — visitors don't have to figure out
+     which of the 5 categories fits them.
+     WHY 5 CARDS NOT 3: Each coaching category (Trauma, Dating, Spiritual, Business, Health)
+     deserves equal weight. The grid shows breadth without overwhelming.
+     WHY LINE ICONS (not emojis): Custom SVG icons in the brand blue feel intentional and
+     designed. Each icon symbolises its coaching type:
+     - Trauma: opening/releasing shape — letting go
+     - Dating: overlapping circles — connection
+     - Spiritual: eye — inner vision
+     - Business: compass with diamond — purpose-driven direction
+     - Health: pulse/wave — nervous system rhythm -->
+<section class="section coaching" id="coaching">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal" style="color:var(--blue);">Coaching</p>
+    <h2 class="section-heading reveal rd1">Which coaching is right for you?</h2>
+    <p class="section-body reveal rd2" style="margin:0 auto 1.5rem; text-align:center;">Every journey is different. Find the path that fits where you are now.</p>
+    <a class="btn btn-red reveal rd3" href="#">Take the Quiz</a>
+  </div>
+  <div class="coaching-grid">
+    <!-- Trauma Release: hands releasing/opening — represents letting go of held trauma -->
+    <div class="c-card reveal">
+      <div class="c-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M16 6c0 0-6 4-6 10s6 10 6 10"/><path d="M16 6c0 0 6 4 6 10s-6 10-6 10"/><path d="M10 16h12"/><circle cx="16" cy="6" r="1.5"/></svg></div>
+      <h3>Trauma Release</h3><p>TRE, Flash EMDR, Brainspotting, IFS</p>
+    </div>
+    <!-- Dating: two overlapping circles — connection, attachment, coming together -->
+    <div class="c-card reveal rd1">
+      <div class="c-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><circle cx="13" cy="16" r="6"/><circle cx="19" cy="16" r="6"/><path d="M16 12v8" opacity="0.4"/></svg></div>
+      <h3>Dating</h3><p>Post-divorce clarity, attachment patterns</p>
+    </div>
+    <!-- Spiritual: radiating eye — inner vision, intuition, spiritual sight -->
+    <div class="c-card reveal rd2">
+      <div class="c-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M6 16s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="16" cy="16" r="3"/><circle cx="16" cy="16" r="1" fill="var(--blue)"/></svg></div>
+      <h3>Spiritual</h3><p>Energy alignment, intuition decoding</p>
+    </div>
+    <!-- Heart-Led Business: compass with heart — purpose-driven direction -->
+    <div class="c-card reveal rd3">
+      <div class="c-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><circle cx="16" cy="16" r="9"/><path d="M16 7v3M16 22v3M7 16h3M22 16h3"/><path d="M16 13l-2 3 2 2 2-2z" fill="var(--blue)" stroke="none" opacity="0.3"/><path d="M16 12l-3 4 3 3 3-3z"/></svg></div>
+      <h3>Heart-Led Business</h3><p>Founder reset, Signal Method&trade;</p>
+    </div>
+    <!-- Health: wave/pulse — nervous system, body rhythm, somatic flow -->
+    <div class="c-card reveal rd4">
+      <div class="c-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M4 16h5l3-6 4 12 4-8 3 4h5"/><circle cx="16" cy="16" r="9" opacity="0.15"/></svg></div>
+      <h3>Health</h3><p>Nervous system, breathwork, somatic</p>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG PREVIEW
+     WHY CUP OF JO LAYOUT: Anna specifically referenced Cup of Jo's editorial model.
+     The asymmetric grid (large featured + 2 side cards) mimics magazine editorial
+     layouts. The featured post gets visual dominance — it's the lead story.
+     WHY RED CATEGORY LABELS: Red = blog's section colour. Small uppercase labels
+     create structure without overwhelming the editorial titles.
+     WHY GARAMOND FOR TITLES: Blog titles in serif feel like magazine headlines —
+     readable, warm, and editorial. Sans-serif titles would feel like a SaaS dashboard. -->
+<section class="section blog" id="blog">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal" style="color:var(--red);">Reset Stories</p>
+    <h2 class="section-heading reveal rd1">Latest from the blog</h2>
+  </div>
+  <div class="blog-grid">
+    <div class="blog-featured reveal">
+      <div class="blog-featured-img"></div>
+      <div class="blog-featured-body">
+        <p class="b-cat">Reset Stories</p>
+        <h3 class="b-title">You&rsquo;re holding everything and nobody sees it</h3>
+        <p class="b-excerpt">The strong one. The one who keeps going. But what happens when your body starts keeping score? This is the story I hear most often.</p>
+        <p class="b-meta">April 2, 2026 &middot; 6 min read</p>
+      </div>
+    </div>
+    <div class="blog-sm reveal rd1">
+      <div class="blog-sm-img"></div>
+      <div class="blog-sm-body">
+        <p class="b-cat">Style &amp; Design</p>
+        <h3 class="b-title">My beauty uniform &mdash; the five products I actually use</h3>
+        <p class="b-excerpt">Simplifying your routine is the first act of self-care.</p>
+      </div>
+    </div>
+    <div class="blog-sm reveal rd2">
+      <div class="blog-sm-img"></div>
+      <div class="blog-sm-body">
+        <p class="b-cat">Relationships</p>
+        <h3 class="b-title">Signal vs Noise &mdash; what your body is telling you</h3>
+        <p class="b-excerpt">Your nervous system already knows. Here&rsquo;s how to listen.</p>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:2rem;"><a class="btn btn-outline reveal" href="#">Read all stories</a></div>
+</section>
+
+<!-- SHOP
+     WHY WHITE BACKGROUND: Products need a clean stage. White = gallery feel.
+     WHY GOLD BADGES: Gold = value/luxury — matches Anna Lou of London positioning.
+     "Friday ESJ" badge highlights the weekly jewellery drop (recurring engagement).
+     WHY GARAMOND PRODUCT NAMES: Serif names feel like gallery labels, not a catalogue.
+     WHY "Every piece carries meaning" IN ITALIC: Bridges commerce and story. -->
+<section class="section shop" id="shop">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal" style="color:var(--gold);">Shop &mdash; Anna Lou of London</p>
+    <h2 class="section-heading reveal rd1">Emotional Support Jewellery</h2>
+    <p class="section-body reveal rd2" style="margin:0 auto; text-align:center;"><em>Every piece carries meaning. Every purchase is a reset.</em></p>
+  </div>
+  <div class="shop-grid">
+    <div class="p-card reveal"><div class="p-img"><span class="p-badge">Friday ESJ</span><div class="p-img-bg"></div></div><div class="p-info"><p class="p-name">Moonstone Pendant</p><p class="p-price">&pound;48.00</p></div></div>
+    <div class="p-card reveal rd1"><div class="p-img"><div class="p-img-bg" style="background:linear-gradient(180deg,#e8e3db,#dbd4ca);"></div></div><div class="p-info"><p class="p-name">Clear Quartz Point</p><p class="p-price">&pound;28.00</p></div></div>
+    <div class="p-card reveal rd2"><div class="p-img"><div class="p-img-bg" style="background:linear-gradient(180deg,#ebe6de,#ddd6cc);"></div></div><div class="p-info"><p class="p-name">Rose Quartz Bracelet</p><p class="p-price">&pound;35.00</p></div></div>
+    <div class="p-card reveal rd3"><div class="p-img"><span class="p-badge">Digital</span><div class="p-img-bg" style="background:linear-gradient(180deg,#e5e0d8,#d8d1c7);"></div></div><div class="p-info"><p class="p-name">Crystal Guide</p><p class="p-price">&pound;15.00</p></div></div>
+  </div>
+  <div style="text-align:center; margin-top:2rem;"><a class="btn btn-gold reveal" href="#">Browse the shop</a></div>
+</section>
+
+<!-- WORKSHOPS
+     WHY AMBER ACCENT: Amber = warmth, action, energy. Workshops are active experiences,
+     not passive content. The amber date labels create urgency ("this is happening").
+     WHY DUAL PRICING PILLS: Anna's sitemap specifies £200 full / £15 summary for every
+     workshop. Showing both upfront removes friction — visitors self-select their tier.
+     Full is amber (action), Summary is outlined (secondary option). -->
+<section class="section workshops" id="workshops">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal" style="color:var(--amber);">Workshops</p>
+    <h2 class="section-heading reveal rd1">Upcoming workshops</h2>
+  </div>
+  <div class="ws-grid">
+    <div class="ws-card reveal"><div class="ws-img"></div><div class="ws-body"><p class="ws-date">Sat 26 April &middot; 10 AM</p><h3 class="ws-title">Nervous System Reset &mdash; Half Day</h3><p class="ws-desc">A somatic deep-dive into your body&rsquo;s stress patterns.</p><div class="ws-prices"><span class="ws-pill ws-pill-full">&pound;200 Full</span><span class="ws-pill ws-pill-sum">&pound;15 Summary</span></div></div></div>
+    <div class="ws-card reveal rd1"><div class="ws-img"></div><div class="ws-body"><p class="ws-date">Sat 10 May &middot; 2 PM</p><h3 class="ws-title">Signal Method&trade; &mdash; Business Reset</h3><p class="ws-desc">For founders who&rsquo;ve lost their signal.</p><div class="ws-prices"><span class="ws-pill ws-pill-full">&pound;200 Full</span><span class="ws-pill ws-pill-sum">&pound;15 Summary</span></div></div></div>
+    <div class="ws-card reveal rd2"><div class="ws-img"></div><div class="ws-body"><p class="ws-date">Sat 7 June &middot; 10 AM</p><h3 class="ws-title">Emotional Anchors &mdash; Crystal Workshop</h3><p class="ws-desc">Discover crystals and create your anchoring practice.</p><div class="ws-prices"><span class="ws-pill ws-pill-full">&pound;200 Full</span><span class="ws-pill ws-pill-sum">&pound;15 Summary</span></div></div></div>
+  </div>
+  <div style="text-align:center; margin-top:2rem;"><a class="btn btn-amber reveal" href="#">View all workshops</a></div>
+</section>
+
+<!-- NEWSLETTER / SUBSTACK CTA
+     WHY FULL RED BACKGROUND: This is the biggest visual "stop" on the page. After
+     all the soft neutrals, a full-bleed red section demands attention. Red = brand energy.
+     It says "this matters — don't scroll past."
+     WHY SUBSTACK NOT CUSTOM: Anna already uses Substack for Reset Letters. Embedding
+     sign-up here captures emails in both Substack AND our Strapi database (hybrid approach).
+     WHY SCHEDULE AT BOTTOM: "Sunday Reset · Wednesday Signal · Friday ESJ" sets expectations.
+     Subscribers know exactly what they're getting — builds trust and reduces unsubscribes. -->
+<section class="newsletter grain">
+  <div class="nl-inner">
+    <h2 class="reveal">Reset Letters</h2>
+    <p class="nl-sub reveal rd1">Stories, insights, and healing &mdash; delivered to your inbox</p>
+    <form class="nl-form reveal rd2" onsubmit="return false;">
+      <input type="email" class="nl-input" placeholder="Your email address">
+      <button class="nl-btn">Subscribe</button>
+    </form>
+    <p class="nl-schedule reveal rd3">Sunday Reset &middot; Wednesday Signal &middot; Friday ESJ</p>
+  </div>
+</section>
+
+<!-- FOOTER
+     WHY BRAND BLACK: Mirrors the hero — dark bookends frame the entire page.
+     WHY 4 COLUMNS (brand + 3 link groups): First column is brand identity (logo + tagline),
+     the other three organise all 8 nav sections into logical groups:
+     Explore (content/services), Connect (community/about), Follow (external platforms).
+     WHY GARAMOND FOR LINKS: Footer links in serif feel editorial, matching the site's tone.
+     Gold hover colour = warmth, luxury on the dark background. -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="#">Blog</a><a href="#">Coaching</a><a href="#">Shop</a><a href="#">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="#">Community</a><a href="#">About</a><a href="#">Contact</a><a href="#">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Particles
+  const pc = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const s = Math.random() * 3 + 1;
+    const colors = ['rgba(255,208,122,0.15)', 'rgba(238,49,47,0.1)', 'rgba(242,128,170,0.1)', 'rgba(93,202,165,0.1)'];
+    p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*18+12}s;animation-delay:${Math.random()*12}s;`;
+    pc.appendChild(p);
+  }
+
+  // Light streaks
+  const sc = document.getElementById('streaks');
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('div');
+    s.className = 'streak';
+    s.style.cssText = `top:${15+Math.random()*70}%;width:${200+Math.random()*400}px;animation-duration:${8+Math.random()*12}s;animation-delay:${Math.random()*8}s;`;
+    sc.appendChild(s);
+  }
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coupons",
+  "info": {
+    "singularName": "coupon",
+    "pluralName": "coupons",
+    "displayName": "Coupons & Discounts"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "code": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["percentage", "fixed_amount", "free_shipping"],
+      "required": true
+    },
+    "value": {
+      "type": "decimal",
+      "required": true
+    },
+    "min_order_amount": {
+      "type": "decimal",
+      "default": 0
+    },
+    "max_uses": {
+      "type": "integer",
+      "default": 0
+    },
+    "times_used": {
+      "type": "integer",
+      "default": 0
+    },
+    "starts_at": {
+      "type": "datetime"
+    },
+    "expires_at": {
+      "type": "datetime"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "applicable_products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product"
+    },
+    "applicable_categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product-category.product-category"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "carts",
+  "info": {
+    "singularName": "cart",
+    "pluralName": "carts",
+    "displayName": "Carts"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "session_id": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "customer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::customer.customer"
+    },
+    "items": {
+      "type": "json",
+      "default": []
+    },
+    "coupon_code": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "last_active": {
+      "type": "datetime"
+    },
+    "is_converted": {
+      "type": "boolean",
+      "default": false
+    },
+    "recovery_email_sent": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

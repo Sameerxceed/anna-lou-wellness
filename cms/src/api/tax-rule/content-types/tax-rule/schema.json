@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tax_rules",
+  "info": {
+    "singularName": "tax-rule",
+    "pluralName": "tax-rules",
+    "displayName": "Tax Rules"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "country_code": {
+      "type": "string",
+      "required": true
+    },
+    "region": {
+      "type": "string"
+    },
+    "rate": {
+      "type": "decimal",
+      "required": true
+    },
+    "is_inclusive": {
+      "type": "boolean",
+      "default": true
+    },
+    "applies_to_shipping": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Stories — Anna Lou Wellness Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--red); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); display: inline-block;
+    }
+
+    /* ═══ NAVIGATION ═══
+       WHY: Same nav as homepage for consistency. Blog page starts with scrolled state
+       since there is no cinematic hero — the nav is always visible with white background. */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 0.65rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black);
+    }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s; position: relative;
+    }
+    .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: var(--red); font-weight: 500; }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+
+    /* ═══ SECTION LABELS ═══ */
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ PAGE HERO ═══
+       WHY: Unlike the homepage cinematic hero, the blog hero is restrained and editorial.
+       A clean white band with typographic emphasis — similar to how Cup of Jo leads with
+       the publication name, not a splash image. The red accent line ties to the blog's
+       section colour. Garamond italic subtitle sets the warm editorial voice immediately. */
+    .page-hero {
+      padding: 8rem 2rem 3rem;
+      background: #fff;
+      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .page-hero-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1rem;
+    }
+    .page-hero h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      color: var(--black); line-height: 1.05; letter-spacing: 0.01em;
+      margin-bottom: 0.5rem;
+    }
+    .page-hero-line {
+      width: 50px; height: 2px; margin: 1.2rem auto;
+      background: var(--red);
+    }
+    .page-hero-subtitle {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--mid-grey); line-height: 1.7;
+      max-width: 520px; margin: 0 auto;
+    }
+
+    /* ═══ CATEGORY TABS ═══
+       WHY: Inspired by Cup of Jo's category navigation. Horizontal tabs with underline
+       active state give readers a clear way to filter content without full page reloads.
+       Red underline matches the blog section accent. Tabs sit below the hero as a
+       "second nav" — content-specific wayfinding within the blog hub. */
+    .category-tabs {
+      display: flex; justify-content: center; gap: 0;
+      background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      padding: 0 2rem;
+      position: sticky; top: 58px; z-index: 50;
+    }
+    .cat-tab {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 1rem 1.5rem;
+      border-bottom: 2px solid transparent;
+      cursor: pointer; transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .cat-tab:hover { color: var(--black); }
+    .cat-tab.active {
+      color: var(--red); font-weight: 500;
+      border-bottom-color: var(--red);
+    }
+
+    /* ═══ BLOG LAYOUT ═══
+       WHY 70/30 SPLIT: Classic editorial layout from Cup of Jo and similar blogs.
+       The main column (70%) gives articles breathing room while the sidebar (30%)
+       provides persistent CTAs — newsletter signup, editor's picks, and product
+       recommendations. This layout maximises both reading experience and conversion. */
+    .blog-layout {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 340px; gap: 3rem;
+      padding: 3rem 2rem 4rem;
+    }
+
+    /* ═══ FEATURED POST ═══
+       WHY: The lead story gets visual dominance — a large image card that signals
+       "start here." This mirrors magazine editorial layouts and Cup of Jo's featured
+       post treatment. Large Garamond title creates an emotional hook. */
+    .featured-post {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: transform 0.4s, box-shadow 0.4s;
+      margin-bottom: 2.5rem;
+    }
+    .featured-post:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.07); }
+    .featured-img {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(140deg, var(--blush), var(--soft-pink), var(--cream));
+      position: relative;
+    }
+    .featured-img::after {
+      content: 'Featured Image'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.55rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+    .featured-body { padding: 2rem 2.5rem 2.5rem; }
+    .featured-body .b-cat {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.48rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.5rem;
+    }
+    .featured-body .b-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.8rem; color: var(--black); line-height: 1.25;
+      margin-bottom: 0.6rem;
+    }
+    .featured-body .b-excerpt {
+      font-family: var(--font-editorial); font-size: 1rem;
+      color: var(--mid-grey); line-height: 1.7; margin-bottom: 0.8rem;
+      max-width: 560px;
+    }
+    .featured-body .b-meta {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.5rem; letter-spacing: 0.08em;
+      color: var(--warm-cream); text-transform: uppercase;
+    }
+
+    /* ═══ ARTICLE CARD GRID ═══
+       WHY 2-COLUMN GRID: After the single featured post, a 2-column grid provides
+       visual density and scannability — like a magazine spread. Each card has an image,
+       red category label, Garamond title, excerpt, and date. This matches the blog
+       preview cards on the homepage but with more space for the excerpt. */
+    .article-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    }
+    .article-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .article-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.07); }
+    .article-card-img {
+      width: 100%; aspect-ratio: 4/3; position: relative;
+    }
+    .article-card-img::after {
+      content: 'Photo'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.5rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(0,0,0,0.08);
+    }
+    .article-card-body { padding: 1.3rem 1.5rem 1.5rem; }
+    .article-card .b-cat {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.45rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.4rem;
+    }
+    .article-card .b-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.15rem; color: var(--black); line-height: 1.3;
+      margin-bottom: 0.4rem;
+    }
+    .article-card .b-excerpt {
+      font-family: var(--font-editorial); font-size: 0.85rem;
+      color: var(--mid-grey); line-height: 1.6; margin-bottom: 0.6rem;
+    }
+    .article-card .b-meta {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.48rem; letter-spacing: 0.08em;
+      color: var(--warm-cream); text-transform: uppercase;
+    }
+
+    /* Image placeholder colour variations */
+    .img-blush { background: linear-gradient(140deg, var(--blush), #f5d0d2); }
+    .img-cream { background: linear-gradient(140deg, var(--cream), #efe6d5); }
+    .img-lavender { background: linear-gradient(140deg, var(--lavender), #dddff0); }
+    .img-mint { background: linear-gradient(140deg, var(--mint), #d0ede3); }
+    .img-soft-pink { background: linear-gradient(140deg, var(--soft-pink), #f5d8e5); }
+    .img-warm { background: linear-gradient(140deg, #e8ddd0, #d4c5b3); }
+    .img-gold { background: linear-gradient(140deg, var(--gold), var(--cream)); }
+    .img-blue { background: linear-gradient(140deg, #c8ddef, #a8c8e0); }
+
+    /* ═══ AD / PARTNER PLACEMENT ═══
+       WHY: After every 6 posts, a subtle grey box labelled "Partner" provides
+       a monetisation placeholder. It's muted and clearly labelled so it doesn't
+       disrupt the editorial flow — similar to how Cup of Jo handles sponsored content. */
+    .partner-block {
+      grid-column: 1 / -1;
+      background: rgba(0,0,0,0.02);
+      border: 1px dashed rgba(0,0,0,0.06);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .partner-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.45rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--warm-cream); margin-bottom: 0.5rem;
+    }
+    .partner-title {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1rem; color: var(--mid-grey);
+    }
+
+    /* ═══ SIDEBAR ═══
+       WHY: The sidebar provides persistent conversion opportunities without
+       interrupting the main content flow. Three key elements:
+       1. Newsletter signup (red bg = high visibility, matches brand energy)
+       2. Editor's Picks (engagement — keeps readers on site)
+       3. Friday ESJ Drop (commerce — links content to product)
+       This mirrors mindbodygreen's sidebar strategy. */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* Newsletter Signup */
+    .sidebar-newsletter {
+      background: var(--red); border-radius: 12px; padding: 2rem 1.5rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .sidebar-newsletter::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.06), transparent 50%, rgba(0,0,0,0.08));
+    }
+    .sidebar-newsletter > * { position: relative; z-index: 1; }
+    .sidebar-newsletter h3 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1.3rem; color: #fff; margin-bottom: 0.4rem;
+    }
+    .sidebar-newsletter p {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.88rem; color: rgba(255,255,255,0.6); margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+    .sidebar-newsletter input {
+      width: 100%; padding: 0.7rem 1rem;
+      font-family: var(--font-ui); font-size: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      background: rgba(255,255,255,0.08); color: #fff; outline: none;
+      margin-bottom: 0.6rem;
+    }
+    .sidebar-newsletter input::placeholder { color: rgba(255,255,255,0.3); }
+    .sidebar-newsletter input:focus { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); }
+    .sidebar-newsletter button {
+      width: 100%; padding: 0.7rem;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: #fff; color: var(--red); border: none;
+      border-radius: 50px; cursor: pointer; transition: all 0.3s;
+    }
+    .sidebar-newsletter button:hover { background: var(--black); color: #fff; }
+    .sidebar-newsletter .nl-schedule {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-top: 0.8rem;
+    }
+
+    /* Editor's Picks */
+    .sidebar-picks {
+      background: #fff; border-radius: 12px; padding: 1.5rem;
+    }
+    .sidebar-picks h3 {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .pick-item {
+      display: flex; gap: 0.8rem; align-items: center;
+      padding: 0.6rem 0; cursor: pointer;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      transition: all 0.3s;
+    }
+    .pick-item:last-child { border-bottom: none; }
+    .pick-item:hover { padding-left: 0.3rem; }
+    .pick-thumb {
+      width: 56px; height: 56px; border-radius: 8px; flex-shrink: 0;
+    }
+    .pick-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 0.92rem; color: var(--black); line-height: 1.3;
+    }
+
+    /* Friday ESJ Product Card */
+    .sidebar-esj {
+      background: #fff; border-radius: 12px; padding: 1.5rem;
+      text-align: center; cursor: pointer;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .sidebar-esj:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+    .sidebar-esj-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.48rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.8rem;
+    }
+    .sidebar-esj-img {
+      width: 100%; aspect-ratio: 1; border-radius: 8px;
+      background: linear-gradient(180deg, #eae5dd, #ddd5ca);
+      margin-bottom: 0.8rem; position: relative;
+    }
+    .esj-badge {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.45rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      background: var(--gold); color: var(--black);
+      padding: 0.2rem 0.55rem; border-radius: 20px;
+    }
+    .sidebar-esj-name {
+      font-family: var(--font-editorial); font-size: 1rem;
+      color: var(--black); margin-bottom: 0.2rem;
+    }
+    .sidebar-esj-price {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.82rem; color: var(--dark-grey); margin-bottom: 0.8rem;
+    }
+
+    /* ═══ PAGINATION ═══
+       WHY: Simple "Older posts" link rather than numbered pagination — this is editorial,
+       not e-commerce. Cup of Jo uses a similar approach. It encourages linear reading. */
+    .pagination {
+      padding: 2rem 0; text-align: center;
+      border-top: 1px solid rgba(0,0,0,0.04);
+      margin-top: 2rem;
+    }
+    .pagination a {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s;
+    }
+    .pagination a:hover { color: var(--red); }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 960px) {
+      .blog-layout { grid-template-columns: 1fr; }
+      .sidebar { order: -1; }
+      .article-grid { grid-template-columns: 1fr; }
+      .category-tabs { overflow-x: auto; justify-content: flex-start; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .nav-center, .nav-right { display: none; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!--
+  ════════════════════════════════════════════════════════════════
+  DESIGN RATIONALE — Blog Hub (Reset Stories)
+  ════════════════════════════════════════════════════════════════
+
+  WHY THIS LAYOUT:
+  Inspired by Cup of Jo's editorial simplicity. The blog hub prioritises reading
+  and browsing over visual spectacle. Unlike the homepage's cinematic approach,
+  the blog page is restrained and content-first — clean typography, generous
+  whitespace, and a classic 70/30 content-sidebar split.
+
+  WHY 70/30 SPLIT (not full-width):
+  A sidebar creates persistent conversion opportunities (newsletter, product,
+  picks) without interrupting the reading flow. Cup of Jo and mindbodygreen
+  both use this pattern successfully. The sidebar stays in view as users scroll
+  through articles, providing ongoing CTAs.
+
+  WHY RED ACCENT THROUGHOUT:
+  Red is the blog's section colour (established on the homepage). Red category
+  labels, active tab underlines, and the newsletter box all reinforce this
+  colour-coded wayfinding system. Users subconsciously know they're in the
+  "stories" part of the site.
+
+  WHY FEATURED POST + GRID:
+  The lead story gets a large image and prominent title (like a magazine cover
+  story), then the grid below shows secondary content at a glance. This creates
+  a clear content hierarchy: one hero article, many supporting articles.
+
+  WHY CATEGORY TABS (not dropdowns):
+  Horizontal tabs are immediately visible and scannable. They match Cup of Jo's
+  category navigation pattern. The sticky positioning means they stay accessible
+  as users scroll deep into the article list.
+
+  WHY PARTNER PLACEMENT:
+  Anna's site needs monetisation pathways. A clearly labelled, subtly styled
+  "Partner" block every 6 posts provides ad revenue potential without degrading
+  the editorial experience. It's honest and unobtrusive.
+  ════════════════════════════════════════════════════════════════
+-->
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="index.html#coaching" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="lifestyle.html">Lifestyle</a></li>
+      <li><a href="#">Workshops</a></li>
+      <li><a href="#">Coaching</a></li>
+      <li><a href="#">Shop</a></li>
+      <li><a href="#">Media</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO
+     WHY MINIMAL: The blog hero doesn't compete with content. A clean typographic
+     header with red accent line establishes the section identity without taking
+     up excessive viewport space. Garamond italic subtitle sets the emotional tone. -->
+<section class="page-hero">
+  <p class="page-hero-label reveal">Anna Lou Wellness</p>
+  <h1 class="reveal rd1">Reset Stories</h1>
+  <div class="page-hero-line reveal rd2"></div>
+  <p class="page-hero-subtitle reveal rd3">Real transformation, lifestyle, and the journey from holding everything to letting go</p>
+</section>
+
+<!-- CATEGORY TABS
+     WHY STICKY: As users scroll through articles, they can always switch categories.
+     The underline active state in red matches the section accent colour. -->
+<div class="category-tabs">
+  <span class="cat-tab active">All</span>
+  <span class="cat-tab">Reset Stories</span>
+  <span class="cat-tab">Style, Design &amp; Food</span>
+  <span class="cat-tab">Relationships &amp; Travel</span>
+</div>
+
+<!-- MAIN BLOG LAYOUT: 70% content + 30% sidebar -->
+<div class="blog-layout">
+  <!-- ═══ LEFT COLUMN: Articles ═══ -->
+  <main>
+    <!-- FEATURED POST
+         WHY LARGE FORMAT: The lead article gets hero treatment — large image,
+         prominent title, full excerpt. This tells readers "start here" and creates
+         a visual anchor at the top of the feed. -->
+    <article class="featured-post reveal">
+      <div class="featured-img"></div>
+      <div class="featured-body">
+        <p class="b-cat">Reset Stories</p>
+        <h2 class="b-title">You&rsquo;re holding everything and nobody sees it</h2>
+        <p class="b-excerpt">The strong one. The one who keeps going. But what happens when your body starts keeping score? This is the story I hear most often &mdash; from women who look like they have it all together but are quietly unravelling inside.</p>
+        <p class="b-meta">April 2, 2026 &middot; 6 min read</p>
+      </div>
+    </article>
+
+    <!-- ARTICLE GRID -->
+    <div class="article-grid">
+
+      <!-- Card 1 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-cream"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Reset Stories</p>
+          <h3 class="b-title">Signal vs Noise &mdash; what your body is telling you</h3>
+          <p class="b-excerpt">Your nervous system already knows. Here&rsquo;s how to listen to the signal underneath all the noise.</p>
+          <p class="b-meta">March 28, 2026 &middot; 5 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="article-card reveal rd1">
+        <div class="article-card-img img-lavender"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Style, Design &amp; Food</p>
+          <h3 class="b-title">My beauty uniform &mdash; the five products I actually use</h3>
+          <p class="b-excerpt">Simplifying your routine is the first act of self-care. These are the five things that stayed.</p>
+          <p class="b-meta">March 22, 2026 &middot; 4 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-soft-pink"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Reset Stories</p>
+          <h3 class="b-title">The strong one</h3>
+          <p class="b-excerpt">She never cries. She manages everything. She&rsquo;s fine. Until one Tuesday morning, she isn&rsquo;t.</p>
+          <p class="b-meta">March 16, 2026 &middot; 7 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="article-card reveal rd1">
+        <div class="article-card-img img-mint"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Relationships &amp; Travel</p>
+          <h3 class="b-title">Houseboat life &mdash; what water teaches you about letting go</h3>
+          <p class="b-excerpt">Living on the canal changed how I think about permanence, control, and what it means to be home.</p>
+          <p class="b-meta">March 10, 2026 &middot; 8 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-warm"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Reset Stories</p>
+          <h3 class="b-title">The reset that started in a car park</h3>
+          <p class="b-excerpt">I was sitting in my car, engine off, staring at nothing. That was the moment everything shifted.</p>
+          <p class="b-meta">March 4, 2026 &middot; 5 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="article-card reveal rd1">
+        <div class="article-card-img img-gold"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Style, Design &amp; Food</p>
+          <h3 class="b-title">The kitchen as sanctuary &mdash; cooking to come home</h3>
+          <p class="b-excerpt">When everything feels chaotic, the simplest meal becomes medicine. Three recipes I turn to.</p>
+          <p class="b-meta">February 26, 2026 &middot; 6 min read</p>
+        </div>
+      </article>
+
+      <!-- PARTNER PLACEMENT
+           WHY HERE: After 6 articles, a subtle grey box breaks up the feed and
+           provides a monetisation slot. Clearly labelled "Partner" for editorial
+           transparency. Dashed border and muted styling ensure it doesn't
+           masquerade as editorial content. -->
+      <div class="partner-block reveal">
+        <p class="partner-label">Partner</p>
+        <p class="partner-title">Ad placement &mdash; curated brands aligned with Anna Lou Wellness values</p>
+      </div>
+
+      <!-- Card 7 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-blue"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Relationships &amp; Travel</p>
+          <h3 class="b-title">What I wish I&rsquo;d known before dating again</h3>
+          <p class="b-excerpt">After divorce, the dating world feels alien. But your nervous system has the map if you know how to read it.</p>
+          <p class="b-meta">February 18, 2026 &middot; 6 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 8 -->
+      <article class="article-card reveal rd1">
+        <div class="article-card-img img-blush"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Reset Stories</p>
+          <h3 class="b-title">Permission to put it down</h3>
+          <p class="b-excerpt">You don&rsquo;t need to carry everything. This is your permission slip to stop performing strength.</p>
+          <p class="b-meta">February 12, 2026 &middot; 4 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 9 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-lavender"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Reset Stories</p>
+          <h3 class="b-title">When your body keeps score</h3>
+          <p class="b-excerpt">Somatic work taught me that the body remembers what the mind tries to forget. Here&rsquo;s what happened when I listened.</p>
+          <p class="b-meta">February 4, 2026 &middot; 7 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 10 -->
+      <article class="article-card reveal rd1">
+        <div class="article-card-img img-cream"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Style, Design &amp; Food</p>
+          <h3 class="b-title">A slower morning &mdash; my winter ritual</h3>
+          <p class="b-excerpt">No phone until 9am. Hot water with lemon. Journaling. The smallest changes made the biggest difference.</p>
+          <p class="b-meta">January 28, 2026 &middot; 3 min read</p>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination reveal">
+      <a href="#">Older posts &rarr;</a>
+    </div>
+  </main>
+
+  <!-- ═══ RIGHT SIDEBAR ═══ -->
+  <aside class="sidebar">
+
+    <!-- NEWSLETTER SIGNUP
+         WHY RED BACKGROUND: Matches the blog section colour and creates a strong
+         visual anchor in the sidebar. White text on red = high contrast, high
+         visibility. This is the primary conversion CTA for the blog. -->
+    <div class="sidebar-newsletter reveal">
+      <h3>Reset Letters</h3>
+      <p>Stories, insights, and healing &mdash; delivered to your inbox</p>
+      <form onsubmit="return false;">
+        <input type="email" placeholder="Your email address">
+        <button>Subscribe</button>
+      </form>
+      <p class="nl-schedule">Sunday Reset &middot; Wednesday Signal &middot; Friday ESJ</p>
+    </div>
+
+    <!-- EDITOR'S PICKS
+         WHY: Keeps readers engaged by surfacing curated content. Small thumbnail +
+         title format is compact and scannable. This pattern is proven on editorial
+         sites to increase pages-per-session. -->
+    <div class="sidebar-picks reveal rd1">
+      <h3>Editor&rsquo;s Picks</h3>
+      <div class="pick-item">
+        <div class="pick-thumb img-blush"></div>
+        <p class="pick-title">The strong one</p>
+      </div>
+      <div class="pick-item">
+        <div class="pick-thumb img-warm"></div>
+        <p class="pick-title">Signal vs Noise</p>
+      </div>
+      <div class="pick-item">
+        <div class="pick-thumb img-mint"></div>
+        <p class="pick-title">Houseboat life</p>
+      </div>
+    </div>
+
+    <!-- FRIDAY ESJ DROP
+         WHY: Bridges content and commerce. The blog sidebar is a natural place to
+         surface the weekly jewellery drop — readers who engage with stories are
+         primed for emotional purchases. Gold badge matches the shop section colour. -->
+    <div class="sidebar-esj reveal rd2">
+      <p class="sidebar-esj-label">Friday ESJ Drop</p>
+      <div class="sidebar-esj-img">
+        <span class="esj-badge">This Week</span>
+      </div>
+      <p class="sidebar-esj-name">Moonstone Pendant</p>
+      <p class="sidebar-esj-price">&pound;48.00</p>
+      <a class="btn btn-outline" href="#" style="font-size:0.55rem;padding:0.6rem 1.3rem;">Shop Now</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="blog.html">Blog</a><a href="#">Coaching</a><a href="#">Shop</a><a href="#">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="#">Community</a><a href="#">About</a><a href="#">Contact</a><a href="#">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Category tab switching
+  document.querySelectorAll('.cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

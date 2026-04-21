@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coaching — Anna Lou Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* GRAIN TEXTURE */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* LAUNCH BANNER */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--red); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); flex-shrink: 0; display: inline-block;
+    }
+
+    /* NAVIGATION */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black); transition: color 0.4s;
+    }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s; position: relative;
+    }
+    .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: var(--blue); }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* BUTTONS */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+    .btn-red-lg {
+      background: var(--red); color: #fff; border-color: var(--red);
+      padding: 1.1rem 2.8rem; font-size: 0.72rem; letter-spacing: 0.16em;
+    }
+    .btn-red-lg:hover { background: #d42a28; border-color: #d42a28; box-shadow: 0 8px 30px rgba(238,49,47,0.25); }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-outline-light { color: rgba(245,243,239,0.6); border-color: rgba(245,243,239,0.15); }
+    .btn-outline-light:hover { color: #fff; border-color: rgba(245,243,239,0.4); background: rgba(245,243,239,0.05); }
+
+    /* SECTIONS */
+    .section { padding: 6rem 2rem; position: relative; }
+    .section-narrow { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+    .section-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      color: var(--black); line-height: 1.15; letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
+    }
+    .section-body {
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 1.05rem; line-height: 1.85; color: var(--dark-grey);
+      max-width: 500px;
+    }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+    .rd5 { transition-delay: 0.40s; }
+
+    /* ═══ COACHING HERO ═══ */
+    .coaching-hero {
+      background: var(--lavender);
+      padding: 10rem 2rem 5rem;
+      text-align: center;
+      position: relative;
+      min-height: 70vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .coaching-hero-content { max-width: 700px; }
+    .coaching-hero h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      color: var(--black); line-height: 1.05;
+      margin-bottom: 1.2rem;
+      opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+    }
+    .coaching-hero .subtitle {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+      color: var(--dark-grey); line-height: 1.7;
+      max-width: 520px; margin: 0 auto 2.5rem;
+      opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+    .coaching-hero .quiz-cta {
+      opacity: 0; animation: fadeUp 0.8s ease 0.9s forwards;
+      margin-bottom: 2rem;
+    }
+    .coaching-hero .explore-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--mid-grey);
+      opacity: 0; animation: fadeUp 0.6s ease 1.2s forwards;
+    }
+    .coaching-hero .explore-label::before,
+    .coaching-hero .explore-label::after {
+      content: ''; display: inline-block; width: 30px; height: 1px;
+      background: var(--warm-cream); vertical-align: middle; margin: 0 0.8rem;
+    }
+
+    /* ═══ COACHING CATEGORIES GRID ═══ */
+    .categories { background: var(--lavender); padding: 2rem 2rem 6rem; }
+    .categories-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .cat-card {
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(8px);
+      border-radius: 12px; padding: 2rem 1.2rem; text-align: center;
+      cursor: pointer; transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+      border: 1px solid rgba(255,255,255,0.6); position: relative; overflow: hidden;
+    }
+    .cat-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: var(--blue); transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); transform-origin: center;
+    }
+    .cat-card:hover::after { transform: scaleX(1); }
+    .cat-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(0,0,0,0.08); background: #fff; }
+    .cat-card-icon {
+      width: 56px; height: 56px; margin: 0 auto 1rem;
+      background: rgba(123,175,221,0.08); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s;
+    }
+    .cat-card-icon svg { width: 28px; height: 28px; }
+    .cat-card:hover .cat-card-icon { background: rgba(123,175,221,0.15); }
+    .cat-card h3 {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: 0.85rem; letter-spacing: 0.02em; color: var(--black); margin-bottom: 0.5rem;
+    }
+    .cat-card p {
+      font-family: var(--font-editorial); font-size: 0.82rem;
+      color: var(--mid-grey); line-height: 1.5; margin-bottom: 0.8rem;
+    }
+    .cat-card .learn-more {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.52rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue);
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      transition: gap 0.3s, color 0.3s;
+    }
+    .cat-card:hover .learn-more { gap: 0.6rem; color: var(--black); }
+
+    /* ═══ HOW IT WORKS ═══ */
+    .how-it-works { background: #fff; }
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;
+      max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .step-num {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 4.5rem; color: rgba(123,175,221,0.15);
+      line-height: 1; margin-bottom: 0.8rem;
+    }
+    .step-title {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: 0.95rem; color: var(--black); margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+    .step-desc {
+      font-family: var(--font-editorial); font-size: 0.92rem;
+      color: var(--mid-grey); line-height: 1.6;
+    }
+    .step-connector {
+      display: none; /* visible on wider screens via pseudo-elements */
+    }
+
+    /* ═══ TESTIMONIALS ═══ */
+    .testi {
+      background: var(--black); padding: 7rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .testi-glow {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, rgba(123,175,221,0.07), transparent 70%);
+      animation: glowDrift 10s ease-in-out infinite alternate;
+    }
+    .testi-glow-1 { width: 500px; height: 500px; top: 20%; left: 10%; }
+    .testi-glow-2 { width: 350px; height: 350px; bottom: 10%; right: 15%; background: radial-gradient(circle, rgba(255,208,122,0.05), transparent 70%); animation-direction: alternate-reverse; animation-duration: 12s; }
+    @keyframes glowDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -20px) scale(1.15); }
+    }
+    .testi-inner {
+      position: relative; z-index: 2; max-width: 900px; margin: 0 auto;
+    }
+    .testi-carousel {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem;
+    }
+    .testi-card { text-align: center; }
+    .testi-mark {
+      font-family: var(--font-editorial); font-size: 3.5rem; line-height: 0.8;
+      color: rgba(123,175,221,0.2); margin-bottom: 0.5rem;
+    }
+    .testi-quote {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1.05rem;
+      color: rgba(245,243,239,0.65); line-height: 1.7;
+      margin-bottom: 1.2rem;
+    }
+    .testi-author {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* ═══ PROGRAMMES ═══ */
+    .programmes { background: var(--warm-neutral); }
+    .prog-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      max-width: 900px; margin: 0 auto;
+    }
+    .prog-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .prog-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
+    .prog-img {
+      width: 100%; aspect-ratio: 16/9; position: relative;
+    }
+    .prog-card:nth-child(1) .prog-img {
+      background: linear-gradient(135deg, rgba(123,175,221,0.2), var(--lavender), rgba(233,235,246,0.8));
+    }
+    .prog-card:nth-child(2) .prog-img {
+      background: linear-gradient(135deg, rgba(238,49,47,0.08), var(--blush), rgba(252,232,239,0.6));
+    }
+    .prog-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.45rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--blue); color: #fff;
+      padding: 0.25rem 0.6rem; border-radius: 20px;
+    }
+    .prog-body { padding: 1.8rem; }
+    .prog-label {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.5rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 0.4rem;
+    }
+    .prog-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.35rem; color: var(--black); margin-bottom: 0.5rem; line-height: 1.3;
+    }
+    .prog-desc {
+      font-family: var(--font-editorial); font-size: 0.9rem;
+      color: var(--mid-grey); line-height: 1.6; margin-bottom: 1.2rem;
+    }
+    .prog-meta {
+      display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+    }
+    .prog-price {
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.82rem;
+      color: var(--black);
+    }
+    .prog-detail {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.5rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--mid-grey);
+    }
+
+    /* ═══ CTA BANNER ═══ */
+    .cta-banner {
+      background: var(--blue); padding: 5rem 2rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.04), transparent 50%, rgba(0,0,0,0.06));
+    }
+    .cta-banner-inner { position: relative; z-index: 1; }
+    .cta-banner h2 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #fff; letter-spacing: 0.03em; margin-bottom: 0.6rem;
+    }
+    .cta-banner .cta-sub {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1.05rem; color: rgba(255,255,255,0.6); margin-bottom: 2rem;
+    }
+    .cta-banner .btn-white {
+      background: #fff; color: var(--black); border-color: #fff;
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s; display: inline-block;
+    }
+    .cta-banner .btn-white:hover { background: var(--black); color: #fff; border-color: var(--black); }
+    .cta-banner .cta-note {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); margin-top: 1rem;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .testi-carousel { grid-template-columns: 1fr; gap: 2rem; }
+      .prog-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .categories-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner" id="launchBanner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="#" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="#">Workshops</a></li>
+      <li><a href="coaching.html" class="active">Coaching</a></li>
+      <li><a href="#">Shop</a></li>
+      <li><a href="#">Media</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="coaching-hero">
+  <div class="coaching-hero-content">
+    <h1>Find your path back</h1>
+    <p class="subtitle">Every journey is different. Take the quiz to discover which coaching is right for you.</p>
+    <div class="quiz-cta">
+      <a href="#" class="btn btn-red-lg">Take the Quiz &mdash; 2 minutes</a>
+    </div>
+    <p class="explore-label">Or explore all coaching</p>
+  </div>
+</section>
+
+<!-- COACHING CATEGORIES -->
+<section class="categories">
+  <div class="categories-grid">
+    <!-- Trauma Release -->
+    <div class="cat-card reveal">
+      <div class="cat-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M16 6c0 0-6 4-6 10s6 10 6 10"/><path d="M16 6c0 0 6 4 6 10s-6 10-6 10"/><path d="M10 16h12"/><circle cx="16" cy="6" r="1.5"/></svg></div>
+      <h3>Trauma Release</h3>
+      <p>TRE, Flash EMDR, Brainspotting &amp; IFS for deep somatic healing</p>
+      <a href="coaching-trauma.html" class="learn-more">Learn more <span>&rarr;</span></a>
+    </div>
+    <!-- Dating -->
+    <div class="cat-card reveal rd1">
+      <div class="cat-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><circle cx="13" cy="16" r="6"/><circle cx="19" cy="16" r="6"/><path d="M16 12v8" opacity="0.4"/></svg></div>
+      <h3>Dating</h3>
+      <p>Post-divorce clarity, attachment patterns &amp; dating with intention</p>
+      <span class="learn-more">Learn more <span>&rarr;</span></span>
+    </div>
+    <!-- Spiritual -->
+    <div class="cat-card reveal rd2">
+      <div class="cat-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M6 16s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="16" cy="16" r="3"/><circle cx="16" cy="16" r="1" fill="var(--blue)"/></svg></div>
+      <h3>Spiritual</h3>
+      <p>Energy alignment, intuition decoding &amp; spiritual reconnection</p>
+      <span class="learn-more">Learn more <span>&rarr;</span></span>
+    </div>
+    <!-- Heart-Led Business -->
+    <div class="cat-card reveal rd3">
+      <div class="cat-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><circle cx="16" cy="16" r="9"/><path d="M16 7v3M16 22v3M7 16h3M22 16h3"/><path d="M16 12l-3 4 3 3 3-3z"/></svg></div>
+      <h3>Heart-Led Business</h3>
+      <p>Founder reset, Signal Method&trade; &amp; purpose-driven growth</p>
+      <span class="learn-more">Learn more <span>&rarr;</span></span>
+    </div>
+    <!-- Health -->
+    <div class="cat-card reveal rd4">
+      <div class="cat-card-icon"><svg viewBox="0 0 32 32" fill="none" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"><path d="M4 16h5l3-6 4 12 4-8 3 4h5"/><circle cx="16" cy="16" r="9" opacity="0.15"/></svg></div>
+      <h3>Health</h3>
+      <p>Nervous system regulation, breathwork &amp; somatic practices</p>
+      <span class="learn-more">Learn more <span>&rarr;</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-it-works">
+  <div class="section-narrow" style="text-align:center; margin-bottom:3.5rem;">
+    <p class="section-label reveal" style="color:var(--blue);">How it works</p>
+    <h2 class="section-heading reveal rd1">Three simple steps</h2>
+  </div>
+  <div class="steps-grid">
+    <div class="reveal">
+      <div class="step-num">01</div>
+      <h3 class="step-title">Take the quiz or choose a category</h3>
+      <p class="step-desc">Not sure where to start? Our 2-minute quiz will match you with the right coaching path. Or browse the categories above and follow your instinct.</p>
+    </div>
+    <div class="reveal rd1">
+      <div class="step-num">02</div>
+      <h3 class="step-title">Book a free discovery call</h3>
+      <p class="step-desc">A 15-minute conversation with Anna to understand where you are, what you need, and whether this is the right fit. No pressure, no commitment.</p>
+    </div>
+    <div class="reveal rd2">
+      <div class="step-num">03</div>
+      <h3 class="step-title">Begin your reset</h3>
+      <p class="step-desc">Start your coaching journey with a personalised plan built around your goals, your timeline, and the modalities that will serve you best.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi grain">
+  <div class="testi-glow testi-glow-1"></div>
+  <div class="testi-glow testi-glow-2"></div>
+  <div class="testi-inner">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <p class="section-label reveal" style="color:rgba(123,175,221,0.5);">Client stories</p>
+    </div>
+    <div class="testi-carousel">
+      <div class="testi-card reveal">
+        <div class="testi-mark">&ldquo;</div>
+        <blockquote class="testi-quote">Anna helped me come back to myself when I didn&rsquo;t know who I was anymore. The somatic work unlocked something I&rsquo;d been carrying for years.</blockquote>
+        <p class="testi-author">Sarah M. &mdash; London</p>
+      </div>
+      <div class="testi-card reveal rd1">
+        <div class="testi-mark">&ldquo;</div>
+        <blockquote class="testi-quote">I came for the trauma release and stayed for the transformation. Three months in and my relationships, my body, my whole life feels different.</blockquote>
+        <p class="testi-author">Rachel T. &mdash; Brighton</p>
+      </div>
+      <div class="testi-card reveal rd2">
+        <div class="testi-mark">&ldquo;</div>
+        <blockquote class="testi-quote">The discovery call alone shifted something in me. Anna sees you&mdash;really sees you&mdash;and creates a space where you can finally stop performing strength.</blockquote>
+        <p class="testi-author">Jen K. &mdash; Manchester</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMMES & INTENSIVES -->
+<section class="section programmes">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal" style="color:var(--blue);">Programmes &amp; Intensives</p>
+    <h2 class="section-heading reveal rd1">Go deeper</h2>
+    <p class="section-body reveal rd2" style="margin:0 auto; text-align:center;">For women ready to commit to real, lasting change. Structured containers designed around your reset.</p>
+  </div>
+  <div class="prog-grid">
+    <div class="prog-card reveal">
+      <div class="prog-img">
+        <span class="prog-badge">12 Weeks</span>
+      </div>
+      <div class="prog-body">
+        <p class="prog-label">Programme</p>
+        <h3 class="prog-title">The Reset Programme</h3>
+        <p class="prog-desc">A 12-week container combining weekly 1:1 sessions, somatic practices, and integration work. For women ready to do the deep work and come out the other side transformed.</p>
+        <div class="prog-meta">
+          <span class="prog-price">From &pound;2,400</span>
+          <span class="prog-detail">12 sessions &middot; Weekly cadence &middot; Full support</span>
+        </div>
+      </div>
+    </div>
+    <div class="prog-card reveal rd1">
+      <div class="prog-img" style="background: linear-gradient(135deg, rgba(238,49,47,0.08), var(--blush), rgba(252,232,239,0.6));">
+        <span class="prog-badge" style="background:var(--red);">1 Day</span>
+      </div>
+      <div class="prog-body">
+        <p class="prog-label" style="color:var(--red);">Intensive</p>
+        <h3 class="prog-title">Intensive Day</h3>
+        <p class="prog-desc">A full day of focused, immersive coaching. We go deep, fast. Perfect for breakthroughs, pivots, and women who are ready to stop circling and start moving.</p>
+        <div class="prog-meta">
+          <span class="prog-price">From &pound;800</span>
+          <span class="prog-detail">Full day &middot; In-person or virtual &middot; Follow-up included</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner grain">
+  <div class="cta-banner-inner">
+    <h2 class="reveal">Ready to start?</h2>
+    <p class="cta-sub reveal rd1">Your reset is one conversation away.</p>
+    <div class="reveal rd2">
+      <a href="#" class="btn-white">Book a Free Discovery Call</a>
+    </div>
+    <p class="cta-note reveal rd3">15 minutes &middot; Via Calendly &middot; No commitment</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="#">Blog</a><a href="coaching.html">Coaching</a><a href="#">Shop</a><a href="#">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="#">Community</a><a href="#">About</a><a href="#">Contact</a><a href="#">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

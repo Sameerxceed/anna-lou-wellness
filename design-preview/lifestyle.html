@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lifestyle — Anna Lou Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--red); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); display: inline-block;
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 0.65rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black);
+    }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s; position: relative;
+    }
+    .nav-center a:hover { color: var(--green); }
+    .nav-center a.active { color: var(--green); font-weight: 500; }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { border-color: var(--green); color: var(--green); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-green { background: var(--green); color: #fff; border-color: var(--green); }
+    .btn-green:hover { background: #4ab892; border-color: #4ab892; }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+
+    /* ═══ SECTION LABELS ═══ */
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ PAGE HERO ═══
+       WHY: Same typographic hero pattern as the blog page but with green accent.
+       Green = lifestyle section colour, signalling growth, wellness, and renewal.
+       The Garamond italic subtitle establishes the section's scope immediately. */
+    .page-hero {
+      padding: 8rem 2rem 3rem;
+      background: #fff;
+      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .page-hero-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 1rem;
+    }
+    .page-hero h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      color: var(--black); line-height: 1.05; letter-spacing: 0.01em;
+      margin-bottom: 0.5rem;
+    }
+    .page-hero-line {
+      width: 50px; height: 2px; margin: 1.2rem auto;
+      background: var(--green);
+    }
+    .page-hero-subtitle {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--mid-grey); line-height: 1.7;
+      max-width: 520px; margin: 0 auto;
+    }
+
+    /* ═══ SUB-CATEGORY CARDS ═══
+       WHY: Unlike the blog's tab-based navigation, the lifestyle hub uses visual
+       sub-category cards. Each card represents a distinct lifestyle pillar:
+       Spiritual Hygiene, Decluttering, Educational, and Emotional Support Jewellery.
+       Cards with icons, titles, and descriptions give visitors an immediate overview
+       of what the lifestyle section covers. Background tints from the brand's pastel
+       palette create visual variety while maintaining cohesion.
+
+       WHY CARDS INSTEAD OF TABS: The lifestyle categories are more nuanced than the
+       blog's — they need descriptions, not just labels. Cards provide space for a
+       short explanation and an icon, helping visitors self-select their path. -->
+    .subcategory-section {
+      padding: 3rem 2rem;
+      background: #fff;
+    }
+    .subcategory-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem;
+    }
+    .subcat-card {
+      border-radius: 12px; padding: 2rem 1.5rem;
+      text-align: center; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+      border: 1px solid rgba(0,0,0,0.04);
+      position: relative; overflow: hidden;
+    }
+    .subcat-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: var(--green); transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); transform-origin: center;
+    }
+    .subcat-card:hover::after { transform: scaleX(1); }
+    .subcat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.06); }
+    .subcat-card:nth-child(1) { background: var(--lavender); }
+    .subcat-card:nth-child(2) { background: var(--mint); }
+    .subcat-card:nth-child(3) { background: var(--cream); }
+    .subcat-card:nth-child(4) { background: var(--soft-pink); }
+    .subcat-icon {
+      width: 52px; height: 52px; margin: 0 auto 1rem;
+      background: rgba(255,255,255,0.6); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s;
+    }
+    .subcat-icon svg { width: 28px; height: 28px; }
+    .subcat-card:hover .subcat-icon { background: rgba(255,255,255,0.9); }
+    .subcat-card h3 {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: 0.82rem; letter-spacing: 0.02em;
+      color: var(--black); margin-bottom: 0.5rem;
+    }
+    .subcat-card p {
+      font-family: var(--font-editorial); font-size: 0.82rem;
+      color: var(--dark-grey); line-height: 1.5;
+    }
+
+    /* ═══ BLOG LAYOUT ═══
+       WHY 70/30 SPLIT: Same layout pattern as the blog hub for consistency across
+       content hubs. Readers learn the layout once and navigate intuitively across
+       both sections. The sidebar content differs (crystal guide, quiz CTA) to
+       reflect the lifestyle section's specific offerings. */
+    .blog-layout {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 340px; gap: 3rem;
+      padding: 3rem 2rem 4rem;
+    }
+
+    /* ═══ ARTICLE CARD GRID ═══ */
+    .article-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    }
+    .article-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: transform 0.4s, box-shadow 0.4s;
+      position: relative;
+    }
+    .article-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.07); }
+    .article-card-img {
+      width: 100%; aspect-ratio: 4/3; position: relative;
+    }
+    .article-card-img::after {
+      content: 'Photo'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.5rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(0,0,0,0.08);
+    }
+    .article-card-body { padding: 1.3rem 1.5rem 1.5rem; }
+    .article-card .b-cat {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.45rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 0.4rem;
+    }
+    .article-card .b-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.15rem; color: var(--black); line-height: 1.3;
+      margin-bottom: 0.4rem;
+    }
+    .article-card .b-excerpt {
+      font-family: var(--font-editorial); font-size: 0.85rem;
+      color: var(--mid-grey); line-height: 1.6; margin-bottom: 0.6rem;
+    }
+    .article-card .b-meta {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.48rem; letter-spacing: 0.08em;
+      color: var(--warm-cream); text-transform: uppercase;
+    }
+
+    /* ═══ PAID CONTENT BADGE ═══
+       WHY: Some lifestyle content is premium (e.g. crystal guides, in-depth educational
+       pieces). A small gold pill badge clearly signals paid content without hiding it.
+       Gold = value/luxury, matching the shop section's colour. This is transparent
+       about the paywall while making the premium feel aspirational, not restrictive. */
+    .price-badge {
+      position: absolute; top: 0.7rem; right: 0.7rem; z-index: 1;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.45rem;
+      letter-spacing: 0.06em;
+      background: var(--gold); color: var(--black);
+      padding: 0.2rem 0.55rem; border-radius: 20px;
+    }
+
+    /* Image placeholder colour variations */
+    .img-blush { background: linear-gradient(140deg, var(--blush), #f5d0d2); }
+    .img-cream { background: linear-gradient(140deg, var(--cream), #efe6d5); }
+    .img-lavender { background: linear-gradient(140deg, var(--lavender), #dddff0); }
+    .img-mint { background: linear-gradient(140deg, var(--mint), #d0ede3); }
+    .img-soft-pink { background: linear-gradient(140deg, var(--soft-pink), #f5d8e5); }
+    .img-warm { background: linear-gradient(140deg, #e8ddd0, #d4c5b3); }
+    .img-gold { background: linear-gradient(140deg, var(--gold), var(--cream)); }
+    .img-green { background: linear-gradient(140deg, #b8e6d4, #93d4bc); }
+
+    /* ═══ SIDEBAR ═══ */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* Crystal Guide Product Card
+       WHY: The lifestyle section's primary product tie-in. A crystal guide is directly
+       relevant to readers exploring spiritual hygiene and emotional support content.
+       The gold price badge signals premium content. Placing it high in the sidebar
+       ensures visibility. */
+    .sidebar-product {
+      background: #fff; border-radius: 12px; padding: 1.5rem;
+      text-align: center; cursor: pointer;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .sidebar-product:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+    .sidebar-product-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.48rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.8rem;
+    }
+    .sidebar-product-img {
+      width: 100%; aspect-ratio: 3/4; border-radius: 8px;
+      background: linear-gradient(180deg, #e5e0d8, #d8d1c7);
+      margin-bottom: 1rem; position: relative;
+    }
+    .sidebar-product-badge {
+      position: absolute; top: 0.6rem; right: 0.6rem;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.5rem;
+      letter-spacing: 0.06em;
+      background: var(--gold); color: var(--black);
+      padding: 0.25rem 0.65rem; border-radius: 20px;
+    }
+    .sidebar-product-name {
+      font-family: var(--font-editorial); font-size: 1.1rem;
+      color: var(--black); margin-bottom: 0.3rem;
+    }
+    .sidebar-product-price {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.88rem; color: var(--dark-grey); margin-bottom: 1rem;
+    }
+
+    /* Nervous System Quiz CTA
+       WHY: The lifestyle section attracts visitors exploring personal growth topics.
+       A quiz CTA bridges content consumption to coaching conversion — "curious about
+       your nervous system? Take the quiz" leads naturally to booking a session.
+       Green background matches the section colour. -->
+    .sidebar-quiz {
+      background: var(--green); border-radius: 12px; padding: 2rem 1.5rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .sidebar-quiz::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.04), transparent 50%, rgba(0,0,0,0.06));
+    }
+    .sidebar-quiz > * { position: relative; z-index: 1; }
+    .sidebar-quiz-icon {
+      width: 48px; height: 48px; margin: 0 auto 1rem;
+      background: rgba(255,255,255,0.2); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-quiz-icon svg { width: 26px; height: 26px; }
+    .sidebar-quiz h3 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1.2rem; color: #fff; margin-bottom: 0.4rem;
+    }
+    .sidebar-quiz p {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.88rem; color: rgba(255,255,255,0.7); margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+    .sidebar-quiz .quiz-btn {
+      display: inline-block; padding: 0.7rem 1.5rem;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: #fff; color: var(--green); border: none;
+      border-radius: 50px; cursor: pointer; transition: all 0.3s;
+    }
+    .sidebar-quiz .quiz-btn:hover { background: var(--black); color: #fff; }
+
+    /* Sidebar Newsletter (smaller version) */
+    .sidebar-newsletter {
+      background: #fff; border-radius: 12px; padding: 1.5rem;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .sidebar-newsletter h3 {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+    .sidebar-newsletter p {
+      font-family: var(--font-editorial); font-size: 0.85rem;
+      color: var(--dark-grey); line-height: 1.5; margin-bottom: 1rem;
+    }
+    .sidebar-newsletter input {
+      width: 100%; padding: 0.65rem 0.9rem;
+      font-family: var(--font-ui); font-size: 0.72rem;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 50px;
+      background: var(--warm-neutral); color: var(--black); outline: none;
+      margin-bottom: 0.5rem;
+    }
+    .sidebar-newsletter input::placeholder { color: var(--warm-cream); }
+    .sidebar-newsletter input:focus { border-color: var(--green); }
+    .sidebar-newsletter button {
+      width: 100%; padding: 0.65rem;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--green); color: #fff; border: none;
+      border-radius: 50px; cursor: pointer; transition: all 0.3s;
+    }
+    .sidebar-newsletter button:hover { background: #4ab892; }
+
+    /* ═══ PAGINATION ═══ */
+    .pagination {
+      padding: 2rem 0; text-align: center;
+      border-top: 1px solid rgba(0,0,0,0.04);
+      margin-top: 2rem;
+    }
+    .pagination a {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s;
+    }
+    .pagination a:hover { color: var(--green); }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 960px) {
+      .blog-layout { grid-template-columns: 1fr; }
+      .sidebar { order: -1; }
+      .article-grid { grid-template-columns: 1fr; }
+      .subcategory-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .nav-center, .nav-right { display: none; }
+      .subcategory-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!--
+  ════════════════════════════════════════════════════════════════
+  DESIGN RATIONALE — Lifestyle Hub
+  ════════════════════════════════════════════════════════════════
+
+  WHY THIS LAYOUT:
+  The Lifestyle hub mirrors the Blog hub's 70/30 split for consistency but adds
+  a sub-category card section at the top. This reflects that "lifestyle" is
+  a broader, more structured section than the blog — it covers spiritual hygiene,
+  decluttering, education, and emotional support jewellery as distinct pillars.
+
+  WHY GREEN ACCENT:
+  Green = growth, renewal, wellness. It distinguishes the lifestyle section
+  from the blog (red) while feeling naturally "wellness-coded." Users
+  subconsciously associate green with health and self-improvement content.
+
+  WHY SUB-CATEGORY CARDS (not tabs):
+  The four lifestyle pillars need more context than a tab label can provide.
+  Cards with icons and descriptions help visitors understand what each pillar
+  covers and self-select their interest. Each card uses a different pastel tint
+  from the brand palette (lavender, mint, cream, soft pink) for visual variety.
+
+  WHY PAID CONTENT BADGES:
+  Some lifestyle content is premium (crystal guides, deep-dive educational
+  pieces). The gold pill badge is honest about pricing while making premium
+  content feel aspirational — gold = luxury/value, not "paywall."
+
+  WHY QUIZ CTA IN SIDEBAR:
+  Lifestyle readers are exploring personal growth topics. A "Nervous System Quiz"
+  naturally bridges from content consumption to coaching — "learn about your
+  nervous system" becomes "work with Anna to regulate it."
+
+  WHY CRYSTAL GUIDE IN SIDEBAR:
+  The lifestyle section's most relevant product tie-in. Readers exploring spiritual
+  hygiene and crystals content are primed for the crystal guide purchase. Placing
+  it at the top of the sidebar ensures maximum visibility.
+  ════════════════════════════════════════════════════════════════
+-->
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="index.html#coaching" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV
+     WHY GREEN HOVER: The nav links hover green (not red) on the lifestyle page,
+     reinforcing the section's colour identity. The active "Lifestyle" link
+     is highlighted in green. -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="lifestyle.html" class="active">Lifestyle</a></li>
+      <li><a href="#">Workshops</a></li>
+      <li><a href="#">Coaching</a></li>
+      <li><a href="#">Shop</a></li>
+      <li><a href="#">Media</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <p class="page-hero-label reveal">Anna Lou Wellness</p>
+  <h1 class="reveal rd1">Lifestyle</h1>
+  <div class="page-hero-line reveal rd2"></div>
+  <p class="page-hero-subtitle reveal rd3">Spiritual hygiene, decluttering, education, and emotional support</p>
+</section>
+
+<!-- SUB-CATEGORY CARDS
+     WHY 4 CARDS: Each lifestyle pillar gets a visual entry point with an icon,
+     title, and description. This helps visitors navigate a broader section.
+     Pastel tint backgrounds (from the brand palette) create visual variety
+     while icons provide at-a-glance recognition.
+
+     Icon design choices:
+     - Spiritual Hygiene: radiating diamond — inner clarity, energy alignment
+     - Decluttering: open box with arrow — releasing, letting go of physical weight
+     - Educational: book with bookmark — learning, structured knowledge
+     - Emotional Support Jewellery: pendant/gem — the product line itself -->
+<section class="subcategory-section">
+  <div class="subcategory-grid">
+    <div class="subcat-card reveal">
+      <div class="subcat-icon" style="font-size:1.3rem;">&#9670;</div>
+      <h3>Spiritual Hygiene</h3>
+      <p>Energy clearing, rituals, and practices for inner alignment and daily reset</p>
+    </div>
+    <div class="subcat-card reveal rd1">
+      <div class="subcat-icon" style="font-size:1.3rem;">&#9744;</div>
+      <h3>Decluttering</h3>
+      <p>Letting go of the physical and emotional weight that no longer serves you</p>
+    </div>
+    <div class="subcat-card reveal rd2">
+      <div class="subcat-icon" style="font-size:1.3rem;">&#9733;</div>
+      <h3>Educational</h3>
+      <p>Deep-dive guides on nervous system regulation, crystals, and holistic wellness</p>
+    </div>
+    <div class="subcat-card reveal rd3">
+      <div class="subcat-icon" style="font-size:1.3rem;">&#9829;</div>
+      <h3>Emotional Support Jewellery</h3>
+      <p>Meaningful pieces designed to anchor, protect, and hold your intention</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT LAYOUT -->
+<div class="blog-layout">
+  <!-- ═══ LEFT COLUMN: Articles ═══ -->
+  <main>
+    <div class="article-grid">
+
+      <!-- Card 1 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-lavender"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Spiritual Hygiene</p>
+          <h3 class="b-title">Morning energy clearing &mdash; a 5-minute ritual</h3>
+          <p class="b-excerpt">Before the world floods in, create a boundary. This simple practice resets your energetic field.</p>
+          <p class="b-meta">March 30, 2026 &middot; 4 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 2 — PAID -->
+      <article class="article-card reveal rd1">
+        <span class="price-badge">&pound;15</span>
+        <div class="article-card-img img-green"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Educational</p>
+          <h3 class="b-title">The complete crystal guide &mdash; 40 stones explained</h3>
+          <p class="b-excerpt">Properties, uses, chakra alignments, and how to build your personal crystal practice from scratch.</p>
+          <p class="b-meta">March 24, 2026 &middot; Premium Guide</p>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-mint"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Decluttering</p>
+          <h3 class="b-title">The wardrobe edit that changed everything</h3>
+          <p class="b-excerpt">I removed 70% of my clothes. What remained was a wardrobe that actually felt like me.</p>
+          <p class="b-meta">March 18, 2026 &middot; 5 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="article-card reveal rd1">
+        <div class="article-card-img img-soft-pink"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Emotional Support Jewellery</p>
+          <h3 class="b-title">Why I wear moonstone every day</h3>
+          <p class="b-excerpt">It started as a gift to myself after a hard year. Now it&rsquo;s my anchor &mdash; here&rsquo;s why.</p>
+          <p class="b-meta">March 12, 2026 &middot; 3 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-cream"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Spiritual Hygiene</p>
+          <h3 class="b-title">Boundaries as a spiritual practice</h3>
+          <p class="b-excerpt">Saying no isn&rsquo;t selfish. It&rsquo;s the most sacred thing you can do for your energy.</p>
+          <p class="b-meta">March 6, 2026 &middot; 6 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 6 — PAID -->
+      <article class="article-card reveal rd1">
+        <span class="price-badge">&pound;15</span>
+        <div class="article-card-img img-lavender"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Educational</p>
+          <h3 class="b-title">Nervous system regulation &mdash; the complete framework</h3>
+          <p class="b-excerpt">A comprehensive guide to understanding your autonomic nervous system and how to support it daily.</p>
+          <p class="b-meta">February 28, 2026 &middot; Premium Guide</p>
+        </div>
+      </article>
+
+      <!-- Card 7 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-warm"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Decluttering</p>
+          <h3 class="b-title">Digital declutter &mdash; the phone detox protocol</h3>
+          <p class="b-excerpt">Deleting apps, unfollowing noise, and reclaiming your attention. A step-by-step reset for your digital life.</p>
+          <p class="b-meta">February 20, 2026 &middot; 5 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 8 -->
+      <article class="article-card reveal rd1">
+        <div class="article-card-img img-gold"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Emotional Support Jewellery</p>
+          <h3 class="b-title">Choosing your anchor stone &mdash; a guide</h3>
+          <p class="b-excerpt">Not every crystal is for everyone. Here&rsquo;s how to find the one that resonates with your current season.</p>
+          <p class="b-meta">February 14, 2026 &middot; 4 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 9 -->
+      <article class="article-card reveal">
+        <div class="article-card-img img-blush"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Spiritual Hygiene</p>
+          <h3 class="b-title">Full moon release ritual</h3>
+          <p class="b-excerpt">Every month, the moon invites you to let go. A simple, grounding ceremony you can do at home.</p>
+          <p class="b-meta">February 8, 2026 &middot; 4 min read</p>
+        </div>
+      </article>
+
+      <!-- Card 10 — PAID -->
+      <article class="article-card reveal rd1">
+        <span class="price-badge">&pound;15</span>
+        <div class="article-card-img img-mint"></div>
+        <div class="article-card-body">
+          <p class="b-cat">Educational</p>
+          <h3 class="b-title">Breathwork basics &mdash; five techniques for every mood</h3>
+          <p class="b-excerpt">Anxiety, energy, focus, sleep, grounding. One breath pattern for each state, with guided audio.</p>
+          <p class="b-meta">February 2, 2026 &middot; Premium Guide</p>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination reveal">
+      <a href="#">Older posts &rarr;</a>
+    </div>
+  </main>
+
+  <!-- ═══ RIGHT SIDEBAR ═══ -->
+  <aside class="sidebar">
+
+    <!-- CRYSTAL GUIDE PRODUCT
+         WHY TOP POSITION: The crystal guide is the lifestyle section's hero product.
+         Readers exploring spiritual hygiene and crystal content are primed for this
+         purchase. Gold price badge reinforces the premium/value positioning. -->
+    <div class="sidebar-product reveal">
+      <p class="sidebar-product-label">Featured Guide</p>
+      <div class="sidebar-product-img">
+        <span class="sidebar-product-badge">&pound;15</span>
+      </div>
+      <p class="sidebar-product-name">Crystal Guide</p>
+      <p class="sidebar-product-price">&pound;15.00</p>
+      <a class="btn btn-outline" href="#" style="font-size:0.55rem;padding:0.6rem 1.3rem;">Get the Guide</a>
+    </div>
+
+    <!-- NERVOUS SYSTEM QUIZ
+         WHY: Bridges lifestyle content to coaching. A quiz is low-friction and
+         educational — it gives value before asking for commitment. The result
+         naturally leads to "book a session to learn more." -->
+    <div class="sidebar-quiz reveal rd1">
+      <div class="sidebar-quiz-icon">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round">
+          <path d="M4 16h5l3-6 4 12 4-8 3 4h5"/>
+          <circle cx="16" cy="16" r="10" opacity="0.2"/>
+        </svg>
+      </div>
+      <h3>Nervous System Quiz</h3>
+      <p>Discover your regulation style and get personalised recommendations</p>
+      <a class="quiz-btn" href="#">Take the Quiz</a>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="sidebar-newsletter reveal rd2">
+      <h3>Stay Connected</h3>
+      <p>Lifestyle inspiration, crystal wisdom, and gentle prompts for your reset journey.</p>
+      <form onsubmit="return false;">
+        <input type="email" placeholder="Your email address">
+        <button>Subscribe</button>
+      </form>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="blog.html">Blog</a><a href="#">Coaching</a><a href="#">Shop</a><a href="#">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="#">Community</a><a href="#">About</a><a href="#">Contact</a><a href="#">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

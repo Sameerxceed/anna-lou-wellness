@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_sections_team_grids",
+  "info": {
+    "displayName": "Team Grid",
+    "icon": "users",
+    "description": "Team member grid with portraits and bios"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "members": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team-member.team-member"
+    }
+  }
+}

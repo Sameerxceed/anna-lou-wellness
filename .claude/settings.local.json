@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//e/Xceed/Code/Templates/**)",
+      "Read(//e/Xceed/Code/Clients/ardea-gardens/web/src/**)"
+    ]
+  }
+}

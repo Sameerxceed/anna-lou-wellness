@@ -1,0 +1,45 @@
+{
+  "collectionName": "components_sections_heroes",
+  "info": {
+    "displayName": "Hero Section",
+    "icon": "picture",
+    "description": "Full-width hero with title, image/video, and CTA"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "video": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["videos"]
+    },
+    "cta_text": {
+      "type": "string"
+    },
+    "cta_link": {
+      "type": "string"
+    },
+    "cta_secondary_text": {
+      "type": "string"
+    },
+    "cta_secondary_link": {
+      "type": "string"
+    },
+    "overlay_opacity": {
+      "type": "integer",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    }
+  }
+}

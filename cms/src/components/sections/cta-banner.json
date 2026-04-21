@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_sections_cta_banners",
+  "info": {
+    "displayName": "CTA Banner",
+    "icon": "bullhorn",
+    "description": "Call-to-action banner with heading, text, button, and background"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "text": {
+      "type": "text"
+    },
+    "button_text": {
+      "type": "string",
+      "required": true
+    },
+    "button_link": {
+      "type": "string",
+      "required": true
+    },
+    "background_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}

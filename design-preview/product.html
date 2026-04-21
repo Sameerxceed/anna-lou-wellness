@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moonstone Pendant — Anna Lou of London</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--gold); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); display: inline-block;
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black);
+    }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey); transition: color 0.3s;
+    }
+    .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: var(--black); font-weight: 500; }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); background: none; }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-gold { background: var(--gold); color: var(--black); border-color: var(--gold); }
+    .btn-gold:hover { background: #f0c060; }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ═══ BREADCRUMB ═══ */
+    .breadcrumb {
+      padding: 7rem 2rem 1rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .breadcrumb span, .breadcrumb a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.58rem;
+      letter-spacing: 0.08em; color: var(--mid-grey);
+    }
+    .breadcrumb a:hover { color: var(--black); }
+    .breadcrumb .sep { margin: 0 0.4rem; opacity: 0.4; }
+    .breadcrumb .current { color: var(--black); font-weight: 400; }
+
+    /* ═══ PRODUCT DETAIL ═══ */
+    .product-detail {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 55% 45%;
+      gap: 3rem; padding: 1.5rem 2rem 5rem;
+    }
+    .product-gallery {}
+    .product-main-image {
+      width: 100%; aspect-ratio: 1; border-radius: 12px;
+      background: linear-gradient(160deg, #eae5dd, #ddd5ca, #d4ccc0);
+      position: relative; overflow: hidden; margin-bottom: 0.8rem;
+    }
+    .product-main-image::after {
+      content: 'Product Image'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(0,0,0,0.08);
+    }
+    .product-thumbs {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
+    }
+    .product-thumb {
+      aspect-ratio: 1; border-radius: 8px; cursor: pointer;
+      transition: all 0.3s; border: 2px solid transparent;
+      position: relative; overflow: hidden;
+    }
+    .product-thumb:first-child { border-color: var(--gold); }
+    .product-thumb:hover { border-color: var(--gold); }
+    .product-thumb::after {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: rgba(0,0,0,0.06);
+    }
+
+    .product-info { padding-top: 0.5rem; }
+
+    .product-category {
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.5rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.6rem;
+    }
+    .product-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.8rem; color: var(--black); line-height: 1.2;
+      margin-bottom: 0.6rem;
+    }
+    .product-price {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 1.1rem; color: var(--dark-grey); margin-bottom: 1rem;
+    }
+    .product-badge-row { margin-bottom: 1.2rem; }
+    .product-badge {
+      display: inline-block;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.48rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--gold); color: var(--black);
+      padding: 0.3rem 0.7rem; border-radius: 20px;
+    }
+    .product-description {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 1.1rem; color: var(--dark-grey); line-height: 1.75;
+      margin-bottom: 1.8rem;
+    }
+
+    /* Quantity selector */
+    .qty-row {
+      display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem;
+    }
+    .qty-label {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.6rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid-grey);
+    }
+    .qty-selector {
+      display: flex; align-items: center; gap: 0;
+      border: 1px solid rgba(0,0,0,0.1); border-radius: 50px;
+      overflow: hidden;
+    }
+    .qty-btn {
+      width: 36px; height: 36px; border: none; background: transparent;
+      font-family: var(--font-ui); font-size: 0.9rem; color: var(--dark-grey);
+      cursor: pointer; transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qty-btn:hover { background: rgba(0,0,0,0.03); }
+    .qty-value {
+      width: 36px; height: 36px;
+      font-family: var(--font-ui); font-size: 0.8rem; font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--black);
+    }
+
+    /* Add to cart */
+    .add-to-cart {
+      width: 100%; padding: 1rem;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.65rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      background: var(--gold); color: var(--black); border: 2px solid var(--gold);
+      border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+      margin-bottom: 0.8rem;
+    }
+    .add-to-cart:hover { background: #f0c060; border-color: #f0c060; }
+
+    .discovery-link {
+      display: block; text-align: center;
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 2rem; transition: color 0.3s;
+    }
+    .discovery-link:hover { color: var(--red); }
+
+    /* Accordion */
+    .accordion { border-top: 1px solid rgba(0,0,0,0.06); }
+    .accordion-item { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .accordion-header {
+      width: 100%; background: none; border: none;
+      padding: 1rem 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--black); transition: color 0.3s;
+    }
+    .accordion-header:hover { color: var(--gold); }
+    .accordion-icon {
+      font-size: 1.1rem; font-weight: 200; transition: transform 0.3s;
+      line-height: 1;
+    }
+    .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+    .accordion-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .accordion-item.open .accordion-body { max-height: 300px; }
+    .accordion-content {
+      padding: 0 0 1.2rem;
+      font-family: var(--font-editorial); font-size: 0.95rem;
+      color: var(--mid-grey); line-height: 1.7;
+    }
+
+    /* ═══ PRODUCT STORY ═══ */
+    .product-story {
+      background: #fff; padding: 6rem 2rem;
+    }
+    .product-story-inner {
+      max-width: 700px; margin: 0 auto; text-align: center;
+    }
+    .product-story-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.8rem;
+    }
+    .product-story-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      color: var(--black); line-height: 1.2; margin-bottom: 1.5rem;
+    }
+    .product-story-body {
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 1.05rem; line-height: 1.85; color: var(--dark-grey);
+    }
+    .product-story-body + .product-story-body { margin-top: 1rem; }
+
+    /* ═══ RELATED PRODUCTS ═══ */
+    .related-section {
+      background: var(--warm-neutral); padding: 5rem 2rem;
+    }
+    .related-inner { max-width: 1100px; margin: 0 auto; }
+    .related-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--black); text-align: center; margin-bottom: 2.5rem;
+    }
+    .related-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+    }
+    .p-card {
+      border-radius: 12px; overflow: hidden; cursor: pointer;
+      background: #fff;
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), box-shadow 0.45s;
+    }
+    .p-card:hover { transform: translateY(-5px); box-shadow: 0 18px 45px rgba(0,0,0,0.08); }
+    .p-img { aspect-ratio: 1; position: relative; overflow: hidden; }
+    .p-img-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .p-card:hover .p-img-bg { transform: scale(1.06); }
+    .p-badge {
+      position: absolute; top: 0.7rem; left: 0.7rem; z-index: 1;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.45rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--gold); color: var(--black);
+      padding: 0.2rem 0.5rem; border-radius: 20px;
+    }
+    .p-info { padding: 0.9rem 1.1rem 1.2rem; }
+    .p-name { font-family: var(--font-editorial); font-size: 1rem; color: var(--black); margin-bottom: 0.25rem; }
+    .p-price { font-family: var(--font-ui); font-weight: 400; font-size: 0.82rem; color: var(--dark-grey); }
+
+    /* ═══ BLOG CARDS ═══ */
+    .blog-section {
+      background: #fff; padding: 5rem 2rem;
+    }
+    .blog-inner { max-width: 1100px; margin: 0 auto; }
+    .blog-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--black); text-align: center; margin-bottom: 2.5rem;
+    }
+    .blog-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+    }
+    .blog-card {
+      background: var(--warm-neutral); border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.07); }
+    .blog-card-img {
+      width: 100%; aspect-ratio: 16/9;
+    }
+    .blog-card-body { padding: 1.5rem; }
+    .b-cat {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.48rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.35rem;
+    }
+    .b-title {
+      font-family: var(--font-editorial); font-weight: 500;
+      font-size: 1.15rem; color: var(--black); line-height: 1.3; margin-bottom: 0.4rem;
+    }
+    .b-excerpt {
+      font-family: var(--font-editorial); font-size: 0.88rem;
+      color: var(--mid-grey); line-height: 1.6;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading-f {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .product-detail { grid-template-columns: 1fr; gap: 2rem; }
+      .related-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- BANNER -->
+<div class="launch-banner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">Friday ESJ</span><span class="dot"></span>
+    <span>New Emotional Support Jewellery drops every Friday</span>
+    <span class="dot"></span>
+    <a href="shop.html" style="color:var(--gold);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Shop This Week&rsquo;s Drop &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="workshops.html">Workshops</a></li>
+      <li><a href="#">Coaching</a></li>
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="#">Media</a></li>
+      <li><a href="#">Community</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="shop.html">Shop</a><span class="sep">/</span>
+  <a href="#">Crystals</a><span class="sep">/</span>
+  <span class="current">Moonstone Pendant</span>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<section class="product-detail">
+  <!-- LEFT: Gallery -->
+  <div class="product-gallery reveal">
+    <div class="product-main-image"></div>
+    <div class="product-thumbs">
+      <div class="product-thumb" style="background:linear-gradient(160deg,#eae5dd,#ddd5ca);"></div>
+      <div class="product-thumb" style="background:linear-gradient(160deg,#e5dfd7,#d8d1c7);"></div>
+      <div class="product-thumb" style="background:linear-gradient(160deg,#e8e2da,#dbd4ca);"></div>
+      <div class="product-thumb" style="background:linear-gradient(160deg,#ece6de,#dfd8ce);"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Info -->
+  <div class="product-info reveal rd2">
+    <p class="product-category">Emotional Support Jewellery</p>
+    <h1 class="product-title">Moonstone Pendant</h1>
+    <p class="product-price">&pound;48.00</p>
+    <div class="product-badge-row">
+      <span class="product-badge">Friday ESJ Drop</span>
+    </div>
+    <p class="product-description">Come back to self. Moonstone is the stone of new beginnings, inner growth, and intuition. Wear it when you need to trust the process.</p>
+
+    <!-- Quantity -->
+    <div class="qty-row">
+      <span class="qty-label">Quantity</span>
+      <div class="qty-selector">
+        <button class="qty-btn" id="qtyMinus">&minus;</button>
+        <span class="qty-value" id="qtyValue">1</span>
+        <button class="qty-btn" id="qtyPlus">+</button>
+      </div>
+    </div>
+
+    <!-- Add to cart -->
+    <button class="add-to-cart">Add to Cart</button>
+    <a href="#" class="discovery-link">Book a Discovery Call &rarr;</a>
+
+    <!-- Accordion -->
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Meaning &amp; Symbolism</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            Moonstone has been revered for centuries as a stone of inner growth and strength. It soothes emotional instability and stress, stabilising the emotions and providing calmness. In crystal healing, it is connected to the crown and third-eye chakras, enhancing intuition and promoting inspiration. This pendant is designed to sit close to the heart, serving as a daily reminder of your capacity for new beginnings.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Care Instructions</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            Moonstone is a delicate crystal &mdash; handle with love. Avoid prolonged exposure to water or harsh chemicals. Cleanse energetically by placing under moonlight (especially during a full moon) or on a bed of selenite. Polish gently with a soft cloth. Store separately to avoid scratching.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>Shipping &amp; Returns</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            Free UK shipping on orders over &pound;40. Standard delivery 3&ndash;5 working days. Express delivery available at checkout. We accept returns within 14 days of delivery, provided the item is unworn and in its original packaging. Digital products are non-refundable.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE STORY -->
+<section class="product-story">
+  <div class="product-story-inner reveal">
+    <p class="product-story-label">The Story</p>
+    <h2 class="product-story-heading">Why this piece exists</h2>
+    <p class="product-story-body">The Moonstone Pendant was the first piece I designed after my own reset. I was coming out of a period where I&rsquo;d lost connection with myself &mdash; my intuition was silent, my body was exhausted, and my mind was racing. I needed something physical to anchor me back.</p>
+    <p class="product-story-body">Moonstone found me during that time. Its gentle energy reminded me that every ending carries a new beginning inside it. I wore a piece of raw moonstone in my pocket for three months before I designed this pendant. Every piece in the ESJ collection carries that same intention: to be your quiet companion when the world gets loud.</p>
+    <p class="product-story-body">When you wear this pendant, you&rsquo;re not just wearing jewellery. You&rsquo;re wearing a promise to yourself &mdash; to keep returning, keep trusting, keep beginning again.</p>
+  </div>
+</section>
+
+<!-- PAIRS WELL WITH -->
+<section class="related-section">
+  <div class="related-inner">
+    <h2 class="related-heading reveal">Pairs well with</h2>
+    <div class="related-grid">
+      <div class="p-card reveal">
+        <div class="p-img">
+          <div class="p-img-bg" style="background:linear-gradient(180deg,#ebe6de,#ddd6cc);"></div>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Rose Quartz Bracelet</p>
+          <p class="p-price">&pound;35.00</p>
+        </div>
+      </div>
+      <div class="p-card reveal rd1">
+        <div class="p-img">
+          <span class="p-badge">Digital</span>
+          <div class="p-img-bg" style="background:linear-gradient(180deg,#e5e0d8,#d8d1c7);"></div>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Crystal Guide</p>
+          <p class="p-price">&pound;15.00</p>
+        </div>
+      </div>
+      <div class="p-card reveal rd2">
+        <div class="p-img">
+          <div class="p-img-bg" style="background:linear-gradient(180deg,#ede8e0,#e0d9cf);"></div>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Sage &amp; Palo Santo Bundle</p>
+          <p class="p-price">&pound;18.00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FROM THE BLOG -->
+<section class="blog-section">
+  <div class="blog-inner">
+    <h2 class="blog-heading reveal">From the blog</h2>
+    <div class="blog-grid">
+      <div class="blog-card reveal">
+        <div class="blog-card-img" style="background:linear-gradient(135deg, var(--cream), var(--warm-neutral));"></div>
+        <div class="blog-card-body">
+          <p class="b-cat">Crystals &amp; Healing</p>
+          <h3 class="b-title">Moonstone and the art of new beginnings</h3>
+          <p class="b-excerpt">Why this ancient stone keeps showing up when women are ready to transform &mdash; and how to work with its energy intentionally.</p>
+        </div>
+      </div>
+      <div class="blog-card reveal rd1">
+        <div class="blog-card-img" style="background:linear-gradient(135deg, var(--lavender), var(--mint));"></div>
+        <div class="blog-card-body">
+          <p class="b-cat">Reset Stories</p>
+          <h3 class="b-title">What is Emotional Support Jewellery?</h3>
+          <p class="b-excerpt">The story behind the collection, why it matters, and how wearing intention changes the way you move through your day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading-f">Explore</p><a href="#">Blog</a><a href="#">Coaching</a><a href="shop.html">Shop</a><a href="workshops.html">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading-f">Connect</p><a href="#">Community</a><a href="#">About</a><a href="#">Contact</a><a href="#">Media</a></div>
+    <div class="footer-col"><p class="footer-heading-f">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Quantity
+  const qtyValue = document.getElementById('qtyValue');
+  let qty = 1;
+  document.getElementById('qtyMinus').addEventListener('click', () => {
+    if (qty > 1) { qty--; qtyValue.textContent = qty; }
+  });
+  document.getElementById('qtyPlus').addEventListener('click', () => {
+    qty++; qtyValue.textContent = qty;
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+</script>
+
+</body>
+</html>

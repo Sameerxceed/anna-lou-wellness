@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Anna Lou Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --amber: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-neutral: #F5F3EF;
+      --warm-cream: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-display: 'Inter', 'Helvetica Neue', sans-serif;
+      --font-editorial: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--black);
+      background: var(--warm-neutral);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ GRAIN TEXTURE ═══ */
+    .grain { position: relative; }
+    .grain::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ═══ LAUNCH BANNER ═══ */
+    .launch-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--black); text-align: center;
+      padding: 0.5rem 2rem; overflow: hidden;
+    }
+    .launch-banner span {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5); white-space: nowrap;
+    }
+    .launch-banner .highlight { color: var(--red); font-weight: 500; }
+    .launch-banner .dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(245,243,239,0.15); display: inline-block;
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    .nav {
+      position: fixed; top: 28px; left: 0; right: 0; z-index: 100;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto; padding: 1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 0.65rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(245,243,239,0.8); transition: color 0.4s;
+    }
+    .nav.scrolled .nav-logo { color: var(--black); }
+    .nav-center { display: flex; gap: 1.4rem; list-style: none; align-items: center; }
+    .nav-center a {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); transition: color 0.3s; position: relative;
+    }
+    .nav.scrolled .nav-center a { color: var(--mid-grey); }
+    .nav-center a:hover { color: #fff; }
+    .nav.scrolled .nav-center a:hover { color: var(--red); }
+    .nav-center a.active { color: rgba(255,255,255,0.8); }
+    .nav.scrolled .nav-center a.active { color: var(--red); }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav.scrolled .nav-btn { color: var(--mid-grey); border-color: rgba(0,0,0,0.08); }
+    .nav-btn:hover { border-color: var(--red); color: var(--red); }
+    .nav-btn.cart-btn { background: var(--red); color: #fff; border-color: var(--red); }
+    .nav-btn.cart-btn:hover { background: #d42a28; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.85rem 1.8rem; border-radius: 50px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22,1,0.36,1); display: inline-block;
+      border: 1px solid transparent;
+    }
+    .btn-outline { color: var(--black); border-color: rgba(0,0,0,0.12); background: transparent; }
+    .btn-outline:hover { background: var(--black); color: var(--warm-neutral); border-color: var(--black); }
+    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-red:hover { background: #d42a28; border-color: #d42a28; }
+
+    /* ═══ SECTIONS ═══ */
+    .section { padding: 6rem 2rem; position: relative; }
+    .section-narrow { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.6rem;
+    }
+    .section-heading {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      color: var(--black); line-height: 1.15; letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ ABOUT HERO ═══ */
+    .about-hero {
+      position: relative; min-height: 85vh; overflow: hidden;
+      display: flex; align-items: flex-end; justify-content: center;
+      background: var(--black);
+    }
+    .about-hero-img {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, #c4a882, #a88a6a, #8a7058);
+      opacity: 0.5;
+    }
+    .about-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(35,31,32,0.1) 0%, rgba(35,31,32,0.7) 70%, rgba(35,31,32,0.95) 100%);
+    }
+    .about-hero-content {
+      position: relative; z-index: 5; text-align: center;
+      padding: 0 2rem 5rem; max-width: 650px;
+    }
+    .about-hero-content h1 {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(3rem, 8vw, 5rem);
+      color: var(--warm-neutral); line-height: 1;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+    }
+    .about-hero-content .tagline {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+      color: rgba(245,243,239,0.5); line-height: 1.7;
+      opacity: 0; animation: fadeUp 1s ease 0.7s forwards;
+    }
+
+    /* ═══ EDITORIAL NARRATIVE ═══ */
+    .narrative {
+      background: #fff;
+      padding: 6rem 2rem;
+    }
+    .narrative-inner {
+      max-width: 700px; margin: 0 auto;
+    }
+    .narrative p {
+      font-family: var(--font-editorial); font-weight: 400;
+      font-size: 1.12rem; line-height: 1.9;
+      color: var(--dark-grey);
+      margin-bottom: 2rem;
+    }
+    .narrative p:first-letter {
+      font-size: 3.2rem; float: left;
+      line-height: 1; margin-right: 0.5rem; margin-top: 0.1rem;
+      font-family: var(--font-editorial); font-weight: 500;
+      color: var(--black);
+    }
+    .pull-quote {
+      font-family: var(--font-display); font-weight: 200;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--black); line-height: 1.5;
+      border-left: 3px solid var(--red);
+      padding: 1rem 0 1rem 2rem;
+      margin: 3rem 0;
+    }
+    .narrative-img {
+      width: calc(100% + 6rem); margin-left: -3rem;
+      aspect-ratio: 16/9; border-radius: 8px;
+      overflow: hidden; margin-top: 1rem; margin-bottom: 3rem;
+      background: linear-gradient(135deg, #d4c5b3, #c4b5a3, #b4a593);
+      position: relative;
+    }
+    .narrative-img::after {
+      content: 'Landscape Photo'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.55rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(0,0,0,0.12);
+    }
+
+    /* ═══ CREDENTIALS ═══ */
+    .credentials {
+      background: var(--warm-neutral);
+    }
+    .cred-grid {
+      display: flex; flex-wrap: wrap; gap: 2rem;
+      justify-content: center; align-items: center;
+      max-width: 800px; margin: 0 auto;
+    }
+    .cred-item {
+      text-align: center; padding: 1rem 1.5rem;
+    }
+    .cred-item .cred-icon {
+      width: 48px; height: 48px; margin: 0 auto 0.6rem;
+      background: rgba(0,0,0,0.03); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cred-item .cred-icon span {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.5rem; letter-spacing: 0.08em;
+      color: var(--mid-grey);
+    }
+    .cred-item p {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--warm-cream);
+    }
+    .cred-item .cred-serif {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.88rem; letter-spacing: 0; text-transform: none;
+      color: var(--warm-cream);
+    }
+    .cred-divider {
+      width: 1px; height: 30px;
+      background: rgba(0,0,0,0.06);
+    }
+
+    /* ═══ PARTNERS ═══ */
+    .partners { background: #fff; }
+    .partners-inner {
+      max-width: 650px; margin: 0 auto; text-align: center;
+    }
+    .partners-inner p {
+      font-family: var(--font-editorial); font-size: 1.05rem;
+      color: var(--dark-grey); line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    /* ═══ CONTACT ═══ */
+    .contact { background: var(--warm-neutral); }
+    .contact-inner {
+      max-width: 600px; margin: 0 auto;
+    }
+    .contact-details {
+      text-align: center; margin-bottom: 3rem;
+    }
+    .contact-details p {
+      font-family: var(--font-editorial); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.8;
+    }
+    .contact-details a {
+      color: var(--red); border-bottom: 1px solid rgba(238,49,47,0.2);
+      transition: border-color 0.3s;
+    }
+    .contact-details a:hover { border-color: var(--red); }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: flex; gap: 1rem; }
+    .form-row > * { flex: 1; }
+    .form-input, .form-select, .form-textarea {
+      font-family: var(--font-ui); font-size: 0.78rem;
+      color: var(--black); padding: 0.85rem 1.2rem;
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 8px;
+      background: #fff; outline: none;
+      transition: border-color 0.3s;
+      width: 100%;
+    }
+    .form-input::placeholder { color: var(--warm-cream); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--red);
+    }
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238C8880' fill='none' stroke-width='1.2'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+    .form-select option { font-family: var(--font-ui); }
+    .form-textarea {
+      resize: vertical; min-height: 140px;
+      font-family: var(--font-ui);
+    }
+    .form-textarea::placeholder { color: var(--warm-cream); }
+    .form-submit {
+      align-self: flex-start;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer { background: var(--black); padding: 5rem 2rem 2rem; }
+    .footer-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand-tag {
+      font-family: var(--font-editorial); font-style: italic;
+      font-size: 0.92rem; color: rgba(245,243,239,0.2); margin-top: 0.4rem; line-height: 1.5;
+    }
+    .footer-heading {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.48rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(245,243,239,0.15); margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block; font-family: var(--font-editorial); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(245,243,239,0.03); padding-top: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display); font-weight: 200; font-size: 0.75rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,243,239,0.08);
+    }
+    .footer-legal {
+      font-family: var(--font-ui); font-weight: 300; font-size: 0.45rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+    .footer-legal a { color: rgba(245,243,239,0.1); display: inline; margin: 0 0.3rem; }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .nav-center, .nav-right { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .narrative-img { width: 100%; margin-left: 0; }
+      .form-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;">
+    <span class="highlight">New</span><span class="dot"></span>
+    <span>Coaching, workshops &amp; Emotional Support Jewellery &mdash; now available</span>
+    <span class="dot"></span>
+    <a href="index.html#coaching" style="color:var(--red);font-weight:500;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;">Book a Free Discovery Call &rarr;</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Anna Lou</a>
+    <ul class="nav-center">
+      <li><a href="index.html#blog">Blog</a></li>
+      <li><a href="#">Lifestyle</a></li>
+      <li><a href="index.html#workshops">Workshops</a></li>
+      <li><a href="index.html#coaching">Coaching</a></li>
+      <li><a href="index.html#shop">Shop</a></li>
+      <li><a href="media.html">Media</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-btn">Login</span>
+      <span class="nav-btn cart-btn">Cart (0)</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="about-hero grain">
+  <div class="about-hero-img"></div>
+  <div class="about-hero-overlay"></div>
+  <div class="about-hero-content">
+    <h1>Anna&rsquo;s Story</h1>
+    <p class="tagline">From Portobello Market to Harrods. From luxury to healing. Beautifully Whole.</p>
+  </div>
+</section>
+
+<!-- EDITORIAL NARRATIVE -->
+<section class="narrative">
+  <div class="narrative-inner">
+    <p class="reveal">It started with a table at Portobello Market and a box of hand-stamped charms. Anna Lou of London was born from a belief that jewellery should mean something &mdash; that a tiny disc around your neck could carry a name, a date, a promise. What began as a weekend stall grew into a brand stocked in Harrods, Selfridges, Harvey Nichols, and even Disney. Celebrities wore it. Magazines featured it. The business scaled and the accolades followed. But somewhere between the wholesale orders and the press coverage, the woman behind the brand started to disappear.</p>
+
+    <div class="pull-quote reveal">&ldquo;I built a business that the world could see. Then I had to find the woman it had buried.&rdquo;</div>
+
+    <p class="reveal">The conscious reset didn&rsquo;t happen overnight. It came in waves &mdash; a divorce, a reckoning with burnout, a body that finally said <em>enough</em>. Anna stepped back from the machine she&rsquo;d built and asked the question so many high-achieving women are terrified to ask: &ldquo;Who am I without the performance?&rdquo; The answer didn&rsquo;t come from another business plan. It came from her body, from stillness, from the radical act of coming back to herself.</p>
+
+    <div class="narrative-img reveal"></div>
+
+    <p class="reveal">That return led to training. Deep, rigorous, embodied training. Anna became an ICF-accredited coach, a somatic trauma-informed practitioner, and certified in TRE (Tension &amp; Trauma Release Exercises), Flash EMDR, Brainspotting, and IFS (Internal Family Systems). She didn&rsquo;t collect credentials to decorate a wall &mdash; she earned them because she&rsquo;d lived the work. Every modality she teaches, she&rsquo;s walked through herself. CPD certified and constantly deepening her practice, Anna brings both professional rigour and raw personal experience to every session.</p>
+
+    <div class="pull-quote reveal">&ldquo;Healing isn&rsquo;t about becoming someone new. It&rsquo;s about coming back to who you were before the world told you to be someone else.&rdquo;</div>
+
+    <p class="reveal">This is the philosophy behind <strong>Beautifully Whole</strong> and the <strong>Zen Hustler</strong> approach &mdash; the understanding that ambition and softness aren&rsquo;t opposites. That you can build something extraordinary without losing yourself in the process. That strength isn&rsquo;t the absence of vulnerability; it&rsquo;s the courage to feel everything and keep going. Anna works with women who are done performing strength and ready to actually feel it. Through coaching, somatic healing, Emotional Support Jewellery, and a growing community of women on the same journey, Anna Lou Wellness is the space where the reset begins.</p>
+
+    <div class="pull-quote reveal">&ldquo;You don&rsquo;t need to be fixed. You need to come back to yourself.&rdquo;</div>
+  </div>
+</section>
+
+<!-- CREDENTIALS & PRESS -->
+<section class="section credentials grain">
+  <div class="section-narrow" style="text-align:center; margin-bottom:2.5rem;">
+    <p class="section-label reveal">Credentials &amp; Press</p>
+    <h2 class="section-heading reveal rd1">Trained, certified, published</h2>
+  </div>
+  <div class="cred-grid">
+    <div class="cred-item reveal">
+      <div class="cred-icon"><span>ICF</span></div>
+      <p>ICF Accredited Coach</p>
+    </div>
+    <div class="cred-divider reveal rd1"></div>
+    <div class="cred-item reveal rd1">
+      <div class="cred-icon"><span>CPD</span></div>
+      <p>CPD Certified</p>
+    </div>
+    <div class="cred-divider reveal rd2"></div>
+    <div class="cred-item reveal rd2">
+      <div class="cred-icon"><span>TRE</span></div>
+      <p>TRE Provider</p>
+    </div>
+    <div class="cred-divider reveal rd3"></div>
+    <div class="cred-item reveal rd3">
+      <div class="cred-icon"><span>IFS</span></div>
+      <p>IFS Practitioner</p>
+    </div>
+  </div>
+  <div class="cred-grid" style="margin-top:2rem;">
+    <div class="cred-item reveal">
+      <p class="cred-serif">Harrods</p>
+    </div>
+    <div class="cred-divider reveal rd1"></div>
+    <div class="cred-item reveal rd1">
+      <p class="cred-serif">Selfridges</p>
+    </div>
+    <div class="cred-divider reveal rd2"></div>
+    <div class="cred-item reveal rd2">
+      <p class="cred-serif">Harvey Nichols</p>
+    </div>
+    <div class="cred-divider reveal rd3"></div>
+    <div class="cred-item reveal rd3">
+      <p class="cred-serif">Disney</p>
+    </div>
+  </div>
+</section>
+
+<!-- WORK WITH PARTNERS -->
+<section class="section partners">
+  <div class="partners-inner">
+    <p class="section-label reveal" style="text-align:center;">Collaborations</p>
+    <h2 class="section-heading reveal rd1" style="text-align:center;">Work with Anna</h2>
+    <p class="reveal rd2">Anna partners with brands, publications, and organisations that share a commitment to authentic wellness, women&rsquo;s empowerment, and conscious living. Whether it&rsquo;s a retreat collaboration, a press feature, a brand partnership, or a speaking engagement &mdash; meaningful work starts with a conversation.</p>
+    <div style="text-align:center;">
+      <a class="btn btn-outline reveal rd3" href="#contact">Partnership Enquiry</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact" id="contact">
+  <div class="contact-inner">
+    <div style="text-align:center; margin-bottom:2.5rem;">
+      <p class="section-label reveal">Get in Touch</p>
+      <h2 class="section-heading reveal rd1">Contact</h2>
+    </div>
+    <div class="contact-details reveal rd2">
+      <p><a href="mailto:hello@annalouwellness.com">hello@annalouwellness.com</a></p>
+      <p>London, UK</p>
+    </div>
+    <form class="contact-form reveal rd3" onsubmit="return false;">
+      <div class="form-row">
+        <input type="text" class="form-input" placeholder="Your name">
+        <input type="email" class="form-input" placeholder="Your email">
+      </div>
+      <select class="form-select">
+        <option value="" disabled selected>What is this about?</option>
+        <option>Coaching Enquiry</option>
+        <option>Shop / Orders</option>
+        <option>Press</option>
+        <option>Collaboration</option>
+        <option>General</option>
+      </select>
+      <textarea class="form-textarea" placeholder="Your message"></textarea>
+      <div class="form-submit">
+        <button class="btn btn-red" type="submit">Send Message</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p style="font-family:var(--font-display);font-weight:200;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,243,239,0.15);">Anna Lou</p>
+      <p class="footer-brand-tag">Beautifully Whole</p>
+    </div>
+    <div class="footer-col"><p class="footer-heading">Explore</p><a href="index.html#blog">Blog</a><a href="index.html#coaching">Coaching</a><a href="index.html#shop">Shop</a><a href="index.html#workshops">Workshops</a></div>
+    <div class="footer-col"><p class="footer-heading">Connect</p><a href="community.html">Community</a><a href="about.html">About</a><a href="#contact">Contact</a><a href="media.html">Media</a></div>
+    <div class="footer-col"><p class="footer-heading">Follow</p><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Substack</a><a href="#">Email</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo">Anna Lou Wellness</span>
+    <span class="footer-legal">&copy; 2026 Anna Lou Wellness <a href="#">Privacy</a> <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  }, { passive: true });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

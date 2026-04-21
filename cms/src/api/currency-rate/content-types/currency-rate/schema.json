@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "currency_rates",
+  "info": {
+    "singularName": "currency-rate",
+    "pluralName": "currency-rates",
+    "displayName": "Currency Rates"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "base_currency": {
+      "type": "string",
+      "required": true
+    },
+    "target_currency": {
+      "type": "string",
+      "required": true
+    },
+    "rate": {
+      "type": "decimal",
+      "required": true
+    },
+    "last_updated": {
+      "type": "datetime"
+    }
+  }
+}

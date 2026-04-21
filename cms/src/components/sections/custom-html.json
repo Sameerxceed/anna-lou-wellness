@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_sections_custom_htmls",
+  "info": {
+    "displayName": "Custom HTML",
+    "icon": "code",
+    "description": "Raw rich text content — escape hatch for any custom content"
+  },
+  "attributes": {
+    "content": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}

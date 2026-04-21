@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_sections_contact_forms",
+  "info": {
+    "displayName": "Contact Form",
+    "icon": "envelope",
+    "description": "Contact form section with configurable fields"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "json",
+      "default": [
+        { "name": "name", "type": "text", "required": true },
+        { "name": "email", "type": "email", "required": true },
+        { "name": "message", "type": "textarea", "required": true }
+      ]
+    },
+    "submit_text": {
+      "type": "string",
+      "default": "Send Message"
+    },
+    "success_message": {
+      "type": "string",
+      "default": "Thank you for your message. We'll be in touch soon."
+    }
+  }
+}

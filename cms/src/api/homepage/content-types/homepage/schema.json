@@ -1,0 +1,76 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage",
+    "description": "Homepage content"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "hero_title": {
+      "type": "string",
+      "default": "Beautifully Whole"
+    },
+    "hero_subtitle": {
+      "type": "string",
+      "default": "Anna Lou Wellness"
+    },
+    "hero_tagline": {
+      "type": "text"
+    },
+    "hero_video": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "hero_poster": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "cta_primary_text": {
+      "type": "string",
+      "default": "Work With Me"
+    },
+    "cta_primary_link": {
+      "type": "string",
+      "default": "/coaching"
+    },
+    "cta_secondary_text": {
+      "type": "string",
+      "default": "Shop"
+    },
+    "cta_secondary_link": {
+      "type": "string",
+      "default": "/shop"
+    },
+    "intro_label": {
+      "type": "string",
+      "default": "Reset Stories"
+    },
+    "intro_heading": {
+      "type": "string"
+    },
+    "intro_body": {
+      "type": "richtext"
+    },
+    "intro_quote": {
+      "type": "text"
+    },
+    "intro_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

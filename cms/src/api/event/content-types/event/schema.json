@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "events",
+  "info": {
+    "singularName": "event",
+    "pluralName": "events",
+    "displayName": "Events"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "time": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "event_type": {
+      "type": "enumeration",
+      "enum": [
+        "Salon",
+        "Open Day",
+        "Music Walk",
+        "Meditation",
+        "Gathering",
+        "Dining",
+        "Festival",
+        "Workshop",
+        "Other"
+      ]
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "booking_url": {
+      "type": "string"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

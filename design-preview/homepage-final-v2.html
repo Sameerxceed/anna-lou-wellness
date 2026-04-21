@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anna Lou Wellness — Beautifully Whole</title>
+  <meta name="description" content="Somatic coaching, honest stories, emotional support jewellery, and a life beautifully lived. Come back to yourself. Anna Lou Wellness, Taggs Island, Hampton.">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #EE312F;
+      --gold: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --light-gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-cream: #F5F3EF;
+      --warm-grey: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      /* Jost = Nobel placeholder, EB Garamond = Georgia placeholder */
+      --font-heading: 'Jost', 'Helvetica Neue', sans-serif;
+      --font-body: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--black);
+      background: var(--warm-cream);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ NAVIGATION — CENTERED LOGO ═══ */
+    .nav-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,243,239,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    /* Single row: left links — center logo — right links */
+    .nav-row {
+      max-width: 1300px; margin: 0 auto;
+      display: flex; justify-content: center; align-items: center;
+      padding: 0.8rem 1.5rem;
+      position: relative;
+    }
+    .nav-left, .nav-right-links {
+      display: flex; align-items: center; gap: 0;
+    }
+    .nav-center-logo {
+      text-align: center; padding: 0 1.8rem; flex-shrink: 0;
+    }
+    .nav-logo {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: 1.45rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black); display: block; line-height: 1.1;
+    }
+    .nav-tagline {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.8rem; color: var(--mid-grey);
+    }
+    .nav-row a {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      color: var(--dark-grey);
+      transition: color 0.3s; position: relative;
+    }
+    .nav-row a::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 2px;
+      transform: translateX(-50%); transition: width 0.3s;
+    }
+    /* All neutral by default — colour appears on hover (Cup of Jo style) */
+    .nav-blog:hover { color: var(--red); } .nav-blog:hover::after { width: 60%; background: var(--red); }
+    .nav-lifestyle:hover { color: var(--gold); } .nav-lifestyle:hover::after { width: 60%; background: var(--gold); }
+    .nav-workshops:hover { color: var(--blue); } .nav-workshops:hover::after { width: 60%; background: var(--blue); }
+    .nav-coaching:hover { color: var(--pink); } .nav-coaching:hover::after { width: 60%; background: var(--pink); }
+    .nav-shop:hover { color: var(--green); } .nav-shop:hover::after { width: 60%; background: var(--green); }
+    .nav-media:hover { color: var(--light-gold); } .nav-media:hover::after { width: 60%; background: var(--light-gold); }
+    .nav-community:hover { color: var(--black); background: var(--warm-cream); border-radius: 3px; } .nav-community:hover::after { width: 60%; background: var(--black); }
+    .nav-about:hover { color: var(--black); } .nav-about:hover::after { width: 60%; background: var(--black); }
+    /* Right side: Cart + Login */
+    .nav-actions {
+      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);
+      display: flex; gap: 0.5rem; align-items: center;
+    }
+    .nav-action {
+      font-family: var(--font-ui); font-size: 0.52rem; font-weight: 400;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.3rem 0.6rem;
+      border: 1px solid rgba(0,0,0,0.06); border-radius: 3px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-action:hover { border-color: var(--red); color: var(--red); }
+
+    /* ═══ SECTION 1 — HERO ═══ */
+    .hero {
+      background: #fff;
+      padding: 3rem 3rem 4rem;
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 4rem;
+      align-items: center;
+    }
+    .hero-image {
+      aspect-ratio: 3/4; border-radius: 6px; overflow: hidden;
+      background: linear-gradient(160deg, #e8ddd0, #d4c5b3);
+      position: relative;
+    }
+    .hero-image::after {
+      content: 'Atmospheric photo — Taggs Island, golden hour, Anna';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.5rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(0,0,0,0.12); text-align: center; max-width: 80%;
+    }
+    .hero-tag {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1rem;
+    }
+    .hero-title {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      color: var(--black); line-height: 1.35;
+      margin-bottom: 1.2rem;
+    }
+    .hero-body {
+      font-family: var(--font-body); font-size: 1.05rem;
+      line-height: 1.85; color: var(--dark-grey);
+      margin-bottom: 1.5rem;
+    }
+    .hero-cta {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--red); border-bottom: 1px solid var(--red);
+      padding-bottom: 2px; transition: all 0.3s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .hero-cta:hover { gap: 0.7rem; }
+
+    /* ═══ SECTION 2 — MANTRA CAROUSEL ═══ */
+    .mantras {
+      background: var(--cream); padding: 3rem 2rem;
+      text-align: center; overflow: hidden;
+    }
+    .mantra-text {
+      font-family: var(--font-body); font-style: italic;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--dark-grey); line-height: 1.6;
+      max-width: 700px; margin: 0 auto;
+      opacity: 0; animation: mantraFade 8s ease-in-out infinite;
+    }
+    .mantra-note {
+      font-family: var(--font-ui); font-size: 0.5rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--warm-grey); margin-top: 1rem;
+    }
+    @keyframes mantraFade {
+      0%, 100% { opacity: 0; } 10%, 90% { opacity: 1; }
+    }
+
+    /* ═══ SECTION 3 — COACHING CTA ═══ */
+    .coaching-cta {
+      background: var(--soft-pink); padding: 5rem 3rem;
+    }
+    /* Coaching = Pink */
+    .coaching-cta-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      align-items: center;
+    }
+    .coaching-kicker {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--pink); margin-bottom: 0.6rem;
+    }
+    .coaching-heading {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--black); line-height: 1.2; margin-bottom: 1.2rem;
+      letter-spacing: 0.02em;
+    }
+    .coaching-body {
+      font-family: var(--font-body); font-size: 1.02rem;
+      line-height: 1.85; color: var(--dark-grey); margin-bottom: 1rem;
+    }
+    .coaching-modalities {
+      font-family: var(--font-ui); font-size: 0.6rem;
+      letter-spacing: 0.08em; color: var(--mid-grey);
+      margin-bottom: 1.5rem;
+    }
+    .coaching-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.75rem 1.5rem; border-radius: 3px; cursor: pointer;
+      transition: all 0.3s; display: inline-block;
+    }
+    .btn-pink { background: var(--pink); color: #fff; border: 1px solid var(--pink); }
+    .btn-pink:hover { background: #d870a0; }
+    .btn-outline-pink { background: transparent; color: var(--pink); border: 1px solid var(--pink); }
+    .btn-outline-pink:hover { background: var(--pink); color: #fff; }
+    .coaching-image {
+      aspect-ratio: 4/5; border-radius: 6px; overflow: hidden;
+      background: linear-gradient(160deg, #e0cfc0, #ccbaa8);
+      position: relative;
+    }
+    .coaching-image::after {
+      content: 'Photo — coaching session'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+
+    /* ═══ SECTION 4 — LIFESTYLE PREVIEW ═══ */
+    .lifestyle-strip {
+      background: var(--cream); padding: 3.5rem 2rem;
+    }
+    .lifestyle-header {
+      max-width: 1200px; margin: 0 auto 2rem;
+    }
+    .lifestyle-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.3rem;
+    }
+    .lifestyle-title {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: 1.6rem; color: var(--black); letter-spacing: 0.02em;
+    }
+    .lifestyle-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    }
+    .lifestyle-tile {
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
+      border-radius: 8px; padding: 1.5rem; cursor: pointer;
+      transition: all 0.3s; border: 1px solid rgba(255,255,255,0.5);
+    }
+    .lifestyle-tile:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); background: #fff; }
+    .lifestyle-tile-icon { font-size: 1.3rem; margin-bottom: 0.6rem; }
+    .lifestyle-tile h3 {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 0.82rem; color: var(--black); margin-bottom: 0.4rem;
+    }
+    .lifestyle-tile p {
+      font-family: var(--font-body); font-size: 0.85rem;
+      color: var(--mid-grey); line-height: 1.5;
+    }
+
+    /* ═══ SECTION 5 — WORKSHOPS PREVIEW ═══ */
+    .workshops-section {
+      background: #fff; padding: 5rem 2rem;
+    }
+    .section-header {
+      max-width: 1200px; margin: 0 auto 2rem;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    .section-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .section-title {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: 1.5rem; color: var(--black); letter-spacing: 0.02em;
+    }
+    .section-link {
+      font-family: var(--font-ui); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      transition: gap 0.3s;
+    }
+    .section-link:hover { gap: 0.6rem; }
+    .workshops-body {
+      font-family: var(--font-body); font-size: 0.95rem;
+      color: var(--dark-grey); line-height: 1.7;
+      max-width: 700px; margin-bottom: 2rem;
+    }
+    .workshop-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    }
+    .workshop-card {
+      border: 1px solid rgba(0,0,0,0.05); border-radius: 8px;
+      padding: 1.5rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .workshop-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+    .workshop-date {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 0.5rem;
+    }
+    .workshop-name {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 1.05rem; color: var(--black); margin-bottom: 0.5rem; line-height: 1.3;
+    }
+    .workshop-prices { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+    .price-tag {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.48rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.2rem 0.5rem; border-radius: 3px;
+    }
+    .price-full { background: var(--blue); color: #fff; }
+    .price-summary { border: 1px solid rgba(0,0,0,0.1); color: var(--dark-grey); }
+    .btn-blue { background: var(--blue); color: #fff; border: 1px solid var(--blue); }
+    .btn-blue:hover { background: #6a9ec8; }
+    .btn-outline-dark { background: transparent; color: var(--dark-grey); border: 1px solid rgba(0,0,0,0.12); }
+    .btn-outline-dark:hover { background: var(--black); color: #fff; }
+
+    /* ═══ SECTION 6 — NEWSLETTER ═══ */
+    .newsletter {
+      background: var(--lavender); padding: 4rem 2rem;
+      text-align: center;
+    }
+    .newsletter-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 0.5rem;
+    }
+    .newsletter-title {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--black); margin-bottom: 0.8rem; letter-spacing: 0.02em;
+    }
+    .newsletter-body {
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.75;
+      max-width: 550px; margin: 0 auto 1.5rem;
+    }
+    .newsletter-form {
+      display: flex; gap: 0; max-width: 400px; margin: 0 auto;
+    }
+    .newsletter-input {
+      flex: 1; padding: 0.7rem 1rem;
+      font-family: var(--font-ui); font-size: 0.75rem;
+      border: 1px solid rgba(0,0,0,0.1); border-right: none;
+      border-radius: 3px 0 0 3px;
+      background: #fff; color: var(--black); outline: none;
+    }
+    .newsletter-input::placeholder { color: var(--warm-grey); }
+    .newsletter-btn {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--black); color: #fff; border: 1px solid var(--black);
+      border-radius: 0 3px 3px 0; padding: 0 1.2rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .newsletter-btn:hover { background: var(--red); border-color: var(--red); }
+    .newsletter-small {
+      font-family: var(--font-ui); font-size: 0.5rem;
+      color: var(--mid-grey); margin-top: 0.8rem; letter-spacing: 0.05em;
+    }
+
+    /* ═══ SECTION 7 — SHOP PREVIEW ═══ */
+    .shop-preview {
+      background: var(--mint); padding: 5rem 2rem;
+    }
+    /* Shop = Green */
+    .shop-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .shop-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 0.3rem;
+    }
+    .shop-title {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: 1.5rem; color: var(--black); margin-bottom: 0.8rem;
+    }
+    .shop-intro {
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.75;
+      max-width: 600px; margin-bottom: 2rem;
+    }
+    .shop-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .product-card {
+      background: #fff; border-radius: 8px; overflow: hidden;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+    .product-img {
+      aspect-ratio: 1; background: linear-gradient(180deg, #eae5dd, #ddd5ca);
+      position: relative;
+    }
+    .product-img::after {
+      content: 'Product photo'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+    .product-info { padding: 1rem; }
+    .product-hook {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.82rem; color: var(--mid-grey); margin-bottom: 0.3rem;
+    }
+    .product-name {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 0.95rem; color: var(--black);
+    }
+    .btn-green { background: var(--green); color: #fff; border: 1px solid var(--green); }
+    .btn-green:hover { background: #4db895; }
+
+    /* ═══ SECTION 8 — MEDIA HUB ═══ */
+    .media-hub {
+      background: #FFF8E8; padding: 5rem 2rem;
+    }
+    /* Media = Light Gold — using a very light gold tint */
+    .media-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .media-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--light-gold); margin-bottom: 0.3rem;
+    }
+    .media-title {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: 1.5rem; color: var(--black); margin-bottom: 2rem;
+    }
+    .media-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+    }
+    .media-tile {
+      background: #fff; border-radius: 8px; padding: 1.5rem;
+      cursor: pointer; transition: all 0.3s;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .media-tile:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+    .media-tile-label {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--light-gold); margin-bottom: 0.6rem;
+    }
+    .media-tile-title {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 1rem; color: var(--black); margin-bottom: 0.4rem; line-height: 1.3;
+    }
+    .media-tile-meta {
+      font-family: var(--font-ui); font-size: 0.5rem;
+      color: var(--mid-grey); letter-spacing: 0.05em; margin-bottom: 0.8rem;
+    }
+    .media-tile-link {
+      font-family: var(--font-ui); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--pink);
+      display: inline-flex; align-items: center; gap: 0.3rem;
+    }
+
+    /* ═══ SECTION 9 — COMMUNITY ═══ */
+    .community {
+      background: var(--warm-cream); padding: 5rem 3rem;
+    }
+    .community-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 4rem;
+      align-items: center;
+    }
+    .community-image {
+      aspect-ratio: 4/3; border-radius: 6px; overflow: hidden;
+      background: linear-gradient(160deg, #dcc8c0, #c8b0a8);
+      position: relative;
+    }
+    .community-image::after {
+      content: 'Photo — women\'s circle, warm, real'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1); text-align: center;
+    }
+    .community-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--black); margin-bottom: 0.5rem;
+    }
+    .community-heading {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+      color: var(--black); line-height: 1.2; margin-bottom: 1rem;
+    }
+    .community-body {
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.8; margin-bottom: 1.5rem;
+    }
+    .community-buttons { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .btn-community { background: var(--black); color: var(--warm-cream); border: 1px solid var(--black); }
+    .btn-community:hover { background: var(--dark-grey); }
+
+    /* ═══ SECTION 10 — TESTIMONIALS ═══ */
+    .testimonials {
+      background: #fff; padding: 5rem 2rem;
+    }
+    .testimonials-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .testi-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.3rem;
+    }
+    .testi-heading {
+      font-family: var(--font-heading); font-weight: 300;
+      font-size: 1.5rem; color: var(--black); margin-bottom: 2rem;
+    }
+    .testi-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+    }
+    .testi-card {
+      border-radius: 8px; padding: 2rem; position: relative;
+    }
+    .testi-card:nth-child(1) { background: var(--soft-pink); }
+    .testi-card:nth-child(2) { background: var(--mint); }
+    .testi-card:nth-child(3) { background: var(--lavender); }
+    .testi-quote {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 1rem; color: var(--dark-grey); line-height: 1.7;
+      margin-bottom: 1.2rem;
+    }
+    .testi-author {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid-grey);
+    }
+
+    /* ═══ SECTION 11 — PRESS & CREDENTIALS ═══ */
+    .press {
+      background: #fff; padding: 3rem 2rem;
+      border-top: 1px solid rgba(0,0,0,0.03);
+    }
+    .press-inner {
+      max-width: 1200px; margin: 0 auto; text-align: center;
+    }
+    .press-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 2.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .press-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--warm-grey); margin-bottom: 0.8rem;
+    }
+    .press-logo {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--warm-grey); opacity: 0.6;
+    }
+    .press-logo.serif {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.9rem; letter-spacing: 0;
+    }
+    .cert-badge {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid-grey); padding: 0.3rem 0.7rem;
+      border: 1px solid rgba(0,0,0,0.06); border-radius: 3px;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer {
+      background: var(--black); padding: 4rem 2rem 2rem;
+    }
+    .footer-message {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 1.2rem; color: rgba(245,243,239,0.3);
+      text-align: center; margin-bottom: 2.5rem;
+    }
+    .footer-nav {
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .footer-nav a {
+      font-family: var(--font-body); font-size: 0.88rem;
+      color: rgba(245,243,239,0.35); transition: color 0.3s;
+    }
+    .footer-nav a:hover { color: var(--light-gold); }
+    /* Footer newsletter */
+    .footer-newsletter {
+      max-width: 350px; margin: 0 auto 2rem;
+      display: flex; gap: 0;
+    }
+    .footer-nl-input {
+      flex: 1; padding: 0.6rem 0.8rem;
+      font-family: var(--font-ui); font-size: 0.7rem;
+      border: 1px solid rgba(245,243,239,0.1); border-right: none;
+      border-radius: 3px 0 0 3px;
+      background: rgba(245,243,239,0.05); color: rgba(245,243,239,0.6); outline: none;
+    }
+    .footer-nl-input::placeholder { color: rgba(245,243,239,0.2); }
+    .footer-nl-btn {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase;
+      background: rgba(245,243,239,0.08); color: rgba(245,243,239,0.4);
+      border: 1px solid rgba(245,243,239,0.1);
+      border-radius: 0 3px 3px 0; padding: 0 1rem; cursor: pointer;
+    }
+    .footer-bottom {
+      text-align: center; padding-top: 1.5rem;
+      border-top: 1px solid rgba(245,243,239,0.04);
+    }
+    .footer-address {
+      font-family: var(--font-ui); font-size: 0.48rem;
+      letter-spacing: 0.1em; color: rgba(245,243,239,0.12);
+      margin-bottom: 0.3rem;
+    }
+    .footer-copy {
+      font-family: var(--font-ui); font-size: 0.42rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.06);
+    }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .hero-inner, .coaching-cta-inner, .community-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .lifestyle-grid { grid-template-columns: repeat(2, 1fr); }
+      .workshop-grid, .shop-grid, .media-grid, .testi-grid { grid-template-columns: 1fr; }
+      .nav-row { flex-wrap: wrap; justify-content: center; }
+      .nav-left, .nav-right-links { gap: 0; }
+      .nav-center-logo { order: -1; width: 100%; padding: 0.5rem 0; }
+      .nav-actions { position: static; transform: none; justify-content: center; padding: 0.5rem; width: 100%; }
+      .hero-image { max-height: 350px; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    }
+    @media (max-width: 480px) {
+      .lifestyle-grid { grid-template-columns: 1fr; }
+      .nav-brand { padding: 0.8rem 1rem 0.2rem; }
+      .nav-logo { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION — Centered Logo, Colour-Coded Menu ═══ -->
+<header class="nav-bar">
+  <div class="nav-row">
+    <div class="nav-left">
+      <a href="#" class="nav-blog">Blog</a>
+      <a href="#" class="nav-lifestyle">Lifestyle</a>
+      <a href="#" class="nav-workshops">Workshops</a>
+      <a href="#" class="nav-coaching">Coaching</a>
+    </div>
+    <div class="nav-center-logo">
+      <a href="#" class="nav-logo">Anna Lou Wellness</a>
+      <div class="nav-tagline">Beautifully Whole</div>
+    </div>
+    <div class="nav-right-links">
+      <a href="#" class="nav-shop">Shop</a>
+      <a href="#" class="nav-media">Media</a>
+      <a href="#" class="nav-community">Community</a>
+      <a href="#" class="nav-about">About</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-action">Login</span>
+      <span class="nav-action" style="border-color:var(--red);color:var(--red);">Cart (0)</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ SECTION 1 — HERO ═══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-image reveal"></div>
+    <div class="reveal rd1">
+      <p class="hero-tag">Reset Stories</p>
+      <h1 class="hero-title">The art of coming home to yourself.</h1>
+      <p class="hero-body">What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We&rsquo;re exploring that here &mdash; through somatic coaching, honest stories, and a life beautifully lived.</p>
+      <a href="#" class="hero-cta">Read the story <span>&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 2 — MANTRA CAROUSEL ═══ -->
+<section class="mantras reveal">
+  <p class="mantra-text">&ldquo;You don&rsquo;t have to hold everything to hold yourself together.&rdquo;</p>
+  <p class="mantra-note">Anna&rsquo;s daily mantras &middot; rotating</p>
+</section>
+
+<!-- ═══ SECTION 3 — COACHING CTA (AEO Block) ═══ -->
+<section class="coaching-cta">
+  <div class="coaching-cta-inner">
+    <div class="reveal">
+      <p class="coaching-kicker">Coaching</p>
+      <h2 class="coaching-heading">Ready to return to yourself?</h2>
+      <p class="coaching-body">Somatic coaching is a body-based approach to change and integration &mdash; it works with what your nervous system is actually saying beneath the surface. Unlike talking therapy, which works through the mind, somatic work meets you in the body, where the patterns actually live. Whether you&rsquo;re navigating a life transition, a spiritual awakening, a career shift, or simply a feeling that something more is possible, this is a space built for that journey.</p>
+      <p class="coaching-modalities">TRE &middot; Breathwork &middot; Flash EMDR &middot; Brainspotting &middot; IFS &middot; Energy alignment &middot; Heart-led business</p>
+      <div class="coaching-buttons">
+        <a href="#" class="btn btn-pink">Work with Anna</a>
+        <a href="#" class="btn btn-outline-pink">Which coaching is right for me? &rarr;</a>
+      </div>
+    </div>
+    <div class="coaching-image reveal rd2"></div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 4 — LIFESTYLE PREVIEW ═══ -->
+<section class="lifestyle-strip">
+  <div class="lifestyle-header reveal">
+    <p class="lifestyle-kicker">Explore</p>
+    <h2 class="lifestyle-title">Lifestyle</h2>
+  </div>
+  <div class="lifestyle-grid">
+    <div class="lifestyle-tile reveal">
+      <div class="lifestyle-tile-icon">&#10024;</div>
+      <h3>Spiritual Hygiene</h3>
+      <p>Daily practices, energy clearing, symbolic jewellery, crystal guide.</p>
+    </div>
+    <div class="lifestyle-tile reveal rd1">
+      <div class="lifestyle-tile-icon">&#127744;</div>
+      <h3>Decluttering</h3>
+      <p>Physical, digital, emotional &mdash; and the relationship audit.</p>
+    </div>
+    <div class="lifestyle-tile reveal rd2">
+      <div class="lifestyle-tile-icon">&#128214;</div>
+      <h3>Educational</h3>
+      <p>Nervous system 101, trauma &amp; the body, The Signal Method&trade;.</p>
+    </div>
+    <div class="lifestyle-tile reveal rd3">
+      <div class="lifestyle-tile-icon">&#128142;</div>
+      <h3>Emotional Support Jewellery</h3>
+      <p>Story-first pieces &middot; Moonstone &middot; Clear Quartz &middot; Friday drops.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 5 — WORKSHOPS PREVIEW ═══ -->
+<section class="workshops-section">
+  <div class="section-header reveal">
+    <div>
+      <p class="section-kicker" style="color:var(--blue);">Upcoming</p>
+      <h2 class="section-title">Workshops</h2>
+    </div>
+    <a href="#" class="section-link" style="color:var(--blue);">Browse all workshops <span>&rarr;</span></a>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;">
+    <p class="workshops-body reveal">Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. Every workshop includes either full access (&pound;200) or a recording/summary (&pound;15) so you can engage at whatever level feels right.</p>
+  </div>
+  <div class="workshop-grid" style="max-width:1200px;margin:0 auto;">
+    <div class="workshop-card reveal">
+      <p class="workshop-date">22 April &middot; Taggs Island, Hampton</p>
+      <h3 class="workshop-name">Houseboat Reset Day &mdash; The Signal Method&trade;</h3>
+      <div class="workshop-prices">
+        <span class="price-tag price-full">&pound;200 Full</span>
+        <span class="price-tag price-summary">&pound;15 Summary</span>
+      </div>
+      <a href="#" class="btn btn-blue" style="font-size:0.55rem;padding:0.55rem 1.2rem;">Book &rarr;</a>
+    </div>
+    <div class="workshop-card reveal rd1">
+      <p class="workshop-date">May 2026 &middot; Online</p>
+      <h3 class="workshop-name">Nervous System Reset &mdash; Surrendering &amp; Raising Your Vibration</h3>
+      <div class="workshop-prices">
+        <span class="price-tag price-full">&pound;200 Full</span>
+        <span class="price-tag price-summary">&pound;15 Summary</span>
+      </div>
+      <a href="#" class="btn btn-blue" style="font-size:0.55rem;padding:0.55rem 1.2rem;">Book &rarr;</a>
+    </div>
+    <div class="workshop-card reveal rd2">
+      <p class="workshop-date">Flexible &middot; Your workplace or online</p>
+      <h3 class="workshop-name">Corporate Nervous System Wellbeing &mdash; bespoke formats</h3>
+      <div class="workshop-prices">
+        <span class="price-tag price-summary">Bespoke pricing</span>
+      </div>
+      <a href="#" class="btn btn-outline-dark" style="font-size:0.55rem;padding:0.55rem 1.2rem;">Enquire &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 6 — NEWSLETTER SIGNUP ═══ -->
+<section class="newsletter reveal">
+  <p class="newsletter-kicker">Reset Letters &mdash; Free Newsletter</p>
+  <h2 class="newsletter-title">A letter, every week, that feels like coming home.</h2>
+  <p class="newsletter-body">Honest, beautiful writing about somatic wellness, jewellery with meaning, houseboat life, and what it actually feels like to return to yourself. Sundays, Wednesdays, and Fridays. Always free.</p>
+  <form class="newsletter-form" onsubmit="return false;">
+    <input type="email" class="newsletter-input" placeholder="Your email address">
+    <button class="newsletter-btn">Subscribe</button>
+  </form>
+  <p class="newsletter-small">No spam. Honest writing. Unsubscribe any time.</p>
+</section>
+
+<!-- ═══ SECTION 7 — SHOP PREVIEW ═══ -->
+<section class="shop-preview">
+  <div class="shop-inner">
+    <p class="shop-kicker reveal">Anna Lou of London</p>
+    <h2 class="shop-title reveal rd1">What I&rsquo;ve been reaching for lately.</h2>
+    <p class="shop-intro reveal rd2">25 years of making jewellery taught me one thing &mdash; the pieces we reach for in hard moments aren&rsquo;t decoration. They&rsquo;re anchors.</p>
+    <div class="shop-grid">
+      <div class="product-card reveal">
+        <div class="product-img"></div>
+        <div class="product-info">
+          <p class="product-hook">For the days you need to come back to yourself</p>
+          <p class="product-name">Moonstone Necklace</p>
+        </div>
+      </div>
+      <div class="product-card reveal rd1">
+        <div class="product-img" style="background:linear-gradient(180deg,#e8e3db,#dbd4ca);"></div>
+        <div class="product-info">
+          <p class="product-hook">When your mind is doing too much</p>
+          <p class="product-name">Clear Quartz Necklace</p>
+        </div>
+      </div>
+      <div class="product-card reveal rd2">
+        <div class="product-img" style="background:linear-gradient(180deg,#ebe6de,#ddd6cc);"></div>
+        <div class="product-info">
+          <p class="product-hook">The word you need right now, close to your skin</p>
+          <p class="product-name">Personalised Phrase Necklace</p>
+        </div>
+      </div>
+    </div>
+    <a href="#" class="btn btn-green reveal">Browse all jewellery &rarr;</a>
+  </div>
+</section>
+
+<!-- ═══ SECTION 8 — MEDIA HUB ═══ -->
+<section class="media-hub">
+  <div class="media-inner">
+    <p class="media-kicker reveal">Watch &middot; Listen &middot; Read</p>
+    <h2 class="media-title reveal rd1">The Reset with Anna.</h2>
+    <div class="media-grid">
+      <div class="media-tile reveal">
+        <p class="media-tile-label">YouTube</p>
+        <h3 class="media-tile-title">Coming back to your body after burnout</h3>
+        <p class="media-tile-meta">Latest video</p>
+        <a href="#" class="media-tile-link" style="color:var(--light-gold);">Watch <span>&rarr;</span></a>
+      </div>
+      <div class="media-tile reveal rd1">
+        <p class="media-tile-label">Podcast</p>
+        <h3 class="media-tile-title">The dating rule that changed everything</h3>
+        <p class="media-tile-meta">Latest episode</p>
+        <a href="#" class="media-tile-link" style="color:var(--light-gold);">Listen <span>&rarr;</span></a>
+      </div>
+      <div class="media-tile reveal rd2">
+        <p class="media-tile-label">Substack</p>
+        <h3 class="media-tile-title">Why your nervous system is running the show</h3>
+        <p class="media-tile-meta">Latest issue</p>
+        <a href="#" class="media-tile-link" style="color:var(--light-gold);">Read <span>&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 9 — COMMUNITY ═══ -->
+<section class="community">
+  <div class="community-inner">
+    <div class="community-image reveal"></div>
+    <div class="reveal rd1">
+      <p class="community-kicker">Community</p>
+      <h2 class="community-heading">Come and sit with us.</h2>
+      <p class="community-body">Every week I hold a women&rsquo;s circle at The Hare and the Moon, Twickenham. Donation-based. No agenda except being in the room together. Connection isn&rsquo;t a concept &mdash; it&rsquo;s biological.</p>
+      <p class="community-body" style="margin-bottom:1.5rem;">A few times a year, a small group comes to Taggs Island, Hampton for a full reset day &mdash; water outside, no agenda, just space to come back to yourself.</p>
+      <div class="community-buttons">
+        <a href="#" class="btn btn-community">The Returning Circle</a>
+        <a href="#" class="btn btn-outline-dark">Retreat days</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 10 — TESTIMONIALS ═══ -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <p class="testi-kicker reveal">Client Stories</p>
+    <h2 class="testi-heading reveal rd1">What happens when you come home to yourself.</h2>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <p class="testi-quote">&ldquo;I came to Anna feeling like I&rsquo;d done all the work and still wasn&rsquo;t quite arriving. Within three sessions something shifted I&rsquo;d been trying to reach for years.&rdquo;</p>
+        <p class="testi-author">&mdash; Claudine, Founder</p>
+      </div>
+      <div class="testi-card reveal rd1">
+        <p class="testi-quote">&ldquo;The Returning Circle changed something in me I didn&rsquo;t know needed changing. Being in a room with women who are actually honest &mdash; I&rsquo;d forgotten what that felt like.&rdquo;</p>
+        <p class="testi-author">&mdash; Susan, Coach</p>
+      </div>
+      <div class="testi-card reveal rd2">
+        <p class="testi-quote">&ldquo;I&rsquo;ve worked with therapists, coaches, healers. Anna does something different. She meets you in the body, not the story. That&rsquo;s where the change actually lives.&rdquo;</p>
+        <p class="testi-author">&mdash; Nicky, Creative Director</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 11 — PRESS & CREDENTIALS ═══ -->
+<section class="press">
+  <div class="press-inner">
+    <p class="press-label">As seen in</p>
+    <div class="press-row">
+      <span class="press-logo serif">Harrods</span>
+      <span class="press-logo serif">Selfridges</span>
+      <span class="press-logo serif">Harvey Nichols</span>
+      <span class="press-logo">QVC Japan</span>
+      <span class="press-logo serif">The Telegraph</span>
+      <span class="press-logo serif">Stylist</span>
+      <span class="press-logo serif">SheerLuxe</span>
+    </div>
+    <p class="press-label">Certified</p>
+    <div class="press-row">
+      <span class="cert-badge">ICF Accredited</span>
+      <span class="cert-badge">CPD Certified</span>
+      <span class="cert-badge">TRE&reg; Provider</span>
+      <span class="cert-badge">Trauma-Informed</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <p class="footer-message">You don&rsquo;t have to hold everything.</p>
+  <nav class="footer-nav">
+    <a href="#">Blog</a>
+    <a href="#">Lifestyle</a>
+    <a href="#">Workshops</a>
+    <a href="#">Coaching</a>
+    <a href="#">Shop</a>
+    <a href="#">Media</a>
+    <a href="#">Community</a>
+    <a href="#">About</a>
+    <a href="#">Press</a>
+    <a href="#">Contact</a>
+    <a href="#">Privacy</a>
+  </nav>
+  <form class="footer-newsletter" onsubmit="return false;">
+    <input type="email" class="footer-nl-input" placeholder="Your email">
+    <button class="footer-nl-btn">Subscribe</button>
+  </form>
+  <div class="footer-bottom">
+    <p class="footer-address">Anna Lou Wellness &middot; Taggs Island, Hampton, TW12 &middot; annalouwellness.com</p>
+    <p class="footer-copy">&copy; 2026 Anna Lou Wellness. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ═══ SCROLL REVEAL ═══ -->
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
