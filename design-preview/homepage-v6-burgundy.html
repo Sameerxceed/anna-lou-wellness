@@ -79,20 +79,20 @@
     }
     .nav-logo {
       font-family: var(--font-heading); font-weight: 400;
-      font-size: clamp(2.2rem, 4vw, 3.6rem); letter-spacing: 0.25em; text-transform: uppercase;
+      font-size: 2.2rem; letter-spacing: 0.22em; text-transform: uppercase;
       color: var(--black); display: block; line-height: 1.1;
     }
     .nav-tagline {
       font-family: var(--font-body); font-style: italic;
       font-size: 0.75rem; color: var(--mid-grey);
     }
-    .nav-row a {
+    .nav-row a:not(.nav-logo) {
       font-family: var(--font-ui); font-weight: 400;
       font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
       padding: 0.5rem 1rem;
       transition: opacity 0.3s; position: relative;
     }
-    .nav-row a::after {
+    .nav-row a:not(.nav-logo)::after {
       content: ''; position: absolute; bottom: 0; left: 50%; width: 60%; height: 2px;
       transform: translateX(-50%); transition: opacity 0.3s;
     }
