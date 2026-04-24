@@ -806,6 +806,13 @@
       font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
       color: var(--mid-grey); margin-bottom: 0.5rem;
     }
+    /* Press logos styled as typography */
+    .press-styled {
+      color: var(--dark-grey);
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+    .press-styled:hover { opacity: 0.8; }
     /* Placeholder boxes for real logo artwork */
     .press-logo-box {
       width: 120px; height: 44px;
@@ -1330,19 +1337,19 @@
   <div class="press-inner">
     <p class="press-label">As seen in</p>
     <div class="press-row">
-      <div class="press-logo-box">Harrods</div>
-      <div class="press-logo-box wide">Selfridges</div>
-      <div class="press-logo-box wide">Harvey Nichols</div>
-      <div class="press-logo-box">QVC Japan</div>
-      <div class="press-logo-box wide">The Telegraph</div>
-      <div class="press-logo-box">Stylist</div>
-      <div class="press-logo-box">SheerLuxe</div>
+      <span class="press-styled" style="font-family:Georgia,serif;font-weight:400;font-size:1.1rem;letter-spacing:0.12em;text-transform:uppercase;">Harrods</span>
+      <span class="press-styled" style="font-family:'Times New Roman',serif;font-weight:700;font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;">Selfridges</span>
+      <span class="press-styled" style="font-family:Georgia,serif;font-weight:400;font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;">Harvey Nichols</span>
+      <span class="press-styled" style="font-family:'Arial Narrow',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.1em;text-transform:uppercase;">QVC Japan</span>
+      <span class="press-styled" style="font-family:Georgia,serif;font-weight:400;font-style:italic;font-size:1.15rem;letter-spacing:0.02em;">The Telegraph</span>
+      <span class="press-styled" style="font-family:'Helvetica Neue',sans-serif;font-weight:300;font-size:1rem;letter-spacing:0.18em;text-transform:uppercase;">Stylist</span>
+      <span class="press-styled" style="font-family:'Helvetica Neue',sans-serif;font-weight:300;font-size:0.9rem;letter-spacing:0.12em;text-transform:uppercase;">SheerLuxe</span>
     </div>
     <p class="press-label">Certified</p>
     <div class="press-row">
-      <div class="cert-badge-box">ICF<br>Accredited</div>
-      <div class="cert-badge-box">CPD<br>Certified</div>
-      <div class="cert-badge-box">TRE&reg;<br>Provider</div>
+      <div class="cert-badge-box" style="border:2px solid #1a5276;color:#1a5276;font-weight:600;">ICF<br>Accredited</div>
+      <div class="cert-badge-box" style="border:2px solid #c0392b;color:#c0392b;font-weight:600;">CPD<br>Certified</div>
+      <div class="cert-badge-box" style="border:2px solid #27ae60;color:#27ae60;font-weight:600;">TRE&reg;<br>Provider</div>
     </div>
   </div>
 </section>
