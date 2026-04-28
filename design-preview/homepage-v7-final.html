@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anna Lou Wellness , V7 Final</title>
+  <meta name="description" content="Somatic coaching, honest stories, emotional support jewellery, and a life beautifully lived. Come back to yourself. Anna Lou Wellness, Taggs Island, Hampton.">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500;600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #231F20;
+      --red: #6E3A5A;
+      --gold: #FAA21B;
+      --blue: #7BAFDD;
+      --pink: #F280AA;
+      --green: #5DCAA5;
+      --light-gold: #FFD07A;
+      --blush: #FFDCDE;
+      --cream: #FFF0D2;
+      --lavender: #E9EBF6;
+      --soft-pink: #FCE8EF;
+      --mint: #E1F5EE;
+      --warm-cream: #F5F3EF;
+      --warm-grey: #D5D0C8;
+      --mid-grey: #8C8880;
+      --dark-grey: #3D3D3A;
+      --font-heading: 'Jost', 'Helvetica Neue', sans-serif;
+      --font-body: 'EB Garamond', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--black);
+      background: var(--warm-cream);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══ SCROLL REVEAL ═══ */
+    .reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.08s; } .rd2 { transition-delay: 0.16s; }
+    .rd3 { transition-delay: 0.24s; } .rd4 { transition-delay: 0.32s; }
+
+    /* ═══ TOP STRIP ═══ */
+    .top-strip {
+      background: var(--black);
+      text-align: center;
+      padding: 0.5rem 1rem;
+    }
+    .top-strip-text {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(245,243,239,0.5);
+    }
+
+    /* ═══ NAVIGATION , CENTERED LOGO, PERMANENT COLOURS ═══ */
+    .nav-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,243,239,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .nav-row {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: center; align-items: center;
+      padding: 1rem 5rem 1rem 1.5rem;
+      position: relative;
+    }
+    .nav-left, .nav-right-links {
+      display: flex; align-items: center; gap: 0.1rem;
+    }
+    .nav-center-logo {
+      text-align: center; padding: 0.2rem 1.5rem; flex-shrink: 0;
+    }
+    .nav-logo {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 1.9rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--black); display: block; line-height: 1.1;
+    }
+    .nav-tagline {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.75rem; color: var(--mid-grey);
+    }
+    .nav-row a:not(.nav-logo) {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.5rem 0.4rem;
+      transition: opacity 0.3s; position: relative;
+      white-space: nowrap;
+    }
+    .nav-row a:not(.nav-logo)::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; width: 60%; height: 2px;
+      transform: translateX(-50%); transition: opacity 0.3s;
+    }
+    /* PERMANENT colour-coded nav , each section keeps its brand colour */
+    .nav-reset-stories { color: var(--red); }
+    .nav-reset-stories::after { background: var(--red); opacity: 0; }
+    .nav-reset-stories:hover::after { opacity: 1; }
+    .nav-life { color: var(--gold); }
+    .nav-life::after { background: var(--gold); opacity: 0; }
+    .nav-life:hover::after { opacity: 1; }
+    .nav-love { color: var(--pink); }
+    .nav-love::after { background: var(--pink); opacity: 0; }
+    .nav-love:hover::after { opacity: 1; }
+    .nav-work-money { color: var(--light-gold); }
+    .nav-work-money::after { background: var(--light-gold); opacity: 0; }
+    .nav-work-money:hover::after { opacity: 1; }
+    .nav-experiences { color: var(--blue); }
+    .nav-experiences::after { background: var(--blue); opacity: 0; }
+    .nav-experiences:hover::after { opacity: 1; }
+    .nav-the-work { color: var(--pink); }
+    .nav-the-work::after { background: var(--pink); opacity: 0; }
+    .nav-the-work:hover::after { opacity: 1; }
+    .nav-shop { color: var(--green); }
+    .nav-shop::after { background: var(--green); opacity: 0; }
+    .nav-shop:hover::after { opacity: 1; }
+    .nav-community { color: var(--black); }
+    .nav-community::after { background: var(--black); opacity: 0; }
+    .nav-community:hover::after { opacity: 1; }
+    .nav-about { color: var(--black); }
+    .nav-about::after { background: var(--black); opacity: 0; }
+    .nav-about:hover::after { opacity: 1; }
+
+    /* ═══ DROPDOWN MENUS ═══ */
+    .nav-item { position: relative; }
+    .nav-dropdown {
+      display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.98); backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,0.06); border-radius: 6px;
+      padding: 0.6rem 0; min-width: 200px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      z-index: 200;
+    }
+    .nav-item:hover .nav-dropdown { display: block; }
+    .nav-dropdown a {
+      display: block !important; padding: 0.45rem 1.2rem !important;
+      font-size: 0.7rem !important; letter-spacing: 0.06em !important;
+      color: var(--dark-grey) !important; text-transform: none !important;
+      font-family: var(--font-body) !important; font-weight: 400 !important;
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-dropdown a::after { display: none !important; }
+    .nav-dropdown a:hover { background: rgba(0,0,0,0.03); }
+    .nav-item.nav-reset-stories .nav-dropdown a:hover { color: var(--red) !important; }
+    .nav-item.nav-life .nav-dropdown a:hover { color: var(--gold) !important; }
+    .nav-item.nav-love .nav-dropdown a:hover { color: var(--pink) !important; }
+    .nav-item.nav-work-money .nav-dropdown a:hover { color: var(--light-gold) !important; }
+    .nav-item.nav-experiences .nav-dropdown a:hover { color: var(--blue) !important; }
+    .nav-item.nav-the-work .nav-dropdown a:hover { color: var(--pink) !important; }
+    .nav-item.nav-shop .nav-dropdown a:hover { color: var(--green) !important; }
+    .nav-item.nav-community .nav-dropdown a:hover { color: var(--black) !important; }
+    .nav-item.nav-about .nav-dropdown a:hover { color: var(--black) !important; }
+
+    .nav-actions {
+      position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%);
+      display: flex; gap: 0.4rem; align-items: center;
+    }
+    .nav-action {
+      font-family: var(--font-ui); font-size: 0.5rem; font-weight: 400;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--dark-grey); padding: 0.25rem 0.45rem;
+      border: 1px solid rgba(0,0,0,0.06); border-radius: 3px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .nav-action:hover { border-color: var(--red); color: var(--red); }
+
+    /* ═══ EDITORIAL FRAMING ═══ */
+    .editorial-frame {
+      background: #fff;
+      text-align: center;
+      padding: 1rem 2rem 0.3rem;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .editorial-issue {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--dark-grey); margin-bottom: 0.3rem;
+    }
+    .editorial-inside {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.75rem; color: var(--mid-grey);
+    }
+
+    /* ═══ SECTION 1 , HERO ═══ */
+    .hero {
+      background: #fff;
+      padding: 1.5rem 3rem 2rem;
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem;
+      align-items: center;
+    }
+    .hero-image {
+      aspect-ratio: 4/5; border-radius: 6px; overflow: hidden; max-height: 420px;
+      background: linear-gradient(160deg, #e8ddd0, #d4c5b3);
+      position: relative;
+    }
+    .hero-image::after {
+      content: 'Atmospheric photo. Taggs Island, golden hour, Anna';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-family: var(--font-ui); font-size: 0.5rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(0,0,0,0.12); text-align: center; max-width: 80%;
+    }
+    .hero-tag {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.8rem;
+    }
+    .hero-title {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      color: var(--black); line-height: 1.35;
+      margin-bottom: 1.2rem;
+    }
+    .hero-title em { font-style: italic; color: var(--red); }
+    .hero-body {
+      font-family: var(--font-body); font-size: 1.05rem;
+      line-height: 1.85; color: var(--dark-grey);
+      margin-bottom: 1.5rem;
+    }
+    .hero-ctas { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .hero-cta {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--red); border-bottom: 1px solid var(--red);
+      padding-bottom: 2px; transition: all 0.3s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .hero-cta:hover { gap: 0.7rem; }
+    .hero-cta-secondary {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--pink); border-bottom: 1px solid var(--pink);
+      padding-bottom: 2px; transition: all 0.3s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .hero-cta-secondary:hover { gap: 0.7rem; }
+
+    /* ═══ FEATURED RESET STORY ═══ */
+    .featured-story {
+      background: #fff; padding: 0.8rem 3rem;
+    }
+    .featured-story-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2.5rem;
+      align-items: center;
+    }
+    .featured-image {
+      aspect-ratio: 4/3; border-radius: 6px; overflow: hidden; max-height: 320px;
+      background: linear-gradient(160deg, #e4d8cc, #d0c2b4);
+      position: relative;
+    }
+    .featured-image::after {
+      content: 'Featured story image'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+    .featured-label {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.5rem;
+      display: inline-block; position: relative;
+    }
+    .featured-label::after {
+      content: ''; display: block; width: 30px; height: 1.5px;
+      background: var(--red); margin-top: 0.3rem;
+    }
+    .featured-title {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+      color: var(--black); line-height: 1.35; margin-bottom: 0.8rem;
+    }
+    .featured-meta {
+      font-family: var(--font-ui); font-size: 0.72rem;
+      color: var(--dark-grey); letter-spacing: 0.05em; margin-bottom: 0.8rem;
+    }
+    .featured-excerpt {
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.8; margin-bottom: 0.8rem;
+    }
+    .featured-excerpt .drop-cap {
+      float: left; font-size: 3rem; line-height: 0.8;
+      color: var(--red); font-family: var(--font-body); font-weight: 500;
+      margin-right: 0.12rem; margin-top: 0.1rem;
+    }
+    .featured-read {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--red); border-bottom: 1px solid var(--red);
+      padding-bottom: 2px; display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: gap 0.3s;
+    }
+    .featured-read:hover { gap: 0.7rem; }
+
+    /* ═══ ARTICLE GRID ═══ */
+    .article-grid-section {
+      background: #fff; padding: 0 3rem 1.5rem;
+    }
+    .article-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    }
+    .article-card {
+      border-radius: 6px; overflow: hidden; cursor: pointer;
+      transition: all 0.3s; border: 1px solid rgba(0,0,0,0.04);
+    }
+    .article-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+    .article-card-img {
+      aspect-ratio: 16/10; background: linear-gradient(160deg, #e2d6ca, #d4c6b8);
+      position: relative;
+    }
+    .article-card-img::after {
+      content: 'Article image'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+    .article-card-body { padding: 0.8rem 1rem; }
+    .article-card-cat {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .article-card-title {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 0.95rem; color: var(--black); line-height: 1.3; margin-bottom: 0.3rem;
+    }
+    .article-card-date {
+      font-family: var(--font-ui); font-size: 0.6rem;
+      color: var(--mid-grey);
+    }
+
+    /* ═══ SECTION 2 , MANTRA CAROUSEL ═══ */
+    .mantras {
+      background: var(--cream); padding: 1.2rem 2rem;
+      text-align: center; overflow: hidden;
+    }
+    .mantra-text {
+      font-family: var(--font-body); font-style: italic;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--dark-grey); line-height: 1.6;
+      max-width: 700px; margin: 0 auto;
+      opacity: 0.5;
+    }
+    .mantra-note {
+      font-family: var(--font-ui); font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--mid-grey); margin-top: 0.8rem;
+    }
+    @keyframes mantraFade {
+      0%, 100% { opacity: 0; } 10%, 90% { opacity: 1; }
+    }
+
+    /* ═══ RED QUOTE SLIDE ═══ */
+    .red-quote {
+      background: var(--red);
+      padding: 1.8rem 2rem;
+      text-align: center;
+    }
+    .red-quote-text {
+      font-family: var(--font-body); font-style: italic;
+      font-size: clamp(1.4rem, 2.8vw, 2rem);
+      color: #fff; line-height: 1.6;
+      max-width: 750px; margin: 0 auto;
+    }
+    .red-quote-attr {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); margin-top: 0.8rem;
+    }
+
+    /* ═══ SECTION 3 , COACHING CTA ═══ */
+    .coaching-cta {
+      background: var(--soft-pink); padding: 2rem 3rem;
+    }
+    .coaching-cta-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 0.8fr; gap: 2.5rem;
+      align-items: center;
+    }
+    .coaching-kicker {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--pink); margin-bottom: 0.5rem;
+    }
+    .coaching-heading {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--black); line-height: 1.2; margin-bottom: 1.2rem;
+      letter-spacing: 0.02em;
+    }
+    .coaching-body {
+      font-family: var(--font-body); font-size: 1.02rem;
+      line-height: 1.85; color: var(--dark-grey); margin-bottom: 1.5rem;
+    }
+    .coaching-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.75rem 1.5rem; border-radius: 3px; cursor: pointer;
+      transition: all 0.3s; display: inline-block;
+    }
+    .btn-pink { background: var(--pink); color: #fff; border: 1px solid var(--pink); }
+    .btn-pink:hover { background: #d870a0; }
+    .btn-outline-pink { background: transparent; color: var(--pink); border: 1px solid var(--pink); }
+    .btn-outline-pink:hover { background: var(--pink); color: #fff; }
+    .coaching-image {
+      aspect-ratio: 4/5; border-radius: 6px; overflow: hidden; max-height: 380px;
+      background: linear-gradient(160deg, #e0cfc0, #ccbaa8);
+      position: relative;
+    }
+    .coaching-image::after {
+      content: 'Photo. Coaching session on the houseboat'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    /* ═══ COACHING PROGRAMMES GRID ═══ */
+    .programmes-grid {
+      max-width: 1200px; margin: 1.2rem auto 0;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem;
+    }
+    .programme-card {
+      background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
+      border-radius: 8px; padding: 1rem;
+      border: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+    .programme-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+    .programme-label {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--pink); margin-bottom: 0.4rem;
+    }
+    .programme-name {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 0.95rem; color: var(--black); margin-bottom: 0.3rem; line-height: 1.3;
+    }
+    .programme-meta {
+      font-family: var(--font-ui); font-size: 0.72rem;
+      color: var(--dark-grey); letter-spacing: 0.04em;
+    }
+
+    /* ═══ SECTION 4 , LIFESTYLE PREVIEW ═══ */
+    .lifestyle-strip {
+      background: var(--cream); padding: 1.5rem 2rem;
+    }
+    .lifestyle-header {
+      max-width: 1200px; margin: 0 auto 1rem;
+    }
+    .lifestyle-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.3rem;
+    }
+    .lifestyle-title {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 1.6rem; color: var(--black); letter-spacing: 0.02em;
+    }
+    .lifestyle-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    }
+    .lifestyle-tile {
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
+      border-radius: 8px; padding: 1.5rem; cursor: pointer;
+      transition: all 0.3s; border: 1px solid rgba(255,255,255,0.5);
+    }
+    .lifestyle-tile:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); background: #fff; }
+    .lifestyle-tile-icon { font-size: 1.3rem; margin-bottom: 0.6rem; }
+    .lifestyle-tile h3 {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 0.82rem; color: var(--black); margin-bottom: 0.4rem;
+    }
+    .lifestyle-tile p {
+      font-family: var(--font-body); font-size: 0.85rem;
+      color: var(--mid-grey); line-height: 1.5;
+    }
+
+    /* ═══ SECTION 5 , WORKSHOPS PREVIEW ═══ */
+    .workshops-section {
+      background: #fff; padding: 1.5rem 2rem;
+    }
+    .section-header {
+      max-width: 1200px; margin: 0 auto 1rem;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    .section-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .section-title {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 1.5rem; color: var(--black); letter-spacing: 0.02em;
+    }
+    .section-link {
+      font-family: var(--font-ui); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      transition: gap 0.3s;
+    }
+    .section-link:hover { gap: 0.6rem; }
+    .workshops-body {
+      font-family: var(--font-body); font-size: 0.95rem;
+      color: var(--dark-grey); line-height: 1.7;
+      max-width: 700px; margin-bottom: 2rem;
+    }
+    .workshop-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    }
+    .workshop-card {
+      border: 1px solid rgba(0,0,0,0.05); border-radius: 8px;
+      padding: 1.5rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .workshop-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+    /* Dark luxe workshop card */
+    .workshop-card-dark {
+      background: var(--black); border-radius: 8px;
+      padding: 1.5rem; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .workshop-card-dark:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
+    .workshop-card-dark .workshop-date { color: var(--light-gold); }
+    .workshop-card-dark .workshop-name { color: var(--warm-cream); font-family: var(--font-body); }
+    .workshop-card-dark .price-tag { color: var(--warm-cream); }
+    .workshop-date {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 0.4rem;
+    }
+    .workshop-name {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 1.05rem; color: var(--black); margin-bottom: 0.5rem; line-height: 1.3;
+    }
+    .workshop-subtitle {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.85rem; color: var(--mid-grey); margin-bottom: 0.5rem;
+    }
+    .workshop-prices { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+    .price-tag {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.25rem 0.6rem; border-radius: 3px;
+    }
+    .price-full { background: var(--blue); color: #fff; }
+    .price-summary { border: 1px solid rgba(0,0,0,0.1); color: var(--dark-grey); }
+    .btn-blue { background: var(--blue); color: #fff; border: 1px solid var(--blue); }
+    .btn-blue:hover { background: #6a9ec8; }
+    .btn-outline-dark { background: transparent; color: var(--dark-grey); border: 1px solid rgba(0,0,0,0.12); }
+    .btn-outline-dark:hover { background: var(--black); color: #fff; }
+    .btn-gold-dark { background: var(--light-gold); color: var(--black); border: 1px solid var(--light-gold); }
+    .btn-gold-dark:hover { background: var(--gold); }
+
+    /* ═══ SECTION 6 , NEWSLETTER / SUBSTACK ═══ */
+    .newsletter {
+      background: var(--lavender); padding: 1.5rem 2rem;
+      text-align: center;
+    }
+    .newsletter-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.5rem;
+    }
+    .newsletter-title {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      color: var(--black); margin-bottom: 0.8rem; letter-spacing: 0.02em;
+    }
+    .newsletter-body {
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.75;
+      max-width: 550px; margin: 0 auto 0.8rem;
+    }
+    .newsletter-tiers {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .newsletter-tier {
+      font-family: var(--font-ui); font-size: 0.7rem;
+      letter-spacing: 0.04em; color: var(--dark-grey);
+      background: #fff; border-radius: 6px;
+      padding: 1rem 1.8rem;
+      border: 1px solid rgba(0,0,0,0.08);
+      min-width: 220px; text-align: center;
+    }
+    .newsletter-tier strong {
+      display: block; font-weight: 600;
+      font-size: 0.75rem; color: var(--black);
+      margin-bottom: 0.3rem;
+    }
+    .btn-substack {
+      background: var(--red); color: #fff; border: 1px solid var(--red);
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.85rem 2rem; border-radius: 3px; cursor: pointer;
+      transition: all 0.3s; display: inline-block;
+    }
+    .btn-substack:hover { background: #c42a28; }
+    .newsletter-small {
+      font-family: var(--font-ui); font-size: 0.72rem;
+      color: var(--dark-grey); margin-top: 0.8rem; letter-spacing: 0.05em;
+    }
+    .newsletter-schedule {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.9rem; color: var(--mid-grey);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ═══ SECTION 7 , SHOP PREVIEW ═══ */
+    .shop-preview {
+      background: var(--mint); padding: 1.5rem 2rem;
+    }
+    .shop-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .shop-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 0.3rem;
+    }
+    .shop-title {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 1.5rem; color: var(--black); margin-bottom: 0.8rem;
+    }
+    .shop-intro {
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.75;
+      max-width: 600px; margin-bottom: 2rem;
+    }
+    .shop-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .product-card {
+      background: #fff; border-radius: 8px; overflow: hidden;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+    .product-img {
+      aspect-ratio: 1; background: linear-gradient(180deg, #eae5dd, #ddd5ca);
+      position: relative;
+    }
+    .product-img::after {
+      content: 'Product photo'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1);
+    }
+    .product-info { padding: 1rem; }
+    .product-hook {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 0.82rem; color: var(--mid-grey); margin-bottom: 0.3rem;
+    }
+    .product-name {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 0.95rem; color: var(--black);
+    }
+    .btn-green { background: var(--green); color: #fff; border: 1px solid var(--green); }
+    .btn-green:hover { background: #4db895; }
+
+    /* ═══ SECTION 8 , MEDIA HUB ═══ */
+    .media-hub {
+      background: #FFF8E8; padding: 1.5rem 2rem;
+    }
+    .media-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .media-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--light-gold); margin-bottom: 0.3rem;
+    }
+    .media-title {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 1.5rem; color: var(--black); margin-bottom: 1rem;
+    }
+    .media-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+    }
+    .media-tile {
+      background: #fff; border-radius: 8px; padding: 1.5rem;
+      cursor: pointer; transition: all 0.3s;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .media-tile:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+    .media-tile-label {
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--light-gold); margin-bottom: 0.5rem;
+    }
+    .media-tile-title {
+      font-family: var(--font-body); font-weight: 500;
+      font-size: 1rem; color: var(--black); margin-bottom: 0.4rem; line-height: 1.3;
+    }
+    .media-tile-meta {
+      font-family: var(--font-ui); font-size: 0.72rem;
+      color: var(--dark-grey); letter-spacing: 0.05em; margin-bottom: 0.6rem;
+    }
+    .media-tile-link {
+      font-family: var(--font-ui); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--light-gold);
+      display: inline-flex; align-items: center; gap: 0.3rem;
+    }
+
+    /* ═══ SECTION 9 , COMMUNITY ═══ */
+    .community {
+      background: var(--warm-cream); padding: 1.5rem 3rem;
+    }
+    .community-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+      align-items: center;
+    }
+    .community-image {
+      aspect-ratio: 4/3; border-radius: 6px; overflow: hidden; max-height: 300px;
+      background: linear-gradient(160deg, #dcc8c0, #c8b0a8);
+      position: relative;
+    }
+    .community-image::after {
+      content: 'Photo. Circle gathering, warm, real'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1); text-align: center;
+    }
+    .community-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--black); margin-bottom: 0.5rem;
+    }
+    .community-heading {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+      color: var(--black); line-height: 1.2; margin-bottom: 1rem;
+    }
+    .community-body {
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--dark-grey); line-height: 1.8; margin-bottom: 1.5rem;
+    }
+    .community-buttons { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .btn-community { background: var(--black); color: var(--warm-cream); border: 1px solid var(--black); }
+    .btn-community:hover { background: var(--dark-grey); }
+
+    /* ═══ SECTION , PORTRAIT ═══ */
+    .portrait-section {
+      background: #fff; padding: 1.5rem 3rem;
+    }
+    .portrait-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 2.5rem;
+      align-items: center;
+    }
+    .portrait-image {
+      aspect-ratio: 3/4; border-radius: 6px; overflow: hidden; max-height: 350px;
+      background: linear-gradient(160deg, #d8ccc0, #c4b4a8);
+      position: relative;
+    }
+    .portrait-image::after {
+      content: 'Portrait of Anna. Real photo to be supplied'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); font-family: var(--font-ui);
+      font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.1);
+      text-align: center; max-width: 80%;
+    }
+    .portrait-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dark-grey); margin-bottom: 0.5rem;
+    }
+    .portrait-heading {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      color: var(--black); line-height: 1.35; margin-bottom: 1rem;
+    }
+    .portrait-body {
+      font-family: var(--font-body); font-size: 1.02rem;
+      color: var(--dark-grey); line-height: 1.85; margin-bottom: 1.5rem;
+    }
+    .portrait-body .drop-cap {
+      float: left; font-size: 3.2rem; line-height: 0.8;
+      color: var(--red); font-family: var(--font-body); font-weight: 500;
+      margin-right: 0.15rem; margin-top: 0.1rem;
+    }
+
+    /* ═══ SECTION 10 , TESTIMONIALS ═══ */
+    .testimonials {
+      background: #fff; padding: 1.5rem 2rem;
+    }
+    .testimonials-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .testi-kicker {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dark-grey); margin-bottom: 0.3rem;
+    }
+    .testi-heading {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 1.5rem; color: var(--black); margin-bottom: 1rem;
+    }
+    .testi-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+    }
+    .testi-card {
+      border-radius: 8px; padding: 2rem; position: relative;
+    }
+    .testi-card:nth-child(1) { background: var(--soft-pink); }
+    .testi-card:nth-child(2) { background: var(--mint); }
+    .testi-card:nth-child(3) { background: var(--lavender); }
+    .testi-quote {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 1rem; color: var(--dark-grey); line-height: 1.7;
+      margin-bottom: 1.2rem;
+    }
+    .testi-author {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dark-grey);
+    }
+
+    /* ═══ SECTION 11 , PRESS & CREDENTIALS ═══ */
+    .press {
+      background: #fff; padding: 0.8rem 2rem 1rem;
+      border-top: 1px solid rgba(0,0,0,0.03);
+    }
+    .press-inner {
+      max-width: 1200px; margin: 0 auto; text-align: center;
+    }
+    .press-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+    }
+    .press-label {
+      font-family: var(--font-ui); font-weight: 300;
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--mid-grey); margin-bottom: 0.5rem;
+    }
+    /* Press logos styled as typography */
+    .press-styled {
+      color: var(--dark-grey);
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+    .press-styled:hover { opacity: 0.8; }
+    /* Placeholder boxes for real logo artwork */
+    .press-logo-box {
+      width: 120px; height: 44px;
+      border: 1px solid rgba(0,0,0,0.12); border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-body); font-style: italic; font-weight: 400;
+      font-size: 0.85rem;
+      color: var(--dark-grey);
+    }
+    .press-logo-box.wide { width: 140px; }
+    .cert-badge-box {
+      width: 100px; height: 56px;
+      border: 1px solid rgba(0,0,0,0.12); border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      font-family: var(--font-ui); font-weight: 500;
+      font-size: 0.6rem; letter-spacing: 0.04em; line-height: 1.5;
+      color: var(--dark-grey);
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer {
+      background: var(--black); padding: 1.5rem 2rem 1rem;
+    }
+    .footer-message {
+      font-family: var(--font-body); font-style: italic;
+      font-size: 1.2rem; color: rgba(245,243,239,0.3);
+      text-align: center; margin-bottom: 1.2rem;
+    }
+    /* Tier 1: Primary nav */
+    .footer-tier1 {
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+      margin-bottom: 0.8rem;
+    }
+    .footer-tier1 a {
+      font-family: var(--font-body); font-size: 0.9rem;
+      color: rgba(245,243,239,0.45); transition: color 0.3s;
+    }
+    .footer-tier1 a:hover { color: var(--light-gold); }
+    /* Tier 2: Social */
+    .footer-tier2 {
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+      margin-bottom: 0.8rem;
+    }
+    .footer-tier2 a {
+      font-family: var(--font-body); font-size: 0.8rem;
+      
+      color: rgba(245,243,239,0.35); transition: color 0.3s;
+    }
+    .footer-tier2 a:hover { color: var(--light-gold); }
+    /* Tier 3: Legal - muted */
+    .footer-tier3 {
+      display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap;
+      margin-bottom: 0.8rem;
+    }
+    .footer-tier3 a {
+      font-family: var(--font-body); font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: rgba(245,243,239,0.2); transition: color 0.3s;
+    }
+    .footer-tier3 a:hover { color: rgba(245,243,239,0.5); }
+    /* Substack CTA in footer */
+    .footer-substack {
+      text-align: center; margin-bottom: 1rem;
+    }
+    .footer-substack a {
+      font-family: var(--font-ui); font-weight: 400;
+      font-size: 0.7rem; letter-spacing: 0.04em;
+      color: rgba(245,243,239,0.4); padding: 0.5rem 1.2rem;
+      border: 1px solid rgba(245,243,239,0.1); border-radius: 3px;
+      transition: all 0.3s;
+    }
+    .footer-substack a:hover { border-color: var(--red); color: var(--red); }
+    .footer-bottom {
+      text-align: center; padding-top: 1.5rem;
+      border-top: 1px solid rgba(245,243,239,0.04);
+    }
+    .footer-address {
+      font-family: var(--font-ui); font-size: 0.6rem;
+      letter-spacing: 0.08em; color: rgba(245,243,239,0.25);
+      margin-bottom: 0.3rem;
+    }
+    .footer-copy {
+      font-family: var(--font-ui); font-size: 0.55rem;
+      letter-spacing: 0.06em; color: rgba(245,243,239,0.15);
+    }
+
+    /* ═══ HAMBURGER BUTTON ═══ */
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      width: 26px; height: 18px; position: relative; z-index: 1001;
+      padding: 0;
+    }
+    .hamburger span {
+      display: block; width: 100%; height: 1.5px; background: var(--black);
+      position: absolute; left: 0; transition: all 0.3s;
+    }
+    .hamburger span:nth-child(1) { top: 0; }
+    .hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+    .hamburger span:nth-child(3) { bottom: 0; }
+    .hamburger.open span:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { bottom: 50%; transform: translateY(50%) rotate(-45deg); }
+
+    /* ═══ MOBILE MENU OVERLAY ═══ */
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 9999;
+      background: #F5F3EF;
+      overflow-y: auto;
+      padding: 0 1.5rem 2rem;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-menu-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 0; margin-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      position: sticky; top: 0; background: #F5F3EF; z-index: 1;
+    }
+    .mobile-menu-header .mobile-logo {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: 1.1rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--black); text-decoration: none;
+    }
+    .mobile-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 2rem; line-height: 1; color: var(--black);
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .mobile-menu-section { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .mobile-menu-toggle {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; padding: 0.9rem 0; background: none; border: none; cursor: pointer;
+      font-family: var(--font-ui); font-weight: 400; font-size: 0.85rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .mobile-menu-toggle .arrow {
+      font-size: 0.6rem; transition: transform 0.3s; color: var(--mid-grey);
+    }
+    .mobile-menu-section.open .arrow { transform: rotate(180deg); }
+    .mobile-menu-sub {
+      display: none; padding: 0 0 0.6rem 1rem;
+    }
+    .mobile-menu-section.open .mobile-menu-sub { display: block; }
+    .mobile-menu-sub a {
+      display: block; padding: 0.4rem 0;
+      font-family: var(--font-body); font-size: 0.95rem;
+      color: var(--dark-grey); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .mobile-menu-sub a:hover { color: var(--black); }
+    .mobile-menu-actions {
+      display: flex; gap: 1rem; justify-content: center;
+      padding: 2rem 0 1.5rem;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: 0.5rem;
+    }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 900px) {
+      .hero-inner, .coaching-cta-inner, .community-inner, .portrait-inner, .featured-story-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+      .article-grid { grid-template-columns: 1fr; }
+      .lifestyle-grid { grid-template-columns: 1fr !important; }
+      .workshop-grid, .shop-grid, .media-grid, .testi-grid { grid-template-columns: 1fr; }
+      /* Programme cards: 2 per row on mobile */
+      .programmes-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .programmes-grid .programme-card { grid-column: span 1 !important; }
+      .programmes-grid .programme-card:last-child { grid-column: span 2 !important; }
+      .nav-left, .nav-right-links { display: none; }
+      .nav-row { padding: 0.8rem 1.2rem; justify-content: space-between; }
+      .nav-center-logo { order: 0; padding: 0; }
+      .nav-actions { position: static; transform: none; display: flex; gap: 0.6rem; align-items: center; }
+      .nav-actions .nav-action { display: none; }
+      .hamburger { display: block; }
+      .nav-dropdown { display: none !important; }
+      .hero-image { max-height: 350px; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      /* Footer mobile — stacked, centered */
+      .footer-tier1, .footer-tier2 { flex-direction: column; align-items: center; gap: 0.5rem; }
+      .footer-tier3 { flex-wrap: wrap; justify-content: center; gap: 0.5rem 0.8rem; }
+      .footer-message { font-size: 1rem; }
+      /* Press & certs mobile */
+      .press-row { gap: 0.8rem; }
+      .press-styled { font-size: 0.8rem !important; }
+      .cert-badge-box { width: 75px; height: 45px; font-size: 0.5rem; }
+      /* Buttons stack */
+      .newsletter-tiers { flex-direction: column; align-items: center; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+      .coaching-buttons { flex-direction: column; align-items: flex-start; }
+      .community-buttons { flex-direction: column; align-items: flex-start; }
+      /* Padding tighten for mobile */
+      .hero, .featured-story, .coaching-cta, .community, .portrait-section { padding-left: 1.2rem !important; padding-right: 1.2rem !important; }
+      .article-grid-section, .lifestyle-strip, .workshops-section, .newsletter,
+      .shop-preview, .media-hub, .testimonials, .press { padding-left: 1rem !important; padding-right: 1rem !important; }
+      .footer { padding-left: 1rem !important; padding-right: 1rem !important; }
+    }
+    @media (max-width: 480px) {
+      .nav-logo { font-size: 1.1rem; letter-spacing: 0.12em; }
+      .nav-action { font-size: 0.45rem; padding: 0.2rem 0.35rem; }
+      .top-strip-text { font-size: 0.45rem; letter-spacing: 0.15em; }
+      .programmes-grid { grid-template-columns: 1fr !important; }
+      .programmes-grid .programme-card { grid-column: span 1 !important; }
+      .programmes-grid .programme-card:last-child { grid-column: span 1 !important; }
+    }
+    /* ═══ DESKTOP TIGHTENING — per Anna round 2 ═══ */
+    @media (min-width: 901px) {
+      .hero { padding: 0.8rem 3rem 0.8rem; }
+      .featured-story { padding: 0.5rem 3rem; }
+      .article-grid-section { padding: 0 3rem 0.5rem; }
+      .mantras { padding: 0.5rem 2rem; }
+      .red-quote { padding: 1rem 2rem; }
+      .coaching-cta { padding: 1rem 3rem; }
+      .programmes-grid { margin-top: 0.8rem; }
+      .lifestyle-strip { padding: 0.8rem 2rem; }
+      .workshops-section { padding: 0.8rem 2rem; }
+      .newsletter { padding: 0.8rem 2rem; }
+      .shop-preview { padding: 0.8rem 2rem; }
+      .media-hub { padding: 0.8rem 2rem; }
+      .community { padding: 0.8rem 3rem; }
+      .portrait-section { padding: 0.8rem 3rem; }
+      .testimonials { padding: 0.8rem 2rem; }
+      .press { padding: 0.5rem 2rem 0.8rem; }
+      .footer { padding: 1rem 2rem 0.8rem; }
+      .footer-message { margin-bottom: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ TOP STRIP ═══ -->
+<div class="top-strip">
+  <p class="top-strip-text">Stories &middot; The Work &middot; Experiences &middot; Community</p>
+</div>
+
+<!-- ═══ NAVIGATION , Centered Logo, Permanent Colour-Coded, 9 items ═══ -->
+<header class="nav-bar">
+  <div class="nav-row">
+    <div class="nav-left">
+      <div class="nav-item nav-reset-stories">
+        <a href="#" class="nav-reset-stories">Reset Stories</a>
+        <div class="nav-dropdown">
+          <a href="#">All Stories</a>
+          <a href="#">You're Holding Everything</a>
+          <a href="#">The Strong One</a>
+          <a href="#">Signal vs Noise</a>
+          <a href="#">Houseboat Life</a>
+          <a href="#">Emotional Anchors</a>
+        </div>
+      </div>
+      <div class="nav-item nav-life">
+        <a href="#" class="nav-life">Life</a>
+        <div class="nav-dropdown">
+          <a href="#">Rituals and Energy</a>
+          <a href="#">Home and Space</a>
+          <a href="#">Style and Beauty</a>
+          <a href="#">Food and Nourishment</a>
+          <a href="#">Weekend Finds</a>
+        </div>
+      </div>
+      <div class="nav-item nav-love">
+        <a href="#" class="nav-love">Love &amp; Relationships</a>
+        <div class="nav-dropdown">
+          <a href="#">Dating and Patterns</a>
+          <a href="#">Breakups and Reset</a>
+          <a href="#">Friendship</a>
+          <a href="#">Motherhood</a>
+          <a href="#">Self Worth and Identity</a>
+        </div>
+      </div>
+      <div class="nav-item nav-work-money">
+        <a href="#" class="nav-work-money">Work &amp; Money</a>
+        <div class="nav-dropdown">
+          <a href="#">Founder Reset</a>
+          <a href="#">Burnout and Nervous System</a>
+          <a href="#">Signal Method&trade;</a>
+          <a href="#">Career and Direction</a>
+          <a href="#">Money and Worth</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-center-logo">
+      <a href="#" class="nav-logo">Anna Lou Wellness</a>
+    </div>
+    <div class="nav-right-links">
+      <div class="nav-item nav-experiences">
+        <a href="#" class="nav-experiences">Experiences</a>
+        <div class="nav-dropdown">
+          <a href="#">Retreats</a>
+          <a href="#">Workshops</a>
+          <a href="#">Corporate Wellbeing</a>
+          <a href="#">Speaking</a>
+        </div>
+      </div>
+      <div class="nav-item nav-the-work">
+        <a href="#" class="nav-the-work">The Work</a>
+        <div class="nav-dropdown">
+          <a href="#">Ways to Work With Me</a>
+          <a href="#">What Do You Need Right Now?</a>
+          <a href="#">Client Stories</a>
+          <a href="#">1:1 Sessions</a>
+        </div>
+      </div>
+      <div class="nav-item nav-shop">
+        <a href="#" class="nav-shop">Shop</a>
+        <div class="nav-dropdown">
+          <a href="#">All Jewellery</a>
+          <a href="#">Emotional Support Jewellery</a>
+          <a href="#">Personalised Pieces</a>
+          <a href="#">New In</a>
+        </div>
+      </div>
+      <div class="nav-item nav-community">
+        <a href="#" class="nav-community">Community</a>
+        <div class="nav-dropdown">
+          <a href="#">The Returning Circle</a>
+          <a href="#">Membership</a>
+          <a href="#">Events Calendar</a>
+          <a href="#">Resource Library</a>
+        </div>
+      </div>
+      <div class="nav-item nav-about">
+        <a href="#" class="nav-about">About</a>
+        <div class="nav-dropdown">
+          <a href="#">Anna's Story</a>
+          <a href="#">Press</a>
+          <a href="#">Work With Me</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-action">Login</span>
+      <span class="nav-action" style="border-color:var(--red);color:var(--red);">Cart</span>
+      <button class="hamburger" onclick="this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MOBILE MENU ═══ -->
+<div id="mobileMenu" class="mobile-menu">
+  <div class="mobile-menu-header">
+    <a href="#" class="mobile-logo">Anna Lou Wellness</a>
+    <button class="mobile-close" onclick="document.getElementById('mobileMenu').classList.remove('open');document.querySelector('.hamburger').classList.remove('open');" aria-label="Close menu">&times;</button>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--red);" onclick="toggleAccordion(this.parentElement)">Reset Stories <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">All Stories</a>
+      <a href="#">You're Holding Everything</a>
+      <a href="#">The Strong One</a>
+      <a href="#">Signal vs Noise</a>
+      <a href="#">Houseboat Life</a>
+      <a href="#">Emotional Anchors</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--gold);" onclick="toggleAccordion(this.parentElement)">Life <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">Rituals and Energy</a>
+      <a href="#">Home and Space</a>
+      <a href="#">Style and Beauty</a>
+      <a href="#">Food and Nourishment</a>
+      <a href="#">Weekend Finds</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--pink);" onclick="toggleAccordion(this.parentElement)">Love &amp; Relationships <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">Dating and Patterns</a>
+      <a href="#">Breakups and Reset</a>
+      <a href="#">Friendship</a>
+      <a href="#">Motherhood</a>
+      <a href="#">Self Worth and Identity</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--light-gold);" onclick="toggleAccordion(this.parentElement)">Work &amp; Money <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">Founder Reset</a>
+      <a href="#">Burnout and Nervous System</a>
+      <a href="#">Signal Method&trade;</a>
+      <a href="#">Career and Direction</a>
+      <a href="#">Money and Worth</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--blue);" onclick="toggleAccordion(this.parentElement)">Experiences <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">Retreats</a>
+      <a href="#">Workshops</a>
+      <a href="#">Corporate Wellbeing</a>
+      <a href="#">Speaking</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--pink);" onclick="toggleAccordion(this.parentElement)">The Work <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">Ways to Work With Me</a>
+      <a href="#">What Do You Need Right Now?</a>
+      <a href="#">Client Stories</a>
+      <a href="#">1:1 Sessions</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--green);" onclick="toggleAccordion(this.parentElement)">Shop <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">All Jewellery</a>
+      <a href="#">Emotional Support Jewellery</a>
+      <a href="#">Personalised Pieces</a>
+      <a href="#">New In</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--black);" onclick="toggleAccordion(this.parentElement)">Community <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">The Returning Circle</a>
+      <a href="#">Membership</a>
+      <a href="#">Events Calendar</a>
+      <a href="#">Resource Library</a>
+    </div>
+  </div>
+  <div class="mobile-menu-section">
+    <button class="mobile-menu-toggle" style="color:var(--black);" onclick="toggleAccordion(this.parentElement)">About <span class="arrow">&#9660;</span></button>
+    <div class="mobile-menu-sub">
+      <a href="#">Anna's Story</a>
+      <a href="#">Press</a>
+      <a href="#">Work With Me</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="mobile-menu-actions">
+    <a href="#" class="btn" style="background:var(--black);color:#F5F3EF;border:1px solid var(--black);font-size:0.7rem;padding:0.7rem 2rem;">Login</a>
+    <a href="#" class="btn" style="background:var(--red);color:#fff;border:1px solid var(--red);font-size:0.7rem;padding:0.7rem 2rem;">Cart</a>
+  </div>
+</div>
+
+<!-- ═══ EDITORIAL FRAMING ═══ -->
+<div class="editorial-frame reveal">
+  <p class="editorial-issue">Issue No. 01 &middot; Spring 2026</p>
+  <p class="editorial-inside">Inside this issue</p>
+</div>
+
+<!-- ═══ SECTION 1 , HERO ═══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-image reveal"></div>
+    <div class="reveal rd1">
+      <p class="hero-tag">Reset Stories</p>
+      <h1 class="hero-title">Come back to <em>yourself.</em></h1>
+      <p class="hero-body">What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.</p>
+      <div class="hero-ctas">
+        <a href="#" class="hero-cta">Read the Reset Stories <span>&rarr;</span></a>
+        <a href="#" class="hero-cta-secondary">Work with Anna <span>&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURED RESET STORY ═══ -->
+<section class="featured-story">
+  <div class="featured-story-inner">
+    <div class="reveal">
+      <div class="featured-label">Featured Reset Story</div>
+      <h2 class="featured-title">You are not overwhelmed. You are holding everything.</h2>
+      <div class="featured-meta">By Anna Lou &middot; April 2026 &middot; 6 min read</div>
+      <p class="featured-excerpt"><span class="drop-cap">T</span>he distinction that changed how I work, how I move, and how I sleep. I spent years thinking I was overwhelmed. Overwhelm felt manageable, something you could breathe through, sleep off, come back from. But what I was actually doing was not overwhelm. I was holding. Everything. Every family worry, every business pressure, every unresolved thing from every relationship. I was holding it in my body like I was the only safe place to put it.</p>
+      <a href="#" class="featured-read">Continue reading <span>&rarr;</span></a>
+    </div>
+    <div class="featured-image reveal rd1"></div>
+  </div>
+</section>
+
+<!-- ═══ ARTICLE GRID , More Stories ═══ -->
+<section class="article-grid-section">
+  <div class="article-grid">
+    <div class="article-card reveal">
+      <div class="article-card-img"></div>
+      <div class="article-card-body">
+        <p class="article-card-cat" style="color:var(--red);">Reset Stories</p>
+        <h3 class="article-card-title">The problem with being the strong one.</h3>
+        <p class="article-card-date">March 2026</p>
+      </div>
+    </div>
+    <div class="article-card reveal rd1">
+      <div class="article-card-img" style="background:linear-gradient(160deg,#ddd2c6,#cfc0b2);"></div>
+      <div class="article-card-body">
+        <p class="article-card-cat" style="color:var(--gold);">Life</p>
+        <h3 class="article-card-title">What I wore every day this month, and why it matters.</h3>
+        <p class="article-card-date">March 2026</p>
+      </div>
+    </div>
+    <div class="article-card reveal rd2">
+      <div class="article-card-img" style="background:linear-gradient(160deg,#d8ccc0,#cabcae);"></div>
+      <div class="article-card-body">
+        <p class="article-card-cat" style="color:var(--red);">Reset Stories</p>
+        <h3 class="article-card-title">Living on Taggs Island. What the water teaches you about letting go.</h3>
+        <p class="article-card-date">February 2026</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 2 , MANTRA CAROUSEL ═══ -->
+<section class="mantras reveal">
+  <p class="mantra-text">Mantra strip. Pending Anna&rsquo;s recordings.</p>
+  <p class="mantra-note">CMS placeholder. Anna will supply YouTube mantra links.</p>
+</section>
+
+<!-- ═══ RED QUOTE SLIDE #1 ═══ -->
+<section class="red-quote reveal">
+  <p class="red-quote-text">Quote slide 1. CMS placeholder.</p>
+  <p class="red-quote-attr">CMS managed</p>
+</section>
+
+<!-- ═══ SECTION 3 , THE WORK (was Coaching) ═══ -->
+<section class="coaching-cta">
+  <div class="coaching-cta-inner">
+    <div class="reveal">
+      <p class="coaching-kicker">The Work</p>
+      <h2 class="coaching-heading">Your inner world already knows.</h2>
+      <p class="coaching-body">Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live. Not the story. Not the intellectual understanding. The actual place the pattern lives, in the automatic responses that fire before your conscious mind catches up.</p>
+      <p class="coaching-body" style="margin-bottom:1.5rem;">The Signal Method<sup style="font-size:0.7em;font-weight:600;">&trade;</sup> is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey.</p>
+      <div class="coaching-buttons">
+        <a href="#" class="btn btn-pink">Ways to Work With Me</a>
+        <a href="#" class="btn btn-outline-pink">What do you need right now? &rarr;</a>
+      </div>
+    </div>
+    <div class="coaching-image reveal rd2"></div>
+  </div>
+  <!-- Programme cards -->
+  <div class="programmes-grid">
+    <div class="programme-card reveal">
+      <p class="programme-label">Free</p>
+      <p class="programme-name">The Nervous System Decoder</p>
+      <p class="programme-meta">Download. Understand your inner guidance system. Begin.</p>
+    </div>
+    <div class="programme-card reveal rd1">
+      <p class="programme-label">Entry point</p>
+      <p class="programme-name">Workshops</p>
+      <p class="programme-meta">&pound;15 recording &middot; &pound;200 full access</p>
+    </div>
+    <div class="programme-card reveal rd2">
+      <p class="programme-label">Membership</p>
+      <p class="programme-name">The Reset Room</p>
+      <p class="programme-meta">Monthly group sessions, recordings, community, Signal Method<sup style="font-size:0.7em;font-weight:600;">&trade;</sup> in practice.</p>
+    </div>
+    <div class="programme-card reveal">
+      <p class="programme-label">6 weeks 1:1</p>
+      <p class="programme-name">The Reset</p>
+      <p class="programme-meta">First shift. New inner guidance system operating code begins.</p>
+    </div>
+    <div class="programme-card reveal rd1">
+      <p class="programme-label">12 weeks 1:1</p>
+      <p class="programme-name">Signal</p>
+      <p class="programme-meta">Full inner world rewire. Pattern release. New operating system installed.</p>
+    </div>
+    <div class="programme-card reveal rd2">
+      <p class="programme-label">12 weeks 1:1</p>
+      <p class="programme-name">Signal &amp; Build</p>
+      <p class="programme-meta">Signal work plus heart-led business strategy. For founders and leaders.</p>
+    </div>
+    <div class="programme-card reveal rd2">
+      <p class="programme-label">Intensive &middot; Enquire</p>
+      <p class="programme-name">One Day</p>
+      <p class="programme-meta">Houseboat or online. Transformation concentrated, not stretched.</p>
+    </div>
+    <div class="programme-card reveal" style="grid-column: span 4; text-align:center;">
+      <p class="programme-label">Mastermind &middot; By application</p>
+      <p class="programme-name">The Signal Collective</p>
+      <p class="programme-meta">For coaches, founders, leaders. Limited intake. Group + 1:1 coaching combined.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 4 , EDITORIAL SECTIONS (was Lifestyle) ═══ -->
+<section class="lifestyle-strip">
+  <div class="lifestyle-header reveal">
+    <p class="lifestyle-kicker">Explore</p>
+    <h2 class="lifestyle-title">Life, Love, and Work</h2>
+  </div>
+  <div class="lifestyle-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="lifestyle-tile reveal" style="border-left:3px solid var(--gold);">
+      <div class="lifestyle-tile-icon">&#10024;</div>
+      <h3 style="color:var(--gold);">Life</h3>
+      <p>Rituals and energy, home and space, style and beauty, food and nourishment, weekend finds.</p>
+    </div>
+    <div class="lifestyle-tile reveal rd1" style="border-left:3px solid var(--pink);">
+      <div class="lifestyle-tile-icon">&#128156;</div>
+      <h3 style="color:var(--pink);">Love &amp; Relationships</h3>
+      <p>Dating and patterns, breakups and reset, friendship, motherhood, self worth and identity.</p>
+    </div>
+    <div class="lifestyle-tile reveal rd2" style="border-left:3px solid var(--light-gold);">
+      <div class="lifestyle-tile-icon">&#128161;</div>
+      <h3 style="color:var(--light-gold);">Work &amp; Money</h3>
+      <p>Founder reset, burnout and nervous system, Signal Method&trade;, career and direction, money and worth.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RED QUOTE SLIDE #2 ═══ -->
+<section class="red-quote reveal">
+  <p class="red-quote-text">Quote slide 2. CMS placeholder.</p>
+  <p class="red-quote-attr">CMS managed</p>
+</section>
+
+<!-- ═══ SECTION 5 , EXPERIENCES (was Workshops) ═══ -->
+<section class="workshops-section">
+  <div class="section-header reveal">
+    <div>
+      <p class="section-kicker" style="color:var(--blue);">Upcoming</p>
+      <h2 class="section-title">Experiences</h2>
+    </div>
+    <a href="#" class="section-link" style="color:var(--blue);">Browse all experiences <span>&rarr;</span></a>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;">
+    <p class="workshops-body reveal">Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. Every workshop includes either full access (&pound;200) or a recording and summary (&pound;15) so you can engage at whatever level feels right.</p>
+  </div>
+  <div class="workshop-grid" style="max-width:1200px;margin:0 auto;">
+    <div class="workshop-card-dark reveal">
+      <p class="workshop-date">September 2026 &middot; Taggs Island, Hampton</p>
+      <h3 class="workshop-name" style="font-family:var(--font-body);">Autumn Reset Day</h3>
+      <p class="workshop-subtitle">The Signal Method<sup style="font-size:0.7em;font-weight:600;">&trade;</sup></p>
+      <div class="workshop-prices">
+        <span class="price-tag" style="background:var(--light-gold);color:var(--black);">&pound;200 Full</span>
+        <span class="price-tag" style="border:1px solid rgba(245,243,239,0.2);color:rgba(245,243,239,0.6);">&pound;15 Summary</span>
+      </div>
+      <a href="#" class="btn btn-gold-dark" style="font-size:0.55rem;padding:0.55rem 1.2rem;">Book &rarr;</a>
+    </div>
+    <div class="workshop-card reveal rd1">
+      <p class="workshop-date">October 2026 &middot; Online</p>
+      <h3 class="workshop-name">Surrendering and Raising Your Vibration</h3>
+      <div class="workshop-prices">
+        <span class="price-tag price-full">&pound;200 Full</span>
+        <span class="price-tag price-summary">&pound;15 Summary</span>
+      </div>
+      <a href="#" class="btn btn-blue" style="font-size:0.55rem;padding:0.55rem 1.2rem;">Book &rarr;</a>
+    </div>
+    <div class="workshop-card reveal rd2">
+      <p class="workshop-date">Flexible &middot; Your workplace or online</p>
+      <h3 class="workshop-name">Corporate Wellbeing. Bespoke formats.</h3>
+      <div class="workshop-prices">
+        <span class="price-tag price-summary">Bespoke pricing</span>
+      </div>
+      <a href="#" class="btn btn-outline-dark" style="font-size:0.55rem;padding:0.55rem 1.2rem;">Enquire &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 6 , RESET LETTERS / SUBSTACK ═══ -->
+<section class="newsletter reveal">
+  <p class="newsletter-kicker">Reset Letters</p>
+  <h2 class="newsletter-title">A letter, every week, that feels like coming home.</h2>
+  <p class="newsletter-body">Honest, beautiful writing about your inner world, jewellery with meaning, houseboat life, and what it actually feels like to return to yourself.</p>
+  <p class="newsletter-schedule">Sunday Reset Story &middot; Wednesday Signal Check &middot; Friday ESJ Drop</p>
+  <div class="newsletter-tiers">
+    <div class="newsletter-tier">
+      <strong>Free tier</strong>
+      Sunday stories, Wednesday practices
+    </div>
+    <div class="newsletter-tier">
+      <strong>Paid tier &middot; &pound;7/month</strong>
+      Full archive, deep-dives, early event access
+    </div>
+  </div>
+  <a href="#" class="btn-substack">Join on Substack &rarr;</a>
+  <p class="newsletter-small">No spam. Honest writing. Cancel any time.</p>
+</section>
+
+<!-- ═══ SECTION 7 , SHOP PREVIEW ═══ -->
+<section class="shop-preview">
+  <div class="shop-inner">
+    <p class="shop-kicker reveal">Anna Lou of London</p>
+    <h2 class="shop-title reveal rd1">Jewellery with meaning. Made to be worn.</h2>
+    <p class="shop-intro reveal rd2">I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.</p>
+    <div class="shop-grid">
+      <div class="product-card reveal">
+        <div class="product-img"></div>
+        <div class="product-info">
+          <p class="product-hook">I reach for this one when I need to remember what is underneath the noise</p>
+          <p class="product-name">Moonstone Necklace</p>
+        </div>
+      </div>
+      <div class="product-card reveal rd1">
+        <div class="product-img" style="background:linear-gradient(180deg,#e8e3db,#dbd4ca);"></div>
+        <div class="product-info">
+          <p class="product-hook">For the days my mind is doing too much and I need clarity not calm</p>
+          <p class="product-name">Clear Quartz Necklace</p>
+        </div>
+      </div>
+      <div class="product-card reveal rd2">
+        <div class="product-img" style="background:linear-gradient(180deg,#ebe6de,#ddd6cc);"></div>
+        <div class="product-info">
+          <p class="product-hook">The word you keep coming back to, worn close to your throat</p>
+          <p class="product-name">Personalised Phrase Necklace</p>
+        </div>
+      </div>
+    </div>
+    <a href="#" class="btn btn-green reveal">Browse all jewellery &rarr;</a>
+  </div>
+</section>
+
+<!-- ═══ SECTION 8 , MEDIA HUB ═══ -->
+<section class="media-hub">
+  <div class="media-inner">
+    <p class="media-kicker reveal">Watch &middot; Listen &middot; Read</p>
+    <h2 class="media-title reveal rd1">The Reset with Anna.</h2>
+    <div class="media-grid">
+      <div class="media-tile reveal">
+        <p class="media-tile-label">YouTube</p>
+        <h3 class="media-tile-title">Latest video title. CMS placeholder.</h3>
+        <p class="media-tile-meta">Latest video</p>
+        <a href="#" class="media-tile-link">Watch <span>&rarr;</span></a>
+      </div>
+      <div class="media-tile reveal rd1">
+        <p class="media-tile-label">Podcast</p>
+        <h3 class="media-tile-title">Latest episode title. CMS placeholder.</h3>
+        <p class="media-tile-meta">Latest episode</p>
+        <a href="#" class="media-tile-link">Listen <span>&rarr;</span></a>
+      </div>
+      <div class="media-tile reveal rd2">
+        <p class="media-tile-label">Substack</p>
+        <h3 class="media-tile-title">Latest issue title. CMS placeholder.</h3>
+        <p class="media-tile-meta">Latest issue</p>
+        <a href="#" class="media-tile-link">Read <span>&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RED QUOTE SLIDE #3 ═══ -->
+<section class="red-quote reveal">
+  <p class="red-quote-text">Quote slide 3. CMS placeholder.</p>
+  <p class="red-quote-attr">CMS managed</p>
+</section>
+
+<!-- ═══ SECTION 9 , COMMUNITY ═══ -->
+<section class="community">
+  <div class="community-inner">
+    <div class="community-image reveal"></div>
+    <div class="reveal rd1">
+      <p class="community-kicker">Community</p>
+      <h2 class="community-heading">Come and sit with us.</h2>
+      <p class="community-body">Every Tuesday I hold a circle at The Hare and the Moon, Twickenham. Donation-based. No agenda except being in the room together. Connection is not a concept. It is biological.</p>
+      <p class="community-body">The Returning Circle runs every week without exception. No waitlist needed. Come on Tuesday.</p>
+      <p class="community-body" style="margin-bottom:1.5rem;">A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Water outside, no agenda, just space to come back to yourself.</p>
+      <div class="community-buttons">
+        <a href="#" class="btn btn-community">The Returning Circle</a>
+        <a href="#" class="btn btn-community">The Reset Room</a>
+        <a href="#" class="btn btn-outline-dark">Retreat days</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PORTRAIT OF ANNA ═══ -->
+<section class="portrait-section">
+  <div class="portrait-inner">
+    <div class="portrait-image reveal"></div>
+    <div class="reveal rd1">
+      <p class="portrait-kicker">About</p>
+      <h2 class="portrait-heading">Twenty-five years leaves a trail.</h2>
+      <p class="portrait-body"><span class="drop-cap">F</span>rom the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot. The question is no longer just how did you build it but what did building it cost you, what did you learn, and who are you now.</p>
+      <a href="#" class="hero-cta" style="color:var(--black);border-color:var(--black);">Read Anna&rsquo;s story <span>&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 10 , TESTIMONIALS ═══ -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <p class="testi-kicker reveal">Client Stories</p>
+    <h2 class="testi-heading reveal rd1">What happens when you come home to yourself.</h2>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <p class="testi-quote">&ldquo;I came to Anna feeling like I had done all the work and still was not quite arriving. Within three sessions something shifted I had been trying to reach for years.&rdquo;</p>
+        <p class="testi-author">Claudine, Founder</p>
+      </div>
+      <div class="testi-card reveal rd1">
+        <p class="testi-quote">&ldquo;The Returning Circle changed something in me I did not know needed changing. Being in a room with people who are actually honest. I had forgotten what that felt like.&rdquo;</p>
+        <p class="testi-author">Susan, Coach</p>
+      </div>
+      <div class="testi-card reveal rd2">
+        <p class="testi-quote">&ldquo;I have worked with therapists, coaches, healers. Anna does something different. She meets you in the body, not the story. That is where the change actually lives.&rdquo;</p>
+        <p class="testi-author">Nicky, Creative Director</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 11 , PRESS & CREDENTIALS ═══ -->
+<section class="press">
+  <div class="press-inner">
+    <p class="press-label">As seen in</p>
+    <div class="press-row">
+      <span class="press-styled" style="font-family:Georgia,serif;font-weight:400;font-size:1.1rem;letter-spacing:0.12em;text-transform:uppercase;">Harrods</span>
+      <span class="press-styled" style="font-family:'Times New Roman',serif;font-weight:700;font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;">Selfridges</span>
+      <span class="press-styled" style="font-family:Georgia,serif;font-weight:400;font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;">Harvey Nichols</span>
+      <span class="press-styled" style="font-family:'Arial Narrow',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.1em;text-transform:uppercase;">QVC Japan</span>
+      <span class="press-styled" style="font-family:Georgia,serif;font-weight:400;font-style:italic;font-size:1.15rem;letter-spacing:0.02em;">The Telegraph</span>
+      <span class="press-styled" style="font-family:'Helvetica Neue',sans-serif;font-weight:300;font-size:1rem;letter-spacing:0.18em;text-transform:uppercase;">Stylist</span>
+      <span class="press-styled" style="font-family:'Helvetica Neue',sans-serif;font-weight:300;font-size:0.9rem;letter-spacing:0.12em;text-transform:uppercase;">SheerLuxe</span>
+    </div>
+    <p class="press-label">Certified</p>
+    <div class="press-row">
+      <div class="cert-badge-box" style="border:2px solid #1a5276;color:#1a5276;font-weight:600;">ICF<br>Accredited</div>
+      <div class="cert-badge-box" style="border:2px solid #c0392b;color:#c0392b;font-weight:600;">CPD<br>Certified</div>
+      <div class="cert-badge-box" style="border:2px solid #27ae60;color:#27ae60;font-weight:600;">TRE&reg;<br>Provider</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <p class="footer-message">You don&rsquo;t have to hold everything.</p>
+  <!-- Tier 1: Primary navigation -->
+  <nav class="footer-tier1">
+    <a href="#">Reset Stories</a>
+    <a href="#">Life</a>
+    <a href="#">Love &amp; Relationships</a>
+    <a href="#">Work &amp; Money</a>
+    <a href="#">Experiences</a>
+    <a href="#">The Work</a>
+    <a href="#">Shop</a>
+    <a href="#">Community</a>
+    <a href="#">About</a>
+  </nav>
+  <!-- Tier 2: Social -->
+  <nav class="footer-tier2">
+    <a href="#">Instagram</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">Substack</a>
+    <a href="#">YouTube</a>
+    <a href="#">Podcast</a>
+  </nav>
+  <!-- Tier 3: Legal and utility -->
+  <nav class="footer-tier3">
+    <a href="#">Press</a>
+    <a href="#">Contact</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Cookies</a>
+  </nav>
+  <div class="footer-substack">
+    <a href="#">Join Reset Letters on Substack &rarr;</a>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-address">Anna Lou Wellness &middot; Taggs Island, Hampton, TW12 &middot; annalouwellness.com</p>
+    <p class="footer-copy">&copy; 2026 Anna Lou Wellness. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ═══ SCROLL REVEAL + MOBILE MENU ═══ -->
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Accordion — one open at a time
+  function toggleAccordion(section) {
+    const isOpen = section.classList.contains('open');
+    // Close all sections first
+    document.querySelectorAll('.mobile-menu-section').forEach(s => s.classList.remove('open'));
+    // If it wasn't open, open it
+    if (!isOpen) section.classList.add('open');
+  }
+</script>
+
+</body>
+</html>
