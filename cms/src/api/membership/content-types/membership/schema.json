@@ -1,0 +1,45 @@
+{
+  "kind": "singleType",
+  "collectionName": "memberships",
+  "info": {
+    "singularName": "membership",
+    "pluralName": "memberships",
+    "displayName": "Membership (Reset Room)",
+    "description": "The Reset Room membership page content and Stripe configuration"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "The Reset Room"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "price_monthly": {
+      "type": "decimal",
+      "default": 25
+    },
+    "stripe_price_id": {
+      "type": "string",
+      "description": "Stripe Price ID for the GBP 25/month subscription"
+    },
+    "features": {
+      "type": "json",
+      "description": "List of membership features"
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

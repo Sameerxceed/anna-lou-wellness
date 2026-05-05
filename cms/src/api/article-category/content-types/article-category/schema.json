@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "article_categories",
+  "info": {
+    "singularName": "article-category",
+    "pluralName": "article-categories",
+    "displayName": "Article Category",
+    "description": "Categories for editorial articles: Reset Stories sub-cats, Life sub-cats, Love sub-cats, Work sub-cats"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "section": {
+      "type": "enumeration",
+      "enum": ["reset-stories", "life", "love-and-relationships", "work-and-money"],
+      "required": true
+    },
+    "colour": {
+      "type": "string",
+      "default": "#6E3A5A"
+    },
+    "description": {
+      "type": "text"
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::article.article",
+      "mappedBy": "category"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "mantras",
+  "info": {
+    "singularName": "mantra",
+    "pluralName": "mantras",
+    "displayName": "Mantra",
+    "description": "Short mantra videos from Anna's YouTube Come Back to Yourself playlist"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "youtube_url": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "duration": {
+      "type": "string",
+      "description": "e.g. 60 seconds, 90 seconds"
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coaching_sessions",
+  "info": {
+    "singularName": "coaching-session",
+    "pluralName": "coaching-sessions",
+    "displayName": "Coaching Session",
+    "description": "1:1 coaching session types: Reset Sessions, Founder Reset, Dating Reset, Nervous System Reset"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "duration": {
+      "type": "string",
+      "description": "e.g. 6 weeks, 12 weeks"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "price_label": {
+      "type": "string",
+      "description": "e.g. Enquire, From GBP 1,500"
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cosmic_forecasts",
+  "info": {
+    "singularName": "cosmic-forecast",
+    "pluralName": "cosmic-forecasts",
+    "displayName": "Cosmic Forecast",
+    "description": "Weekly Cosmic Forecast. Summary version for website, full version on Substack."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "week_of": {
+      "type": "date",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "moon_phase": {
+      "type": "string"
+    },
+    "energy_theme": {
+      "type": "string"
+    },
+    "stone_of_week": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "richtext",
+      "required": true,
+      "description": "300-word summary version for website (NOT the full Substack version)"
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}
