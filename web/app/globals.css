@@ -123,7 +123,7 @@
     outline-offset: 2px;
   }
 
-  /* Selection colour — brand red tint */
+  /* Selection colour — brand plum tint */
   ::selection {
     background: rgba(110, 58, 90, 0.15);
     color: #231F20;

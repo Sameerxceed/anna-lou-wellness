@@ -62,18 +62,18 @@ const styles = `
   font-family: 'EB Garamond', Garamond, serif; font-size: 0.82rem; color: rgba(245,240,232,0.65);
   line-height: 1.6; flex: 1; min-width: 280px;
 }
-.cookie-link { color: #EE312F; text-decoration: underline; text-underline-offset: 2px; transition: color 0.3s; }
+.cookie-link { color: #6E3A5A; text-decoration: underline; text-underline-offset: 2px; transition: color 0.3s; }
 .cookie-link:hover { color: #faf8f4; }
 .cookie-actions { display: flex; gap: 0.6rem; flex-shrink: 0; }
 .cookie-accept {
-  font-family: 'Proxima Nova', sans-serif; font-weight: 300; font-size: 0.55rem;
+  font-family: Mulish, sans-serif; font-weight: 300; font-size: 0.55rem;
   letter-spacing: 0.15em; text-transform: uppercase; color: #1a1a18;
   background: #faf8f4; border: 1px solid #faf8f4; padding: 0.55rem 1.5rem;
   cursor: pointer; transition: all 0.3s;
 }
-.cookie-accept:hover { background: #EE312F; border-color: #EE312F; color: #1a1a18; }
+.cookie-accept:hover { background: #6E3A5A; border-color: #6E3A5A; color: #fff; }
 .cookie-decline {
-  font-family: 'Proxima Nova', sans-serif; font-weight: 300; font-size: 0.55rem;
+  font-family: Mulish, sans-serif; font-weight: 300; font-size: 0.55rem;
   letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,240,232,0.4);
   background: transparent; border: 1px solid rgba(245,240,232,0.15); padding: 0.55rem 1.5rem;
   cursor: pointer; transition: all 0.3s;

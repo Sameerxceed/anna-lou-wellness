@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import CartIcon from '@/components/CartIcon';
+// CartIcon replaced with text Login/Cart buttons per V8 design
 
 interface NavItem {
   label: string;
@@ -117,7 +117,8 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
 
           {/* Actions (desktop: cart + login, mobile: hamburger) */}
           <div className="nav-actions">
-            <CartIcon />
+            <Link href="/account" className="nav-action-btn">Login</Link>
+            <Link href="/cart" className="nav-action-btn nav-action-accent">Cart</Link>
             <button
               className={`hamburger${mobileOpen ? ' open' : ''}`}
               aria-label="Menu"
@@ -285,10 +286,26 @@ const navStyles = `
 
 /* ═══ NAV ACTIONS ═══ */
 .nav-actions {
-  position: absolute; right: 0.5rem; top: 50%;
+  position: absolute; right: 0.8rem; top: 50%;
   transform: translateY(-50%);
-  display: flex; gap: 0.6rem; align-items: center;
+  display: flex; gap: 0.5rem; align-items: center;
 }
+.nav-action-btn {
+  font-family: Mulish, sans-serif;
+  font-weight: 400;
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3D3D3A;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 3px;
+  transition: all 0.3s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-action-btn:hover { border-color: #6E3A5A; color: #6E3A5A; }
+.nav-action-accent { border-color: #6E3A5A; color: #6E3A5A; }
 
 /* ═══ HAMBURGER ═══ */
 .hamburger {
@@ -406,6 +423,7 @@ const navStyles = `
   .nav-row { padding: 0.8rem 1.2rem; justify-content: space-between; }
   .nav-center-logo { order: 0; padding: 0; }
   .nav-actions { position: static; transform: none; display: flex; gap: 0.6rem; align-items: center; }
+  .nav-action-btn { display: none; }
   .hamburger { display: block; }
   .nav-dropdown { display: none !important; }
 }
