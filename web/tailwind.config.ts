@@ -11,7 +11,7 @@ const config: Config = {
         // Brand primary colours
         brand: {
           black: '#231F20',
-          red: '#EE312F',
+          plum: '#6E3A5A',
           amber: '#FAA21B',
           blue: '#7BAFDD',
           pink: '#F280AA',
@@ -32,20 +32,20 @@ const config: Config = {
         ink: '#231F20',
         // Functional aliases
         accent: {
-          DEFAULT: '#EE312F',
-          light: '#F280AA',
-          dark: '#CC2A28',
+          DEFAULT: '#6E3A5A',
+          light: '#8B5A7A',
+          dark: '#5A2E4A',
         },
       },
       fontFamily: {
-        // Nobel — headings & titles
-        display: ['Nobel', '"Helvetica Neue"', 'Arial', 'sans-serif'],
-        // Nobel Regular — body text
-        body: ['Nobel', '"Helvetica Neue"', 'Arial', 'sans-serif'],
-        // Garamond — editorial, product names, navigation
+        // Work Sans — headings & titles (replaces Nobel)
+        display: ['"Work Sans"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        // Work Sans — body text
+        body: ['"Work Sans"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        // EB Garamond — editorial, product names
         editorial: ['"EB Garamond"', 'Garamond', 'Georgia', 'serif'],
-        // Proxima Nova — online UI: nav, prices, CTAs
-        sans: ['"Proxima Nova"', 'system-ui', 'sans-serif'],
+        // Mulish — UI: nav, prices, CTAs (replaces Proxima Nova)
+        sans: ['Mulish', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'hero': 'clamp(3rem, 8vw, 7rem)',

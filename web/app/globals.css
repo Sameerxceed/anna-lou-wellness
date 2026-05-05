@@ -2,51 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ═══ Google Fonts — Anna Lou Wellness Typography ═══ */
-/* Nobel: not on Google Fonts — use @font-face or Adobe Fonts in production */
-/* EB Garamond: closest Google Fonts match for Garamond */
-/* Proxima Nova: not on Google Fonts — use @font-face or Adobe Fonts in production */
-/* Fallback: load EB Garamond from Google Fonts for editorial use */
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
-
-/* ═══ @font-face placeholders — replace with actual font files ═══ */
-/* When font files are available, uncomment and update paths:
-@font-face {
-  font-family: 'Nobel';
-  src: url('/fonts/Nobel-Light.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Nobel';
-  src: url('/fonts/Nobel-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Proxima Nova';
-  src: url('/fonts/ProximaNova-Light.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Proxima Nova';
-  src: url('/fonts/ProximaNova-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Proxima Nova';
-  src: url('/fonts/ProximaNova-Semibold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-*/
+/* ═══ Google Fonts — Anna Lou Wellness Typography (Final) ═══ */
+/* Work Sans: replaces Nobel (headings) */
+/* EB Garamond: editorial body, product names (unchanged) */
+/* Mulish: replaces Proxima Nova (UI, navigation, prices, CTAs) */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;600&display=swap');
 
 @layer base {
   html {
@@ -73,7 +33,7 @@
     @apply font-sans font-light text-label tracking-[0.4em] uppercase text-mid-grey mb-6;
   }
   .section-heading {
-    font-family: 'Nobel', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Work Sans', 'Helvetica Neue', Arial, sans-serif;
     font-weight: 300;
     font-size: clamp(2.2rem, 5vw, 3.8rem);
     letter-spacing: 0.05em;
@@ -123,12 +83,12 @@
     @apply bg-accent-dark border-accent-dark;
   }
   .btn-brand {
-    @apply text-white bg-brand-red border border-brand-red;
+    @apply text-white bg-brand-plum border border-brand-plum;
     border-radius: 4px;
   }
   .btn-brand:hover {
-    background: #CC2A28;
-    border-color: #CC2A28;
+    background: #5A2E4A;
+    border-color: #5A2E4A;
   }
 
   /* Reveal animation */
@@ -159,13 +119,13 @@
 
   /* Focus styles for accessibility */
   a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-    outline: 2px solid #EE312F;
+    outline: 2px solid #6E3A5A;
     outline-offset: 2px;
   }
 
   /* Selection colour — brand red tint */
   ::selection {
-    background: rgba(238, 49, 47, 0.15);
+    background: rgba(110, 58, 90, 0.15);
     color: #231F20;
   }
 }
