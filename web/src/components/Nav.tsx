@@ -204,7 +204,7 @@ const navStyles = `
 .nav-row {
   max-width: 1400px; margin: 0 auto;
   display: flex; justify-content: center; align-items: center;
-  padding: 1rem 8rem 1rem 1.5rem;
+  padding: 1rem 10rem 1rem 1.5rem;
   position: relative;
 }
 .nav-left, .nav-right {
@@ -286,9 +286,9 @@ const navStyles = `
 
 /* ═══ NAV ACTIONS ═══ */
 .nav-actions {
-  position: absolute; right: 1.2rem; top: 50%;
+  position: absolute; right: 1.5rem; top: 50%;
   transform: translateY(-50%);
-  display: flex; gap: 0.5rem; align-items: center;
+  display: flex; gap: 0.6rem; align-items: center;
 }
 .nav-action-btn {
   font-family: Mulish, sans-serif;
