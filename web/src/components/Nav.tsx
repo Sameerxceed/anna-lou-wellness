@@ -22,7 +22,7 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+  // No accordion state needed — Cup of Jo style shows all items
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -33,7 +33,6 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
 
   useEffect(() => {
     setMobileOpen(false);
-    setOpenAccordion(null);
   }, [pathname]);
 
   // Prevent body scroll when mobile menu is open
@@ -147,17 +146,18 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
           </div>
 
           {navigation.map((item, i) => (
-            <div key={item.href} className={`mobile-section${openAccordion === i ? ' open' : ''}`}>
-              <button
-                className="mobile-toggle"
+            <div key={item.href} className="mobile-section">
+              <Link
+                href={item.href}
+                className="mobile-category"
                 style={{ color: item.colour }}
-                onClick={() => setOpenAccordion(openAccordion === i ? null : i)}
+                onClick={() => setMobileOpen(false)}
               >
                 {item.label}
-                <span className="mobile-arrow">&#9660;</span>
-              </button>
-              {item.children && openAccordion === i && (
-                <div className="mobile-sub">
+              </Link>
+              <div className="mobile-divider" style={{ backgroundColor: item.colour || '#231F20' }} />
+              {item.children && (
+                <div className="mobile-grid">
                   {item.children.map(child => (
                     <Link key={child.href} href={child.href} onClick={() => setMobileOpen(false)}>
                       {child.label}
@@ -362,36 +362,39 @@ const navStyles = `
   flex-shrink: 0;
 }
 .mobile-section {
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 1.2rem 0 0.4rem;
 }
-.mobile-toggle {
-  display: flex; justify-content: space-between; align-items: center;
-  width: 100%; padding: 0.9rem 0;
-  background: none; border: none; cursor: pointer;
+.mobile-category {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-weight: 400;
+  font-size: 1.15rem;
+  text-decoration: none;
+  display: block;
+  padding-bottom: 0.5rem;
+}
+.mobile-divider {
+  height: 2px;
+  width: 100%;
+  margin-bottom: 0.8rem;
+  opacity: 0.4;
+}
+.mobile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 1.5rem;
+  padding-bottom: 0.4rem;
+}
+.mobile-grid a {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.mobile-arrow {
-  font-size: 0.6rem;
-  transition: transform 0.3s;
-  color: #8C8880;
-}
-.mobile-section.open .mobile-arrow { transform: rotate(180deg); }
-.mobile-sub {
-  padding: 0 0 0.6rem 1rem;
-}
-.mobile-sub a {
-  display: block; padding: 0.4rem 0;
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   color: #3D3D3A;
   text-decoration: none;
-  transition: color 0.2s;
+  padding: 0.35rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
-.mobile-sub a:hover { color: #231F20; }
+.mobile-grid a:hover { color: #231F20; }
 .mobile-actions {
   display: flex; gap: 1rem; justify-content: center;
   padding: 2rem 0 1.5rem;
