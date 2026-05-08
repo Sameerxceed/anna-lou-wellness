@@ -189,12 +189,343 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 export const getNavigation = (): NavItem[] => fallbackNavigation;
 export const getFooterLinks = (): FooterLinks => fallbackFooterLinks;
 
-// ═══ Helpers ═══
+// ═══ ARTICLES ═══
 
-function parseList(text: string): string[] {
-  if (!text) return [];
-  return text
-    .split('\n')
-    .map(line => line.replace(/^[-*•]\s*/, '').trim())
-    .filter(Boolean);
+export interface Article {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  body: string;
+  heroImage: string;
+  category: { name: string; slug: string; section: string; colour: string } | null;
+  author: string;
+  readingTime: string;
+  isFeatured: boolean;
+  isFree: boolean;
+  substackUrl: string;
+  seoTitle: string;
+  seoDescription: string;
+  publishedAt: string;
 }
+
+export interface ArticleCategory {
+  id: number;
+  name: string;
+  slug: string;
+  section: string;
+  colour: string;
+  description: string;
+  sortOrder: number;
+}
+
+const fallbackArticles: Article[] = [];
+
+function mapArticle(d: any): Article {
+  return {
+    id: d.id,
+    title: d.title || '',
+    slug: d.slug || '',
+    excerpt: d.excerpt || '',
+    body: d.body || '',
+    heroImage: mediaUrl(d.hero_image),
+    category: d.category ? {
+      name: d.category.name,
+      slug: d.category.slug,
+      section: d.category.section,
+      colour: d.category.colour || '#6E3A5A',
+    } : null,
+    author: d.author || 'Anna Lou',
+    readingTime: d.reading_time || '',
+    isFeatured: d.is_featured || false,
+    isFree: d.is_free !== false,
+    substackUrl: d.substack_canonical_url || '',
+    seoTitle: d.seo_title || '',
+    seoDescription: d.seo_description || '',
+    publishedAt: d.publishedAt || '',
+  };
+}
+
+/** Get articles, optionally filtered by section (reset-stories, life, etc.) */
+export async function getArticles(section?: string): Promise<Article[]> {
+  try {
+    const params: Record<string, string> = {
+      'populate': '*',
+      'sort': 'publishedAt:desc',
+      'pagination[limit]': '100',
+    };
+    if (section) {
+      params['filters[category][section][$eq]'] = section;
+    }
+    const { data } = await fetchAPI('/articles', params);
+    if (!data?.length) return fallbackArticles;
+    return data.map(mapArticle);
+  } catch {
+    return fallbackArticles;
+  }
+}
+
+/** Get featured articles across all sections */
+export async function getFeaturedArticles(limit = 6): Promise<Article[]> {
+  try {
+    const { data } = await fetchAPI('/articles', {
+      'populate': '*',
+      'filters[is_featured][$eq]': 'true',
+      'sort': 'publishedAt:desc',
+      'pagination[limit]': String(limit),
+    });
+    if (!data?.length) return fallbackArticles;
+    return data.map(mapArticle);
+  } catch {
+    return fallbackArticles;
+  }
+}
+
+/** Get a single article by slug */
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  try {
+    const { data } = await fetchAPI('/articles', {
+      'populate': '*',
+      'filters[slug][$eq]': slug,
+    });
+    if (!data?.length) return null;
+    return mapArticle(data[0]);
+  } catch {
+    return null;
+  }
+}
+
+/** Get article categories for a section */
+export async function getArticleCategories(section?: string): Promise<ArticleCategory[]> {
+  try {
+    const params: Record<string, string> = {
+      'sort': 'sort_order:asc',
+    };
+    if (section) {
+      params['filters[section][$eq]'] = section;
+    }
+    const { data } = await fetchAPI('/article-categories', params);
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      name: d.name,
+      slug: d.slug,
+      section: d.section,
+      colour: d.colour || '#6E3A5A',
+      description: d.description || '',
+      sortOrder: d.sort_order || 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ═══ COACHING SESSIONS ═══
+
+export interface CoachingSession {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  duration: string;
+  price: number | null;
+  priceLabel: string;
+  heroImage: string;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export async function getCoachingSessions(): Promise<CoachingSession[]> {
+  try {
+    const { data } = await fetchAPI('/coaching-sessions', {
+      'populate': '*',
+      'sort': 'sort_order:asc',
+      'filters[is_active][$eq]': 'true',
+    });
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      name: d.name,
+      slug: d.slug,
+      description: d.description || '',
+      duration: d.duration || '',
+      price: d.price ?? null,
+      priceLabel: d.price_label || '',
+      heroImage: mediaUrl(d.hero_image),
+      isActive: d.is_active !== false,
+      sortOrder: d.sort_order || 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ═══ COSMIC FORECAST ═══
+
+export interface CosmicForecast {
+  id: number;
+  weekOf: string;
+  title: string;
+  moonPhase: string;
+  energyTheme: string;
+  stoneOfWeek: string;
+  summary: string;
+}
+
+/** Get the latest cosmic forecast */
+export async function getLatestForecast(): Promise<CosmicForecast | null> {
+  try {
+    const { data } = await fetchAPI('/cosmic-forecasts', {
+      'sort': 'week_of:desc',
+      'pagination[limit]': '1',
+    });
+    if (!data?.length) return null;
+    const d = data[0];
+    return {
+      id: d.id,
+      weekOf: d.week_of,
+      title: d.title,
+      moonPhase: d.moon_phase || '',
+      energyTheme: d.energy_theme || '',
+      stoneOfWeek: d.stone_of_week || '',
+      summary: d.summary || '',
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ═══ EXPERIENCES ═══
+
+export interface Experience {
+  id: number;
+  name: string;
+  slug: string;
+  type: 'retreat' | 'workshop' | 'corporate' | 'speaking';
+  description: string;
+  date: string;
+  location: string;
+  price: number | null;
+  priceLabel: string;
+  heroImage: string;
+  isUpcoming: boolean;
+}
+
+export async function getExperiences(type?: string): Promise<Experience[]> {
+  try {
+    const params: Record<string, string> = {
+      'populate': '*',
+      'sort': 'date:asc',
+      'filters[is_active][$eq]': 'true',
+    };
+    if (type) {
+      params['filters[type][$eq]'] = type;
+    }
+    const { data } = await fetchAPI('/experiences', params);
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      name: d.name,
+      slug: d.slug,
+      type: d.type,
+      description: d.description || '',
+      date: d.date || '',
+      location: d.location || '',
+      price: d.price ?? null,
+      priceLabel: d.price_label || '',
+      heroImage: mediaUrl(d.hero_image),
+      isUpcoming: d.is_upcoming !== false,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ═══ MANTRAS ═══
+
+export interface Mantra {
+  id: number;
+  title: string;
+  youtubeUrl: string;
+  description: string;
+  duration: string;
+}
+
+export async function getMantras(): Promise<Mantra[]> {
+  try {
+    const { data } = await fetchAPI('/mantras', {
+      'sort': 'sort_order:asc',
+      'filters[is_active][$eq]': 'true',
+    });
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      title: d.title,
+      youtubeUrl: d.youtube_url,
+      description: d.description || '',
+      duration: d.duration || '',
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ═══ MEMBERSHIP (Reset Room) ═══
+
+export interface Membership {
+  title: string;
+  description: string;
+  priceMonthly: number;
+  stripePriceId: string;
+  features: string[];
+  heroImage: string;
+}
+
+export async function getMembership(): Promise<Membership | null> {
+  try {
+    const { data: d } = await fetchAPI('/membership', { populate: '*' });
+    if (!d) return null;
+    return {
+      title: d.title || 'The Reset Room',
+      description: d.description || '',
+      priceMonthly: d.price_monthly ?? 25,
+      stripePriceId: d.stripe_price_id || '',
+      features: Array.isArray(d.features) ? d.features : [],
+      heroImage: mediaUrl(d.hero_image),
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ═══ FAQs ═══
+
+export interface FAQ {
+  id: number;
+  question: string;
+  answer: string;
+  category: string;
+}
+
+export async function getFAQs(category?: string): Promise<FAQ[]> {
+  try {
+    const params: Record<string, string> = {
+      'sort': 'sort_order:asc',
+      'filters[is_active][$eq]': 'true',
+    };
+    if (category) {
+      params['filters[category][$eq]'] = category;
+    }
+    const { data } = await fetchAPI('/faqs', params);
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      question: d.question,
+      answer: d.answer,
+      category: d.category || 'general',
+    }));
+  } catch {
+    return [];
+  }
+}
+

@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { getArticleBySlug, getArticles } from '@/lib/cms';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -7,43 +9,77 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const article = await getArticleBySlug(slug);
+  if (!article) return { title: 'Article Not Found' };
   return {
-    title: `${title} — Reset Stories`,
-    description: `${title}. A Reset Story by Anna Lou. Honest writing about coming back to yourself.`,
+    title: `${article.title} — Reset Stories`,
+    description: article.seoDescription || article.excerpt || `${article.title}. A Reset Story by Anna Lou.`,
   };
 }
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const article = await getArticleBySlug(slug);
+
+  if (!article) {
+    // Fallback for slugs not yet in CMS
+    const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
+        <article className="article-page">
+          <div className="article-inner">
+            <p className="article-kicker" style={{ color: '#6E3A5A' }}>Reset Stories</p>
+            <h1 className="article-title">{title}</h1>
+            <p className="article-meta">By Anna Lou</p>
+            <div className="article-hero-img" />
+            <div className="article-content">
+              <p>This article is coming soon. Check back shortly.</p>
+            </div>
+          </div>
+        </article>
+      </>
+    );
+  }
+
+  const relatedArticles = await getArticles('reset-stories');
+  const related = relatedArticles.filter(a => a.slug !== slug).slice(0, 3);
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
       <article className="article-page">
         <div className="article-inner">
-          <p className="article-kicker">Reset Stories</p>
-          <h1 className="article-title">{title}</h1>
-          <p className="article-meta">By Anna Lou &middot; 2026 &middot; CMS placeholder</p>
-          <div className="article-hero-img" />
+          <p className="article-kicker" style={{ color: article.category?.colour || '#6E3A5A' }}>
+            {article.category?.name || 'Reset Stories'}
+          </p>
+          <h1 className="article-title">{article.title}</h1>
+          <p className="article-meta">By {article.author} &middot; {article.readingTime}</p>
+          {article.heroImage ? (
+            <img src={article.heroImage} alt={article.title} className="article-hero-img" style={{ objectFit: 'cover' }} />
+          ) : (
+            <div className="article-hero-img" />
+          )}
           <div className="article-content">
-            <p>This article will be loaded from the CMS (Strapi) when connected. The full content from Volume 1/2/3 manuscripts will populate here.</p>
-            <p>Article pages follow the editorial format: long form, story first. Inline product, retreat, or 1:1 mentions where natural. Related articles at the foot. Substack sign-up at the foot.</p>
+            {article.body.split('\n\n').map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
           </div>
 
-          {/* Related articles */}
-          <div className="article-related">
-            <h3 className="article-related-title">More Reset Stories</h3>
-            <div className="article-related-grid">
-              <Link href="/reset-stories" className="article-related-card">
-                <div className="article-related-img" />
-                <p className="article-related-name">View all Reset Stories</p>
-              </Link>
+          {related.length > 0 && (
+            <div className="article-related">
+              <h3 className="article-related-title">More Reset Stories</h3>
+              <div className="article-related-grid">
+                {related.map(r => (
+                  <Link key={r.slug} href={`/reset-stories/${r.slug}`} className="article-related-card">
+                    <div className="article-related-img" />
+                    <p className="article-related-name">{r.title}</p>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Substack sign-up */}
           <div className="article-newsletter">
             <p className="article-newsletter-kicker">Reset Letters</p>
             <p className="article-newsletter-text">Stories like this, delivered weekly.</p>
@@ -58,11 +94,10 @@ export default async function ArticlePage({ params }: PageProps) {
 const articleStyles = `
 .article-page { background:#fff; padding:2rem 3rem 3rem; }
 .article-inner { max-width:750px; margin:0 auto; }
-.article-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.5rem; text-align:center; }
+.article-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:0.5rem; text-align:center; }
 .article-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,4vw,2.6rem); color:#231F20; line-height:1.3; margin-bottom:0.8rem; text-align:center; }
 .article-meta { font-family:Mulish,sans-serif; font-size:0.72rem; color:#8C8880; letter-spacing:0.05em; margin-bottom:2rem; text-align:center; }
-.article-hero-img { aspect-ratio:16/9; border-radius:6px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); margin-bottom:2rem; position:relative; }
-.article-hero-img::after { content:'Article hero image. CMS managed.'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.12); }
+.article-hero-img { aspect-ratio:16/9; border-radius:6px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); margin-bottom:2rem; width:100%; }
 .article-content { font-family:'EB Garamond',Georgia,serif; font-size:1.1rem; color:#3D3D3A; line-height:1.9; margin-bottom:2.5rem; }
 .article-content p { margin-bottom:1.5rem; }
 .article-related { border-top:1px solid rgba(0,0,0,0.06); padding-top:2rem; margin-bottom:2rem; }
