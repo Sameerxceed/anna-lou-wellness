@@ -1,6 +1,23 @@
 import Link from 'next/link';
+import { getFeaturedArticles, getArticles } from '@/lib/cms';
+
+// Section mapping for article links
+const sectionPaths: Record<string, string> = {
+  'reset-stories': '/reset-stories',
+  'life': '/life',
+  'love-and-relationships': '/love-and-relationships',
+  'work-and-money': '/work-and-money',
+};
 
 export default async function HomePage() {
+  const [featuredArticles, recentArticles] = await Promise.all([
+    getFeaturedArticles(1),
+    getArticles(),
+  ]);
+
+  const featured = featuredArticles[0] || null;
+  const gridArticles = recentArticles.filter(a => !a.isFeatured).slice(0, 3);
+
   return (
     <>
       {/* ═══ EDITORIAL FRAMING ═══ */}
@@ -30,10 +47,10 @@ export default async function HomePage() {
         <div className="hp-featured-inner">
           <div className="reveal">
             <div className="hp-featured-label">Featured Reset Story</div>
-            <h2 className="hp-featured-title">You are not overwhelmed. You are holding everything.</h2>
-            <div className="hp-featured-meta">By Anna Lou &middot; April 2026 &middot; 6 min read</div>
-            <p className="hp-featured-excerpt"><span className="drop-cap">T</span>he distinction that changed how I work, how I move, and how I sleep. I spent years thinking I was overwhelmed. Overwhelm felt manageable, something you could breathe through, sleep off, come back from. But what I was actually doing was not overwhelm. I was holding. Everything. Every family worry, every business pressure, every unresolved thing from every relationship. I was holding it in my body like I was the only safe place to put it.</p>
-            <Link href="/reset-stories/youre-holding-everything" className="cta-link cta-plum">Continue reading <span>&rarr;</span></Link>
+            <h2 className="hp-featured-title">{featured?.title || 'You are not overwhelmed. You are holding everything.'}</h2>
+            <div className="hp-featured-meta">By {featured?.author || 'Anna Lou'} &middot; {featured?.readingTime || '6 min read'}</div>
+            <p className="hp-featured-excerpt"><span className="drop-cap">{(featured?.excerpt || 'T')[0]}</span>{(featured?.excerpt || '').slice(1)}</p>
+            <Link href={featured ? `${sectionPaths[featured.category?.section || 'reset-stories'] || '/reset-stories'}/${featured.slug}` : '/reset-stories'} className="cta-link cta-plum">Continue reading <span>&rarr;</span></Link>
           </div>
           <div className="hp-featured-image reveal rd1" />
         </div>
@@ -42,30 +59,20 @@ export default async function HomePage() {
       {/* ═══ ARTICLE GRID ═══ */}
       <section className="hp-articles">
         <div className="hp-articles-grid">
-          <div className="article-card reveal">
-            <div className="article-card-img" />
-            <div className="article-card-body">
-              <p className="article-card-cat" style={{ color: '#6E3A5A' }}>Reset Stories</p>
-              <h3 className="article-card-title">The problem with being the strong one.</h3>
-              <p className="article-card-date">March 2026</p>
-            </div>
-          </div>
-          <div className="article-card reveal rd1">
-            <div className="article-card-img" style={{ background: 'linear-gradient(160deg,#ddd2c6,#cfc0b2)' }} />
-            <div className="article-card-body">
-              <p className="article-card-cat" style={{ color: '#FAA21B' }}>Life</p>
-              <h3 className="article-card-title">What I wore every day this month, and why it matters.</h3>
-              <p className="article-card-date">March 2026</p>
-            </div>
-          </div>
-          <div className="article-card reveal rd2">
-            <div className="article-card-img" style={{ background: 'linear-gradient(160deg,#d8ccc0,#cabcae)' }} />
-            <div className="article-card-body">
-              <p className="article-card-cat" style={{ color: '#6E3A5A' }}>Reset Stories</p>
-              <h3 className="article-card-title">Living on Taggs Island. What the water teaches you about letting go.</h3>
-              <p className="article-card-date">February 2026</p>
-            </div>
-          </div>
+          {gridArticles.map((article, i) => {
+            const section = article.category?.section || 'reset-stories';
+            const sectionPath = sectionPaths[section] || '/reset-stories';
+            return (
+              <Link key={article.slug} href={`${sectionPath}/${article.slug}`} className={`article-card reveal${i > 0 ? ` rd${i}` : ''}`}>
+                <div className="article-card-img" style={{ background: `linear-gradient(160deg,${i === 0 ? '#e2d6ca,#d4c6b8' : i === 1 ? '#ddd2c6,#cfc0b2' : '#d8ccc0,#cabcae'})` }} />
+                <div className="article-card-body">
+                  <p className="article-card-cat" style={{ color: article.category?.colour || '#6E3A5A' }}>{article.category?.name || 'Stories'}</p>
+                  <h3 className="article-card-title">{article.title}</h3>
+                  <p className="article-card-date">{article.readingTime}</p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

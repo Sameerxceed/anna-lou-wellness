@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { getCoachingSessions } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'The Work',
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TheWorkPage() {
+export default async function TheWorkPage() {
+  const sessions = await getCoachingSessions();
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: workStyles }} />
@@ -41,9 +43,18 @@ export default function TheWorkPage() {
       {/* 1:1 Sessions */}
       <section className="work-sessions">
         <div className="work-sessions-inner">
-          <p className="work-kicker reveal">1:1 Sessions</p>
-          <h2 className="work-section-title reveal rd1">Four ways to begin.</h2>
+          <p className="work-kicker reveal">Programmes</p>
+          <h2 className="work-section-title reveal rd1">{sessions.length > 0 ? `${sessions.length} ways to begin.` : 'Four ways to begin.'}</h2>
           <div className="work-sessions-grid">
+            {sessions.length > 0 ? sessions.map((session, i) => (
+              <div key={session.slug} className={`work-session-card reveal${i > 0 ? ` rd${i}` : ''}`}>
+                <h3>{session.name}</h3>
+                <p>{session.description.split('\n\n')[0].slice(0, 150)}...</p>
+                {session.priceLabel && <p className="work-card-price">{session.priceLabel}{session.duration ? ` · ${session.duration}` : ''}</p>}
+                <Link href="/the-work/sessions" className="work-card-link">Learn more <span>&rarr;</span></Link>
+              </div>
+            )) : (
+            <>
             <div className="work-session-card reveal">
               <h3>1:1 Reset Sessions</h3>
               <p>The first shift. Your inner guidance system starts recalibrating.</p>
@@ -64,6 +75,8 @@ export default function TheWorkPage() {
               <p>For bodies that have been holding too much for too long.</p>
               <Link href="/the-work/sessions" className="work-card-link">Learn more <span>&rarr;</span></Link>
             </div>
+            </>
+            )}
           </div>
         </div>
       </section>
