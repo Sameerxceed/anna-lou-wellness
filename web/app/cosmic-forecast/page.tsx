@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import { getLatestForecast } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Cosmic Forecast',
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CosmicForecastPage() {
+export default async function CosmicForecastPage() {
+  const forecast = await getLatestForecast();
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: cosmicStyles }} />
@@ -21,16 +23,30 @@ export default function CosmicForecastPage() {
           <h1 className="cosmic-title reveal rd1">Cosmic Forecast</h1>
           <p className="cosmic-subtitle reveal rd2">This week&rsquo;s energy, moon phase, and stone.</p>
 
-          {/* Summary version — CMS managed */}
           <div className="cosmic-content reveal">
-            <div className="cosmic-meta">Week of 5 May 2026</div>
-            <div className="cosmic-summary">
-              <p>CMS placeholder. Anna writes the full Cosmic Forecast once per week. The full version (600 to 900 words) goes to Substack as paid content. This page displays the 300-word summary version only.</p>
-              <p>The summary includes: moon phase, energy theme, stone of the week, and one sentence on the somatic practice. The full ritual, full somatic practice, and personal note from Anna are available to Reset Letters Plus subscribers.</p>
-            </div>
+            {forecast ? (
+              <>
+                <div className="cosmic-meta">Week of {new Date(forecast.weekOf).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                <h2 className="cosmic-forecast-title">{forecast.title}</h2>
+                {forecast.moonPhase && <p className="cosmic-detail"><strong>Moon Phase:</strong> {forecast.moonPhase}</p>}
+                {forecast.energyTheme && <p className="cosmic-detail"><strong>Energy Theme:</strong> {forecast.energyTheme}</p>}
+                {forecast.stoneOfWeek && <p className="cosmic-detail"><strong>Stone of the Week:</strong> {forecast.stoneOfWeek}</p>}
+                <div className="cosmic-summary">
+                  {forecast.summary.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="cosmic-meta">Coming this week</div>
+                <div className="cosmic-summary">
+                  <p>The Cosmic Forecast is a weekly practice shared every Sunday. It combines the moon phase, an energy theme, a stone of the week, and a somatic practice.</p>
+                  <p>The full version — with the complete ritual, somatic practice, and personal note from Anna — goes to Reset Letters Plus subscribers. This page displays the summary version.</p>
+                  <p>I started writing it for myself. A way to structure the week around something other than a to-do list. The moon doesn&rsquo;t care about your deadlines. It operates on its own rhythm. And there&rsquo;s something profoundly settling about aligning your inner work with a cycle that&rsquo;s been running for four and a half billion years.</p>
+                </div>
+              </>
+            )}
           </div>
 
-          {/* CTA to Substack */}
           <div className="cosmic-cta reveal">
             <p className="cosmic-cta-text">Want the full ritual, the full somatic practice, and the personal note from Anna?</p>
             <a href="#" className="cosmic-cta-btn">Reset Letters Plus <span>&rarr;</span></a>
@@ -49,7 +65,10 @@ const cosmicStyles = `
 .cosmic-subtitle { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#8C8880; margin-bottom:2rem; }
 .cosmic-content { text-align:left; margin-bottom:2rem; }
 .cosmic-meta { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:#FAA21B; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(0,0,0,0.06); }
-.cosmic-summary { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; }
+.cosmic-forecast-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:1.5rem; color:#231F20; margin-bottom:1rem; }
+.cosmic-detail { font-family:Mulish,sans-serif; font-size:0.85rem; color:#3D3D3A; margin-bottom:0.4rem; }
+.cosmic-detail strong { color:#231F20; }
+.cosmic-summary { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; margin-top:1rem; }
 .cosmic-summary p { margin-bottom:1rem; }
 .cosmic-cta { background:#FFF0D2; border-radius:8px; padding:2rem; text-align:center; }
 .cosmic-cta-text { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.6; margin-bottom:1rem; }

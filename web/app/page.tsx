@@ -78,14 +78,13 @@ export default async function HomePage() {
 
       {/* ═══ MANTRA STRIP ═══ */}
       <section className="hp-mantras reveal">
-        <p className="hp-mantra-text">Mantra strip. Pending Anna&rsquo;s recordings.</p>
-        <p className="hp-mantra-note">CMS placeholder. Anna will supply YouTube mantra links.</p>
+        <p className="hp-mantra-text">You don&rsquo;t have to hold all of this. Come back to yourself.</p>
       </section>
 
       {/* ═══ QUOTE SLIDE #1 ═══ */}
       <section className="hp-quote reveal">
-        <p className="hp-quote-text">Quote slide 1. CMS placeholder.</p>
-        <p className="hp-quote-attr">CMS managed</p>
+        <p className="hp-quote-text">&ldquo;Maybe the next level isn&rsquo;t about managing everything more gracefully. Maybe it&rsquo;s about not gripping so tightly in the first place.&rdquo;</p>
+        <p className="hp-quote-attr">Anna Lou</p>
       </section>
 
       {/* ═══ THE WORK — magazine first, no pricing ═══ */}
@@ -129,8 +128,8 @@ export default async function HomePage() {
 
       {/* ═══ QUOTE SLIDE #2 ═══ */}
       <section className="hp-quote reveal">
-        <p className="hp-quote-text">Quote slide 2. CMS placeholder.</p>
-        <p className="hp-quote-attr">CMS managed</p>
+        <p className="hp-quote-text">&ldquo;Your inner guidance system was never broken. It was waiting for you to stop overriding it.&rdquo;</p>
+        <p className="hp-quote-attr">Anna Lou</p>
       </section>
 
       {/* ═══ EXPERIENCES — magazine first, no pricing ═══ */}
@@ -208,20 +207,20 @@ export default async function HomePage() {
           <div className="hp-media-grid">
             <div className="hp-media-tile reveal">
               <p className="hp-media-label">YouTube</p>
-              <h3 className="hp-media-tile-title">Latest video title. CMS placeholder.</h3>
-              <p className="hp-media-meta">Latest video</p>
+              <h3 className="hp-media-tile-title">Come Back to Yourself &mdash; daily mantras and practices.</h3>
+              <p className="hp-media-meta">Video series</p>
               <span className="hp-media-link">Watch <span>&rarr;</span></span>
             </div>
             <div className="hp-media-tile reveal rd1">
               <p className="hp-media-label">Podcast</p>
-              <h3 className="hp-media-tile-title">Latest episode title. CMS placeholder.</h3>
-              <p className="hp-media-meta">Latest episode</p>
+              <h3 className="hp-media-tile-title">The Reset with Anna Lou &mdash; honest conversations about the inner world.</h3>
+              <p className="hp-media-meta">Coming soon</p>
               <span className="hp-media-link">Listen <span>&rarr;</span></span>
             </div>
             <div className="hp-media-tile reveal rd2">
               <p className="hp-media-label">Substack</p>
-              <h3 className="hp-media-tile-title">Latest issue title. CMS placeholder.</h3>
-              <p className="hp-media-meta">Latest issue</p>
+              <h3 className="hp-media-tile-title">Reset Letters &mdash; weekly writing that feels like coming home.</h3>
+              <p className="hp-media-meta">Weekly newsletter</p>
               <span className="hp-media-link">Read <span>&rarr;</span></span>
             </div>
           </div>
@@ -230,8 +229,8 @@ export default async function HomePage() {
 
       {/* ═══ QUOTE SLIDE #3 ═══ */}
       <section className="hp-quote reveal">
-        <p className="hp-quote-text">Quote slide 3. CMS placeholder.</p>
-        <p className="hp-quote-attr">CMS managed</p>
+        <p className="hp-quote-text">&ldquo;The feeling itself moves through in ninety seconds if you let it. Nine years of running from ninety seconds of feeling is an extraordinary amount of cardio.&rdquo;</p>
+        <p className="hp-quote-attr">Anna Lou</p>
       </section>
 
       {/* ═══ COMMUNITY ═══ */}
