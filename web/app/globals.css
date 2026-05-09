@@ -25,6 +25,10 @@
     display: block;
   }
   /* Brand rule: sentence case always, never ALL CAPS in body copy */
+  /* Justified body text across entire site */
+  p, .section-body, .editorial-text {
+    text-align: justify;
+  }
 }
 
 @layer components {
