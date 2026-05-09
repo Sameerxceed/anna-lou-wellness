@@ -1,0 +1,77 @@
+{
+  "kind": "singleType",
+  "collectionName": "community_pages",
+  "info": {
+    "singularName": "community-page",
+    "pluralName": "community-pages",
+    "displayName": "Community Page",
+    "description": "Community page content"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Community"
+    },
+    "title": {
+      "type": "string",
+      "default": "Come and sit with us."
+    },
+    "intro": {
+      "type": "richtext"
+    },
+    "circle_title": {
+      "type": "string",
+      "default": "The Returning Circle"
+    },
+    "circle_description": {
+      "type": "richtext"
+    },
+    "circle_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "reset_room_title": {
+      "type": "string",
+      "default": "The Reset Room"
+    },
+    "reset_room_description": {
+      "type": "richtext"
+    },
+    "reset_room_price": {
+      "type": "string",
+      "default": "£25 per month"
+    },
+    "reset_room_features": {
+      "type": "json"
+    },
+    "reset_room_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "events_title": {
+      "type": "string",
+      "default": "Events Calendar"
+    },
+    "events_description": {
+      "type": "text"
+    },
+    "resources_title": {
+      "type": "string",
+      "default": "Resource Library"
+    },
+    "resources_description": {
+      "type": "text"
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

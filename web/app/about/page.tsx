@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { getAboutPage } from '@/lib/cms';
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'About',
@@ -10,7 +13,39 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+const defaultPressLogos = [
+  { name: 'Harrods', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'1.1rem',letterSpacing:'0.12em',textTransform:'uppercase'" },
+  { name: 'Selfridges', style: "fontFamily:'Times New Roman,serif',fontWeight:700,fontSize:'1rem',letterSpacing:'0.08em',textTransform:'uppercase'" },
+  { name: 'Harvey Nichols', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'0.85rem',letterSpacing:'0.15em',textTransform:'uppercase'" },
+  { name: 'Liberty', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'1.05rem',letterSpacing:'0.1em',textTransform:'uppercase'" },
+  { name: 'QVC Japan', style: "fontFamily:'Arial Narrow,sans-serif',fontWeight:700,fontSize:'0.95rem',letterSpacing:'0.1em',textTransform:'uppercase'" },
+  { name: 'Disney', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'1rem',letterSpacing:'0.08em'" },
+  { name: 'The Telegraph', style: "fontFamily:'Georgia,serif',fontWeight:400,fontStyle:'italic',fontSize:'1.15rem',letterSpacing:'0.02em'" },
+  { name: 'Stylist', style: "fontFamily:'Helvetica Neue,sans-serif',fontWeight:300,fontSize:'1rem',letterSpacing:'0.18em',textTransform:'uppercase'" },
+  { name: 'SheerLuxe', style: "fontFamily:'Helvetica Neue,sans-serif',fontWeight:300,fontSize:'0.9rem',letterSpacing:'0.12em',textTransform:'uppercase'" },
+];
+
+const defaultCertifications = [
+  { name: 'ICF\nAccredited', colour: '#1a5276' },
+  { name: 'CPD\nCertified', colour: '#c0392b' },
+  { name: 'TRE®\nProvider', colour: '#27ae60' },
+];
+
+const defaultStory1 = `From the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot. The question is no longer just how did you build it but what did building it cost you, what did you learn, and who are you now.`;
+
+const defaultStory2 = `Anna Lou is a multifaceted entrepreneur, designer, and wellness advocate based on Taggs Island, London. She is the founder of Anna Lou of London — a jewellery brand known for vibrant, personalised designs that has been featured in Harrods, Selfridges, Liberty, Harvey Nichols, Isetan and Hankyu in Tokyo, and Henri Bendel in New York. To uphold quality and ethical production, Anna moved all manufacturing to the UK from her Design Lab on Taggs Island.`;
+
+const defaultAdditionalBio = `Anna Lou Wellness grew from her personal journey of overcoming significant challenges — narcissistic abuse, anxiety, and depression — while balancing single parenthood and business. Through her experiences, Anna became a somatic trauma-informed coach, offering support to women recovering from similar traumas. She provides one-on-one and group workshops that focus on holistic healing for mind, body, and spirit.\n\nBeyond coaching, Anna is a podcaster, author, and the creative force behind "Kirra Kirra" — an animated children's show promoting mental health, resilience, and empathy. She is also creating Narc Abuse Aid, a charity focused on providing resources and community for victims of narcissistic abuse.\n\nAcross all her ventures, Anna inspires others to embrace their unique identities, heal from past traumas, and pursue lives filled with purpose and creativity.`;
+
+export default async function AboutPage() {
+  const page = await getAboutPage();
+
+  const story1 = page.storyParagraph1 || defaultStory1;
+  const story2 = page.storyParagraph2 || defaultStory2;
+  const additionalBio = page.additionalBio || defaultAdditionalBio;
+  const pressLogos = page.pressLogos.length > 0 ? page.pressLogos : defaultPressLogos;
+  const certifications = page.certifications.length > 0 ? page.certifications : defaultCertifications;
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: aboutStyles }} />
@@ -18,8 +53,9 @@ export default function AboutPage() {
       {/* Header */}
       <section className="about-header">
         <div className="about-header-inner reveal">
-          <p className="about-kicker">About</p>
-          <h1 className="about-title">Twenty-five years leaves a trail.</h1>
+          <p className="about-kicker">{page.kicker}</p>
+          <h1 className="about-title">{page.title}</h1>
+          <p className="about-roles">{page.rolesTagline}</p>
         </div>
       </section>
 
@@ -28,9 +64,18 @@ export default function AboutPage() {
         <div className="about-story-inner">
           <div className="about-portrait reveal" />
           <div className="reveal rd1">
-            <p className="about-body"><span className="about-drop-cap">F</span>rom the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot. The question is no longer just how did you build it but what did building it cost you, what did you learn, and who are you now.</p>
-            <p className="about-body">Anna Lou Wellness is the next chapter: a space where somatic coaching, honest stories, and the return to self come together for women ready to step into a more aligned version of themselves.</p>
+            <p className="about-body"><span className="about-drop-cap">{story1.charAt(0)}</span>{story1.slice(1)}</p>
+            <p className="about-body">{story2}</p>
           </div>
+        </div>
+      </section>
+
+      {/* Additional Bio */}
+      <section className="about-bio">
+        <div className="about-bio-inner reveal">
+          {additionalBio.split('\n\n').map((para, i) => (
+            <p key={i} className="about-body">{para}</p>
+          ))}
         </div>
       </section>
 
@@ -38,19 +83,19 @@ export default function AboutPage() {
       <section className="about-press">
         <p className="about-press-label">As seen in</p>
         <div className="about-press-row">
-          <span className="about-press-logo" style={{ fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: '1.1rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const }}>Harrods</span>
-          <span className="about-press-logo" style={{ fontFamily: "'Times New Roman',serif", fontWeight: 700, fontSize: '1rem', letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Selfridges</span>
-          <span className="about-press-logo" style={{ fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: '0.85rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Harvey Nichols</span>
-          <span className="about-press-logo" style={{ fontFamily: "'Arial Narrow',sans-serif", fontWeight: 700, fontSize: '0.95rem', letterSpacing: '0.1em', textTransform: 'uppercase' as const }}>QVC Japan</span>
-          <span className="about-press-logo" style={{ fontFamily: 'Georgia,serif', fontWeight: 400, fontStyle: 'italic', fontSize: '1.15rem', letterSpacing: '0.02em' }}>The Telegraph</span>
-          <span className="about-press-logo" style={{ fontFamily: "'Helvetica Neue',sans-serif", fontWeight: 300, fontSize: '1rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const }}>Stylist</span>
-          <span className="about-press-logo" style={{ fontFamily: "'Helvetica Neue',sans-serif", fontWeight: 300, fontSize: '0.9rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const }}>SheerLuxe</span>
+          {pressLogos.map((logo) => (
+            <span key={logo.name} className="about-press-logo">{logo.name}</span>
+          ))}
         </div>
         <p className="about-press-label">Certified</p>
         <div className="about-press-row">
-          <div className="about-cert" style={{ borderColor: '#1a5276', color: '#1a5276' }}>ICF<br />Accredited</div>
-          <div className="about-cert" style={{ borderColor: '#c0392b', color: '#c0392b' }}>CPD<br />Certified</div>
-          <div className="about-cert" style={{ borderColor: '#27ae60', color: '#27ae60' }}>TRE&reg;<br />Provider</div>
+          {certifications.map((cert) => (
+            <div key={cert.name} className="about-cert" style={{ borderColor: cert.colour, color: cert.colour }}>
+              {cert.name.split('\n').map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{line}</span>
+              ))}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -60,7 +105,7 @@ export default function AboutPage() {
           <div className="about-contact-card reveal">
             <h3>Contact</h3>
             <p>For enquiries, press, partnerships, and speaking.</p>
-            <Link href="/about/contact" className="about-contact-link">Get in touch <span>&rarr;</span></Link>
+            <Link href="/contact" className="about-contact-link">Get in touch <span>&rarr;</span></Link>
           </div>
           <div className="about-contact-card reveal rd1">
             <h3>Press</h3>
@@ -82,19 +127,23 @@ const aboutStyles = `
 .about-header { background:#fff; padding:2.5rem 3rem 1.5rem; text-align:center; }
 .about-header-inner { max-width:700px; margin:0 auto; }
 .about-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:#3D3D3A; margin-bottom:0.5rem; }
-.about-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; }
+.about-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:0.5rem; }
+.about-roles { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#6E3A5A; font-style:italic; letter-spacing:0.02em; }
 
-.about-story { background:#fff; padding:1.5rem 3rem 2rem; }
+.about-story { background:#fff; padding:1.5rem 3rem 1rem; }
 .about-story-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:0.8fr 1.2fr; gap:2.5rem; align-items:center; }
 .about-portrait { aspect-ratio:3/4; border-radius:6px; overflow:hidden; max-height:400px; background:linear-gradient(160deg,#d8ccc0,#c4b4a8); position:relative; }
 .about-portrait::after { content:'Portrait of Anna. Real photo to be supplied'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.1); text-align:center; max-width:80%; }
-.about-body { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; margin-bottom:1.5rem; }
+.about-body { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; margin-bottom:1.2rem; }
 .about-drop-cap { float:left; font-size:3.2rem; line-height:0.8; color:#6E3A5A; font-family:'EB Garamond',Georgia,serif; font-weight:500; margin-right:0.15rem; margin-top:0.1rem; }
 
-.about-press { background:#F5F3EF; padding:1.5rem 2rem; text-align:center; }
+.about-bio { background:#F5F3EF; padding:1.5rem 3rem; }
+.about-bio-inner { max-width:800px; margin:0 auto; }
+
+.about-press { background:#fff; padding:1.5rem 2rem; text-align:center; }
 .about-press-label { font-family:Mulish,sans-serif; font-weight:300; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#8C8880; margin-bottom:0.5rem; }
 .about-press-row { display:flex; align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem; }
-.about-press-logo { color:#3D3D3A; opacity:0.5; transition:opacity 0.3s; }
+.about-press-logo { font-family:Georgia,serif; font-weight:400; font-size:0.95rem; letter-spacing:0.1em; text-transform:uppercase; color:#3D3D3A; opacity:0.5; transition:opacity 0.3s; }
 .about-press-logo:hover { opacity:0.8; }
 .about-cert { width:100px; height:56px; border:2px solid; border-radius:4px; display:flex; align-items:center; justify-content:center; text-align:center; font-family:Mulish,sans-serif; font-weight:600; font-size:0.6rem; letter-spacing:0.04em; line-height:1.5; }
 
@@ -109,7 +158,7 @@ const aboutStyles = `
 @media (max-width:900px) {
   .about-story-inner { grid-template-columns:1fr; gap:1.5rem; }
   .about-contact-inner { grid-template-columns:1fr; }
-  .about-header, .about-story, .about-contact { padding-left:1.2rem; padding-right:1.2rem; }
+  .about-header, .about-story, .about-bio, .about-contact { padding-left:1.2rem; padding-right:1.2rem; }
   .about-press { padding-left:1rem; padding-right:1rem; }
 }
 `;

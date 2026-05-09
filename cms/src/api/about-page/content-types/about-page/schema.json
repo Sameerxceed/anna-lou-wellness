@@ -1,0 +1,53 @@
+{
+  "kind": "singleType",
+  "collectionName": "about_pages",
+  "info": {
+    "singularName": "about-page",
+    "pluralName": "about-pages",
+    "displayName": "About Page",
+    "description": "About page content"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "About"
+    },
+    "title": {
+      "type": "string",
+      "default": "Twenty-five years leaves a trail."
+    },
+    "story_paragraph_1": {
+      "type": "richtext"
+    },
+    "story_paragraph_2": {
+      "type": "richtext"
+    },
+    "portrait": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "press_logos": {
+      "type": "json"
+    },
+    "certifications": {
+      "type": "json"
+    },
+    "roles_tagline": {
+      "type": "string",
+      "default": "Coach. Trainer. Podcaster. Author. Entrepreneur. Designer."
+    },
+    "additional_bio": {
+      "type": "richtext"
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

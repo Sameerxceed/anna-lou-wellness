@@ -588,7 +588,85 @@ async function seed() {
     console.log('  [info] Membership update skipped');
   }
 
-  // 5. FAQs
+  // 5. About Page
+  console.log('\n--- About Page ---');
+  try {
+    await api('/about-page', 'PUT', {
+      data: {
+        kicker: 'About',
+        title: 'Twenty-five years leaves a trail.',
+        roles_tagline: 'Coach. Trainer. Podcaster. Author. Entrepreneur. Designer.',
+        story_paragraph_1: `From the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot. The question is no longer just how did you build it but what did building it cost you, what did you learn, and who are you now.`,
+        story_paragraph_2: `Anna Lou is a multifaceted entrepreneur, designer, and wellness advocate based on Taggs Island, London. She is the founder of Anna Lou of London — a jewellery brand known for vibrant, personalised designs that has been featured in Harrods, Selfridges, Liberty, Harvey Nichols, Isetan and Hankyu in Tokyo, and Henri Bendel in New York. To uphold quality and ethical production, Anna moved all manufacturing to the UK from her Design Lab on Taggs Island.`,
+        additional_bio: `Anna Lou Wellness grew from her personal journey of overcoming significant challenges — narcissistic abuse, anxiety, and depression — while balancing single parenthood and business. Through her experiences, Anna became a somatic trauma-informed coach, offering support to women recovering from similar traumas. She provides one-on-one and group workshops that focus on holistic healing for mind, body, and spirit.
+
+Beyond coaching, Anna is a podcaster, author, and the creative force behind "Kirra Kirra" — an animated children's show promoting mental health, resilience, and empathy. She is also creating Narc Abuse Aid, a charity focused on providing resources and community for victims of narcissistic abuse.
+
+Across all her ventures, Anna inspires others to embrace their unique identities, heal from past traumas, and pursue lives filled with purpose and creativity.`,
+        press_logos: [
+          { name: 'Harrods' }, { name: 'Selfridges' }, { name: 'Harvey Nichols' },
+          { name: 'Liberty' }, { name: 'QVC Japan' }, { name: 'Disney' },
+          { name: 'The Telegraph' }, { name: 'Stylist' }, { name: 'SheerLuxe' },
+          { name: 'Isetan Tokyo' }, { name: 'Henri Bendel NY' },
+        ],
+        certifications: [
+          { name: 'ICF\nAccredited', colour: '#1a5276' },
+          { name: 'CPD\nCertified', colour: '#c0392b' },
+          { name: 'TRE®\nProvider', colour: '#27ae60' },
+        ],
+      },
+    });
+    console.log('  [updated] About Page');
+  } catch (e) {
+    console.log('  [info] About page seed skipped:', e.message);
+  }
+
+  // 6. Community Page
+  console.log('\n--- Community Page ---');
+  try {
+    await api('/community-page', 'PUT', {
+      data: {
+        kicker: 'Community',
+        title: 'Come and sit with us.',
+        intro: `Connection is not a concept. It is biological. Your nervous system needs co-regulation. It needs other regulated humans. That's not self-help language. That's neuroscience. Every space here is designed to bring you into the room with people who are actually honest, actually present, and actually doing the work.`,
+        circle_title: 'The Returning Circle',
+        circle_description: `Every Tuesday evening I hold a circle at The Hare and the Moon in Twickenham. Donation-based. Open to everyone. No booking required.
+
+What it is: a room. People who are honest. No advice. No fixing. No cross-talk. Just being in the presence of other humans who are willing to say what's actually going on.
+
+What it is not: therapy, a support group, a workshop, or anything with a curriculum. There is no programme. There is no progression. You come when you need to. You stop when you're done.
+
+Most people who come for the first time look nervous. By the end of the evening something in them has settled. Not because anything dramatic happened. Because they were in a room where they didn't have to perform. That sounds like nothing. It's actually everything.`,
+        reset_room_title: 'The Reset Room',
+        reset_room_description: `The Reset Room is the monthly membership for people who want ongoing access to the work without the commitment of a full programme.
+
+It is for people who have done some work and want to keep going. For people who are not ready for 1:1 but know they need more than occasional workshops. For people who want community as part of their practice.
+
+It is also the most natural next step after a workshop. You came to Signal Reset Day. Something shifted. You want to keep that aliveness going. This is where you come.
+
+Cancel any time. First month free for anyone who has attended a paid workshop in the last three months.`,
+        reset_room_price: '£25 per month',
+        reset_room_features: [
+          'Monthly live group session (90 mins, Zoom, recorded)',
+          'Full workshop replay library',
+          'Signal Method™ workbook',
+          'Monthly Signal Check practice',
+          'Founder reset audio',
+          'Reset Room community space',
+          'Early retreat booking access',
+        ],
+        events_title: 'Events Calendar',
+        events_description: 'Upcoming retreats, live dates, guest experts, and member-only events. Crystal parties, children\'s crystal parties, crystal wellbeing gatherings, and the Crystal Clear Business Vortex.',
+        resources_title: 'Resource Library',
+        resources_description: 'Guides, tools, workshop replays, and member-only content. Free nervous system recalibration, subconscious clarity reset quiz, and the full healing resource library.',
+      },
+    });
+    console.log('  [updated] Community Page');
+  } catch (e) {
+    console.log('  [info] Community page seed skipped:', e.message);
+  }
+
+  // 7. FAQs
   console.log('\n--- FAQs ---');
   for (const faq of faqs) {
     await findOrCreate('/faqs', 'question', faq.question, { ...faq, is_active: true });

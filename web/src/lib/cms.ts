@@ -498,6 +498,116 @@ export async function getMembership(): Promise<Membership | null> {
   }
 }
 
+// ═══ ABOUT PAGE ═══
+
+export interface AboutPage {
+  kicker: string;
+  title: string;
+  rolesTagline: string;
+  storyParagraph1: string;
+  storyParagraph2: string;
+  additionalBio: string;
+  portrait: string;
+  pressLogos: { name: string; style?: string }[];
+  certifications: { name: string; colour: string }[];
+}
+
+export async function getAboutPage(): Promise<AboutPage> {
+  const fallback: AboutPage = {
+    kicker: 'About',
+    title: 'Twenty-five years leaves a trail.',
+    rolesTagline: 'Coach. Trainer. Podcaster. Author. Entrepreneur. Designer.',
+    storyParagraph1: '',
+    storyParagraph2: '',
+    additionalBio: '',
+    portrait: '',
+    pressLogos: [],
+    certifications: [],
+  };
+
+  try {
+    const { data: d } = await fetchAPI('/about-page', { populate: '*' });
+    if (!d) return fallback;
+    return {
+      kicker: d.kicker || fallback.kicker,
+      title: d.title || fallback.title,
+      rolesTagline: d.roles_tagline || fallback.rolesTagline,
+      storyParagraph1: d.story_paragraph_1 || fallback.storyParagraph1,
+      storyParagraph2: d.story_paragraph_2 || fallback.storyParagraph2,
+      additionalBio: d.additional_bio || fallback.additionalBio,
+      portrait: mediaUrl(d.portrait) || fallback.portrait,
+      pressLogos: Array.isArray(d.press_logos) ? d.press_logos : fallback.pressLogos,
+      certifications: Array.isArray(d.certifications) ? d.certifications : fallback.certifications,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+// ═══ COMMUNITY PAGE ═══
+
+export interface CommunityPage {
+  kicker: string;
+  title: string;
+  intro: string;
+  circleTitle: string;
+  circleDescription: string;
+  circleImage: string;
+  resetRoomTitle: string;
+  resetRoomDescription: string;
+  resetRoomPrice: string;
+  resetRoomFeatures: string[];
+  resetRoomImage: string;
+  eventsTitle: string;
+  eventsDescription: string;
+  resourcesTitle: string;
+  resourcesDescription: string;
+}
+
+export async function getCommunityPage(): Promise<CommunityPage> {
+  const fallback: CommunityPage = {
+    kicker: 'Community',
+    title: 'Come and sit with us.',
+    intro: '',
+    circleTitle: 'The Returning Circle',
+    circleDescription: '',
+    circleImage: '',
+    resetRoomTitle: 'The Reset Room',
+    resetRoomDescription: '',
+    resetRoomPrice: '£25 per month',
+    resetRoomFeatures: [],
+    resetRoomImage: '',
+    eventsTitle: 'Events Calendar',
+    eventsDescription: '',
+    resourcesTitle: 'Resource Library',
+    resourcesDescription: '',
+  };
+
+  try {
+    const { data: d } = await fetchAPI('/community-page', { populate: '*' });
+    if (!d) return fallback;
+    return {
+      kicker: d.kicker || fallback.kicker,
+      title: d.title || fallback.title,
+      intro: d.intro || fallback.intro,
+      circleTitle: d.circle_title || fallback.circleTitle,
+      circleDescription: d.circle_description || fallback.circleDescription,
+      circleImage: mediaUrl(d.circle_image) || fallback.circleImage,
+      resetRoomTitle: d.reset_room_title || fallback.resetRoomTitle,
+      resetRoomDescription: d.reset_room_description || fallback.resetRoomDescription,
+      resetRoomPrice: d.reset_room_price || fallback.resetRoomPrice,
+      resetRoomFeatures: Array.isArray(d.reset_room_features) ? d.reset_room_features : fallback.resetRoomFeatures,
+      resetRoomImage: mediaUrl(d.reset_room_image) || fallback.resetRoomImage,
+      eventsTitle: d.events_title || fallback.eventsTitle,
+      eventsDescription: d.events_description || fallback.eventsDescription,
+      resourcesTitle: d.resources_title || fallback.resourcesTitle,
+      resourcesDescription: d.resources_description || fallback.resourcesDescription,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 // ═══ FAQs ═══
 
 export interface FAQ {
