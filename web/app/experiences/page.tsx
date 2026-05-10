@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { getExperiences } from '@/lib/cms';
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Experiences',
@@ -10,7 +13,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ExperiencesPage() {
+const categories = [
+  { title: 'Retreats', href: '/experiences/retreats', desc: 'A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Six people maximum. No phones, no fixed agenda. We work with whatever the group needs — breathwork, somatic practice, Signal Method, honest conversation. People arrive wound tight and leave softer.', colour: '#7BAFDD' },
+  { title: 'Workshops', href: '/experiences/workshops', desc: 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. Every workshop includes full access or a recording and summary. Crystal healing, breathwork, jewellery-making, and restorative practices.', colour: '#7BAFDD' },
+  { title: 'Corporate Wellbeing', href: '/experiences/corporate-wellbeing', desc: 'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes. The Signal Method adapted for corporate environments. Available in person or online.', colour: '#7BAFDD' },
+  { title: 'Speaking', href: '/experiences/speaking', desc: 'Anna speaks on somatic coaching, the founder journey, nervous system regulation, and building a business from the body up. Available for conferences, panels, podcasts, and private events.', colour: '#7BAFDD' },
+];
+
+const fallbackUpcoming = [
+  { name: 'Autumn Reset Day', date: 'September 2026', location: 'Taggs Island, Hampton', type: 'retreat' as const, href: '/experiences/retreats', sub: 'The Signal Method™' },
+  { name: 'Surrendering and Raising Your Vibration', date: 'October 2026', location: 'Online', type: 'workshop' as const, href: '/experiences/workshops' },
+  { name: 'Crystal Clear Business Vortex', date: 'November 2026', location: 'Taggs Island, Hampton', type: 'workshop' as const, href: '/experiences/workshops', sub: 'A journey to success' },
+  { name: 'FREE Crystal Healing: Surrender & Sparkle', date: 'Ongoing', location: 'Online', type: 'workshop' as const, href: '/experiences/workshops', sub: 'Free entry' },
+  { name: 'Corporate Wellbeing', date: 'Flexible', location: 'Your workplace or online', type: 'corporate' as const, href: '/experiences/corporate-wellbeing', sub: 'Bespoke formats' },
+];
+
+export default async function ExperiencesPage() {
+  const cmsExperiences = await getExperiences();
+  const upcoming = cmsExperiences.length > 0
+    ? cmsExperiences.map(e => ({ name: e.name, date: e.date, location: e.location, type: e.type, href: `/experiences/${e.type === 'retreat' ? 'retreats' : e.type === 'workshop' ? 'workshops' : e.type === 'corporate' ? 'corporate-wellbeing' : 'speaking'}`, sub: e.priceLabel || undefined }))
+    : fallbackUpcoming;
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: expStyles }} />
@@ -27,51 +50,30 @@ export default function ExperiencesPage() {
       {/* Category cards */}
       <section className="exp-categories">
         <div className="exp-grid">
-          <Link href="/experiences/retreats" className="exp-card reveal" style={{ borderLeft: '3px solid #7BAFDD' }}>
-            <h2 className="exp-card-title">Retreats</h2>
-            <p className="exp-card-desc">A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Water outside, no agenda, just space to come back to yourself.</p>
-            <span className="exp-card-link">View retreats <span>&rarr;</span></span>
-          </Link>
-          <Link href="/experiences/workshops" className="exp-card reveal rd1" style={{ borderLeft: '3px solid #7BAFDD' }}>
-            <h2 className="exp-card-title">Workshops</h2>
-            <p className="exp-card-desc">Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. Every workshop includes full access or a recording and summary.</p>
-            <span className="exp-card-link">View workshops <span>&rarr;</span></span>
-          </Link>
-          <Link href="/experiences/corporate-wellbeing" className="exp-card reveal rd2" style={{ borderLeft: '3px solid #7BAFDD' }}>
-            <h2 className="exp-card-title">Corporate Wellbeing</h2>
-            <p className="exp-card-desc">Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes tailored to your workplace.</p>
-            <span className="exp-card-link">Enquire <span>&rarr;</span></span>
-          </Link>
-          <Link href="/experiences/speaking" className="exp-card reveal rd3" style={{ borderLeft: '3px solid #7BAFDD' }}>
-            <h2 className="exp-card-title">Speaking</h2>
-            <p className="exp-card-desc">Anna speaks on somatic coaching, the founder journey, nervous system regulation, and building a business from the body up.</p>
-            <span className="exp-card-link">Book Anna <span>&rarr;</span></span>
-          </Link>
+          {categories.map((cat, i) => (
+            <Link key={cat.title} href={cat.href} className={`exp-card reveal${i > 0 ? ` rd${i}` : ''}`} style={{ borderLeft: `3px solid ${cat.colour}` }}>
+              <h2 className="exp-card-title">{cat.title}</h2>
+              <p className="exp-card-desc">{cat.desc}</p>
+              <span className="exp-card-link">{cat.title === 'Corporate Wellbeing' || cat.title === 'Speaking' ? 'Enquire' : `View ${cat.title.toLowerCase()}`} <span>&rarr;</span></span>
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* Upcoming (placeholder) */}
+      {/* Upcoming */}
       <section className="exp-upcoming">
         <div className="exp-upcoming-inner">
           <p className="exp-kicker reveal">Upcoming</p>
           <h2 className="exp-section-title reveal rd1">Next on the calendar.</h2>
           <div className="exp-upcoming-grid">
-            <div className="exp-upcoming-card reveal">
-              <p className="exp-date">September 2026 &middot; Taggs Island, Hampton</p>
-              <h3 className="exp-event-name">Autumn Reset Day</h3>
-              <p className="exp-event-sub">The Signal Method&#8482;</p>
-              <Link href="/experiences/retreats" className="exp-card-link">Details <span>&rarr;</span></Link>
-            </div>
-            <div className="exp-upcoming-card reveal rd1">
-              <p className="exp-date">October 2026 &middot; Online</p>
-              <h3 className="exp-event-name">Surrendering and Raising Your Vibration</h3>
-              <Link href="/experiences/workshops" className="exp-card-link">Details <span>&rarr;</span></Link>
-            </div>
-            <div className="exp-upcoming-card reveal rd2">
-              <p className="exp-date">Flexible &middot; Your workplace or online</p>
-              <h3 className="exp-event-name">Corporate Wellbeing. Bespoke formats.</h3>
-              <Link href="/experiences/corporate-wellbeing" className="exp-card-link">Enquire <span>&rarr;</span></Link>
-            </div>
+            {upcoming.map((event, i) => (
+              <div key={event.name} className={`exp-upcoming-card reveal${i > 0 ? ` rd${i}` : ''}`}>
+                <p className="exp-date">{event.date} &middot; {event.location}</p>
+                <h3 className="exp-event-name">{event.name}</h3>
+                {event.sub && <p className="exp-event-sub">{event.sub}</p>}
+                <Link href={event.href} className="exp-card-link">Details <span>&rarr;</span></Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>

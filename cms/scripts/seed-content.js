@@ -672,6 +672,50 @@ Cancel any time. First month free for anyone who has attended a paid workshop in
     await findOrCreate('/faqs', 'question', faq.question, { ...faq, is_active: true });
   }
 
+  // 8. Cosmic Forecast (sample)
+  console.log('\n--- Cosmic Forecast ---');
+  await findOrCreate('/cosmic-forecasts', 'title', 'The Week of Settling', {
+    title: 'The Week of Settling',
+    week_of: '2026-05-11',
+    moon_phase: 'Waning Gibbous — time to release what you built last week and let the body integrate',
+    energy_theme: 'Settling. Not collapsing. Not pushing. Settling into what is actually here.',
+    stone_of_week: 'Smoky Quartz — the stone that grounds without numbing. Hold it when your mind is running faster than your body.',
+    summary: `This is a week for doing less and noticing more. The waning gibbous asks you to stop adding and start absorbing. Whatever came up last week — the conversation, the realisation, the thing your body showed you — this is the week it lands.
+
+Settling is not the same as giving up. It is the moment your nervous system stops scanning for threat and starts resting in what is. Most people skip this phase entirely. They move from insight straight to action. But the body needs time to reorganise around what it now knows.
+
+Practice this week: ten minutes of stillness each morning before you reach for your phone. Not meditation. Not breathwork. Just being in the room with yourself before the world gets in.
+
+The Cosmic Forecast is not an astrology column. It is my diary, shared weekly, using the moon as a framework for inner work. The full version — with the complete ritual, somatic practice, and personal note — goes to Reset Letters Plus subscribers.`,
+  });
+
+  // 9. Mantras
+  console.log('\n--- Mantras ---');
+  const mantras = [
+    { title: 'I am safe in this moment', description: 'A grounding practice for when your nervous system is activated. Place both feet on the floor and repeat.', duration: '60 seconds', sort_order: 1 },
+    { title: 'I release what is not mine to carry', description: 'For the women who hold everything. This is your permission to put it down.', duration: '75 seconds', sort_order: 2 },
+    { title: 'I come back to myself', description: 'The core mantra of the Come Back to Yourself series. A daily reset in under ninety seconds.', duration: '90 seconds', sort_order: 3 },
+    { title: 'My body knows the way', description: 'When your mind is too loud to think clearly, your body already has the answer. This practice helps you listen.', duration: '60 seconds', sort_order: 4 },
+    { title: 'I trust the timing of my life', description: 'For the moments when nothing seems to be happening fast enough. Slow is not stuck.', duration: '75 seconds', sort_order: 5 },
+    { title: 'I am allowed to take up space', description: 'A practice for women who have made themselves small. You do not need to shrink.', duration: '60 seconds', sort_order: 6 },
+  ];
+  for (const mantra of mantras) {
+    await findOrCreate('/mantras', 'title', mantra.title, { ...mantra, is_active: true, youtube_url: '' });
+  }
+
+  // 10. Experiences
+  console.log('\n--- Experiences ---');
+  const experiences = [
+    { name: 'Autumn Reset Day', slug: 'autumn-reset-day', type: 'retreat', description: 'A full day on the houseboat at Taggs Island. Six people maximum. No phones, no fixed agenda. We work with whatever the group needs — breathwork, somatic practice, Signal Method, honest conversation.', date: '2026-09-20', location: 'Taggs Island, Hampton', price: null, price_label: 'Enquire', is_upcoming: true, is_active: true, sort_order: 1 },
+    { name: 'Surrendering and Raising Your Vibration', slug: 'surrendering-vibration', type: 'workshop', description: 'An online workshop focused on releasing tension patterns and reconnecting with your body\'s natural energy. Crystal healing, breathwork, and guided somatic practice.', date: '2026-10-15', location: 'Online', price: null, price_label: 'Enquire', is_upcoming: true, is_active: true, sort_order: 2 },
+    { name: 'Crystal Clear Business Vortex', slug: 'crystal-clear-business-vortex', type: 'workshop', description: 'A journey to success — an immersive workshop combining crystal healing, breathwork, and entrepreneurial strategy for founders and business owners.', date: '2026-11-08', location: 'Taggs Island, Hampton', price: null, price_label: 'Enquire', is_upcoming: true, is_active: true, sort_order: 3 },
+    { name: 'FREE Crystal Healing: Surrender & Sparkle', slug: 'free-crystal-healing', type: 'workshop', description: 'A complimentary online session open to everyone. No booking fee. Crystal exploration, guided meditation, and energy clearing.', date: '2026-10-01', location: 'Online', price: 0, price_label: 'Free', is_upcoming: true, is_active: true, sort_order: 4 },
+    { name: 'Corporate Wellbeing: Level Up and Sparkle', slug: 'corporate-level-up-sparkle', type: 'corporate', description: 'A corporate wellness mini-retreat. Bespoke formats for teams — workshops, keynotes, and ongoing wellbeing programmes. The Signal Method adapted for the workplace.', date: '', location: 'Your workplace or online', price: null, price_label: 'Bespoke pricing', is_upcoming: true, is_active: true, sort_order: 5 },
+  ];
+  for (const exp of experiences) {
+    await findOrCreate('/experiences', 'slug', exp.slug, exp);
+  }
+
   console.log('\n=== Seed Complete ===\n');
 }
 
