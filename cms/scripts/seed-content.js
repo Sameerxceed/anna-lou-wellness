@@ -422,6 +422,320 @@ Flash EMDR is a newer protocol — EMDR adapted to be gentler and faster, partic
 
 All three are evidence-based. All three are body-level. All three are gentle. And all three produce real change at the level where the pattern actually lives.`,
   },
+
+  // ═══ VOL 3 — PROGRAMMES ═══
+  {
+    title: 'The Reset — six weeks that actually change something.',
+    category_slug: 'signal-method',
+    body: `Most people arrive at The Reset after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight — and then hitting the same wall.
+
+The Reset is six weeks, 1:1, working directly with your inner guidance system. Not the story. Not the intellectual understanding of the pattern. The actual place the pattern lives — in the body, in the automatic responses that fire before your conscious mind catches up.
+
+Week one is baseline. Where are you arriving from? What is your inner world doing right now? What does safety feel like in your body — and how long since you genuinely felt it?
+
+By week three something usually shifts. A decision becomes clear. A pattern stops activating the same response. Your inner guidance system comes back online — and you realise it has been trying to speak to you for a very long time.
+
+£1,500 for six sessions. Book a free discovery call to see if it is right for you.`,
+  },
+  {
+    title: 'Signal and Signal & Build — the 12-week programmes.',
+    category_slug: 'signal-method',
+    body: `Signal is the full twelve-week somatic rewire. Inner world rewire, pattern release, belief repatterning, rebuilding from the inside out. Weekly sessions, integration support throughout. Dormant parts of yourself switch back online. What felt fixed becomes fluid.
+
+Signal & Build adds a second track: heart-led business strategy using the Signal Method. For founders, coaches, and leaders who want to regulate their inner world and build from that place. You leave with a rewired inner guidance system and a business direction that comes from your own signal — not from fear, not from what you think you should do.
+
+Both are £3,000. Weekly 1:1 sessions, voice note support between sessions, a personalised Signal Method workbook, and lifetime access to recordings. Neither is gendered. Neither requires prior knowledge. Both require only that you are ready.`,
+  },
+  {
+    title: 'One Day. And The Signal Collective.',
+    category_slug: 'signal-method',
+    body: `One Day is exactly that. A full day, 1:1, on the houseboat at Taggs Island or online. No multi-week commitment. One concentrated, unhurried, immersive day.
+
+We begin with a full inner guidance system audit. We move through whatever the day calls for: somatic work, belief repatterning, breathwork, Signal Method, pendulum alignment, business strategy if you are building something. You leave with a personalised practice, a completed Signal Method workbook, and a clear direction from your own signal rather than anyone else's opinion.
+
+The Signal Collective is the mastermind. For coaches, founders, practitioners, and leaders who want depth plus community. Group and 1:1 coaching combined. Monthly intensive sessions. Peer co-regulation with people at the same level of seriousness. By application. Limited intake. Waitlist available.`,
+  },
+
+  // ═══ VOL 3 — RESET ROOM ═══
+  {
+    title: 'The Reset Room — what you get inside every month.',
+    category_slug: 'holding-everything',
+    body: `The Reset Room is the monthly membership for people who want ongoing access to the work without the commitment of a full programme.
+
+For £25 per month you get: one live group session per month — ninety minutes, hosted on Zoom, recorded for those who cannot attend live. Full access to the resource library including the Signal Method workbook and all past workshop recordings. A monthly Signal Check delivered to your inbox. And the Reset Room community.
+
+The Reset Room is for people who have done some work and want to keep going. For people who are not ready for 1:1 but know they need more than occasional workshops. For people who want community as part of their practice.
+
+It is also the most natural next step after a workshop. You came to Signal Reset Day. Something shifted. You want to keep that aliveness going. This is where you come. Cancel any time. First month free for anyone who has attended a paid workshop in the last three months.`,
+  },
+  {
+    title: 'Who The Reset Room is for — and who it is not for.',
+    category_slug: 'holding-everything',
+    body: `The Reset Room is for people who want consistent somatic practice and community. People maintaining shifts they have already made. People between programmes. People who want to stay connected to the work without the intensity of 1:1.
+
+It is not for people in acute crisis. If you are currently in a crisis situation, you need 1:1 coaching or recovery coaching — not a group membership. The Reset Room is not a replacement for therapy. It is not a course. There is no curriculum and no progression path.
+
+Think of it like the crab analogy from Out Of Our Minds — a safe space between big shifts. A container that holds you while the integration happens. The community aspect matters. Your nervous system needs co-regulation. It needs other regulated humans around it. The Reset Room provides that.`,
+  },
+
+  // ═══ VOL 3 — FREE RESOURCES ═══
+  {
+    title: 'The Nervous System Decoder — what it is and why it is free.',
+    category_slug: 'educational',
+    body: `The Nervous System Decoder is a free downloadable guide explaining three primary states of your inner guidance system. Ventral vagal — safe, connected, creative. Sympathetic — fight or flight, urgency, activation. Dorsal vagal — shutdown, flatness, freeze.
+
+It includes three immediate practices you can use the moment you recognise which state you are in. Not theory. Not a workbook. Just the essential understanding that most people were never given.
+
+It is free because understanding your inner world is foundational. You cannot work with something you cannot name. And most of us were never taught the language for what is happening inside us. This gives you that language. Everything else builds from here.`,
+  },
+  {
+    title: 'The Crystal Guide — which stone is right for you and when.',
+    category_slug: 'spiritual-hygiene',
+    body: `This guide started as a handout at crystal parties. Women kept asking the same question: which stone do I need and when? So I wrote it down.
+
+It covers fifteen stones: what each one does energetically, when to reach for it, which emotional states it helps, and how to work with it practically. Not the Instagram version of crystal healing. The version that actually helps.
+
+Moonstone for trusting your own knowing. Rose Quartz for when you have been hard on yourself. Clear Quartz for mental clarity. Black Tourmaline for grounding and protection. Smoky Quartz for when your mind is running faster than your body. Tiger Eye for courage when you need to act.
+
+£15 as a downloadable guide. Or free if you attend a crystal party or workshop.`,
+  },
+  {
+    title: 'The coaching quiz — your starting point in five questions.',
+    category_slug: 'educational',
+    body: `Five questions. That is all. They identify your dominant pattern — the automatic response that fires under pressure before your conscious mind catches up.
+
+Are you a fixer, a freezer, a fighter, a fleer, or a fawner? Most of us have a primary and a secondary. Knowing which one is yours changes how you approach everything: relationships, work, parenting, rest.
+
+This is not a diagnosis. It is a starting point. A way to begin noticing what your nervous system does automatically so you can start choosing something different. Take the quiz. It takes two minutes.`,
+  },
+
+  // ═══ VOL 3 — PRESS & CREDENTIALS ═══
+  {
+    title: 'Twenty-five years of press — and what I am willing to say now.',
+    category_slug: 'the-strong-one',
+    body: `The press started in the early 2000s. A piece about someone selling handmade jewellery on Portobello Road. Then the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously. Then QVC Japan. Then trade press across two decades.
+
+For most of those years the press was about the brand and the jewellery. The design, the celebrities wearing it, the collaborations. Disney. Hello Kitty. The trunk shows.
+
+More recently the coverage has shifted. The coaching, the houseboat, the pivot. The question is no longer just how did you build it — but what did building it cost you, what did you learn, and who are you now.
+
+Twenty-five years leaves a trail. Here is mine, for the first time, unedited. For press enquiries, please use the contact page.`,
+  },
+  {
+    title: 'Credentials — what I am trained in and why it matters.',
+    category_slug: 'educational',
+    body: `ICF-accredited. CPD-certified. Certified TRE provider. These are the formal ones. They matter because this work requires training, supervision, and ongoing professional development.
+
+But formal accreditation is only part of it. I am also trained in Flash EMDR, Brainspotting, Internal Family Systems, breathwork facilitation, energy alignment, pendulum work, and somatic movement. Each one required significant training. Each one required supervision hours. Each one required me to do my own work first.
+
+I say this not to list qualifications but because this field is unregulated and anyone can call themselves a coach. If someone is working with your nervous system, your trauma, your inner world — ask what they are trained in. Ask who supervises them. Ask whether they have done their own work.
+
+The credentials matter because your safety matters.`,
+  },
+
+  // ═══ VOL 3 — SPEAKING ═══
+  {
+    title: 'Five talks — and which one is right for your event.',
+    category_slug: 'founder-reset',
+    body: `The Zen Hustler: how to build a business without burning out your nervous system. For founder events, entrepreneur networks, and anyone who has tried to meditate their way through a cash flow crisis.
+
+Signal — How to hear yourself in a loud world: the Signal Method applied to decision-making, creativity, and leadership. For corporate events, leadership programmes, and teams that want to operate from clarity rather than urgency.
+
+What Actually Happens in Trauma Recovery: the real version. Not the clinical one. For wellness events, mental health awareness, and organisations that want honest conversation about what healing actually looks like.
+
+The Anna Lou of London Story: twenty-five years from Portobello Road to a houseboat. For entrepreneurship events, women in business, and anyone interested in what happens when you build something beautiful and then have to rebuild yourself.
+
+What Community Actually Does to the Inner Guidance System: the neuroscience of co-regulation and why connection is not optional. For community organisations, membership businesses, and anyone building spaces for people to be honest.`,
+  },
+  {
+    title: 'Why the talks that terrify me are the ones worth giving.',
+    category_slug: 'the-strong-one',
+    body: `The most memorable event I ever did was fifteen people. No microphone. Forty minutes talking. Then two hours of conversation that nobody wanted to end.
+
+I do not do corporate platitudes. I do not have a slide deck with stock photos of mountains. What I have is twenty-five years of building something, losing myself inside it, breaking down, and rebuilding from the body up. And a willingness to tell the real version.
+
+The talks that terrify me — the ones where I say the thing I have never said publicly before — are always the ones that land hardest. Because the room can feel it. Authenticity is not a brand value. It is a nervous system response. People know when you are performing and when you are present.
+
+Based in Hampton, London. Travels nationally. Online welcome. For speaking enquiries and booking, please contact through the website.`,
+  },
+  {
+    title: 'What event organisers say.',
+    category_slug: 'founder-reset',
+    body: `The consistent feedback is: people were still talking about it the next day.
+
+Anna speaks from inside the material, not in front of it. She has a gift for reading a room and adjusting in real time. The vulnerability is what makes it work — she does not pretend to have all the answers, she shares what she has learned from inside the experience.
+
+Available for keynotes, panels, Q&As, fireside chats, and interactive workshops. Happy to tailor content to your event theme. Best for audiences who want depth, honesty, and practical takeaways rather than motivation without substance.`,
+  },
+
+  // ═══ VOL 3 — SHOP EDITORIAL ═══
+  {
+    title: 'Personalised jewellery — why the word you choose matters more than the metal.',
+    category_slug: 'style-and-beauty',
+    body: `Twenty-five years of making personalised jewellery has taught me one thing: the word matters more than the metal.
+
+The Cosmic Phrase Necklace collection lets you choose your phrase, your metal, your font. Made on Taggs Island in the Design Lab. Posted within five working days. Each piece laser-cut and hand-finished.
+
+The phrases women choose tell you everything. Exhale. Enough. Begin Again. I Am The Storm. Some choose their children's names. Some choose the word they needed to hear at the worst moment of their life and now wear it every day as proof that they survived it.
+
+Sterling silver from £35. Gold vermeil from £95. Solid 9ct gold from £175.`,
+  },
+  {
+    title: 'Crystal jewellery — real gemstones and what each one means.',
+    category_slug: 'spiritual-hygiene',
+    body: `Every stone in the collection is real. Not resin. Not glass. Not lab-grown crystal that looks pretty but carries no energy. Real gemstones, set in sterling silver or gold, each chosen for its energetic property first and its aesthetic second.
+
+Tiger Eye for courage when you need to act. Amethyst for calm when everything is too loud. Rose Quartz for self-love when you have been hard on yourself. Moonstone for intuition when you need to trust your own knowing. Labradorite for transformation when everything is shifting.
+
+Each piece comes with a meaning card explaining the stone's properties and how to work with it. Because jewellery should do more than look beautiful. It should hold something.`,
+  },
+  {
+    title: 'Digital downloads — guides, tools and deep-dives.',
+    category_slug: 'style-and-beauty',
+    body: `The Nervous System Decoder is free. Always will be. Understanding your inner world is foundational and should not be behind a paywall.
+
+The Crystal Guide is £15. Fifteen stones, what each one does, when to reach for it, how to work with it practically.
+
+The Relationship Audit guide is £15. The friendship audit, the partnership audit, and the energy exchange mapping tool. The most confronting list you will ever make — and the most clarifying.
+
+The Emotional Declutter framework is £15. A structured process for clearing the inner world the way you would clear a physical space. One surface at a time.
+
+The Signal Method workbook comes with coaching programmes and the Reset Room membership. Not available separately because it requires guidance to use effectively.
+
+All digital downloads delivered immediately. No waiting.`,
+  },
+
+  // ═══ VOL 3 — RESOURCE LIBRARY ═══
+  {
+    title: 'What is in the free resource library.',
+    category_slug: 'educational',
+    body: `The free resource library is exactly that — free. For everyone. No email required for most resources.
+
+It contains: the Nervous System Decoder, a three-part video series on the inner guidance system, selected Signal Checks from the archive, a somatic tools explainer covering TRE, Brainspotting, and Flash EMDR in plain language, and the Signal Method overview.
+
+Everything is organised by what you are working with, not by format. So if you are dealing with overwhelm, you will find the relevant tools together. If you are navigating a relationship pattern, the resources are grouped by that.
+
+Start anywhere. There is no sequence. The right entry point is whichever one your body responds to.`,
+  },
+  {
+    title: 'The paid library — what Reset Room members and Substack subscribers access.',
+    category_slug: 'educational',
+    body: `The paid resource library is available to Reset Room members (£25/month) and paid Substack subscribers (£7/month). It contains everything in the free library plus significantly more depth.
+
+The full Signal Method workbook. The Relationship Audit guide. All workshop recordings from the last six months. A personal founder reset audio. Monthly deep-dives on specific topics. The full Signal Checks archive.
+
+The distinction is simple: the free library gives you understanding. The paid library gives you tools for practice. Both are valuable. The paid library is for people who want to go deeper and maintain a consistent practice.`,
+  },
+  {
+    title: 'The tools actually used every day.',
+    category_slug: 'rituals-and-energy',
+    body: `People ask what I actually do. Not the Instagram version. The real morning.
+
+Water first. Always. Then I walk to the edge of the boat and look at the Thames. Not as meditation. As orientation. A physical check-in with the day before the day begins.
+
+Box breathing — four counts in, four counts hold, four counts out, four counts hold. Two rounds. Takes ninety seconds. Resets the nervous system to ventral vagal.
+
+Pendulum for clarity. One question. Not what should I do — what does my body already know? The pendulum does not add information. It amplifies what is already there.
+
+Palo Santo when the space feels heavy. Not as ritual for the sake of ritual. As energetic hygiene. The same way you would open a window.
+
+All of these are available in the resource library with clear instructions. None of them require belief. All of them require consistency.`,
+  },
+
+  // ═══ VOL 3 — EVENTS ═══
+  {
+    title: 'How to hear about events before they sell out.',
+    category_slug: 'rituals-and-energy',
+    body: `Houseboat retreat days sell out quickly. Six places. That is all there ever is. The waiting list for some dates runs to twenty people.
+
+The best way to hear about events first: the Reset Letters newsletter. Free. Weekly. Every event announcement goes there before it goes anywhere else.
+
+Reset Room members and paid Substack subscribers get forty-eight hours early access to booking. This means by the time the event is publicly announced, half the places may already be gone.
+
+The Returning Circle runs every Tuesday. No booking required. No waitlist. Donation-based. Just turn up at The Hare and the Moon, Twickenham.
+
+For corporate events, speaking, and bespoke workshops — those do not sell out because they are created for you. Get in touch through the contact page.`,
+  },
+  {
+    title: 'Guest practitioners at the houseboat.',
+    category_slug: 'houseboat-life',
+    body: `Occasionally I open the houseboat to trusted practitioners whose work complements mine. Not often. And only people whose work I have experienced personally.
+
+Neptune Shade does shadow work. Her sessions on the houseboat have become some of the most requested events in the calendar. Six spaces. Intimate. Intense. Not for beginners — but if you are ready, transformative.
+
+Guest events are limited to six spaces and invitations go to Reset Letters subscribers first. If you are a practitioner interested in collaboration, the best starting point is to come to the Returning Circle. Meet me in person. Experience the space. Then we can talk.`,
+  },
+  {
+    title: 'The Agadir surf trip — why travel matters in this family.',
+    category_slug: 'houseboat-life',
+    body: `Every July we go to Agadir. Three children. Surfboards they can barely carry. A deliberate choice to do something physical, slightly scary, and completely outside of normal life.
+
+Travel in this family is not about relaxation. It is about exposure. Teaching three humans that the world is bigger than their postcode, that discomfort is survivable, and that the willingness to try things that might not work is one of the most important skills you can develop.
+
+The surf trip is the annual reset. Salt water, physical exhaustion, terrible wi-fi, and the particular joy of watching your children do something they did not think they could do. That moment — the wave they catch, the fall they survive, the pride on their face — is worth every logistical nightmare of travelling with three kids and four surfboards.`,
+  },
+
+  // ═══ VOL 3 — PARTNERS ═══
+  {
+    title: 'How collaborations work — and the ones that get a no.',
+    category_slug: 'founder-reset',
+    body: `Most partnership enquiries get declined. Not because they are bad opportunities. Because they do not align.
+
+The ones that get a yes: brands I already use regardless of any commercial arrangement. Practitioners who have direct experience of the work, not just a business proposition. Editorial partnerships where I retain full editorial independence.
+
+The ones that get a no: anything that positions advertising as editorial. Products I have not personally used and cannot honestly recommend. Partnerships that require me to dilute the message or perform enthusiasm I do not feel.
+
+Disney and Hello Kitty licensing partnerships work because they are genuine — those collaborations reflect real design interests, not forced brand alignment. Harrods, Selfridges, Liberty — those relationships were built over years of trust, not a single email.`,
+  },
+  {
+    title: 'Wholesale and Faire — how to stock Anna Lou of London.',
+    category_slug: 'career-and-direction',
+    body: `Anna Lou of London jewellery is available wholesale through Faire. Best-selling wholesale lines include the Cosmic Phrase Jewellery collection, personalised name necklaces, and the gemstone pendant range.
+
+Previously stocked at Harrods, Selfridges, Harvey Nichols, Liberty in London, and internationally at Isetan and Hankyu in Tokyo and Henri Bendel in New York. Current wholesale is through Faire for independent retailers and boutiques.
+
+Minimum orders, pricing tiers, and product catalogues are all available through the Faire platform. If you are a buyer for a larger retailer or department store, please get in touch directly through the contact page.`,
+  },
+  {
+    title: 'Bespoke jewellery — for brands, events and commissions.',
+    category_slug: 'style-and-beauty',
+    body: `Corporate gifting: minimum fifty pieces, four to six week lead time. Choose from existing designs or commission something entirely new. All production in-house at the Anna Lou Design Lab on Taggs Island.
+
+Event pieces: bespoke jewellery created for conferences, retreats, brand launches, and private events. Each piece can be personalised with event branding, individual names, or custom phrases.
+
+Private commissions: one-of-a-kind pieces for individuals. Engagement rings, anniversary pieces, memorial jewellery. Consultation by appointment. Response within five working days.
+
+All bespoke work starts with a conversation. Tell me what the piece needs to hold — the meaning, the occasion, the person — and I will design from there.`,
+  },
+
+  // ═══ VOL 3 — RECOVERY COACHING ═══
+  {
+    title: 'What narcissistic abuse actually does to your inner guidance system.',
+    category_slug: 'educational',
+    is_featured: true,
+    body: `Gaslighting does not just confuse your thinking. It dismantles your ability to trust your own body. The signals that used to tell you something is wrong — the tightening in your chest, the instinct to leave the room, the quiet voice that says this is not right — those signals get systematically overridden until you cannot hear them at all.
+
+What remains is hypervigilance. Freeze. Fawn. A nervous system permanently scanning for threat, even years after the relationship has ended. The body-level residue of narcissistic abuse is not a mindset problem. It is a nervous system injury.
+
+This is why talk therapy alone often is not enough. You can understand what happened intellectually and still feel the activation in your body every time you hear a particular tone of voice or walk into a room with a certain energy.
+
+Somatic coaching works at the level where the damage actually lives. In the body. In the automatic responses. In the nervous system patterns that were rewired by someone who needed you to doubt yourself.
+
+I work with this from lived experience. Not as a clinical observer. As someone who rebuilt her own inner guidance system from the ground up.`,
+  },
+  {
+    title: 'Three months to reclaim yourself, permanently.',
+    category_slug: 'signal-method',
+    body: `The recovery coaching programme is three months. Twelve weekly sessions with voice note support between sessions.
+
+Month one — Untangle: somatic mapping, breathwork, Flash EMDR for specific traumatic memories. We identify where the patterns live in the body and begin to separate your responses from the ones that were installed by someone else.
+
+Month two — Unbind: TRE for trauma release, Internal Family Systems parts work, boundary recalibration. The parts of you that learned to fawn, freeze, or fight begin to find new options. Your boundaries stop being theoretical and become felt.
+
+Month three — Unbound: integration, intuition strengthening, personal recovery map. By now your inner guidance system is coming back online. The final month is about consolidation — making sure the changes are stable, your practices are sustainable, and your signal is clear.
+
+This programme is not gentle encouragement. It is structured, evidence-based nervous system work delivered with compassion by someone who has walked the same road.`,
+  },
 ];
 
 // ═══ COACHING SESSIONS ═══
@@ -533,6 +847,252 @@ const faqs = [
   { question: 'Do you ship internationally?', answer: 'Yes. All jewellery ships worldwide. UK delivery is free on orders over £50. International shipping rates are calculated at checkout.', category: 'shop', sort_order: 2 },
   { question: 'What are retreat days like?', answer: 'Six people maximum. On the houseboat at Taggs Island. No phones, no fixed agenda. We work with whatever the group needs — breathwork, somatic practice, Signal Method, honest conversation. People arrive wound tight and leave softer.', category: 'experiences', sort_order: 1 },
   { question: 'Do you do corporate wellbeing?', answer: 'Yes. Bespoke workshops, keynotes, and ongoing wellbeing programmes for teams and organisations. The Signal Method adapted for corporate environments. Available in person or online.', category: 'experiences', sort_order: 2 },
+];
+
+// ═══ SHOP PRODUCT CATEGORIES ═══
+
+const productCategories = [
+  { name: 'Retreats & Workshops', slug: 'retreats-workshops', sort_order: 1 },
+  { name: 'Crystal Jewellery', slug: 'crystal-jewellery', sort_order: 2 },
+  { name: 'Raw Crystals & Gifts', slug: 'raw-crystals-gifts', sort_order: 3 },
+  { name: 'Digital Downloads', slug: 'digital-downloads', sort_order: 4 },
+  { name: 'Personalised Jewellery', slug: 'personalised-jewellery', sort_order: 5 },
+  { name: 'Corporate & Events', slug: 'corporate-events', sort_order: 6 },
+];
+
+// ═══ SHOP PRODUCTS ═══
+
+const products = [
+  // Retreats & Workshops
+  {
+    name: 'Houseboat Nervous System Reset Experience',
+    slug: 'houseboat-reset-experience',
+    category_slug: 'retreats-workshops',
+    short_description: 'A full day on the houseboat at Taggs Island. Six people maximum.',
+    description: `A one-day somatic experience on the houseboat at Taggs Island, Hampton. 10am to 4pm. Six participants maximum.\n\nThe day includes breathwork, somatic practice, Signal Method work, crystal healing, and honest conversation. Lunch provided. No phones. No fixed agenda — we work with whatever the group needs.\n\nPeople arrive wound tight and leave softer. Not fixed. Not healed. Just more in contact with whatever they have been avoiding.\n\nIncludes: full day on the houseboat, all materials, lunch, Signal Method workbook, recording access.`,
+    price: 115,
+    is_featured: true,
+    is_active: true,
+    stock: 6,
+    tags: ['retreat', 'houseboat', 'somatic', 'in-person'],
+  },
+  {
+    name: 'Align & Amplify: A One-Day Immersion in THE CODES',
+    slug: 'align-amplify-the-codes',
+    category_slug: 'retreats-workshops',
+    short_description: 'Business coaching immersion combining the Signal Method with entrepreneurial strategy.',
+    description: `A one-day immersive experience combining crystal healing, breathwork, and entrepreneurial strategy using the Signal Method. Limited to seven participants.\n\nDesigned for founders and business owners who want to build from their signal, not from fear. The day combines inner world work with practical business strategy.\n\nYou leave with a clear direction, a Signal Method workbook, and an action plan that comes from your own inner guidance system rather than someone else's blueprint.`,
+    price: 90,
+    is_featured: false,
+    is_active: true,
+    stock: 7,
+    tags: ['business', 'founders', 'signal-method', 'immersive'],
+  },
+  {
+    name: 'Sparkle Mastery Programme',
+    slug: 'sparkle-mastery-programme',
+    category_slug: 'retreats-workshops',
+    short_description: '6-week virtual coaching programme for ongoing somatic practice.',
+    description: `A six-week virtual coaching programme designed to build resilience, maintain your inner sparkle, and develop a consistent somatic practice.\n\nWeekly group sessions, guided practices, community support, and integration tools. Combines crystal healing, breathwork, and the Signal Method in a structured programme.\n\nValued at £375. Includes all materials, recordings, and community access.`,
+    price: 375,
+    is_featured: false,
+    is_active: true,
+    stock: 99,
+    tags: ['programme', 'virtual', '6-week', 'group'],
+  },
+
+  // Crystal Jewellery
+  {
+    name: 'Emerald Gemstone Pendant — 18ct Gold Electroplated',
+    slug: 'emerald-gemstone-pendant',
+    category_slug: 'crystal-jewellery',
+    short_description: 'Smooth tumble emerald pendant, 8x10mm, 18ct gold electroplated.',
+    description: `A genuine emerald gemstone pendant, smooth tumble cut, 8x10mm. 18ct gold electroplated setting.\n\nEmerald is the stone of the heart chakra. It supports emotional healing, compassion, and the courage to love openly. Wear it when you need to soften without losing your strength.\n\nEach piece comes with a meaning card explaining the stone's properties and how to work with it.`,
+    price: 45,
+    is_featured: true,
+    is_active: true,
+    stock: 15,
+    tags: ['gemstone', 'pendant', 'gold', 'emerald', 'heart-chakra'],
+  },
+  {
+    name: 'Chakra Pastel Gemstone Bead Bracelet',
+    slug: 'chakra-pastel-gemstone-bracelet',
+    category_slug: 'crystal-jewellery',
+    short_description: 'Seven chakra stones in pastel gemstone beads.',
+    description: `A bracelet featuring seven genuine gemstone beads, each representing one of the seven chakras. Pastel tones for everyday wear.\n\nFrom root to crown: Red Jasper (grounding), Carnelian (creativity), Citrine (confidence), Rose Quartz (heart), Aquamarine (communication), Amethyst (intuition), Clear Quartz (clarity).\n\nEach bracelet comes with a chakra guide card.`,
+    price: 35,
+    is_featured: false,
+    is_active: true,
+    stock: 20,
+    tags: ['bracelet', 'chakra', 'gemstone', 'pastel'],
+  },
+  {
+    name: 'Cosmic Phrase Necklace',
+    slug: 'cosmic-phrase-necklace',
+    category_slug: 'personalised-jewellery',
+    short_description: 'Choose your phrase, your metal, your font. Made on Taggs Island.',
+    description: `The signature Anna Lou of London personalised necklace. Choose your word or phrase, your metal, and your font. Laser-cut and hand-finished at the Design Lab on Taggs Island.\n\nPopular phrases: Exhale. Enough. Begin Again. I Am The Storm. Children's names. Words that hold meaning.\n\nSterling silver from £35. Gold vermeil from £95. Solid 9ct gold from £175. Posted within five working days.`,
+    price: 35,
+    compare_at_price: null,
+    is_featured: true,
+    is_active: true,
+    stock: 99,
+    tags: ['personalised', 'necklace', 'signature', 'cosmic-phrase'],
+  },
+  {
+    name: 'The Exhale Necklace',
+    slug: 'exhale-necklace',
+    category_slug: 'personalised-jewellery',
+    short_description: 'A physical reminder to breathe. Sterling silver or gold.',
+    description: `The word EXHALE in your choice of metal and font. A physical reminder to breathe — to let go of what you are holding.\n\nOne of the most popular pieces in the collection. Worn by women who need a daily anchor for their nervous system practice.\n\nSterling silver £30. Gold vermeil £95. Solid gold £540. Hand-finished at the Design Lab.`,
+    price: 30,
+    is_featured: false,
+    is_active: true,
+    stock: 99,
+    tags: ['personalised', 'necklace', 'exhale', 'breathwork'],
+  },
+  {
+    name: 'The Return Hoops',
+    slug: 'the-return-hoops',
+    category_slug: 'crystal-jewellery',
+    short_description: 'Signature hoops that catch the light. Sterling silver.',
+    description: `The Return Hoops. Sterling silver. The hoops that catch the light in a way that lifts something — Anna wears them every day.\n\nDesigned to be worn daily. Lightweight, comfortable, and designed to move with you. The signature earring of Anna Lou of London.`,
+    price: 75,
+    is_featured: false,
+    is_active: true,
+    stock: 25,
+    tags: ['earrings', 'hoops', 'silver', 'signature'],
+  },
+
+  // Raw Crystals & Gifts
+  {
+    name: 'Chakra Bag — Seven Curated Crystals',
+    slug: 'chakra-bag',
+    category_slug: 'raw-crystals-gifts',
+    short_description: 'Seven curated chakra crystals with a printed guide.',
+    description: `Seven genuine crystals, each chosen for one of the seven chakras. Comes in a drawstring bag with a printed guide explaining each stone, its chakra, and how to work with it.\n\nIncludes: Red Jasper (root), Carnelian (sacral), Citrine (solar plexus), Rose Quartz (heart), Sodalite (throat), Amethyst (third eye), Clear Quartz (crown).\n\nA perfect starting point for anyone beginning a crystal practice.`,
+    price: 25,
+    is_featured: false,
+    is_active: true,
+    stock: 30,
+    tags: ['crystals', 'chakra', 'gift', 'starter'],
+  },
+  {
+    name: 'Crystal Starter Kit',
+    slug: 'crystal-starter-kit',
+    category_slug: 'raw-crystals-gifts',
+    short_description: 'Beginner crystal set with wooden box, sage, selenite wand, and essential stones.',
+    description: `Everything you need to begin a crystal practice. Presented in a wooden box.\n\nIncludes: selenite wand for cleansing, black tourmaline for grounding, rose quartz for self-love, amethyst for calm, clear quartz for clarity, white sage bundle, and a printed guide.\n\nEach kit is hand-curated. The crystals are genuine and ethically sourced.`,
+    price: 45,
+    is_featured: true,
+    is_active: true,
+    stock: 20,
+    tags: ['crystals', 'starter-kit', 'gift', 'beginner'],
+  },
+
+  // Digital Downloads
+  {
+    name: 'The Crystal Guide',
+    slug: 'crystal-guide-download',
+    category_slug: 'digital-downloads',
+    short_description: 'Fifteen stones — what each does, when to reach for it, how to use it.',
+    description: `A downloadable guide covering fifteen crystals: what each one does energetically, when to reach for it, which emotional states it helps, and how to work with it practically.\n\nNot the Instagram version of crystal healing. The version that actually helps.\n\nDelivered immediately as a PDF. Free with any crystal party or workshop attendance.`,
+    price: 15,
+    is_featured: false,
+    is_active: true,
+    stock: 999,
+    tags: ['digital', 'guide', 'crystals', 'downloadable'],
+  },
+  {
+    name: 'Relationship Audit Guide',
+    slug: 'relationship-audit-guide',
+    category_slug: 'digital-downloads',
+    short_description: 'The friendship audit, partnership audit, and energy exchange mapping tool.',
+    description: `The most confronting list you will ever make — and the most clarifying.\n\nIncludes the friendship audit, the partnership audit, and the energy exchange mapping tool. A structured process for understanding which relationships add to your life and which drain it.\n\nThis does not mean you cut everyone who drains you. It means you maintain them as a choice, not a default. That distinction changes everything.\n\nDelivered immediately as a PDF.`,
+    price: 15,
+    is_featured: false,
+    is_active: true,
+    stock: 999,
+    tags: ['digital', 'guide', 'relationships', 'audit'],
+  },
+  {
+    name: 'Emotional Declutter Framework',
+    slug: 'emotional-declutter-framework',
+    category_slug: 'digital-downloads',
+    short_description: 'Clear the inner world the way you would clear a physical space.',
+    description: `A structured process for clearing your inner world the way you would clear a physical space. One surface at a time.\n\nIncludes the emotional inventory, the energy audit, and the daily clearing practice. Designed to reduce the background noise of unresolved decisions, conversations, and emotional residue.\n\nDelivered immediately as a PDF.`,
+    price: 15,
+    is_featured: false,
+    is_active: true,
+    stock: 999,
+    tags: ['digital', 'guide', 'declutter', 'emotional'],
+  },
+  {
+    name: 'Nervous System Decoder',
+    slug: 'nervous-system-decoder',
+    category_slug: 'digital-downloads',
+    short_description: 'Free guide to understanding your three nervous system states.',
+    description: `A free downloadable guide explaining three primary states of your inner guidance system — ventral vagal (safe), sympathetic (activated), dorsal vagal (shutdown).\n\nIncludes three immediate practices you can use the moment you recognise which state you are in.\n\nFree because understanding your inner world is foundational. You cannot work with something you cannot name.`,
+    price: 0,
+    is_featured: false,
+    is_active: true,
+    stock: 999,
+    tags: ['digital', 'guide', 'nervous-system', 'free'],
+  },
+
+  // Corporate & Events
+  {
+    name: 'Level Up and Sparkle — Corporate Mini-Retreat',
+    slug: 'corporate-mini-retreat',
+    category_slug: 'corporate-events',
+    short_description: 'Bespoke corporate wellness programme. The Signal Method for the workplace.',
+    description: `A corporate wellness mini-retreat designed to build team resilience, reduce burnout, and create space for honest conversation in a professional setting.\n\nFormats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.\n\nUp to 10 participants: £1,200. Up to 20 participants: £2,000. Bespoke pricing for larger groups.\n\nAnna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.`,
+    price: 1200,
+    is_featured: false,
+    is_active: true,
+    stock: 99,
+    tags: ['corporate', 'retreat', 'teams', 'bespoke'],
+  },
+  {
+    name: 'Children\'s Crystal Parties',
+    slug: 'childrens-crystal-parties',
+    category_slug: 'corporate-events',
+    short_description: 'Crystal-themed parties for children aged 6–12.',
+    description: `Crystal-themed parties for children aged 6 to 12. Each child makes their own crystal bracelet, learns about the stones, and takes home a crystal and meaning card.\n\nAvailable at the houseboat on Taggs Island or at your venue. Groups of 6 to 12 children. Includes all materials and a party bag for each child.\n\nA fun, creative, and grounding experience for birthday parties and special occasions.`,
+    price: 250,
+    is_featured: false,
+    is_active: true,
+    stock: 99,
+    tags: ['children', 'party', 'crystals', 'birthday'],
+  },
+  {
+    name: 'Crystal Wellbeing Gatherings — Teens',
+    slug: 'crystal-wellbeing-teens',
+    category_slug: 'corporate-events',
+    short_description: 'Crystal wellbeing sessions for young people aged 13–17.',
+    description: `Group crystal wellbeing sessions designed for young people aged 13 to 17. Combines crystal healing, breathwork, and guided conversation in an age-appropriate format.\n\nDesigned to introduce nervous system awareness, emotional regulation tools, and self-care practices to teenagers. Available at schools, youth centres, or the houseboat.\n\nSmall groups of 6 to 10. All materials provided.`,
+    price: 300,
+    is_featured: false,
+    is_active: true,
+    stock: 99,
+    tags: ['teens', 'wellbeing', 'crystals', 'youth'],
+  },
+];
+
+// ═══ ADDITIONAL FAQs (Vol 3) ═══
+
+const additionalFaqs = [
+  { question: 'What is the Nervous System Decoder?', answer: 'A free downloadable guide explaining the three primary states of your inner guidance system — ventral vagal (safe), sympathetic (fight/flight), dorsal vagal (shutdown). Includes three immediate practices. Free because understanding your inner world is foundational.', category: 'coaching', sort_order: 5 },
+  { question: 'Do you work with narcissistic abuse recovery?', answer: 'Yes. I offer a dedicated three-month recovery coaching programme. Month one: untangle (somatic mapping, breathwork, Flash EMDR). Month two: unbind (TRE, IFS parts work, boundary recalibration). Month three: unbound (integration, intuition strengthening, personal recovery map). I work from lived experience, not just clinical training.', category: 'coaching', sort_order: 6 },
+  { question: 'Is phone support available?', answer: 'Yes. £60/week for up to four calls per month, each up to 60 minutes. Also available as an add-on to coaching programmes for between-session support.', category: 'coaching', sort_order: 7 },
+  { question: 'How do I get a free discovery call?', answer: 'Book through the contact page or the coaching pages. It is a free 15-minute call where we talk about where you are, what you are looking for, and whether 1:1 coaching is the right fit. No pressure. No sales pitch.', category: 'coaching', sort_order: 8 },
+  { question: 'How long does jewellery delivery take?', answer: 'Standard delivery: 3 to 5 working days. Made-to-order and personalised pieces: 4 to 7 working days. International shipping available. Free UK delivery on orders over £50.', category: 'shop', sort_order: 3 },
+  { question: 'Can I return personalised jewellery?', answer: 'Non-personalised items can be returned within 14 days of delivery. Personalised items are made to order and cannot be returned. Digital downloads are non-refundable.', category: 'shop', sort_order: 4 },
+  { question: 'Is the jewellery waterproof?', answer: 'Depends on the metal. Sterling silver will tarnish with water — remove before swimming or showering. Gold vermeil is more resilient but will eventually wear if constantly exposed. Solid gold is fine in water. All pieces come with care instructions.', category: 'shop', sort_order: 5 },
+  { question: 'Do I need experience to come to the Returning Circle?', answer: 'No. The circle is open to everyone. No booking required. No experience needed. Just show up at The Hare and the Moon, Twickenham, on Tuesday evenings. Donation-based.', category: 'experiences', sort_order: 3 },
+  { question: 'What should I wear to a retreat day?', answer: 'Comfortable clothes you can move in. Layers — the houseboat temperature changes. Flat shoes. Bring warm socks. Everything else is provided.', category: 'experiences', sort_order: 4 },
+  { question: 'Can I attend a retreat if I am going through a difficult time?', answer: 'Yes, with honest communication. Let Anna know beforehand. The space is designed to hold whatever you bring. The group dynamic actually supports individual processing — your nervous system benefits from being around other regulated humans.', category: 'experiences', sort_order: 5 },
+  { question: 'How do wholesale orders work?', answer: 'Anna Lou of London jewellery is available wholesale through Faire. Best-selling wholesale: Cosmic Phrase Jewellery. For larger retailer enquiries, contact directly through the website.', category: 'shop', sort_order: 6 },
 ];
 
 // ═══ MAIN ═══
@@ -714,6 +1274,29 @@ The Cosmic Forecast is not an astrology column. It is my diary, shared weekly, u
   ];
   for (const exp of experiences) {
     await findOrCreate('/experiences', 'slug', exp.slug, exp);
+  }
+
+  // 11. Product Categories
+  console.log('\n--- Product Categories ---');
+  const prodCatMap = {};
+  for (const cat of productCategories) {
+    const created = await findOrCreate('/product-categories', 'slug', cat.slug, cat);
+    if (created) prodCatMap[cat.slug] = created.id;
+  }
+
+  // 12. Products
+  console.log('\n--- Products ---');
+  for (const product of products) {
+    const catId = prodCatMap[product.category_slug];
+    const data = { ...product, category: catId || null };
+    delete data.category_slug;
+    await findOrCreate('/products', 'slug', product.slug, data);
+  }
+
+  // 13. Additional FAQs (Vol 3)
+  console.log('\n--- Additional FAQs ---');
+  for (const faq of additionalFaqs) {
+    await findOrCreate('/faqs', 'question', faq.question, { ...faq, is_active: true });
   }
 
   console.log('\n=== Seed Complete ===\n');
