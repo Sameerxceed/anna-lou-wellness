@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getArticleBySlug, getArticles } from '@/lib/cms';
+import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -10,9 +11,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (!article) return { title: 'Article Not Found' };
+  const title = article.seoTitle || `${article.title} — Love & Relationships`;
+  const description = article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`;
   return {
-    title: `${article.title} — Love & Relationships`,
-    description: article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`,
+    title,
+    description,
+    alternates: { canonical: `/love-and-relationships/${slug}` },
+    openGraph: { title, description, type: 'article', url: `/love-and-relationships/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
+    twitter: { card: 'summary_large_image', title, description },
   };
 }
 
@@ -43,6 +49,8 @@ export default async function ArticlePage({ params }: PageProps) {
 
   return (
     <>
+      <ArticleSchema title={article.title} description={article.seoDescription || article.excerpt} slug={slug} section="love-and-relationships" author={article.author} publishedAt={article.publishedAt} heroImage={article.heroImage} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Love & Relationships', href: '/love-and-relationships' }, { name: article.title, href: `/love-and-relationships/${slug}` }]} />
       <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
       <article className="article-page">
         <div className="article-inner">

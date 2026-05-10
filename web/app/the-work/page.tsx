@@ -1,20 +1,29 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getCoachingSessions } from '@/lib/cms';
+import { getCoachingSessions, getFAQs } from '@/lib/cms';
+import { FAQSchema, ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'The Work',
   description: 'Somatic coaching with Anna Lou. The Signal Method, 1:1 sessions, founder reset, dating reset, nervous system reset. Ways to work with Anna.',
+  alternates: { canonical: '/the-work' },
   openGraph: {
     title: 'The Work — Anna Lou Wellness',
     description: 'Somatic coaching with Anna Lou. The Signal Method and 1:1 sessions.',
+    url: '/the-work',
   },
 };
 
 export default async function TheWorkPage() {
-  const sessions = await getCoachingSessions();
+  const [sessions, faqs] = await Promise.all([
+    getCoachingSessions(),
+    getFAQs('coaching'),
+  ]);
   return (
     <>
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'The Work', href: '/the-work' }]} />
+      <ServiceSchema name="Somatic Coaching with Anna Lou" description="1:1 coaching sessions using The Signal Method. Nervous system regulation, emotional healing, and personal transformation." url="/the-work" />
+      {faqs.length > 0 && <FAQSchema faqs={faqs} />}
       <style dangerouslySetInnerHTML={{ __html: workStyles }} />
 
       {/* Header */}
@@ -103,6 +112,24 @@ export default async function TheWorkPage() {
         </div>
       </section>
 
+      {/* FAQs */}
+      {faqs.length > 0 && (
+        <section className="work-faqs">
+          <div className="work-faqs-inner">
+            <p className="work-kicker">Questions</p>
+            <h2 className="work-section-title">Frequently Asked</h2>
+            <div className="work-faq-list">
+              {faqs.map(faq => (
+                <details key={faq.id} className="work-faq-item">
+                  <summary className="work-faq-q">{faq.question}</summary>
+                  <p className="work-faq-a">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Free download CTA */}
       <section className="work-free reveal">
         <p className="work-kicker">Start here</p>
@@ -147,6 +174,15 @@ const workStyles = `
 .work-story-card { border-radius:8px; padding:2rem; }
 .work-story-quote { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1rem; color:#3D3D3A; line-height:1.7; margin-bottom:1.2rem; }
 .work-story-author { font-family:Mulish,sans-serif; font-weight:400; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:#3D3D3A; }
+
+.work-faqs { background:#fff; padding:2rem 3rem; }
+.work-faqs-inner { max-width:800px; margin:0 auto; text-align:center; }
+.work-faq-list { text-align:left; margin-top:1.5rem; }
+.work-faq-item { border-bottom:1px solid rgba(0,0,0,0.06); }
+.work-faq-q { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:0.95rem; color:#231F20; padding:1rem 0; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; }
+.work-faq-q::after { content:'+'; font-size:1.2rem; color:#8C8880; transition:transform 0.3s; }
+details[open] .work-faq-q::after { content:'−'; }
+.work-faq-a { font-family:'EB Garamond',Georgia,serif; font-size:0.95rem; color:#3D3D3A; line-height:1.8; padding:0 0 1rem; }
 
 .work-free { background:#E9EBF6; padding:2rem; text-align:center; margin:1rem 3rem; border-radius:8px; }
 .work-download-btn { background:#6E3A5A; color:#fff; border:1px solid #6E3A5A; font-family:Mulish,sans-serif; font-weight:500; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.7rem 1.8rem; border-radius:3px; transition:all 0.3s; display:inline-block; text-decoration:none; }

@@ -1,0 +1,178 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'You\'re In — Reset Letters',
+  description: 'Welcome to Reset Letters. Your first edition lands 22 June 2026.',
+  robots: { index: false, follow: false },
+};
+
+export default function WelcomePage() {
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: welcomeStyles }} />
+
+      <div className="wl-page">
+        {/* Brand lockup */}
+        <header className="wl-header">
+          <img src="/alw-logo.png" alt="Anna Lou Wellness" className="wl-alw-logo" />
+          <p className="wl-tagline">BEAUTIFULLY WHOLE</p>
+        </header>
+
+        {/* Confirmation */}
+        <div className="wl-content">
+          <h1 className="wl-headline"><em>You&apos;re in.</em></h1>
+
+          <p className="wl-body">Welcome to Reset Letters. You are now a Founding Member, which means you get full access to everything, for life. No charge. Ever.</p>
+          <p className="wl-body">Your first edition will land in your inbox on <strong>22 June 2026</strong>. Until then, here are three things you can do:</p>
+
+          <div className="wl-steps">
+            <div className="wl-step">
+              <span className="wl-num">1</span>
+              <p className="wl-body"><strong>Follow on Instagram.</strong> That is where the conversation happens between editions. Behind the scenes, early peeks, and the odd voice note.</p>
+            </div>
+            <div className="wl-step">
+              <span className="wl-num">2</span>
+              <p className="wl-body"><strong>Reply to the welcome email.</strong> Tell me one thing you are carrying right now. I read every reply.</p>
+            </div>
+            <div className="wl-step">
+              <span className="wl-num">3</span>
+              <p className="wl-body"><strong>Forward this to a friend.</strong> Someone who needs it. You will know who.</p>
+            </div>
+          </div>
+
+          <a
+            href="https://www.instagram.com/annalouwellness"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="wl-insta-btn"
+          >
+            FOLLOW ON INSTAGRAM &rarr;
+          </a>
+
+          <div className="wl-signoff">
+            <p className="wl-signoff-text">Still Sparkling,</p>
+            <p className="wl-signoff-name">Anna Lou x</p>
+          </div>
+        </div>
+
+        <footer className="wl-footer">
+          <p className="wl-copyright">&copy; {new Date().getFullYear()} Anna Lou Wellness</p>
+        </footer>
+      </div>
+    </>
+  );
+}
+
+const welcomeStyles = `
+* { margin:0; padding:0; box-sizing:border-box; }
+
+.wl-page {
+  background: #F1EAE0;
+  color: #231F20;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wl-header { text-align:center; margin-bottom:3rem; }
+.wl-alw-logo { height:40px; width:auto; margin-bottom:0.4rem; display:inline-block; }
+.wl-tagline {
+  font-family:'Poppins',sans-serif;
+  font-weight:400;
+  font-size:0.55rem;
+  letter-spacing:0.35em;
+  color:#A67C3A;
+}
+
+.wl-content { text-align:center; }
+
+.wl-headline {
+  font-family:'Lora',Georgia,serif;
+  font-style:italic;
+  font-weight:400;
+  font-size:clamp(2.5rem,6vw,3.5rem);
+  color:#231F20;
+  margin-bottom:1.5rem;
+  line-height:1.2;
+}
+
+.wl-body {
+  font-family:'Poppins',sans-serif;
+  font-weight:300;
+  font-size:0.92rem;
+  line-height:1.8;
+  color:#231F20;
+  margin-bottom:1rem;
+  text-align:center;
+}
+.wl-body strong { font-weight:600; }
+
+.wl-steps {
+  text-align:left;
+  margin:2rem 0;
+}
+.wl-step {
+  display:flex;
+  gap:1rem;
+  align-items:flex-start;
+  margin-bottom:1.2rem;
+}
+.wl-num {
+  font-family:'Poppins',sans-serif;
+  font-weight:700;
+  font-size:1.4rem;
+  color:#F280AA;
+  flex-shrink:0;
+  margin-top:0.1rem;
+}
+.wl-step .wl-body { text-align:left; margin-bottom:0; }
+
+.wl-insta-btn {
+  display:inline-block;
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  font-size:0.65rem;
+  letter-spacing:0.2em;
+  color:#fff;
+  background:#231F20;
+  text-decoration:none;
+  padding:0.9rem 2.2rem;
+  border-radius:6px;
+  margin:1.5rem 0 2.5rem;
+  transition:background 0.3s;
+}
+.wl-insta-btn:hover { background:#3D3D3A; }
+
+.wl-signoff { margin-bottom:2rem; }
+.wl-signoff-text {
+  font-family:'Lora',Georgia,serif;
+  font-style:italic;
+  font-size:1.1rem;
+  color:#231F20;
+  margin-bottom:0.2rem;
+}
+.wl-signoff-name {
+  font-family:'Poppins',sans-serif;
+  font-weight:500;
+  font-size:0.85rem;
+  color:#231F20;
+}
+
+.wl-footer { margin-top:auto; padding-top:1.5rem; border-top:1px solid rgba(0,0,0,0.06); width:100%; text-align:center; }
+.wl-copyright {
+  font-family:'Poppins',sans-serif;
+  font-weight:300;
+  font-size:0.65rem;
+  color:#999;
+}
+
+@media (max-width:640px) {
+  .wl-page { padding:2rem 1.2rem; }
+  .wl-alw-logo { height:32px; }
+}
+`;

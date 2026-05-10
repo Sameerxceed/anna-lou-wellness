@@ -1,0 +1,21 @@
+{
+  "name": "Anna Lou Wellness",
+  "short_name": "ALW",
+  "description": "Coaching, healing, and transformation for women ready to step into a more aligned version of themselves.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#231F20",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://ardea-gardens.com/sitemap-index.xml

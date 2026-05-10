@@ -7,6 +7,7 @@ import CookieBanner from '@/components/CookieBanner';
 import BackToTop from '@/components/BackToTop';
 import ScrollReveal from '@/components/ScrollReveal';
 import Toast from '@/components/Toast';
+import { WebSiteSchema, PersonSchema, LocalBusinessSchema } from '@/components/StructuredData';
 import './globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,9 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: settings.seoDescription,
     keywords: settings.seoKeywords,
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com'),
-    alternates: {
-      canonical: '/',
-    },
+    alternates: {},
     openGraph: {
       siteName: settings.siteName,
       locale: 'en_GB',
@@ -29,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `${settings.siteName} — Beautifully Whole`,
       description: settings.seoDescription,
       url: '/',
-      images: [{ url: settings.ogDefaultImage || '/og-default.jpg', width: 1200, height: 630 }],
+      images: [{ url: settings.ogDefaultImage || '/og-default.svg', width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -64,7 +63,7 @@ function OrganizationSchema({ settings }: { settings: any }) {
     '@type': 'Organization',
     name: settings.siteName,
     url: process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com',
-    logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com'}/og-default.jpg`,
+    logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com'}/og-default.svg`,
     description: settings.seoDescription,
     founder: {
       '@type': 'Person',
@@ -107,8 +106,12 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com'} />
+        <link rel="manifest" href="/manifest.json" />
+        {/* Canonical URLs are set per-page via generateMetadata */}
         <OrganizationSchema settings={siteSettings} />
+        <WebSiteSchema />
+        <PersonSchema />
+        <LocalBusinessSchema />
       </head>
       <body>
         <Nav navigation={navigation} siteSettings={siteSettings} />

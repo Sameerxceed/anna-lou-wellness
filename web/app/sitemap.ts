@@ -1,43 +1,76 @@
 import { MetadataRoute } from 'next';
+import { getArticles, getProducts } from '@/lib/cms';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com';
   const now = new Date();
 
   // Static pages
-  const staticPages = [
-    { url: '', priority: 1.0, changeFrequency: 'weekly' as const },
-    { url: '/reset-stories', priority: 0.9, changeFrequency: 'daily' as const },
-    { url: '/life', priority: 0.8, changeFrequency: 'weekly' as const },
-    { url: '/love-and-relationships', priority: 0.8, changeFrequency: 'weekly' as const },
-    { url: '/work-and-money', priority: 0.8, changeFrequency: 'weekly' as const },
-    { url: '/experiences', priority: 0.8, changeFrequency: 'weekly' as const },
-    { url: '/the-work', priority: 0.8, changeFrequency: 'monthly' as const },
-    { url: '/the-work/ways-to-work-with-me', priority: 0.7, changeFrequency: 'monthly' as const },
-    { url: '/the-work/quiz', priority: 0.7, changeFrequency: 'monthly' as const },
-    { url: '/the-work/client-stories', priority: 0.7, changeFrequency: 'monthly' as const },
-    { url: '/the-work/sessions', priority: 0.7, changeFrequency: 'monthly' as const },
-    { url: '/shop', priority: 0.8, changeFrequency: 'weekly' as const },
-    { url: '/community', priority: 0.7, changeFrequency: 'monthly' as const },
-    { url: '/community/the-returning-circle', priority: 0.6, changeFrequency: 'monthly' as const },
-    { url: '/community/membership', priority: 0.7, changeFrequency: 'monthly' as const },
-    { url: '/community/events', priority: 0.6, changeFrequency: 'weekly' as const },
-    { url: '/community/resources', priority: 0.5, changeFrequency: 'monthly' as const },
-    { url: '/about', priority: 0.6, changeFrequency: 'monthly' as const },
-    { url: '/about/press', priority: 0.5, changeFrequency: 'monthly' as const },
-    { url: '/about/contact', priority: 0.5, changeFrequency: 'yearly' as const },
-    { url: '/cosmic-forecast', priority: 0.8, changeFrequency: 'weekly' as const },
-    { url: '/mantras', priority: 0.6, changeFrequency: 'monthly' as const },
-    { url: '/privacy', priority: 0.2, changeFrequency: 'yearly' as const },
-    { url: '/terms', priority: 0.2, changeFrequency: 'yearly' as const },
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: `${siteUrl}`, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${siteUrl}/reset-stories`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${siteUrl}/life`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${siteUrl}/love-and-relationships`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${siteUrl}/work-and-money`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${siteUrl}/experiences`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${siteUrl}/experiences/retreats`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/experiences/workshops`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/experiences/corporate-wellbeing`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/experiences/speaking`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/the-work`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${siteUrl}/the-work/ways-to-work-with-me`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/the-work/sessions`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/the-work/quiz`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/the-work/client-stories`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/shop`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${siteUrl}/shop/new-in`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${siteUrl}/shop/emotional-support-jewellery`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${siteUrl}/shop/personalised`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${siteUrl}/community`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/community/the-returning-circle`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${siteUrl}/community/membership`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/community/events`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${siteUrl}/community/resources`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${siteUrl}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${siteUrl}/about/press`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${siteUrl}/about/partnerships`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${siteUrl}/contact`, lastModified: now, changeFrequency: 'yearly', priority: 0.5 },
+    { url: `${siteUrl}/cosmic-forecast`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${siteUrl}/mantras`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${siteUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${siteUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
   ];
 
-  return staticPages.map(page => ({
-    url: `${siteUrl}${page.url}`,
-    lastModified: now,
-    changeFrequency: page.changeFrequency,
-    priority: page.priority,
-  }));
+  // Dynamic article pages
+  const articleSections = ['reset-stories', 'life', 'love-and-relationships', 'work-and-money'];
+  const articleEntries: MetadataRoute.Sitemap = [];
+  for (const section of articleSections) {
+    try {
+      const articles = await getArticles(section);
+      for (const article of articles) {
+        articleEntries.push({
+          url: `${siteUrl}/${section}/${article.slug}`,
+          lastModified: article.publishedAt ? new Date(article.publishedAt) : now,
+          changeFrequency: 'monthly',
+          priority: 0.6,
+        });
+      }
+    } catch {}
+  }
 
-  // TODO: Add dynamic pages from Strapi (blog posts, products) when CMS is connected
+  // Dynamic product pages
+  const productEntries: MetadataRoute.Sitemap = [];
+  try {
+    const products = await getProducts();
+    for (const product of products) {
+      productEntries.push({
+        url: `${siteUrl}/shop/${product.slug}`,
+        lastModified: now,
+        changeFrequency: 'weekly',
+        priority: 0.5,
+      });
+    }
+  } catch {}
+
+  return [...staticPages, ...articleEntries, ...productEntries];
 }

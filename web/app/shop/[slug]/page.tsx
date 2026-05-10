@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getProducts } from '@/lib/cms';
 import AddToCartButton from '@/components/AddToCartButton';
+import { ProductSchema, BreadcrumbSchema } from '@/components/StructuredData';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -18,9 +19,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const products = await getProducts();
   const product = products.find(p => p.slug === slug);
   if (!product) return { title: 'Product Not Found' };
+  const title = `${product.name} — Anna Lou Wellness Shop`;
+  const description = product.shortDescription || product.description?.slice(0, 160) || `${product.name}. Handmade by Anna Lou Wellness.`;
   return {
-    title: product.name,
-    description: product.shortDescription,
+    title,
+    description,
+    alternates: { canonical: `/shop/${slug}` },
+    openGraph: { title, description, type: 'website', url: `/shop/${slug}`, images: product.images[0] ? [{ url: product.images[0] }] : undefined },
+    twitter: { card: 'summary_large_image', title, description },
   };
 }
 
@@ -36,6 +42,8 @@ export default async function ProductDetailPage({ params }: Props) {
 
   return (
     <>
+      <ProductSchema name={product.name} description={product.shortDescription || product.description} slug={slug} price={product.price} image={product.images[0]} inStock={product.stock > 0} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Shop', href: '/shop' }, { name: product.name, href: `/shop/${slug}` }]} />
       <section className="pt-32 pb-16 px-8">
         <div className="max-w-[1100px] mx-auto">
           <nav className="mb-8 reveal">
