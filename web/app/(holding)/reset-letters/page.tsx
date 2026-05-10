@@ -44,9 +44,24 @@ export default function ResetLettersPage() {
         {/* Coming Soon eyebrow */}
         <p className="rl-coming-soon">COMING SOON</p>
 
-        {/* Reset Letters wordmark */}
-        <div className="rl-wordmark">
-          <img src="/reset-letters-logo.jpg" alt="Reset Letters" className="rl-wordmark-img" />
+        {/* Reset Letters wordmark — CSS coloured letters */}
+        <div className="rl-wordmark" aria-label="Reset Letters">
+          <div className="rl-word">
+            <span style={{ color: '#231F20' }}>R</span>
+            <span style={{ color: '#EE312F' }}>E</span>
+            <span style={{ color: '#FAA21B' }}>S</span>
+            <span style={{ color: '#7BAFDD' }}>E</span>
+            <span style={{ color: '#F280AA' }}>T</span>
+          </div>
+          <div className="rl-word">
+            <span style={{ color: '#5DCAA5' }}>L</span>
+            <span style={{ color: '#FFD07A' }}>E</span>
+            <span style={{ color: '#7BAFDD' }}>T</span>
+            <span style={{ color: '#F280AA' }}>T</span>
+            <span style={{ color: '#D5D0C8' }}>E</span>
+            <span style={{ color: '#FAA21B' }}>R</span>
+            <span style={{ color: '#5DCAA5' }}>S</span>
+          </div>
         </div>
 
         {/* Strapline */}
@@ -192,8 +207,16 @@ const holdingStyles = `
 }
 
 /* Wordmark */
-.rl-wordmark { text-align:center; margin-bottom:1rem; }
-.rl-wordmark-img { max-width:480px; width:100%; height:auto; }
+.rl-wordmark { text-align:center; margin-bottom:1.2rem; }
+.rl-word {
+  font-family:'Poppins',sans-serif;
+  font-weight:900;
+  font-size:clamp(3rem,8vw,5rem);
+  line-height:0.95;
+  letter-spacing:0.02em;
+  display:block;
+}
+.rl-word span { display:inline-block; }
 
 /* Strapline */
 .rl-strapline {

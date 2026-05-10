@@ -21,16 +21,14 @@ export const metadata: Metadata = {
 export default function HoldingLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {/* Load Poppins + Lora for holding pages */}
-      {/* eslint-disable-next-line @next/next/no-css-tags */}
       <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&family=Lora:ital@1&display=swap"
         rel="stylesheet"
       />
-      {/* Hide main site nav and footer on holding pages */}
       <style dangerouslySetInnerHTML={{ __html: `
-        nav, footer, .back-to-top { display: none !important; }
+        #mainNav, .footer-wrap, .back-to-top, .cookie-banner { display: none !important; }
         main { padding: 0 !important; margin: 0 !important; }
+        body { background: #F1EAE0 !important; }
       `}} />
       {children}
     </>
