@@ -105,7 +105,7 @@ const feedStyles = `
 .feed-header-inner { max-width:800px; margin:0 auto; text-align:center; }
 .feed-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.5rem; }
 .feed-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:1rem; }
-.feed-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:600px; margin:0 auto; }
+.feed-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:800px; margin:0 auto; }
 
 /* ═══ SUBCATEGORY FILTERS ═══ */
 .feed-filters { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; padding:1rem 2rem 0.5rem; max-width:800px; margin:0 auto; }

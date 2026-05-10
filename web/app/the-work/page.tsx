@@ -116,10 +116,10 @@ export default async function TheWorkPage() {
 
 const workStyles = `
 .work-header { background:#fff; padding:2.5rem 3rem 1.5rem; text-align:center; }
-.work-header-inner { max-width:700px; margin:0 auto; }
+.work-header-inner { max-width:900px; margin:0 auto; }
 .work-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:#F280AA; margin-bottom:0.5rem; }
 .work-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:1rem; }
-.work-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:600px; margin:0 auto; }
+.work-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:800px; margin:0 auto; }
 .work-section-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:clamp(1.4rem,2.5vw,1.8rem); color:#231F20; line-height:1.2; margin-bottom:1rem; letter-spacing:0.02em; }
 .work-body { font-family:'EB Garamond',Georgia,serif; font-size:1.02rem; line-height:1.85; color:#3D3D3A; margin-bottom:1rem; }
 .work-cta-group { display:flex; gap:1.2rem; flex-wrap:wrap; margin-top:1.5rem; }

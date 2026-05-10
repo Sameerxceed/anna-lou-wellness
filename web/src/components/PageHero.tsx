@@ -46,7 +46,7 @@ const heroStyles = `
 .page-hero-sub {
   font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;
   font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: rgba(255,255,255,0.7);
-  margin-top: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;
+  margin-top: 1rem; max-width: 800px; margin-left: auto; margin-right: auto;
 }
 .hero-gardens { background: linear-gradient(135deg, #3a4a32, #2a3528, #4a5c3e); }
 .hero-bloom { background: linear-gradient(135deg, #5a6c4e, #7a8c6e, #4a6a4c); }

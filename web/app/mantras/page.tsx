@@ -79,7 +79,7 @@ const mantraStyles = `
 .mantras-kicker { font-family:Mulish,sans-serif; font-weight:400; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:#FAA21B; margin-bottom:0.5rem; }
 .mantras-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3rem); color:#231F20; letter-spacing:0.05em; margin-bottom:0.5rem; }
 .mantras-subtitle { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#8C8880; margin-bottom:0.8rem; }
-.mantras-intro { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.8; max-width:600px; margin:0 auto 2rem; }
+.mantras-intro { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.8; max-width:800px; margin:0 auto 2rem; }
 .mantras-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; text-align:left; }
 .mantra-card { border-radius:8px; overflow:hidden; }
 .mantra-video { aspect-ratio:16/9; border-radius:6px; overflow:hidden; }

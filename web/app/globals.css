@@ -17,6 +17,13 @@
     @apply font-body text-ink bg-warm-neutral overflow-x-hidden;
     font-weight: 400;
   }
+  /* Prevent orphan words (single word on last line) */
+  p, li, blockquote, .section-body, .editorial-text {
+    text-wrap: pretty;
+  }
+  h1, h2, h3, h4, h5, h6, .section-heading, .section-label {
+    text-wrap: balance;
+  }
   a {
     text-decoration: none;
   }
@@ -63,7 +70,7 @@
     @apply text-ink leading-tight mb-6;
   }
   .section-body {
-    @apply font-body text-base leading-relaxed text-dark-grey max-w-[600px];
+    @apply font-body text-base leading-relaxed text-dark-grey max-w-[800px];
     line-height: 1.9;
   }
   /* Editorial text — Garamond */

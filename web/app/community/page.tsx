@@ -107,10 +107,10 @@ export default async function CommunityPage() {
 
 const comStyles = `
 .com-header { background:#fff; padding:2.5rem 3rem 1.5rem; text-align:center; }
-.com-header-inner { max-width:700px; margin:0 auto; }
+.com-header-inner { max-width:900px; margin:0 auto; }
 .com-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:#231F20; margin-bottom:0.5rem; }
 .com-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:1rem; }
-.com-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:600px; margin:0 auto; }
+.com-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:800px; margin:0 auto; }
 
 .com-section { background:#fff; padding:2rem 3rem; }
 .com-section-alt { background:#F5F3EF; }

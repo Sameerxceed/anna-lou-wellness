@@ -54,7 +54,7 @@ export default function SubPage({ kicker, kickerColour, title, parentLabel, pare
 
 const subStyles = `
 .sub-page { background:#fff; padding:2rem 3rem 3rem; }
-.sub-inner { max-width:750px; margin:0 auto; }
+.sub-inner { max-width:900px; margin:0 auto; }
 .sub-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:0.5rem; text-align:center; }
 .sub-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,4vw,2.6rem); color:#231F20; line-height:1.3; margin-bottom:2rem; text-align:center; }
 .sub-hero { aspect-ratio:16/9; border-radius:6px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); margin-bottom:2rem; position:relative; }

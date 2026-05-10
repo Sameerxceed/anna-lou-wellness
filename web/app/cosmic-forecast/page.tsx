@@ -59,7 +59,7 @@ export default async function CosmicForecastPage() {
 
 const cosmicStyles = `
 .cosmic-page { background:#fff; padding:2.5rem 3rem; min-height:60vh; }
-.cosmic-inner { max-width:700px; margin:0 auto; text-align:center; }
+.cosmic-inner { max-width:900px; margin:0 auto; text-align:center; }
 .cosmic-kicker { font-family:Mulish,sans-serif; font-weight:400; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:#FAA21B; margin-bottom:0.5rem; }
 .cosmic-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3rem); color:#231F20; letter-spacing:0.05em; margin-bottom:0.5rem; }
 .cosmic-subtitle { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#8C8880; margin-bottom:2rem; }

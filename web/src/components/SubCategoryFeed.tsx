@@ -76,7 +76,7 @@ const subFeedStyles = `
 .scf-header { background:#fff; padding:1.5rem 3rem 1rem; text-align:center; }
 .scf-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.4rem; }
 .scf-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(1.8rem,4vw,2.8rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:0.8rem; }
-.scf-intro { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.8; max-width:550px; margin:0 auto; }
+.scf-intro { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.8; max-width:800px; margin:0 auto; }
 
 .scf-featured { background:#fff; padding:1rem 3rem 1.5rem; }
 .scf-featured-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.2fr 0.8fr; gap:2rem; align-items:center; }

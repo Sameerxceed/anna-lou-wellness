@@ -125,7 +125,7 @@ export default async function AboutPage() {
 
 const aboutStyles = `
 .about-header { background:#fff; padding:2.5rem 3rem 1.5rem; text-align:center; }
-.about-header-inner { max-width:700px; margin:0 auto; }
+.about-header-inner { max-width:900px; margin:0 auto; }
 .about-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:#3D3D3A; margin-bottom:0.5rem; }
 .about-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:0.5rem; }
 .about-roles { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#6E3A5A; font-style:italic; letter-spacing:0.02em; }
@@ -138,7 +138,7 @@ const aboutStyles = `
 .about-drop-cap { float:left; font-size:3.2rem; line-height:0.8; color:#6E3A5A; font-family:'EB Garamond',Georgia,serif; font-weight:500; margin-right:0.15rem; margin-top:0.1rem; }
 
 .about-bio { background:#F5F3EF; padding:1.5rem 3rem; }
-.about-bio-inner { max-width:800px; margin:0 auto; }
+.about-bio-inner { max-width:900px; margin:0 auto; }
 
 .about-press { background:#fff; padding:1.5rem 2rem; text-align:center; }
 .about-press-label { font-family:Mulish,sans-serif; font-weight:300; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#8C8880; margin-bottom:0.5rem; }
