@@ -25,8 +25,27 @@
     display: block;
   }
   /* Brand rule: sentence case always, never ALL CAPS in body copy */
-  /* Justified body text across entire site */
-  p, .section-body, .editorial-text {
+  /* Justified body text — only editorial/body paragraphs, not kickers/labels/quotes */
+  .section-body,
+  .editorial-text,
+  .about-body,
+  .com-body,
+  .com-intro,
+  .sub-content p,
+  .hp-hero-body,
+  .hp-featured-excerpt,
+  .hp-body,
+  .hp-portrait-body,
+  .hp-newsletter-body,
+  .work-body,
+  .work-intro,
+  .exp-intro,
+  .exp-card-desc,
+  .cosmic-summary p,
+  .cosmic-cta-text,
+  .mantras-intro,
+  .mantra-desc,
+  .article-content {
     text-align: justify;
   }
 }
