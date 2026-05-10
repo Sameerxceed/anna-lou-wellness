@@ -365,12 +365,12 @@ const homepageStyles = `
 
 /* ═══ MANTRA STRIP ═══ */
 .hp-mantras { background:#FFF0D2; padding:1.2rem 2rem; text-align:center; overflow:hidden; }
-.hp-mantra-text { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:clamp(1.3rem,2.5vw,1.8rem); color:#3D3D3A; line-height:1.6; max-width:700px; margin:0 auto; opacity:0.5; text-wrap:balance; }
+.hp-mantra-text { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:clamp(1.3rem,2.5vw,1.8rem); color:#3D3D3A; line-height:1.6; max-width:900px; margin:0 auto; opacity:0.5; text-wrap:pretty; }
 .hp-mantra-note { font-family:Mulish,sans-serif; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:#8C8880; margin-top:0.8rem; }
 
 /* ═══ QUOTE SLIDES ═══ */
 .hp-quote { background:#6E3A5A; padding:1.8rem 2rem; text-align:center; }
-.hp-quote-text { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:clamp(1.4rem,2.8vw,2rem); color:#fff; line-height:1.6; max-width:750px; margin:0 auto; text-wrap:balance; }
+.hp-quote-text { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:clamp(1.4rem,2.8vw,2rem); color:#fff; line-height:1.6; max-width:950px; margin:0 auto; text-wrap:pretty; }
 .hp-quote-attr { font-family:Mulish,sans-serif; font-weight:300; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-top:0.8rem; }
 
 /* ═══ SHARED SECTION STYLES ═══ */
