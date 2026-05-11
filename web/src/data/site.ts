@@ -76,8 +76,8 @@ export const navigation: NavItem[] = [
       { label: "Holding Everything", href: "/reset-stories/holding-everything" },
       { label: "The Strong One", href: "/reset-stories/the-strong-one" },
       { label: "Signal vs Noise", href: "/reset-stories/signal-vs-noise" },
-      { label: "Houseboat Life", href: "/reset-stories/houseboat-life" },
-      { label: "Emotional Anchors", href: "/reset-stories/emotional-anchors" },
+      { label: "Houseboat Life", href: "/life/houseboat-life" },
+      { label: "Spiritual Hygiene", href: "/life/spiritual-hygiene" },
     ],
   },
   {
