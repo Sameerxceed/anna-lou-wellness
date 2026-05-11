@@ -295,6 +295,45 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   }
 }
 
+/** Get a single article category by slug + section */
+export async function getArticleCategoryBySlug(slug: string, section: string): Promise<ArticleCategory | null> {
+  try {
+    const { data } = await fetchAPI('/article-categories', {
+      'filters[slug][$eq]': slug,
+      'filters[section][$eq]': section,
+    });
+    if (!data?.length) return null;
+    const d = data[0];
+    return {
+      id: d.id,
+      name: d.name,
+      slug: d.slug,
+      section: d.section,
+      colour: d.colour || '#6E3A5A',
+      description: d.description || '',
+      sortOrder: d.sort_order || 0,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Get articles filtered by category slug */
+export async function getArticlesByCategorySlug(categorySlug: string): Promise<Article[]> {
+  try {
+    const { data } = await fetchAPI('/articles', {
+      'populate': '*',
+      'sort': 'publishedAt:desc',
+      'filters[category][slug][$eq]': categorySlug,
+      'pagination[limit]': '100',
+    });
+    if (!data?.length) return [];
+    return data.map(mapArticle);
+  } catch {
+    return [];
+  }
+}
+
 /** Get article categories for a section */
 export async function getArticleCategories(section?: string): Promise<ArticleCategory[]> {
   try {

@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug, getArticles } from '@/lib/cms';
+import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
+import EditorialFeed from '@/components/EditorialFeed';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -11,16 +12,30 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  if (!article) return { title: 'Article Not Found' };
-  const title = article.seoTitle || `${article.title} — Reset Stories`;
-  const description = article.seoDescription || article.excerpt || `${article.title}. A Reset Story by Anna Lou.`;
-  return {
-    title,
-    description,
-    alternates: { canonical: `/reset-stories/${slug}` },
-    openGraph: { title, description, type: 'article', url: `/reset-stories/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
-    twitter: { card: 'summary_large_image', title, description },
-  };
+  if (article) {
+    const title = article.seoTitle || `${article.title} — Reset Stories`;
+    const description = article.seoDescription || article.excerpt || `${article.title}. A Reset Story by Anna Lou.`;
+    return {
+      title,
+      description,
+      alternates: { canonical: `/reset-stories/${slug}` },
+      openGraph: { title, description, type: 'article', url: `/reset-stories/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
+      twitter: { card: 'summary_large_image', title, description },
+    };
+  }
+  // Maybe it's a category
+  const category = await getArticleCategoryBySlug(slug, 'reset-stories');
+  if (category) {
+    const title = `${category.name} — Reset Stories`;
+    const description = category.description || `Reset Stories: ${category.name}. Honest stories about coming back to yourself.`;
+    return {
+      title,
+      description,
+      alternates: { canonical: `/reset-stories/${slug}` },
+      openGraph: { title, description, type: 'website', url: `/reset-stories/${slug}` },
+    };
+  }
+  return { title: 'Not Found' };
 }
 
 export default async function ArticlePage({ params }: PageProps) {
@@ -28,7 +43,31 @@ export default async function ArticlePage({ params }: PageProps) {
   const article = await getArticleBySlug(slug);
 
   if (!article) {
-    // Fallback for slugs not yet in CMS
+    // Try to render as a category filter view
+    const category = await getArticleCategoryBySlug(slug, 'reset-stories');
+    if (category) {
+      const categoryArticles = await getArticlesByCategorySlug(slug);
+      const feedArticles = categoryArticles.map(a => ({
+        slug: a.slug,
+        title: a.title,
+        category: a.category?.name || category.name,
+        categoryColour: a.category?.colour || category.colour,
+        date: a.readingTime || '',
+        excerpt: a.excerpt || '',
+        imageGradient: 'linear-gradient(160deg,#e8ddd0,#d4c5b3)',
+      }));
+      return (
+        <EditorialFeed
+          kicker={`Reset Stories · ${category.name}`}
+          kickerColour={category.colour}
+          title={category.name}
+          intro={category.description || `Honest stories filed under ${category.name}.`}
+          articles={feedArticles}
+          sectionHref="/reset-stories"
+        />
+      );
+    }
+    // Coming-soon fallback
     const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     return (
       <>

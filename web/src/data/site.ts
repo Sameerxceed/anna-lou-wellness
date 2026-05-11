@@ -73,7 +73,7 @@ export const navigation: NavItem[] = [
     label: "Reset Stories", href: "/reset-stories", colour: "#6E3A5A",
     children: [
       { label: "All Stories", href: "/reset-stories" },
-      { label: "You're Holding Everything", href: "/reset-stories/youre-holding-everything" },
+      { label: "Holding Everything", href: "/reset-stories/holding-everything" },
       { label: "The Strong One", href: "/reset-stories/the-strong-one" },
       { label: "Signal vs Noise", href: "/reset-stories/signal-vs-noise" },
       { label: "Houseboat Life", href: "/reset-stories/houseboat-life" },

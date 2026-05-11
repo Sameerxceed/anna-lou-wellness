@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getArticleBySlug, getArticles } from '@/lib/cms';
+import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
+import EditorialFeed from '@/components/EditorialFeed';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -10,16 +11,27 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  if (!article) return { title: 'Article Not Found' };
-  const title = article.seoTitle || `${article.title} — Love & Relationships`;
-  const description = article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`;
-  return {
-    title,
-    description,
-    alternates: { canonical: `/love-and-relationships/${slug}` },
-    openGraph: { title, description, type: 'article', url: `/love-and-relationships/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
-    twitter: { card: 'summary_large_image', title, description },
-  };
+  if (article) {
+    const title = article.seoTitle || `${article.title} — Love & Relationships`;
+    const description = article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`;
+    return {
+      title,
+      description,
+      alternates: { canonical: `/love-and-relationships/${slug}` },
+      openGraph: { title, description, type: 'article', url: `/love-and-relationships/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
+      twitter: { card: 'summary_large_image', title, description },
+    };
+  }
+  const category = await getArticleCategoryBySlug(slug, 'love-and-relationships');
+  if (category) {
+    const title = `${category.name} — Love & Relationships`;
+    return {
+      title,
+      description: category.description || `Stories about ${category.name}.`,
+      alternates: { canonical: `/love-and-relationships/${slug}` },
+    };
+  }
+  return { title: 'Not Found' };
 }
 
 export default async function ArticlePage({ params }: PageProps) {
@@ -27,6 +39,29 @@ export default async function ArticlePage({ params }: PageProps) {
   const article = await getArticleBySlug(slug);
 
   if (!article) {
+    const category = await getArticleCategoryBySlug(slug, 'love-and-relationships');
+    if (category) {
+      const categoryArticles = await getArticlesByCategorySlug(slug);
+      const feedArticles = categoryArticles.map(a => ({
+        slug: a.slug,
+        title: a.title,
+        category: a.category?.name || category.name,
+        categoryColour: a.category?.colour || category.colour,
+        date: a.readingTime || '',
+        excerpt: a.excerpt || '',
+        imageGradient: 'linear-gradient(160deg,#fce8ef,#f5d0de)',
+      }));
+      return (
+        <EditorialFeed
+          kicker={`Love & Relationships · ${category.name}`}
+          kickerColour={category.colour}
+          title={category.name}
+          intro={category.description || `Stories filed under ${category.name}.`}
+          articles={feedArticles}
+          sectionHref="/love-and-relationships"
+        />
+      );
+    }
     const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     return (
       <>
