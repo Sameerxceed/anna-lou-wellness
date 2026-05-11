@@ -1,6 +1,6 @@
 Place your hero video files here:
 
-- ardea-hero.mp4  (H.264, 1920×1080, ~3-5MB)
-- ardea-hero.webm  (VP9, 1920×1080, ~2-4MB)
+- alw-hero.mp4  (H.264, 1920x1080, ~3-5MB)
+- alw-hero.webm (VP9, 1920x1080, ~2-4MB)
 
-Then uncomment the videoSrc and videoWebm lines in src/data/homepage.ts
+Then reference them from the homepage hero block, or upload via Strapi.

@@ -228,7 +228,7 @@ const navStyles = `
 .nav-row {
   max-width: 1400px; margin: 0 auto;
   display: flex; justify-content: center; align-items: center;
-  padding: 1rem 10rem 1rem 1.5rem;
+  padding: 1rem 13rem 1rem 1.5rem;
   position: relative;
 }
 .nav-left, .nav-right {
