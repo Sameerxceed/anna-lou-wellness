@@ -7,11 +7,11 @@ interface PageHeroProps {
   height?: string;
 }
 
-export default function PageHero({ label, title, subtitle, bgClass = 'hero-gardens', bgImage, height = '55vh' }: PageHeroProps) {
+export default function PageHero({ label, title, subtitle, bgClass = 'hero-gardens', bgImage, height = '35vh' }: PageHeroProps) {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: heroStyles }} />
-      <div className="page-hero" style={{ height, minHeight: 320 }}>
+      <div className="page-hero" style={{ height, minHeight: 220 }}>
         <div
           className={`page-hero-bg ${bgClass}`}
           style={bgImage ? { backgroundImage: `url('${bgImage}')`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
@@ -34,7 +34,7 @@ const heroStyles = `
   position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(30,40,25,0.15) 0%, rgba(30,40,25,0.05) 30%, rgba(20,25,18,0.6) 100%);
 }
-.page-hero-content { position: relative; z-index: 2; text-align: center; padding: 0 2rem 5vh; }
+.page-hero-content { position: relative; z-index: 2; text-align: center; padding: 0 2rem 2.5vh; }
 .page-hero-label {
   font-family: 'Josefin Sans', sans-serif; font-weight: 200; font-size: 0.7rem;
   letter-spacing: 0.35em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 1rem;

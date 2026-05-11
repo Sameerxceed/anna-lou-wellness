@@ -32,7 +32,6 @@ export default function Footer({ siteSettings, footerLinks }: FooterProps) {
       {/* Tier 3: Legal */}
       <nav className="footer-tier3">
         <Link href="/about/press">Press</Link>
-        <Link href="/contact">Contact</Link>
         <Link href="/privacy">Privacy</Link>
         <Link href="/terms">Terms</Link>
       </nav>

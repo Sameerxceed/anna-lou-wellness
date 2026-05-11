@@ -12,15 +12,15 @@ export default async function ContactPage() {
 
   return (
     <>
-      <PageHero label="Say Hello" title="Contact" bgClass="hero-contact" />
+      <PageHero label="Say Hello" title="Contact" bgClass="hero-contact" height="30vh" />
 
-      <section className="py-24 px-8">
-        <div className="max-w-[1000px] mx-auto grid grid-cols-2 gap-16 max-md:grid-cols-1">
+      <section className="py-8 px-8">
+        <div className="max-w-[1000px] mx-auto grid grid-cols-2 gap-10 max-md:grid-cols-1 max-md:gap-6">
           <div className="reveal">
             <p className="section-label">Get in Touch</p>
-            <h2 className="section-heading">We&apos;d Love to Hear From You</h2>
+            <h2 className="section-heading mb-3">We&apos;d Love to Hear From You</h2>
             <p className="section-body">Whether you&apos;re interested in coaching, have a question about the shop, or simply want to connect &mdash; reach out anytime.</p>
-            <div className="mt-10 space-y-6">
+            <div className="mt-5 space-y-4">
               <div>
                 <p className="font-sans font-light text-[0.55rem] tracking-[0.22em] uppercase text-mid-grey mb-1">Email</p>
                 <p className="font-body text-dark-grey"><a href="mailto:hello@annalouwellness.com" className="text-ink hover:text-mid-grey transition-colors">hello@annalouwellness.com</a></p>
@@ -34,7 +34,7 @@ export default async function ContactPage() {
 
           <div className="reveal reveal-delay-2">
             <p className="section-label">Send a Message</p>
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
                 <label className="block font-sans font-light text-[0.55rem] tracking-[0.18em] uppercase text-dark-grey mb-2">Your Name</label>
                 <input type="text" className="w-full font-body text-[0.92rem] text-ink bg-transparent border-b border-mid-grey/30 py-3 outline-none focus:border-ink transition-colors" placeholder="Full name" />
