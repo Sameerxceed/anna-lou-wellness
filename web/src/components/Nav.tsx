@@ -79,7 +79,14 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
                 {item.children && (
                   <div className="nav-dropdown">
                     {item.children.map(child => (
-                      <Link key={child.href} href={child.href} style={{ '--hover-color': item.colour } as any}>
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        style={{ '--hover-color': item.colour } as any}
+                        onClick={e => {
+                          (e.currentTarget.closest('.nav-item') as HTMLElement | null)?.classList.add('nav-item-dismiss');
+                        }}
+                      >
                         {child.label}
                       </Link>
                     ))}
@@ -110,7 +117,14 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
                 {item.children && (
                   <div className="nav-dropdown">
                     {item.children.map(child => (
-                      <Link key={child.href} href={child.href} style={{ '--hover-color': item.colour } as any}>
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        style={{ '--hover-color': item.colour } as any}
+                        onClick={e => {
+                          (e.currentTarget.closest('.nav-item') as HTMLElement | null)?.classList.add('nav-item-dismiss');
+                        }}
+                      >
                         {child.label}
                       </Link>
                     ))}
@@ -277,6 +291,7 @@ const navStyles = `
   z-index: 200;
 }
 .nav-item:hover .nav-dropdown { display: block; }
+.nav-item.nav-item-dismiss .nav-dropdown { display: none !important; }
 .nav-dropdown a {
   display: block;
   padding: 0.45rem 1.2rem;

@@ -10,6 +10,7 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<'form' | 'processing' | 'confirmed'>('form');
   const [orderNum, setOrderNum] = useState('');
   const [email, setEmail] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'bank' | 'stripe'>('bank');
 
   useEffect(() => {
     const c = getCart();
@@ -21,7 +22,9 @@ export default function CheckoutPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStep('processing');
-    const num = 'ARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+    const fd = new FormData(e.target as HTMLFormElement);
+    setPaymentMethod((fd.get('payment') as 'bank' | 'stripe') || 'bank');
+    const num = 'ALW-' + Math.random().toString(36).substr(2, 8).toUpperCase();
     setOrderNum(num);
     setTimeout(() => {
       setStep('confirmed');
@@ -57,6 +60,24 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
+        {paymentMethod === 'bank' && (
+          <div style={{ maxWidth: 460, margin: '1.5rem auto 0', textAlign: 'left', background: '#fff', border: '1px solid #c8c4bc', padding: '1.5rem' }}>
+            <p className="section-label" style={{ marginBottom: '0.6rem', color: '#6E3A5A' }}>Bank Transfer Details</p>
+            <p style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#3D3D3A', lineHeight: 1.7, marginBottom: '0.8rem' }}>
+              Please transfer <strong>&euro;{total.toFixed(2)}</strong> using your order number <strong>{orderNum}</strong> as the reference.
+            </p>
+            <div style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#3D3D3A', lineHeight: 1.8 }}>
+              <div><strong>Account name:</strong> Anna Lou Wellness</div>
+              <div><strong>Sort code:</strong> XX-XX-XX</div>
+              <div><strong>Account number:</strong> XXXXXXXX</div>
+              <div><strong>IBAN:</strong> GB00 XXXX XXXX XXXX XXXX XX</div>
+              <div><strong>Reference:</strong> {orderNum}</div>
+            </div>
+            <p style={{ fontFamily: "'Lora', serif", fontSize: '0.75rem', color: '#8C8880', marginTop: '0.8rem', fontStyle: 'italic' }}>
+              Your order will be confirmed and dispatched once payment is received. For any questions, email hello@annalouwellness.com.
+            </p>
+          </div>
+        )}
         <a href="/shop" className="btn btn-outline" style={{ marginTop: '2rem' }}>Continue Shopping</a>
       </div>
     );
