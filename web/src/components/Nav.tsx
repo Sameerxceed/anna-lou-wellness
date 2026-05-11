@@ -39,6 +39,8 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
 
   useEffect(() => {
     setMobileOpen(false);
+    // Clear any dismissed dropdowns when route changes so hovering re-opens them
+    document.querySelectorAll('.nav-item-dismiss').forEach(el => el.classList.remove('nav-item-dismiss'));
   }, [pathname]);
 
   // Prevent body scroll when mobile menu is open
@@ -68,7 +70,11 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
           {/* Left nav items (desktop) */}
           <div className="nav-left">
             {leftNav.map((item, i) => (
-              <div key={item.href} className="nav-item">
+              <div
+                key={item.href}
+                className="nav-item"
+                onMouseLeave={e => e.currentTarget.classList.remove('nav-item-dismiss')}
+              >
                 <Link
                   href={item.href}
                   className={pathname.startsWith(item.href) ? 'active' : ''}
@@ -279,8 +285,7 @@ const navStyles = `
 .nav-dropdown {
   display: none;
   position: absolute;
-  top: 100%; left: 50%;
-  transform: translateX(-50%);
+  top: 100%; left: 0;
   background: rgba(255,255,255,0.98);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(0,0,0,0.06);
@@ -290,6 +295,7 @@ const navStyles = `
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   z-index: 200;
 }
+.nav-right .nav-dropdown { left: auto; right: 0; }
 .nav-item:hover .nav-dropdown { display: block; }
 .nav-item.nav-item-dismiss .nav-dropdown { display: none !important; }
 .nav-dropdown a {
