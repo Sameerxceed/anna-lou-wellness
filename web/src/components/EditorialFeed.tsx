@@ -88,6 +88,16 @@ export default function EditorialFeed({
         </section>
       )}
 
+      {/* Empty state */}
+      {articles.length === 0 && (
+        <section className="feed-empty">
+          <p className="feed-empty-text">New stories are landing in this section soon. <br />Join Reset Letters to be the first to read them.</p>
+          <Link href="/reset-letters" className="feed-empty-cta" style={{ color: kickerColour, borderColor: kickerColour }}>
+            Join Reset Letters &rarr;
+          </Link>
+        </section>
+      )}
+
       {/* Inline Substack sign-up */}
       <section className="feed-newsletter reveal">
         <p className="feed-newsletter-kicker" style={{ color: kickerColour }}>Reset Letters</p>
@@ -132,6 +142,12 @@ const feedStyles = `
 .feed-article-cat { font-family:Mulish,sans-serif; font-weight:500; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem; }
 .feed-card-title { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:0.95rem; color:#231F20; line-height:1.3; margin-bottom:0.3rem; }
 .feed-card-date { font-family:Mulish,sans-serif; font-size:0.6rem; color:#8C8880; }
+
+/* ═══ EMPTY STATE ═══ */
+.feed-empty { background:#fff; padding:3rem 3rem 4rem; text-align:center; }
+.feed-empty-text { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#3D3D3A; line-height:1.7; margin-bottom:1.5rem; max-width:520px; margin-left:auto; margin-right:auto; }
+.feed-empty-cta { display:inline-block; font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; text-decoration:none; padding:0.7rem 1.6rem; border:1px solid currentColor; border-radius:4px; transition:all 0.3s; }
+.feed-empty-cta:hover { opacity:0.7; }
 
 /* ═══ INLINE NEWSLETTER ═══ */
 .feed-newsletter { background:#E9EBF6; padding:2rem; text-align:center; margin:1rem 3rem; border-radius:8px; }
