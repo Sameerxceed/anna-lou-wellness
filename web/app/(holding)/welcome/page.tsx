@@ -18,6 +18,26 @@ export default function WelcomePage() {
           <p className="wl-tagline">BEAUTIFULLY WHOLE</p>
         </header>
 
+        {/* Reset Letters wordmark */}
+        <div className="wl-wordmark" aria-label="Reset Letters">
+          <div className="wl-word">
+            <span style={{ color: '#231F20' }}>R</span>
+            <span style={{ color: '#EE312F' }}>E</span>
+            <span style={{ color: '#FAA21B' }}>S</span>
+            <span style={{ color: '#7BAFDD' }}>E</span>
+            <span style={{ color: '#F280AA' }}>T</span>
+          </div>
+          <div className="wl-word">
+            <span style={{ color: '#5DCAA5' }}>L</span>
+            <span style={{ color: '#FFD07A' }}>E</span>
+            <span style={{ color: '#7BAFDD' }}>T</span>
+            <span style={{ color: '#F280AA' }}>T</span>
+            <span style={{ color: '#D5D0C8' }}>E</span>
+            <span style={{ color: '#FAA21B' }}>R</span>
+            <span style={{ color: '#5DCAA5' }}>S</span>
+          </div>
+        </div>
+
         {/* Confirmation */}
         <div className="wl-content">
           <h1 className="wl-headline"><em>You&apos;re in.</em></h1>
@@ -79,7 +99,17 @@ const welcomeStyles = `
   align-items: center;
 }
 
-.wl-header { text-align:center; margin-bottom:3rem; }
+.wl-header { text-align:center; margin-bottom:1.5rem; }
+.wl-wordmark { text-align:center; margin-bottom:2.5rem; }
+.wl-word {
+  font-family:'Poppins',sans-serif;
+  font-weight:900;
+  font-size:clamp(2.2rem,6vw,3.6rem);
+  line-height:0.95;
+  letter-spacing:0.02em;
+  display:block;
+}
+.wl-word span { display:inline-block; }
 .wl-alw-logo { height:40px; width:auto; margin-bottom:0.4rem; display:inline-block; }
 .wl-tagline {
   font-family:'Poppins',sans-serif;
