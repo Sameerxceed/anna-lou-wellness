@@ -152,7 +152,7 @@ export const navigation: NavItem[] = [
       { label: "Anna's Story", href: "/about" },
       { label: "Press", href: "/about/press" },
       { label: "Work With Me", href: "/about/partnerships" },
-      { label: "Contact", href: "/about/contact" },
+      { label: "Contact", href: "/contact" },
     ],
   },
 ];
@@ -170,7 +170,7 @@ export const footerLinks: FooterLinks = {
     { label: "Shop", href: "/shop" },
     { label: "Community", href: "/community" },
     { label: "About", href: "/about" },
-    { label: "Contact", href: "/about/contact" },
+    { label: "Contact", href: "/contact" },
   ],
 };
 

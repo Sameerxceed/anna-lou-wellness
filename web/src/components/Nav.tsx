@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-// CartIcon replaced with text Login/Cart buttons per V8 design
+import { getCartCount, onCartChange } from '@/lib/cart';
 
 interface NavItem {
   label: string;
@@ -22,7 +22,13 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  // No accordion state needed — Cup of Jo style shows all items
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    setCartCount(getCartCount());
+    const unsub = onCartChange(() => setCartCount(getCartCount()));
+    return unsub;
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -117,7 +123,9 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
           {/* Actions (desktop: cart + login, mobile: hamburger) */}
           <div className="nav-actions">
             <Link href="/account" className="nav-action-btn">Login</Link>
-            <Link href="/cart" className="nav-action-btn nav-action-accent">Cart</Link>
+            <Link href="/cart" className="nav-action-btn nav-action-accent">
+              Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
+            </Link>
             <button
               className={`hamburger${mobileOpen ? ' open' : ''}`}
               aria-label="Menu"
@@ -170,7 +178,9 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
 
           <div className="mobile-actions">
             <Link href="/account" className="mobile-btn" onClick={() => setMobileOpen(false)}>Login</Link>
-            <Link href="/cart" className="mobile-btn mobile-btn-accent" onClick={() => setMobileOpen(false)}>Cart</Link>
+            <Link href="/cart" className="mobile-btn mobile-btn-accent" onClick={() => setMobileOpen(false)}>
+              Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
+            </Link>
           </div>
         </div>
       )}
@@ -305,7 +315,23 @@ const navStyles = `
   white-space: nowrap;
 }
 .nav-action-btn:hover { border-color: #6E3A5A; color: #6E3A5A; }
-.nav-action-accent { border-color: #6E3A5A; color: #6E3A5A; }
+.nav-action-accent { border-color: #6E3A5A; color: #6E3A5A; background: #6E3A5A; color: #fff; }
+.nav-action-accent:hover { background: #5A2E4A; border-color: #5A2E4A; color: #fff; }
+.nav-cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 5px;
+  margin-left: 0.4rem;
+  background: #F280AA;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
 
 /* ═══ HAMBURGER ═══ */
 .hamburger {
