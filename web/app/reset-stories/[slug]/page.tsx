@@ -5,6 +5,8 @@ import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByC
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
 import { getStockImage } from '@/data/stock-images';
+import Paywall from '@/components/Paywall';
+import { previewBody } from '@/lib/article-utils';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -56,6 +58,7 @@ export default async function ArticlePage({ params }: PageProps) {
         date: a.readingTime || '',
         excerpt: a.excerpt || '',
         heroImage: a.heroImage || undefined,
+        isFree: a.isFree,
       }));
       return (
         <EditorialFeed
@@ -103,7 +106,18 @@ export default async function ArticlePage({ params }: PageProps) {
             {article.category?.name || 'Reset Stories'}
           </p>
           <h1 className="article-title">{article.title}</h1>
-          <p className="article-meta">By {article.author} &middot; {article.readingTime}</p>
+          <p className="article-meta">
+            By {article.author} &middot; {article.readingTime}
+            {!article.isFree && <span className="article-paid-badge">Paid · Subscribers only</span>}
+            {article.substackUrl && (
+              <>
+                {' '}&middot;{' '}
+                <a href={article.substackUrl} target="_blank" rel="noopener noreferrer" className="article-substack-link">
+                  Read on Substack &rarr;
+                </a>
+              </>
+            )}
+          </p>
           <img
             src={article.heroImage || getStockImage('reset-stories', slug)}
             alt={article.title}
@@ -111,10 +125,11 @@ export default async function ArticlePage({ params }: PageProps) {
             style={{ objectFit: 'cover' }}
           />
           <div className="article-content">
-            {article.body.split('\n\n').map((para, i) => (
+            {(article.isFree ? article.body : previewBody(article.body)).split('\n\n').map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>
+          {!article.isFree && <Paywall substackUrl={article.substackUrl} accentColour={article.category?.colour || '#6E3A5A'} />}
 
           {related.length > 0 && (
             <div className="article-related">
@@ -147,6 +162,9 @@ const articleStyles = `
 .article-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:0.5rem; text-align:center; }
 .article-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,4vw,2.6rem); color:#231F20; line-height:1.3; margin-bottom:0.8rem; text-align:center; }
 .article-meta { font-family:Mulish,sans-serif; font-size:0.72rem; color:#8C8880; letter-spacing:0.05em; margin-bottom:2rem; text-align:center; }
+.article-paid-badge { display:inline-block; margin-left:0.5rem; padding:0.15rem 0.6rem; border-radius:20px; background:#FFE9C4; color:#A05A00; font-weight:600; letter-spacing:0.08em; font-size:0.6rem; text-transform:uppercase; }
+.article-substack-link { color:#6E3A5A; text-decoration:none; border-bottom:1px solid currentColor; padding-bottom:1px; }
+.article-substack-link:hover { color:#5A2E4A; }
 .article-hero-img { aspect-ratio:16/9; border-radius:6px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); margin-bottom:2rem; width:100%; }
 .article-content { font-family:'EB Garamond',Georgia,serif; font-size:1.1rem; color:#3D3D3A; line-height:1.9; margin-bottom:2.5rem; }
 .article-content p { margin-bottom:1.5rem; }

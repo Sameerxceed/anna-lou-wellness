@@ -25,6 +25,7 @@ export default async function LoveAndRelationshipsPage() {
     date: a.readingTime || '',
     excerpt: a.excerpt || '',
     heroImage: a.heroImage || undefined,
+    isFree: a.isFree,
   }));
 
   const subcategories = categories.map(c => ({

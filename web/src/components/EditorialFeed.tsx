@@ -10,6 +10,7 @@ interface Article {
   excerpt: string;
   imageGradient?: string;
   heroImage?: string;
+  isFree?: boolean;
 }
 
 interface EditorialFeedProps {
@@ -96,7 +97,9 @@ export default function EditorialFeed({
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }}
-                />
+                >
+                  {article.isFree === false && <span className="feed-card-paid">Paid</span>}
+                </div>
                 <div className="feed-card-body">
                   <p className="feed-article-cat" style={{ color: article.categoryColour }}>{article.category}</p>
                   <h3 className="feed-card-title">{article.title}</h3>
@@ -157,7 +160,14 @@ const feedStyles = `
 .feed-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
 .feed-card { border-radius:6px; overflow:hidden; cursor:pointer; transition:all 0.3s; border:1px solid rgba(0,0,0,0.04); text-decoration:none; display:block; }
 .feed-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.06); }
-.feed-card-img { aspect-ratio:16/10; }
+.feed-card-img { aspect-ratio:16/10; position:relative; }
+.feed-card-paid {
+  position:absolute; top:0.6rem; right:0.6rem;
+  font-family:Mulish,sans-serif; font-weight:600;
+  font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase;
+  padding:0.25rem 0.6rem; border-radius:20px;
+  background:#FFE9C4; color:#A05A00;
+}
 .feed-card-body { padding:0.8rem 1rem; }
 .feed-article-cat { font-family:Mulish,sans-serif; font-weight:500; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem; }
 .feed-card-title { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:0.95rem; color:#231F20; line-height:1.3; margin-bottom:0.3rem; }
