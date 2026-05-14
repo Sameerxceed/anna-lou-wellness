@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
+import { getStockImage } from '@/data/stock-images';
 
 export const metadata: Metadata = {
   title: 'The Reset | 6-Week 1:1 Somatic Coaching Programme',
@@ -11,7 +12,7 @@ export default function TheResetPage() {
   return (
     <ProgrammePage
       accentColour="#F280AA"
-      hero={{ title: 'The Reset.', tagline: 'Six weeks. One-to-one. Signal back online.' }}
+      hero={{ title: 'The Reset.', tagline: 'Six weeks. One-to-one. Signal back online.', image: getStockImage('programmes', 'the-reset') }}
       intro={[
         'Most people arrive at The Reset after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall.',
         'The Reset is six weeks, 1:1, working directly with your inner guidance system. Not the story. Not the intellectual understanding of the pattern. The actual place the pattern lives, in the body, in the automatic responses that fire before your conscious mind catches up.',

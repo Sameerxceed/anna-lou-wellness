@@ -24,7 +24,7 @@ export default async function LoveAndRelationshipsPage() {
     categoryColour: a.category?.colour || '#F280AA',
     date: a.readingTime || '',
     excerpt: a.excerpt || '',
-    imageGradient: 'linear-gradient(160deg,#fce8ef,#f5d0de)',
+    heroImage: a.heroImage || undefined,
   }));
 
   const subcategories = categories.map(c => ({
@@ -41,6 +41,7 @@ export default async function LoveAndRelationshipsPage() {
       articles={feedArticles}
       sectionHref="/love-and-relationships"
       subcategories={subcategories}
+      stockCategory="love-and-relationships"
     />
   );
 }

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import AddToCartButton from '@/components/AddToCartButton';
 import type { Product } from '@/lib/cms';
+import { getStockImage } from '@/data/stock-images';
 
 interface Props {
   products: Product[];
@@ -33,35 +34,36 @@ export default function ShopGrid({ products, categories }: Props) {
       </div>
 
       <div className="grid grid-cols-4 gap-6 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
-        {filtered.map((product) => (
-          <div key={product.slug} className="group reveal">
-            <Link href={`/shop/${product.slug}`} className="block">
-              <div className="aspect-square overflow-hidden mb-4 bg-cream">
-                {product.images[0] && (
+        {filtered.map((product) => {
+          const productImg = product.images[0] || getStockImage('product', product.slug);
+          return (
+            <div key={product.slug} className="group reveal">
+              <Link href={`/shop/${product.slug}`} className="block">
+                <div className="aspect-square overflow-hidden mb-4 bg-cream">
                   <img
-                    src={product.images[0]}
+                    src={productImg}
                     alt={product.name}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                )}
+                </div>
+                <h3 className="font-display font-normal text-[1rem] text-ink mb-1">{product.name}</h3>
+                <p className="font-body text-[0.78rem] text-stone mb-2 line-clamp-2">{product.shortDescription}</p>
+              </Link>
+              <div className="flex items-center justify-between">
+                <span className="font-sans font-light text-[0.8rem] text-ink">&euro;{product.price.toFixed(2)}</span>
+                <AddToCartButton
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  image={productImg}
+                  slug={product.slug}
+                  stock={product.stock}
+                />
               </div>
-              <h3 className="font-display font-normal text-[1rem] text-ink mb-1">{product.name}</h3>
-              <p className="font-body text-[0.78rem] text-stone mb-2 line-clamp-2">{product.shortDescription}</p>
-            </Link>
-            <div className="flex items-center justify-between">
-              <span className="font-sans font-light text-[0.8rem] text-ink">&euro;{product.price.toFixed(2)}</span>
-              <AddToCartButton
-                id={product.id}
-                name={product.name}
-                price={product.price}
-                image={product.images[0] || ''}
-                slug={product.slug}
-                stock={product.stock}
-              />
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {filtered.length === 0 && (

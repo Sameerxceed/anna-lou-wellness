@@ -6,7 +6,7 @@ export interface ProgrammeSection {
 }
 
 export interface ProgrammePageProps {
-  hero: { title: string; tagline: string };
+  hero: { title: string; tagline: string; image?: string };
   intro: string[];
   sections: ProgrammeSection[];
   pricing: { label: string; body: string };
@@ -20,10 +20,15 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
       <style dangerouslySetInnerHTML={{ __html: styles }} />
 
       <section className="prog-hero" style={{ background: `linear-gradient(160deg, #F1EAE0 0%, ${accentColour}22 100%)` }}>
-        <div className="prog-hero-inner">
-          <p className="prog-eyebrow" style={{ color: accentColour }}>The Work</p>
-          <h1 className="prog-title">{hero.title}</h1>
-          <p className="prog-tagline"><em>{hero.tagline}</em></p>
+        <div className="prog-hero-grid">
+          <div className="prog-hero-text">
+            <p className="prog-eyebrow" style={{ color: accentColour }}>The Work</p>
+            <h1 className="prog-title">{hero.title}</h1>
+            <p className="prog-tagline"><em>{hero.tagline}</em></p>
+          </div>
+          {hero.image && (
+            <div className="prog-hero-img" style={{ backgroundImage: `url('${hero.image}')` }} />
+          )}
         </div>
       </section>
 
@@ -71,8 +76,23 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
 }
 
 const styles = `
-.prog-hero { padding: 4rem 2rem 2.5rem; text-align: center; }
-.prog-hero-inner { max-width: 800px; margin: 0 auto; }
+.prog-hero { padding: 3rem 2rem 2rem; }
+.prog-hero-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;
+}
+.prog-hero-text { }
+.prog-hero-img {
+  aspect-ratio: 4/5; max-height: 480px;
+  background-size: cover; background-position: center;
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+@media (max-width: 900px) {
+  .prog-hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .prog-hero-text { text-align: center; }
+  .prog-hero-img { max-height: 360px; aspect-ratio: 16/10; }
+}
 .prog-eyebrow {
   font-family: Mulish, sans-serif; font-weight: 500;
   font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase;

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { getStockImage } from '@/data/stock-images';
 
 export default function DecoderPage() {
   const [firstName, setFirstName] = useState('');
@@ -42,8 +43,11 @@ export default function DecoderPage() {
       <section className="dec-body">
         <div className="dec-grid">
           <div className="dec-left">
-            <div className="dec-cover">
-              <div className="dec-cover-bg" />
+            <div
+              className="dec-cover"
+              style={{ backgroundImage: `url('${getStockImage('decoder', 'decoder-cover')}')` }}
+            >
+              <div className="dec-cover-overlay" />
               <div className="dec-cover-content">
                 <p className="dec-cover-label">Free Guide</p>
                 <p className="dec-cover-title">The Nervous System Decoder</p>
@@ -156,37 +160,37 @@ const pageStyles = `
 .dec-left { position: sticky; top: 100px; }
 .dec-cover {
   aspect-ratio: 3/4; border-radius: 8px;
-  background: linear-gradient(160deg, #F5F3EF 0%, #F1EAE0 100%);
+  background-size: cover; background-position: center;
   position: relative; overflow: hidden;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
 }
-.dec-cover-bg {
+.dec-cover-overlay {
   position: absolute; inset: 0;
-  background: radial-gradient(circle at 30% 30%, rgba(126,175,221,0.3), transparent 60%),
-              radial-gradient(circle at 70% 70%, rgba(242,128,170,0.25), transparent 60%);
+  background: linear-gradient(180deg, rgba(35,31,32,0.15) 0%, rgba(35,31,32,0.55) 100%);
 }
 .dec-cover-content {
   position: relative; z-index: 1; padding: 2.5rem 2rem;
   height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+  color: #F1EAE0;
 }
 .dec-cover-label {
   font-family: Mulish, sans-serif; font-weight: 500;
   font-size: 0.55rem; letter-spacing: 0.28em; text-transform: uppercase;
-  color: #6E3A5A;
+  color: #FFD07A;
 }
 .dec-cover-title {
   font-family: 'EB Garamond', Georgia, serif;
   font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.2;
-  color: #231F20; margin-bottom: 0.5rem;
+  color: #fff; margin-bottom: 0.5rem;
 }
 .dec-cover-sub {
   font-family: 'EB Garamond', Georgia, serif; font-style: italic;
-  font-size: 0.95rem; color: #3D3D3A;
+  font-size: 0.95rem; color: rgba(255,255,255,0.85);
 }
 .dec-cover-author {
   font-family: Mulish, sans-serif; font-weight: 400;
   font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: #8C8880;
+  color: rgba(255,255,255,0.55);
 }
 
 .dec-section-label {

@@ -24,7 +24,7 @@ export default async function WorkAndMoneyPage() {
     categoryColour: a.category?.colour || '#FFD07A',
     date: a.readingTime || '',
     excerpt: a.excerpt || '',
-    imageGradient: 'linear-gradient(160deg,#fff0d2,#f5e0b8)',
+    heroImage: a.heroImage || undefined,
   }));
 
   const subcategories = categories.map(c => ({
@@ -41,6 +41,7 @@ export default async function WorkAndMoneyPage() {
       articles={feedArticles}
       sectionHref="/work-and-money"
       subcategories={subcategories}
+      stockCategory="work-and-money"
     />
   );
 }

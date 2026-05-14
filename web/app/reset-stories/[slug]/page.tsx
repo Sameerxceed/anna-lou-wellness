@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
+import { getStockImage } from '@/data/stock-images';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -54,7 +55,7 @@ export default async function ArticlePage({ params }: PageProps) {
         categoryColour: a.category?.colour || category.colour,
         date: a.readingTime || '',
         excerpt: a.excerpt || '',
-        imageGradient: 'linear-gradient(160deg,#e8ddd0,#d4c5b3)',
+        heroImage: a.heroImage || undefined,
       }));
       return (
         <EditorialFeed
@@ -64,6 +65,7 @@ export default async function ArticlePage({ params }: PageProps) {
           intro={category.description || `Honest stories filed under ${category.name}.`}
           articles={feedArticles}
           sectionHref="/reset-stories"
+          stockCategory="reset-stories"
         />
       );
     }
@@ -102,11 +104,12 @@ export default async function ArticlePage({ params }: PageProps) {
           </p>
           <h1 className="article-title">{article.title}</h1>
           <p className="article-meta">By {article.author} &middot; {article.readingTime}</p>
-          {article.heroImage ? (
-            <img src={article.heroImage} alt={article.title} className="article-hero-img" style={{ objectFit: 'cover' }} />
-          ) : (
-            <div className="article-hero-img" />
-          )}
+          <img
+            src={article.heroImage || getStockImage('reset-stories', slug)}
+            alt={article.title}
+            className="article-hero-img"
+            style={{ objectFit: 'cover' }}
+          />
           <div className="article-content">
             {article.body.split('\n\n').map((para, i) => (
               <p key={i}>{para}</p>

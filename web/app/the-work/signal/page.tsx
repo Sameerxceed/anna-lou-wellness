@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
+import { getStockImage } from '@/data/stock-images';
 
 export const metadata: Metadata = {
   title: 'Signal | 12-Week 1:1 Somatic Coaching | Trauma-Informed',
@@ -11,7 +12,7 @@ export default function SignalPage() {
   return (
     <ProgrammePage
       accentColour="#6E3A5A"
-      hero={{ title: 'Signal.', tagline: 'Twelve weeks. One-to-one. The deeper container.' }}
+      hero={{ title: 'Signal.', tagline: 'Twelve weeks. One-to-one. The deeper container.', image: getStockImage('programmes', 'signal') }}
       intro={[
         'Twelve weeks is enough time for something to genuinely change. Not the surface, the pattern underneath it. The automatic response that has been running your decisions, your relationships, and your relationship to yourself without your full permission.',
         'Signal is the full twelve-week somatic coaching programme. Inner world rewire, pattern release, belief repatterning, rebuilding from the inside out. Weekly sessions, integration support throughout. Dormant parts of yourself switch back online. What felt fixed becomes fluid.',

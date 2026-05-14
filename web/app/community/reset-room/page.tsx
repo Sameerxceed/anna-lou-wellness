@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { getStockImage, STOCK } from '@/data/stock-images';
 
 export const metadata: Metadata = {
   title: 'The Reset Room | Monthly Somatic Membership',
@@ -20,19 +21,25 @@ export default function ResetRoomPage() {
 
       {/* Hero */}
       <section className="rr-hero">
-        <div className="rr-hero-inner">
-          <p className="rr-eyebrow">Monthly somatic membership</p>
-          <h1 className="rr-title">The Reset Room.</h1>
-          <p className="rr-tagline"><em>Where the work moves from podcast to practice.</em></p>
-          <div className="rr-hero-cta">
-            <a href="#join" className="rr-btn-primary">Join the Reset Room &middot; £25/month</a>
-            <a href="#whats-inside" className="rr-btn-ghost">See what&apos;s inside &darr;</a>
+        <div className="rr-hero-grid">
+          <div className="rr-hero-inner">
+            <p className="rr-eyebrow">Monthly somatic membership</p>
+            <h1 className="rr-title">The Reset Room.</h1>
+            <p className="rr-tagline"><em>Where the work moves from podcast to practice.</em></p>
+            <div className="rr-hero-cta">
+              <a href="#join" className="rr-btn-primary">Join the Reset Room &middot; £25/month</a>
+              <a href="#whats-inside" className="rr-btn-ghost">See what&apos;s inside &darr;</a>
+            </div>
+            <div className="rr-hero-strip">
+              <span>£25/month</span><span>&middot;</span>
+              <span>No minimum term</span><span>&middot;</span>
+              <span>Cancel any time</span>
+            </div>
           </div>
-          <div className="rr-hero-strip">
-            <span>£25/month</span><span>&middot;</span>
-            <span>No minimum term</span><span>&middot;</span>
-            <span>Cancel any time</span>
-          </div>
+          <div
+            className="rr-hero-photo"
+            style={{ backgroundImage: `url('${getStockImage('reset-room', 'reset-room-hero')}')` }}
+          />
         </div>
       </section>
 
@@ -200,7 +207,6 @@ const roomStyles = `
 .rr-hero {
   background: linear-gradient(160deg, #F1EAE0 0%, #F5F0E8 100%);
   padding: 4rem 2rem 3rem;
-  text-align: center;
   position: relative;
   overflow: hidden;
 }
@@ -214,7 +220,23 @@ const roomStyles = `
 }
 .rr-hero::before { width: 240px; height: 240px; background: #F280AA; top: -60px; left: -60px; }
 .rr-hero::after { width: 280px; height: 280px; background: #7BAFDD; bottom: -80px; right: -80px; }
-.rr-hero-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+.rr-hero-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 0.9fr; gap: 3rem; align-items: center;
+  position: relative; z-index: 1;
+}
+.rr-hero-inner { max-width: 600px; }
+.rr-hero-photo {
+  aspect-ratio: 4/5; max-height: 480px;
+  background-size: cover; background-position: center;
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+@media (max-width: 900px) {
+  .rr-hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .rr-hero-inner { text-align: center; margin: 0 auto; }
+  .rr-hero-photo { max-height: 320px; aspect-ratio: 16/10; }
+}
 .rr-eyebrow {
   font-family: Mulish, sans-serif; font-weight: 500;
   font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase;

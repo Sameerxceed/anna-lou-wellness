@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getStockImage, type StockCategory } from '@/data/stock-images';
 
 interface Article {
   slug: string;
@@ -8,6 +9,7 @@ interface Article {
   date: string;
   excerpt: string;
   imageGradient?: string;
+  heroImage?: string;
 }
 
 interface EditorialFeedProps {
@@ -18,6 +20,7 @@ interface EditorialFeedProps {
   articles: Article[];
   sectionHref: string;
   subcategories?: Array<{ label: string; href: string }>;
+  stockCategory?: StockCategory; // controls fallback image pool when articles have no heroImage
 }
 
 export default function EditorialFeed({
@@ -28,7 +31,10 @@ export default function EditorialFeed({
   articles,
   sectionHref,
   subcategories,
+  stockCategory = 'reset-stories',
 }: EditorialFeedProps) {
+  const imageFor = (article: Article) =>
+    article.heroImage || getStockImage(stockCategory, article.slug);
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: feedStyles }} />
@@ -56,7 +62,14 @@ export default function EditorialFeed({
       {articles.length > 0 && (
         <section className="feed-featured">
           <div className="feed-featured-inner">
-            <div className="feed-featured-img reveal" style={{ background: articles[0].imageGradient || 'linear-gradient(160deg,#e8ddd0,#d4c5b3)' }} />
+            <div
+              className="feed-featured-img reveal"
+              style={{
+                backgroundImage: `url('${imageFor(articles[0])}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
             <div className="reveal rd1">
               <p className="feed-article-cat" style={{ color: articles[0].categoryColour }}>{articles[0].category}</p>
               <h2 className="feed-featured-title">{articles[0].title}</h2>
@@ -76,7 +89,14 @@ export default function EditorialFeed({
           <div className="feed-grid">
             {articles.slice(1).map((article, i) => (
               <Link key={article.slug} href={`${sectionHref}/${article.slug}`} className={`feed-card reveal${i > 0 ? ` rd${i}` : ''}`}>
-                <div className="feed-card-img" style={{ background: article.imageGradient || 'linear-gradient(160deg,#e2d6ca,#d4c6b8)' }} />
+                <div
+                  className="feed-card-img"
+                  style={{
+                    backgroundImage: `url('${imageFor(article)}')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                />
                 <div className="feed-card-body">
                   <p className="feed-article-cat" style={{ color: article.categoryColour }}>{article.category}</p>
                   <h3 className="feed-card-title">{article.title}</h3>

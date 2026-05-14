@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
+import { getStockImage } from '@/data/stock-images';
 
 export const metadata: Metadata = {
   title: 'Signal & Build | 12-Week 1:1 Coaching for Founders',
@@ -11,7 +12,7 @@ export default function SignalAndBuildPage() {
   return (
     <ProgrammePage
       accentColour="#FAA21B"
-      hero={{ title: 'Signal & Build.', tagline: 'Twelve weeks. The inner work and the business, held together.' }}
+      hero={{ title: 'Signal & Build.', tagline: 'Twelve weeks. The inner work and the business, held together.', image: getStockImage('work-and-money', 'signal-and-build') }}
       intro={[
         'Signal & Build is Signal with a second track: heart-led business strategy using the Signal Method. For founders, coaches, and leaders who want to regulate their inner world and build from that place. You leave with a rewired inner guidance system and a business direction that comes from your own signal, not from fear, not from what you think you should do.',
       ]}

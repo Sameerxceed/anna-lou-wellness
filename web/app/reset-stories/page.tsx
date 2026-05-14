@@ -24,7 +24,7 @@ export default async function ResetStoriesPage() {
     categoryColour: a.category?.colour || '#6E3A5A',
     date: a.readingTime || '',
     excerpt: a.excerpt || '',
-    imageGradient: 'linear-gradient(160deg,#e8ddd0,#d4c5b3)',
+    heroImage: a.heroImage || undefined,
   }));
 
   const subcategories = categories.map(c => ({
@@ -41,6 +41,7 @@ export default async function ResetStoriesPage() {
       articles={feedArticles}
       sectionHref="/reset-stories"
       subcategories={subcategories}
+      stockCategory="reset-stories"
     />
   );
 }

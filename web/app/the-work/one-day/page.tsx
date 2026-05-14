@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
+import { getStockImage } from '@/data/stock-images';
 
 export const metadata: Metadata = {
   title: 'One Day | Private Somatic Coaching Intensive',
@@ -11,7 +12,7 @@ export default function OneDayPage() {
   return (
     <ProgrammePage
       accentColour="#5DCAA5"
-      hero={{ title: 'One Day.', tagline: 'A full day. Held, focused, finished.' }}
+      hero={{ title: 'One Day.', tagline: 'A full day. Held, focused, finished.', image: getStockImage('houseboat', 'one-day') }}
       intro={[
         'One Day is exactly that. A full day, 1:1, on the houseboat at Taggs Island or online. No multi-week commitment. One concentrated, unhurried, immersive day.',
         'We begin with a full inner guidance system audit. We move through whatever the day calls for: somatic work, belief repatterning, breathwork, Signal Method, pendulum alignment, business strategy if you are building something. You leave with a personalised practice, a completed Signal Method workbook, and a clear direction from your own signal rather than anyone else\'s opinion.',

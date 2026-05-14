@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getProducts } from '@/lib/cms';
 import AddToCartButton from '@/components/AddToCartButton';
 import { ProductSchema, BreadcrumbSchema } from '@/components/StructuredData';
+import { getStockImage } from '@/data/stock-images';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -56,15 +57,18 @@ export default async function ProductDetailPage({ params }: Props) {
 
           <div className="grid grid-cols-2 gap-12 max-md:grid-cols-1">
             <div className="aspect-square overflow-hidden bg-cream reveal" data-lightbox-group>
-              {product.images[0] && (
-                <div className="cursor-pointer w-full h-full" data-lightbox={product.images[0]}>
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
+              {(() => {
+                const img = product.images[0] || getStockImage('product', slug);
+                return (
+                  <div className="cursor-pointer w-full h-full" data-lightbox={img}>
+                    <img
+                      src={img}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="reveal reveal-delay-1">
@@ -107,10 +111,12 @@ export default async function ProductDetailPage({ params }: Props) {
               {related.map(p => (
                 <Link key={p.slug} href={`/shop/${p.slug}`} className="group block reveal">
                   <div className="aspect-square overflow-hidden mb-3 bg-warm-white">
-                    {p.images[0] && (
-                      <img src={p.images[0]} alt={p.name} loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                    )}
+                    <img
+                      src={p.images[0] || getStockImage('product', p.slug)}
+                      alt={p.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
                   </div>
                   <h3 className="font-display font-normal text-[0.95rem] text-ink mb-1">{p.name}</h3>
                   <p className="font-sans font-light text-[0.8rem] text-ink">&euro;{p.price.toFixed(2)}</p>

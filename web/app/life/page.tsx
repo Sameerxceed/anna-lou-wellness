@@ -24,7 +24,7 @@ export default async function LifePage() {
     categoryColour: a.category?.colour || '#FAA21B',
     date: a.readingTime || '',
     excerpt: a.excerpt || '',
-    imageGradient: 'linear-gradient(160deg,#f5e6c8,#e8d4aa)',
+    heroImage: a.heroImage || undefined,
   }));
 
   const subcategories = categories.map(c => ({
@@ -41,6 +41,7 @@ export default async function LifePage() {
       articles={feedArticles}
       sectionHref="/life"
       subcategories={subcategories}
+      stockCategory="life"
     />
   );
 }
