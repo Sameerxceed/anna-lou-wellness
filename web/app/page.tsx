@@ -32,7 +32,7 @@ export default async function HomePage() {
         <div className="hp-hero-inner">
           <div
             className="hp-hero-image has-image reveal"
-            style={{ backgroundImage: `url(${getStockImage('hero', 'home-hero')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${getStockImage('hero', 'home-hero', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
           <div className="reveal rd1">
             <p className="hp-hero-tag">Reset Stories</p>
@@ -58,7 +58,7 @@ export default async function HomePage() {
           </div>
           <div
             className="hp-featured-image has-image reveal rd1"
-            style={{ backgroundImage: `url(${featured?.heroImage || getStockImage(stockCategoryForSection(featured?.category?.section || 'reset-stories'), featured?.slug || 'featured')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${featured?.heroImage || getStockImage(stockCategoryForSection(featured?.category?.section || 'reset-stories'), featured?.slug || 'featured', 'hero')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
         </div>
       </section>
