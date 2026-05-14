@@ -141,7 +141,7 @@ export const navigation: NavItem[] = [
     label: "Community", href: "/community", colour: "#231F20",
     children: [
       { label: "The Returning Circle", href: "/community/the-returning-circle" },
-      { label: "Membership", href: "/community/membership" },
+      { label: "The Reset Room", href: "/community/reset-room" },
       { label: "Events Calendar", href: "/community/events" },
       { label: "Resource Library", href: "/community/resources" },
     ],

@@ -29,3 +29,5 @@ Thumbs.db
 # Misc
 *.log
 npm-debug.log*
+
+.vercel

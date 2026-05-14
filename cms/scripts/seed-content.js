@@ -888,18 +888,7 @@ const products = [
     stock: 7,
     tags: ['business', 'founders', 'signal-method', 'immersive'],
   },
-  {
-    name: 'Sparkle Mastery Programme',
-    slug: 'sparkle-mastery-programme',
-    category_slug: 'retreats-workshops',
-    short_description: '6-week virtual coaching programme for ongoing somatic practice.',
-    description: `A six-week virtual coaching programme designed to build resilience, maintain your inner sparkle, and develop a consistent somatic practice.\n\nWeekly group sessions, guided practices, community support, and integration tools. Combines crystal healing, breathwork, and the Signal Method in a structured programme.\n\nValued at £375. Includes all materials, recordings, and community access.`,
-    price: 375,
-    is_featured: false,
-    is_active: true,
-    stock: 99,
-    tags: ['programme', 'virtual', '6-week', 'group'],
-  },
+  // RETIRED: Sparkle Mastery Programme — replaced by The Reset / Signal / Signal & Build (per ALW_SERVICES_FINAL_Sameer.docx)
 
   // Crystal Jewellery
   {
@@ -1040,43 +1029,10 @@ const products = [
     tags: ['digital', 'guide', 'nervous-system', 'free'],
   },
 
-  // Corporate & Events
-  {
-    name: 'Level Up and Sparkle — Corporate Mini-Retreat',
-    slug: 'corporate-mini-retreat',
-    category_slug: 'corporate-events',
-    short_description: 'Bespoke corporate wellness programme. The Signal Method for the workplace.',
-    description: `A corporate wellness mini-retreat designed to build team resilience, reduce burnout, and create space for honest conversation in a professional setting.\n\nFormats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.\n\nUp to 10 participants: £1,200. Up to 20 participants: £2,000. Bespoke pricing for larger groups.\n\nAnna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.`,
-    price: 1200,
-    is_featured: false,
-    is_active: true,
-    stock: 99,
-    tags: ['corporate', 'retreat', 'teams', 'bespoke'],
-  },
-  {
-    name: 'Children\'s Crystal Parties',
-    slug: 'childrens-crystal-parties',
-    category_slug: 'corporate-events',
-    short_description: 'Crystal-themed parties for children aged 6–12.',
-    description: `Crystal-themed parties for children aged 6 to 12. Each child makes their own crystal bracelet, learns about the stones, and takes home a crystal and meaning card.\n\nAvailable at the houseboat on Taggs Island or at your venue. Groups of 6 to 12 children. Includes all materials and a party bag for each child.\n\nA fun, creative, and grounding experience for birthday parties and special occasions.`,
-    price: 250,
-    is_featured: false,
-    is_active: true,
-    stock: 99,
-    tags: ['children', 'party', 'crystals', 'birthday'],
-  },
-  {
-    name: 'Crystal Wellbeing Gatherings — Teens',
-    slug: 'crystal-wellbeing-teens',
-    category_slug: 'corporate-events',
-    short_description: 'Crystal wellbeing sessions for young people aged 13–17.',
-    description: `Group crystal wellbeing sessions designed for young people aged 13 to 17. Combines crystal healing, breathwork, and guided conversation in an age-appropriate format.\n\nDesigned to introduce nervous system awareness, emotional regulation tools, and self-care practices to teenagers. Available at schools, youth centres, or the houseboat.\n\nSmall groups of 6 to 10. All materials provided.`,
-    price: 300,
-    is_featured: false,
-    is_active: true,
-    stock: 99,
-    tags: ['teens', 'wellbeing', 'crystals', 'youth'],
-  },
+  // RETIRED (per ALW_SERVICES_FINAL_Sameer.docx 12 May 2026):
+  //   - Level Up and Sparkle Corporate Mini-Retreat — Sparkle naming retired
+  //   - Children's Crystal Parties — moved to annalouoflondon.com
+  //   - Crystal Wellbeing Gatherings (teens) — moved to annalouoflondon.com
 ];
 
 // ═══ ADDITIONAL FAQs (Vol 3) ═══
@@ -1216,7 +1172,7 @@ Cancel any time. First month free for anyone who has attended a paid workshop in
           'Early retreat booking access',
         ],
         events_title: 'Events Calendar',
-        events_description: 'Upcoming retreats, live dates, guest experts, and member-only events. Crystal parties, children\'s crystal parties, crystal wellbeing gatherings, and the Crystal Clear Business Vortex.',
+        events_description: 'Upcoming retreats, live dates, guest experts, and member-only events. The Returning Circle every Wednesday, Reset Days on the houseboat, and Reset Room members-only events.',
         resources_title: 'Resource Library',
         resources_description: 'Guides, tools, workshop replays, and member-only content. Free nervous system recalibration, subconscious clarity reset quiz, and the full healing resource library.',
       },
@@ -1268,9 +1224,7 @@ The Cosmic Forecast is not an astrology column. It is my diary, shared weekly, u
   const experiences = [
     { name: 'Autumn Reset Day', slug: 'autumn-reset-day', type: 'retreat', description: 'A full day on the houseboat at Taggs Island. Six people maximum. No phones, no fixed agenda. We work with whatever the group needs — breathwork, somatic practice, Signal Method, honest conversation.', date: '2026-09-20', location: 'Taggs Island, Hampton', price: null, price_label: 'Enquire', is_upcoming: true, is_active: true, sort_order: 1 },
     { name: 'Surrendering and Raising Your Vibration', slug: 'surrendering-vibration', type: 'workshop', description: 'An online workshop focused on releasing tension patterns and reconnecting with your body\'s natural energy. Crystal healing, breathwork, and guided somatic practice.', date: '2026-10-15', location: 'Online', price: null, price_label: 'Enquire', is_upcoming: true, is_active: true, sort_order: 2 },
-    { name: 'Crystal Clear Business Vortex', slug: 'crystal-clear-business-vortex', type: 'workshop', description: 'A journey to success — an immersive workshop combining crystal healing, breathwork, and entrepreneurial strategy for founders and business owners.', date: '2026-11-08', location: 'Taggs Island, Hampton', price: null, price_label: 'Enquire', is_upcoming: true, is_active: true, sort_order: 3 },
-    { name: 'FREE Crystal Healing: Surrender & Sparkle', slug: 'free-crystal-healing', type: 'workshop', description: 'A complimentary online session open to everyone. No booking fee. Crystal exploration, guided meditation, and energy clearing.', date: '2026-10-01', location: 'Online', price: 0, price_label: 'Free', is_upcoming: true, is_active: true, sort_order: 4 },
-    { name: 'Corporate Wellbeing: Level Up and Sparkle', slug: 'corporate-level-up-sparkle', type: 'corporate', description: 'A corporate wellness mini-retreat. Bespoke formats for teams — workshops, keynotes, and ongoing wellbeing programmes. The Signal Method adapted for the workplace.', date: '2026-12-31', location: 'Your workplace or online', price: null, price_label: 'Bespoke pricing', is_upcoming: true, is_active: true, sort_order: 5 },
+    // RETIRED experiences (Crystal Clear Business Vortex, FREE Crystal Healing Surrender & Sparkle, Corporate Level Up and Sparkle) per ALW_SERVICES_FINAL_Sameer.docx
   ];
   for (const exp of experiences) {
     await findOrCreate('/experiences', 'slug', exp.slug, exp);

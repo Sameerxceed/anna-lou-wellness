@@ -156,7 +156,7 @@ export default function ResetLettersPage() {
             </button>
           </form>
 
-          <p className="rl-privacy">We respect your privacy. Unsubscribe any time.<br />Powered by Substack.</p>
+          <p className="rl-privacy">We respect your privacy. Unsubscribe any time.</p>
         </section>
 
         {/* Footer */}

@@ -1,0 +1,2677 @@
+
+================================================================================
+FILE: ALW_LAYOUTS_FINAL_Sameer.docx
+================================================================================
+
+ANNA LOU WELLNESS
+Page and email layouts (with full copy)
+Every page, every email, with the exact text Sameer drops in. Plus the video map.
+Prepared for Sameer, Xceed Imagination
+Version FINAL v3  ·  13 May 2026  ·  Reset Letters founding-member update
+
+
+# How to read this document
+Every page and every email below is shown as a wireframe with the exact text Sameer types in. Sameer should not need to look anywhere else for copy. Where a block contains italic text in quotes, that is the editorial copy as it appears on the page. Where a block contains bullet lists, those are the bullets as written.
+
+Email platform routing.
+Two platforms send emails on this site. Every email below is tagged so Sameer knows where it lives.
+
+[TABLE]
+FLODESK | All branded welcome sequences and marketing emails. Anna manages templates and content herself inside Flodesk. Triggered by Stripe webhooks via Zapier or direct API.
+SYSTEM | Platform-generated receipts and confirmations. Stripe sends the payment receipt automatically. Calendly sends the booking confirmation automatically. Sameer ensures these are branded with the wordmark.
+[/TABLE]
+
+
+Block labels.
+
+[TABLE]
+HERO | The first block on the page or in the email.
+BODY | Editorial copy. Italic quotes = the literal text on the page.
+IMAGE | Photograph placement.
+VIDEO | Where Anna's recorded video sits. See video map at the end.
+GRID | Multi-card layout.
+CTA | Button text + destination.
+STRIPE | Stripe checkout trigger.
+FORM | Email capture or intake form.
+NAV | Top navigation on every page.
+FOOT | Footer on every page or email.
+META | URL, SEO title, SEO meta, trigger info.
+[/TABLE]
+
+
+Tech stack confirmation — the Reset Room is built like Kajabi inside the site itself.
+Members sign up via Stripe (£25/month), get logged in automatically, and access the Vault, member dashboard, workshop replays, and their private podcast feed. All hosted on annalouwellness.com. No Kajabi subscription needed.
+
+
+[TABLE]
+SYSTEM | Member auth: Strapi user role 'reset-room-member', granted on Stripe webhook.
+SYSTEM | Private podcast: Hello Audio, unique RSS per member, generated on sign-up.
+SYSTEM | Vault video and audio: Bunny.net Stream, embedded in Strapi member pages.
+SYSTEM | Live call: Zoom recurring meeting link.
+FLODESK | All welcome and ongoing member emails fire from Flodesk via Stripe webhook + Zapier.
+[/TABLE]
+
+
+
+# What's new in v3
+Changes since v2, all driven by the staging review on staging.annalouwellness.com/reset-letters:
+
+
+[TABLE]
+BODY | 1. Reset Letters launch confirmed: 22 June 2026. | Section A.5 is now the pre-launch founding-member version. Sameer to flip to the standard layout on 22 June.
+BODY | 2. Founding member offer baked in. | First 500 subscribers get free-for-life access (paid tier included). After 500, £7/month standard Substack pricing.
+BODY | 3. Cadence updated to match staging. | Sunday Cosmic Forecast, Wednesday Signal Check, Monthly Reset Story, Monthly Contributor Feature. | (Replaces the old Sunday Reset Story / Wed Signal Check / Fri ESJ Drop cadence.)
+BODY | 4. Reset Letters is now a magazine, not a solo publication. | Multiple contributors: coaches, therapists, astrologers, women Anna trusts. Editorial range broader than coaching.
+BODY | 5. Two welcome email variants (B.1A pre-launch, B.1B post-launch). | Flodesk handles the switch with a subscriber count trigger after 500 founders.
+BODY | 6. VIDEO 13 added: Founding member welcome (60 sec). | Record in two takes: one mentions 'the first edition on 22 June' (for 1A), one says simply 'welcome' (for 1B).
+BODY | 7. Form on /reset-letters does a dual push. | On submit, push to Substack (newsletter subscription) AND Flodesk (branded welcome). Sameer wires via Zapier.
+[/TABLE]
+
+
+
+# Part A  ·  Page layouts with copy
+Every page with the exact copy that goes on it.
+
+
+## A.1  ·  The Reset Room — landing page
+
+[TABLE]
+META | URL  ·  annalouwellness.com/community/reset-room | SEO title  ·  The Reset Room | Monthly Somatic Coaching Membership | Anna Lou Wellness | SEO meta  ·  Monthly membership for nervous system regulation, community and ongoing somatic healing. £25/month. Group sessions, private podcast, Signal Method practice.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav. Active section: Community.
+HERO | The Reset Room. | Where the work moves from podcast to practice.
+IMAGE | Wide editorial photograph of Anna on the houseboat at Hampton, soft natural light, warm cream tones.
+BODY | The Reset Letters are the front door. The Reset Room is the room behind it. | This is where the work stops being something you read and starts being something you practice. A members-only podcast, a monthly live call with me, and a growing vault of guided journeys. All for £25 a month, cancel any time.
+GRID | Three-pillar card row. Three cards on desktop (cream, pink, blue), stacked on mobile. |  | Card 1  ·  Reset Room Sessions  ·  the private podcast | A members-only podcast. Two new intimate episodes a month, the conversations that do not belong on the public feed. Listen where you already listen. |  | Card 2  ·  The Reset Call  ·  the monthly live | Ninety minutes with me, live on Zoom, first Thursday of every month. Bring your questions, sit with the group, leave with what you came for. Replay sent the next day. |  | Card 3  ·  The Reset Vault  ·  the signature journeys | A growing library of guided somatic journeys. Music, breath, visualisation, embodiment. New piece every month. Where insight becomes the actual life.
+BODY | Also included. | Workshop replays, every workshop I have ever run, free for you inside. | Forty-eight hour members-only window on every new retreat before it goes public. | Ten percent off all 1:1 Reset Sessions and One Day intensives. | Members-only events that never go on the public calendar.
+BODY | Who it is for. | The Reset Room is for the woman who has been reading the Reset Letters, listening to the podcast, doing the work on her own, and is ready for something that holds her more closely. Not therapy. Not a course. A room.
+BODY | First month free for anyone who has attended a paid workshop in the last three months.
+CTA | Button: Join the Reset Room  ·  £25/month  →  Stripe checkout
+FOOT | Site footer.
+[/TABLE]
+
+Note for Sameer. No video on the public landing page. Welcome video appears post-sign-up in Email 6.1 and on the member dashboard.
+
+
+## A.2  ·  Reset Room dashboard (logged-in, members only)
+
+[TABLE]
+META | URL  ·  annalouwellness.com/community/reset-room/dashboard | SEO title  ·  (Member-only, noindex) | SEO meta  ·  (noindex)
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav. Logged-in state. 'Member portal' visible.
+BODY | Welcome back, [first name]. Member since [month, year]. | Style  ·  Small, italic, cream background. Sets the tone, no big banner.
+CTA | Big pink card. Brand pink background, white text. | Next Reset Call. Thursday [date], 7.30pm UK. | Two buttons: 'Add to calendar' (.ics download) and 'Join the call' (Zoom link, only active 30 min either side of the call time).
+GRID | Three-pillar row, three cards side-by-side. |  | Card 1  ·  Reset Room Sessions | Cover art. Latest 2 episodes listed with inline play buttons. Button: 'Subscribe in your podcast player' opens a dropdown: Apple Podcasts | Spotify | Overcast | Copy RSS link. |  | Card 2  ·  The Reset Call | Next call date. Button: 'Watch the last replay' (links to most recent in the Vault). |  | Card 3  ·  The Reset Vault | Featured journey of the week. Button: 'Browse the Vault'.
+VIDEO | Where to start block. First 30 days only, then auto-hides. |  | VIDEO 1 embedded: Reset Room welcome (90 sec). | VIDEO 2 embedded: Orientation tour (5 min). | Plus links: 'Listen to the founding episode' (private podcast) | 'Do your first journey: Coming Back Online' (Vault).
+GRID | Vault preview. | Grid of 6 most recent journeys. Cover image, name, length, audio/video icons. Click through to /community/reset-room/vault.
+GRID | Workshop replays. | Grid of 4 most recent workshop replays. Cover image, title, length.
+BODY | Member benefits row. Three small cards. | 1. '10% off all 1:1 work'  ·  Apply member discount to Reset Sessions and One Day. | 2. 'Retreat early access'  ·  See upcoming retreats first. | 3. 'Members-only events'  ·  See the next event.
+FOOT | Manage subscription  ·  Stripe customer portal | Account settings  ·  Edit email, name, password | Get support  ·  hello@annalouwellness.com
+[/TABLE]
+
+
+
+## A.3  ·  The Reset Vault — library page (members only)
+
+[TABLE]
+META | URL  ·  annalouwellness.com/community/reset-room/vault | SEO title  ·  (Member-only, noindex) | SEO meta  ·  (noindex)
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav. Logged-in state.
+HERO | The Reset Vault. | Where insight becomes the actual life.
+BODY | Every journey here is yours to come back to whenever you need it. New piece every month. | Next journey lands [date].
+GRID | Vault grid. All journeys as cards, 3 columns desktop, 1 column mobile. | Each card: cover image, journey name, length in minutes, audio/video icons, 'Begin' button. |  | Launch with seven founding pieces (also listed below): | 1. Coming Back Online (12 min) | 2. The Three Mantras (8 min) | 3. The Body That Has Been Holding It (18 min) | 4. The Decision Audit (15 min) | 5. The Returning (20 min) | 6. The Pattern Underneath (16 min) | 7. The Houseboat Reset (10 min)
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.4  ·  Vault single journey page (template, members only)
+
+[TABLE]
+META | URL  ·  annalouwellness.com/community/reset-room/vault/[slug] | SEO title  ·  (Member-only, noindex) | SEO meta  ·  (noindex)
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav. Logged-in state.
+HERO | [Journey name]. | Length  ·  [X] minutes
+IMAGE | Cover image, full width, dark and contemplative.
+VIDEO | Embedded player. | Video version by default. Toggle to audio-only at top right of player. | Subtitles auto-generated. Hosted on Bunny.net Stream.
+BODY | Short intro from Anna. 2-3 sentences. Example for Coming Back Online: | Coming Back Online is the founding journey. A guided somatic reset for the woman whose signal system has been scrambled. Do this one first. Eyes closed, somewhere you will not be interrupted, twelve minutes.
+CTA | Two buttons: | 1. Download audio (MP3, 320kbps) | 2. Back to the Vault
+GRID | Related journeys. Three cards. | You might also like...
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.5  ·  Reset Letters — sign-up page (pre-launch, founding member offer)
+
+[TABLE]
+META | URL  ·  annalouwellness.com/reset-letters | SEO title  ·  Reset Letters | Weekly Wellness Magazine | Anna Lou Wellness | SEO meta  ·  A weekly wellness magazine for women who have been holding everything. Launching 22 June 2026. First 500 subscribers free for life.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | Beautifully whole. | COMING SOON | Reset Letters. | For women who have been holding everything.
+IMAGE | Editorial photograph of Anna, warm tones, on the houseboat.
+BODY | If you've been holding everything for a long time, this is for you. | Reset Letters is a weekly magazine about what happens when you finally put it all down. The managing. The performing. The pretending you're fine. This is for the women who have been carrying it all and are ready for something different. | It is written by me, Anna Lou, with contributions from coaches, therapists, and women I trust. It covers everything from nervous system work and emotional intelligence to beauty, recipes, dating, motherhood, crystals, career pivots, and whatever else needs saying. It is not a wellness brand. It is a living, breathing magazine for real women.
+BODY | What it is. | Reset Letters is a Substack publication. A weekly magazine that lands in your inbox every Sunday morning. Free to read, with some content available only to paying members. | Each edition explores a different corner of what it means to live as a woman who is no longer willing to shrink. From the practical (budgeting after divorce, how to actually meditate, what to cook when you cannot think) to the poetic (what your nervous system is trying to tell you, the art of leaving, how crystals hold memory). | It is broad on purpose. Because women are broad. We do not live in one lane. | Some weeks will make you cry. Some will make you laugh. Some will just make you feel like someone finally said the thing you have been thinking. That is the point.
+GRID | Each week. Four-card layout on desktop, stacked on mobile. |  | Sunday Cosmic Forecast | Your weekly energy reading. Moon phases, planetary shifts, and what they mean for your body and your week ahead. |  | Wednesday Signal Check | A midweek nervous system check-in. Short, grounding, practical. The pause you did not know you needed. |  | Monthly Reset Story | A long-form piece. Real women. Real turning points. Written with care and without filter. |  | Monthly Contributor Feature | A guest voice. A coach, therapist, artist, or someone with a story worth hearing.
+BODY | Voices and contributors. | Reset Letters is not a solo project. It is a magazine. That means multiple voices, different perspectives, and the kind of editorial range that keeps things honest. | Contributors include coaches, therapists, nutritionists, astrologers, designers, mothers, founders, and women who have simply lived through something worth sharing. Some are well known. Some are not. All of them are real. | If you would like to contribute, or know someone who should, get in touch at hello@annalouwellness.com.
+BODY | A bit about Anna. | Anna Lou Scaife is a somatic coach, nervous system specialist, and jewellery designer based in London. She has spent 25 years working with women through every kind of transition. Divorce. Career change. Motherhood. Burnout. Identity loss. Coming back to life. She created Reset Letters because she wanted a space that did not belong to social media. Something slower. Something you could read with a cup of tea on Sunday morning and actually feel different afterwards.
+HERO | LAUNCHING | 22 JUNE 2026
+BODY | Founding member offer. | First 500 subscribers join free, for life. | After the first 500, Reset Letters will cost £7 per month. But if you sign up before launch, you get everything. For ever. No catch.
+BODY | What founding members get. | Full access to every edition, including paid content. | Early access to Anna's events, retreats, and new products. | Founding Member badge on your Substack profile. | Access to the private Reset Letters community thread. | A personal welcome email from Anna.
+FORM | Founding member sign-up form. | Fields: first name, email. | On submit, do BOTH in parallel: | 1. Push subscriber to Substack via Substack API (mark as founding member or comp paid tier). | 2. Push subscriber to Flodesk via Flodesk API (trigger Sequence 1A founding welcome). | Confirmation text under the form: 'We respect your privacy. Unsubscribe any time. Powered by Substack.'
+CTA | Button: Claim my founder place  →  triggers the form above
+FOOT | Site footer.
+[/TABLE]
+
+Note for Sameer. This is the PRE-LAUNCH version. From 22 June, the founding member offer ends and the page switches to a standard sign-up. The same form pushes to Substack and Flodesk, but Flodesk fires Sequence 1B (standard welcome) instead of 1A. Sameer configures the date-based switch.
+
+
+## A.6  ·  The Work — coaching hub
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work | SEO title  ·  Somatic Coaching London | 1:1 Trauma-Informed Coaching | Anna Lou Wellness | SEO meta  ·  1:1 somatic coaching for nervous system regulation. The Reset, Signal, Signal & Build, One Day, The Signal Collective. Book a free discovery call.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav. Active: The Work.
+HERO | Ways to work with me. | From a free guide to a full container.
+BODY | There is a moment, usually quiet, where you realise the version of yourself you have been performing is not the one you want to live as. That is the moment my work begins. | Most people do not come to me because something has fallen apart. They come because they have been holding it together for a very long time, and the holding has started to cost something. The job still functions. The relationship still functions. The body, the sleep, the patience, the joy, those are the parts that have gone quiet. We are going to bring them back online.
+GRID | Four-card ladder. 2x2 grid on desktop, stacked on mobile. |  | Card 1  ·  Start free | The Nervous System Decoder is a free guide that helps you read your own signal system. The starting point for most people. £0. |  | Card 2  ·  Start small | A single 1:1 Reset Session, 90 minutes, one focused theme. Founder Reset, Dating Reset, or Nervous System Reset. £200. |  | Card 3  ·  Go deeper | A 1:1 container. The Reset (6 weeks, £1,500), Signal (12 weeks, £3,000), or Signal & Build for founders (£3,000). |  | Card 4  ·  Go further | One Day, a full-day private intensive (by enquiry). Or The Signal Collective, a six-month mastermind (by application).
+BODY | If you are not sure which is right for you, take the quiz. Five questions. It will point you toward the right starting place.
+CTA | Three buttons: | 1. Take the quiz  →  /the-work/quiz | 2. Book a discovery call  →  Calendly | 3. Browse client stories  →  /the-work/client-stories
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.7  ·  The Reset — 6-week 1:1
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work/the-reset | SEO title  ·  The Reset | 6-Week 1:1 Somatic Coaching Programme | Anna Lou Wellness | SEO meta  ·  Six weeks of 1:1 somatic coaching with Anna Lou. Nervous-system led, trauma-informed, designed to bring your signal system back online. £1,500.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | The Reset. | Six weeks. One-to-one. Signal back online.
+BODY | Most people arrive at The Reset after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. | The Reset is six weeks, 1:1, working directly with your inner guidance system. Not the story. Not the intellectual understanding of the pattern. The actual place the pattern lives, in the body, in the automatic responses that fire before your conscious mind catches up. | Most of us spend years trying to fight the current. The Reset is the work of learning to stop gripping. Because when you stop gripping you realise the river was always guiding you. Your inner guidance system was never broken. It was waiting for you to stop overriding it. | Week one: baseline. Where are you arriving from? What is your inner world doing right now? What does safety feel like in your body, and how long since you genuinely felt it? This is the diagnostic that determines what the next five weeks need to do. | By week three something usually shifts. A decision becomes clear. A pattern stops activating the same response. Your inner guidance system comes back online and you realise it has been trying to speak to you for a very long time.
+BODY | What's included. | Six 1:1 sessions, weekly, 60 minutes each. | Voxer support between sessions, Tuesday to Thursday. | Starting audit of your inner world. | Tools that fit your actual life. | A clear close at week six. Many clients roll into Signal. Many do not need to.
+BODY | Investment. | £1,500. Paid in full at booking, or two instalments of £750 across the six weeks. | If you are not sure, book a free fifteen-minute discovery call. We will know quickly.
+CTA | Button: Book a discovery call  →  Calendly
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.8  ·  Signal — 12-week 1:1
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work/signal | SEO title  ·  Signal | 12-Week 1:1 Somatic Coaching | Trauma-Informed | Anna Lou Wellness | SEO meta  ·  Twelve weeks of 1:1 somatic coaching with Anna Lou. The deeper container for women rebuilding the relationship with their own inner guidance system. £3,000.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | Signal. | Twelve weeks. One-to-one. The deeper container.
+BODY | Twelve weeks is enough time for something to genuinely change. Not the surface, the pattern underneath it. The automatic response that has been running your decisions, your relationships, and your relationship to yourself without your full permission. | Signal is the full twelve-week somatic coaching programme. Inner world rewire, pattern release, belief repatterning, rebuilding from the inside out. Weekly sessions, integration support throughout. Dormant parts of yourself switch back online. What felt fixed becomes fluid.
+BODY | The arc. | Week one: a full audit of your inner world. | Weeks two to five: working on the parts that need attention. Somatic enquiry, IFS, Brainspotting, Flash EMDR, breathwork, pendulum where it fits. | Week six: midpoint review. | Weeks seven to eleven: deeper integration. | Week twelve: closing integration.
+BODY | What's included. | Twelve 1:1 sessions, weekly, 60 minutes each. | Voxer support Tuesday to Thursday. | Personalised Signal Method workbook. | Lifetime access to recordings. | Optional in-person session at the Hampton studio.
+BODY | Investment. | £3,000. Paid in full, or three instalments of £1,000.
+CTA | Button: Book a discovery call  →  Calendly
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.9  ·  Signal & Build — 12-week 1:1 for founders
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work/signal-and-build | SEO title  ·  Signal & Build | 12-Week 1:1 Coaching for Founders | Anna Lou Wellness | SEO meta  ·  Twelve weeks of 1:1 coaching for founders and leaders. The inner work and the business strategy held together. £3,000.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | Signal & Build. | Twelve weeks. The inner work and the business, held together.
+BODY | Signal & Build is Signal with a second track: heart-led business strategy using the Signal Method. For founders, coaches, and leaders who want to regulate their inner world and build from that place. You leave with a rewired inner guidance system and a business direction that comes from your own signal, not from fear, not from what you think you should do.
+BODY | What's included. | Everything in Signal: twelve 1:1 sessions, Voxer support, full inner-world audit. | Business strategy sessions interleaved with the inner work. Pricing, positioning, capacity, decision-making, team, founder energy. | Drawn from twenty years building Anna Lou of London across Harrods, Selfridges, Liberty, Harvey Nichols, Isetan and Henri Bendel. | Voxer access widened to include in-the-moment business questions: a pricing decision, a hire, a difficult email.
+BODY | Who it's for. | The founder who has built something real and is now navigating the next chapter of it. The one who knows her capacity is the actual constraint, not her strategy. The one who wants the somatic work and the business work in the same room.
+BODY | Investment. | £3,000. Paid in full, or three instalments of £1,000.
+CTA | Button: Book a discovery call  →  Calendly
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.10  ·  One Day — private intensive
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work/one-day | SEO title  ·  One Day | Private Somatic Coaching Intensive | Anna Lou Wellness | SEO meta  ·  A full day of private 1:1 somatic coaching with Anna Lou. Houseboat at Hampton or virtual. By enquiry.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | One Day. | A full day. Held, focused, finished.
+BODY | One Day is exactly that. A full day, 1:1, on the houseboat at Taggs Island or online. No multi-week commitment. One concentrated, unhurried, immersive day. | We begin with a full inner guidance system audit. We move through whatever the day calls for: somatic work, belief repatterning, breathwork, Signal Method, pendulum alignment, business strategy if you are building something. You leave with a personalised practice, a completed Signal Method workbook, and a clear direction from your own signal rather than anyone else's opinion.
+BODY | What's included. | A full day, 10am to 5pm UK, with breaks. In person at the Hampton studio, or virtual via Zoom. | Pre-day intake form and a 30-minute scoping call the week before. | The day itself: nervous-system work, somatic enquiry, decision mapping, integration. | Lunch and refreshments included if in person. | A 60-minute integration call two weeks later.
+BODY | Investment. | By enquiry. Each One Day is shaped around the person it is for.
+CTA | Button: Enquire about One Day  →  /the-work/one-day#enquire
+FORM | Enquiry form: name, email, what is bringing you to this, preferred dates.
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.11  ·  The Signal Collective — mastermind
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work/signal-collective | SEO title  ·  The Signal Collective | Somatic Coaching Mastermind for Women | Anna Lou Wellness | SEO meta  ·  A small-group mastermind for women doing the inner work alongside building real lives and businesses. Six months, group plus 1:1. By application.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | The Signal Collective. | The inner work, in community. Six months.
+BODY | The Signal Collective is the mastermind. For coaches, founders, practitioners, and leaders who want depth plus community. Group and 1:1 coaching combined. Monthly intensive sessions. Peer co-regulation with people at the same level of seriousness. Direct access to the Signal Method applied to everything: business, relationships, creative work, leadership. A curated community committed to operating from their highest level. Not a course. A container for those already in motion who want to accelerate.
+BODY | What's included. | Six months. Twelve women maximum, by application. | Two group calls a month, 90 minutes each. One teaching, one open circle. | A monthly 1:1 with Anna, 60 minutes. | A private group space, off social media. | Two in-person days at the Hampton studio, one at the start, one at the close. | Guest sessions from practitioners Anna trusts.
+BODY | Investment. | By enquiry. Application form first, then a discovery call.
+CTA | Button: Apply for The Signal Collective  →  application form
+FORM | Application form: name, email, what work you do, why now, what you want from six months of this.
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.12  ·  1:1 Reset Sessions — hub
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work/sessions | SEO title  ·  1:1 Reset Sessions | Single Somatic Coaching Sessions | Anna Lou Wellness | SEO meta  ·  Single 1:1 sessions with Anna Lou. Founder Reset, Dating Reset, Nervous System Reset. Ninety minutes, £200.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | 1:1 Reset Sessions. | Ninety minutes. One theme. A clear next step.
+BODY | Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation.
+GRID | Three session cards, side-by-side. |  | Founder Reset | For the founder at a sticking point in the business or in herself. |  | Dating Reset | For the woman noticing the same pattern showing up again. |  | Nervous System Reset | For the woman whose signal system is scrambled and needs bringing back online.
+BODY | What each session includes. | 90 minutes, virtual, with Anna. | A short intake form sent on booking. | A written summary after the session with the next steps you agreed. | Option to roll into a 6-week or 12-week container.
+BODY | Investment. | £200 per session, paid at booking.
+CTA | Button: Book a Reset Session  →  routes to single-session page based on choice
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.13  ·  Reset Session single page (template)
+Applies to Founder Reset, Dating Reset, Nervous System Reset. Page content varies per session below.
+
+
+[TABLE]
+META | URL  ·  annalouwellness.com/the-work/sessions/[slug] | SEO title  ·  [Session name] | 1:1 Coaching Session | Anna Lou Wellness | SEO meta  ·  Ninety minutes with Anna Lou. £200. Trauma-informed, somatic.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | [Session name]. | [Tagline].
+BODY | Founder Reset opening | Most founder problems are not strategy problems. They are capacity problems wearing strategy clothes. A Founder Reset is the session where we work out which one yours is, and we move it.
+BODY | Dating Reset opening | Dating Reset is for the woman who has noticed the same pattern showing up again and is ready to ask why. We do not do dating tips. We do the underneath. The patterns, the attachment shape, the unfinished business with the version of love you grew up with.
+BODY | Nervous System Reset opening | Nervous System Reset is for the woman whose body has been holding the line for a long time and has started to lose the signal. We do not talk it out. We work with what is happening in the body, gently and slowly, and we bring the signal back online.
+BODY | What you get. | 90 minutes with Anna, virtual. | Short intake form sent on booking. | Written summary after the session with the next steps. | £200, paid at booking.
+STRIPE | Button: Book this session  ·  £200  →  Stripe checkout
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.14  ·  Experiences hub
+
+[TABLE]
+META | URL  ·  annalouwellness.com/experiences | SEO title  ·  Wellness Retreats, Workshops & Corporate Wellbeing | Anna Lou Wellness | SEO meta  ·  Retreats, workshops, corporate days, speaking. Browse upcoming experiences.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav. Active: Experiences.
+HERO | Experiences. | The work, in a room. Or a forest. Or a boardroom.
+BODY | There are seasons in this work that ask for a quiet 1:1 conversation. There are also seasons that ask for a room of women, a long table, a fire, a forest, a sound bath. This is the section for the second kind.
+GRID | Four cards. 2x2 desktop, stacked mobile. | Retreats  ·  Day retreats and overnights in the South Downs and on the houseboat. | Workshops  ·  Live workshops, attended in person or on Zoom, with replay access. | Corporate Wellbeing  ·  Days and half-days for teams, in your space or ours. | Speaking  ·  Keynotes, panels, Q&As, online and in person.
+GRID | Upcoming experiences strip. Three to four cards across all types showing the next live dates.
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.15  ·  Retreats hub
+
+[TABLE]
+META | URL  ·  annalouwellness.com/experiences/retreats | SEO title  ·  Wellness Retreats South Downs | Day Retreats Petworth | Anna Lou Wellness | SEO meta  ·  Day retreats with Anna Lou. Somatic coaching, sound bath, yin yoga, forest bathing. Petworth, West Sussex.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | Retreats. | A day. A doorway. A different version of yourself, by the time the sun goes down.
+BODY | The retreats are days designed to take you out of the version of your life that is too busy to hear itself, and put you somewhere that the signal can come back. South Downs National Park, a private setting, ten women at most. Yin yoga, breathwork, somatic coaching, sound bath, forest bathing, a slow nourishing lunch, an option to design a piece of intentional jewellery to take home.
+GRID | Upcoming retreats. Card per retreat. Date, location, theme, price, button through to the single retreat page.
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.16  ·  Retreat single page (template)
+
+[TABLE]
+META | URL  ·  annalouwellness.com/experiences/retreats/[slug] | SEO title  ·  [Retreat name] | [Date] | South Downs Wellness Retreat | Anna Lou Wellness | SEO meta  ·  [One-line description.] Petworth, West Sussex. Limited to ten women.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+IMAGE | Wide hero photograph of the location.
+HERO | [Retreat name]. | [One-line tagline]. | Meta  ·  [Date]  ·  [Location]  ·  [Group size]  ·  [Price]
+BODY | The day. | [Long-form story-led description in Anna's voice. 3-4 paragraphs. What the day looks like, how it feels, who it is for. Inline mentions of yin yoga, breathwork, somatic coaching, sound bath, forest bathing, the food, the setting.]
+BODY | Schedule. | [Clean bullet list from arrival to departure. Anna provides per retreat.]
+BODY | What's included. | All sessions with Anna across the day. | Yin yoga and breathwork. | Somatic coaching and group reset work. | Sound bath. | Forest bathing or beach walk depending on location. | Nourishing lunch and refreshments throughout. | Optional intentional jewellery design with Anna.
+STRIPE | Button: Book your place  →  Stripe checkout
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.17  ·  Workshops hub
+
+[TABLE]
+META | URL  ·  annalouwellness.com/experiences/workshops | SEO title  ·  Workshops with Anna Lou | Somatic Coaching & Trauma-Informed Group Work | SEO meta  ·  Live workshops, full access £200, summary access £15. Browse upcoming.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | Workshops. | Live, focused, in good company.
+BODY | The workshops are the work in real time, in a small group, over Zoom or in person. Two ways to attend: full access and summary access. The full session is the live experience, with Anna, with everyone in the room together. The summary is the recording and the written companion, for the women who want the work but cannot make the live.
+BODY | Two ways to attend. | Full access  ·  £200. Live attendance, replay, written companion, and a private group thread for the week after. | Summary access  ·  £15. The recording and the written companion, sent within 48 hours.
+GRID | Card grid of upcoming workshops. Each card: date, name, tagline, price tier badge, button through.
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.18  ·  Workshop single page (template)
+
+[TABLE]
+META | URL  ·  annalouwellness.com/experiences/workshops/[slug] | SEO title  ·  [Workshop name] | Live Workshop with Anna Lou | Anna Lou Wellness | SEO meta  ·  [Topic in one sentence]. Live [date]. Full £200, summary £15.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | [Workshop name]. | [Tagline]. | Meta  ·  [Date]  ·  [Time]  ·  [Zoom or Hampton]
+BODY | What we will do. | [2-3 paragraphs in Anna's voice. What we work with, what you leave with, how it will feel.]
+BODY | Who it's for. | [One paragraph naming the specific woman this workshop is for.]
+BODY | Two ways to attend. | Full access  ·  £200. Live with Anna, plus replay, written companion, and the private group thread. | Summary access  ·  £15. The recording and the written companion, sent within 48 hours.
+STRIPE | Two buttons: | 1. Book full access (£200)  →  Stripe | 2. Buy summary access (£15)  →  Stripe
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.19  ·  Corporate Wellbeing
+
+[TABLE]
+META | URL  ·  annalouwellness.com/experiences/corporate | SEO title  ·  Corporate Wellbeing Days London | Somatic Team Workshops | Anna Lou Wellness | SEO meta  ·  Corporate wellbeing days for teams. Nervous-system led, trauma-informed. London and remote.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | Corporate Wellbeing. | The inner work, brought to the workplace.
+BODY | Most workplace wellbeing days are an hour of mindfulness on a Tuesday, and a return to the same nervous system on the Wednesday. The days I run are different. They give a team a real, somatic, repeatable set of tools, and they treat the team as adults navigating real lives, not delegates ticking a box.
+BODY | What's offered. | Half-day for a team, in your space or in ours. | Full day, including a deeper somatic and nervous-system arc. | A short series across a quarter for ongoing teams. | Founder and leadership 1:1s as an optional add-on.
+BODY | Themes. | Nervous-system regulation in high-pressure roles. | Decision-making under load. | Communication and capacity for teams in growth phases. | Founder energy, sustainability, and burnout prevention.
+FORM | Enquiry form. | Fields: name, company, role, format interest, message.
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.20  ·  Speaking
+
+[TABLE]
+META | URL  ·  annalouwellness.com/experiences/speaking | SEO title  ·  Anna Lou Speaking | Keynotes on Trauma, Nervous System & Founder Resilience | SEO meta  ·  Book Anna Lou to speak at your event. Keynotes, panels, Q&As. Online or in person.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | Speaking. | The work, at scale.
+BODY | The feedback most consistently received from event organisers: it felt real. Not a polished keynote with a perfectly crafted arc. A framework, spoken from inside it.
+BODY | Five talks. | Signal  ·  How to hear yourself in a loud world. Works for any audience. The most practically applicable talk. People leave with three specific things they can do today. | Inner World, Outer Business  ·  For entrepreneur events. The cost of running a business from a scrambled nervous system, and what aligned building looks like. | What Actually Happens in Trauma Recovery  ·  Reframes trauma as a nervous-system event, not a personality trait. | The Anna Lou of London Story  ·  Twenty-five years from Portobello Road to a houseboat in Hampton. The full story, including what it cost. | What Community Actually Does to the Nervous System  ·  The science behind why circles, retreats, and in-person spaces have a specific and measurable effect on co-regulation.
+BODY | Where Anna speaks. | Based in Hampton, London. Travelling nationally. Online events welcome. | Keynotes, panels, Q&As, workshops. Small and real or large and polished.
+FORM | Speaking enquiry form. | Fields: name, organisation, event type, date, format, audience size, brief on what you're hoping for.
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.21  ·  The Returning Circle
+
+[TABLE]
+META | URL  ·  annalouwellness.com/community/returning-circle | SEO title  ·  The Returning Circle | Weekly Women's Circle | Anna Lou Wellness | SEO meta  ·  Donation-based weekly circle online and at the Hampton houseboat. Open to all women.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | The Returning Circle. | Every week. A circle of women coming home to themselves.
+BODY | The Returning Circle is a weekly women's circle, held by Anna, donation-based. The heartbeat of the community. We meet on the houseboat at Hampton and on Zoom, every week. There is a short reset to open, a question to sit with, and a circle of women who are doing the work alongside you.
+BODY | How it runs. | Weekly, Wednesdays, 7.30pm to 8.45pm UK. | Hybrid. In person on the houseboat for those who can travel, on Zoom for everyone else. | Donation-based. Pay what feels right when you book. | Replays kept inside the Reset Room library.
+FORM | RSVP form. | Fields: first name, email, attending live in person or live on Zoom.
+CTA | Button: Make a donation (optional)  →  Stripe one-off payment
+FOOT | Site footer.
+[/TABLE]
+
+
+
+## A.22  ·  The Nervous System Decoder (free)
+
+[TABLE]
+META | URL  ·  annalouwellness.com/free/nervous-system-decoder | SEO title  ·  Free Nervous System Decoder | Somatic Self-Audit | Anna Lou Wellness | SEO meta  ·  A free downloadable guide. Understand the three primary states of your inner guidance system in plain language.
+[/TABLE]
+
+
+
+[TABLE]
+NAV | Site nav.
+HERO | The Nervous System Decoder. | Free. Always free. The first thing if you are new here.
+IMAGE | Cover image of the Decoder PDF on a soft cream background.
+BODY | The Nervous System Decoder is the first thing offered to anyone who finds Anna Lou Wellness. Free. Always free. | It explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state, you can use today, anywhere, without equipment. | It was made free because understanding your inner world is not a luxury. It is the foundation. Without it, nothing else on this site makes sense. With it, everything starts to make sense, the patterns, the reactions, the relationships, the exhaustion.
+BODY | What's inside. | A short introduction to the inner guidance system in plain language. | Seven self-audit questions with space to write. | A simple key for reading your own answers. | Three small somatic practices to start with, today. | A suggested next step, gently. No pressure.
+FORM | Email capture form. | Fields: first name, email. | On submit  ·  Trigger Flodesk Sequence 2 (Free Decoder delivery).
+FOOT | Site footer.
+[/TABLE]
+
+
+
+# Part B  ·  Email layouts with full copy
+Every email with the exact text Sameer drops into Flodesk. Pink VIDEO blocks show where Anna's recordings sit. See video map at the end.
+
+
+## B.1A  ·  Reset Letters founding member welcome (Sequence 1A — pre-launch, runs until 22 June 2026)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Form submission on /reset-letters (before 22 June 2026) | Subject  ·  Welcome, founder. You're in for life. | Preheader  ·  A note from Anna, plus a small map of where to start while we wait for launch. | Send  ·  Immediately on opt-in
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | You're in. And because you signed up before launch, you're a founding member of Reset Letters for life. |  | A small thing first. Check your other inbox in the next few minutes for a confirmation email from Substack. Click the link inside to confirm your subscription. Once you do, Reset Letters lands in that inbox every Sunday from 22 June.
+VIDEO | VIDEO 13 embedded: Founding member welcome (60 sec). Anna welcomes them, names what they're in for.
+BODY | What being a founding member means. | Full access to every edition, free for life. Paid content included. | Early access to retreats, workshops, and new products. | The founding member badge on your Substack profile. | The private Reset Letters community thread. | This personal welcome email from me, which you are reading now.
+BODY | What you'll get each week from 22 June. | Sunday Cosmic Forecast  ·  your weekly energy reading. Moon phases, planetary shifts, what they mean for the week ahead. | Wednesday Signal Check  ·  a midweek nervous system check-in. Short, grounding, the pause you did not know you needed. | Monthly Reset Story  ·  a long-form piece. Real women. Real turning points. | Monthly Contributor Feature  ·  a guest voice. A coach, therapist, artist, or someone with a story worth hearing.
+BODY | While you wait for launch. | If you want a starting point right now, the free Nervous System Decoder is the foundation. Seven questions, written by me, to help you read your own inner guidance system.
+CTA | Button: Send me the free Decoder  →  /free/nervous-system-decoder
+BODY | Welcome, founder. I am genuinely glad you are here. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+Note for Sameer. Cap this sequence at first 500 sign-ups. After 500, switch the same form to fire Sequence 1B (below). Flodesk handles this with a subscriber count trigger and segment switch.
+
+
+## B.1B  ·  Reset Letters standard welcome (Sequence 1B — post-launch / after 500 founders)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Form submission on /reset-letters (after 22 June 2026 OR after first 500 founders) | Subject  ·  Welcome to Reset Letters. | Preheader  ·  What you've signed up for, and where to start. | Send  ·  Immediately on opt-in
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Welcome to Reset Letters. |  | A small thing first. Check your other inbox in the next few minutes for a confirmation email from Substack. Click the link inside to confirm your subscription. Once you do, Reset Letters lands in that inbox every Sunday.
+VIDEO | VIDEO 13 embedded: Standard welcome variant (60 sec). Anna's welcome message, post-launch tone. Can be the same recording as the founder welcome, with one phrase swapped if needed.
+BODY | What Reset Letters is. | A weekly magazine for women who have been holding everything. Written by me, with contributions from coaches, therapists, and women I trust. Honest, editorial, broad on purpose. |  | What you'll get each week. | Sunday Cosmic Forecast  ·  your weekly energy reading. | Wednesday Signal Check  ·  a midweek nervous system check-in. | Monthly Reset Story  ·  a long-form piece. Real women. Real turning points. | Monthly Contributor Feature  ·  a guest voice.
+BODY | Where to start. | If you want a starting point right now, the free Nervous System Decoder is the foundation. Seven questions to help you read your own inner guidance system. Free.
+CTA | Button: Send me the free Decoder  →  /free/nervous-system-decoder
+BODY | Two tiers. | The free tier is a real welcome, not a teaser. Sunday and Wednesday land for everyone. | The paid tier opens the monthly long-form pieces, the audio sessions, and the paid archive. £7 per month, set inside Substack.
+BODY | Welcome. I am genuinely glad you are here. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.2  ·  Free Decoder delivery (Sequence 2.1)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Form submission on /free/nervous-system-decoder | Subject  ·  Your Nervous System Decoder is here. | Preheader  ·  Seven questions. A quiet half hour. | Send  ·  Immediately
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Here it is. The Nervous System Decoder, attached and ready when you are.
+VIDEO | VIDEO 9 embedded: Decoder thank-you (45 sec). Anna welcomes them, explains how to use the Decoder.
+BODY | A small suggestion before you open it. Make yourself a drink. Put your phone in another room. Give yourself half an hour with no one needing you. The questions are simple. The space around them is what does the work.
+CTA | Button: Download the Decoder  →  PDF link
+BODY | Take your time. There is no right answer, and there is no rush. |  | I will be in touch in a few days to see how it landed. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.3  ·  Decoder follow-up (Sequence 2.2)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Three days after Sequence 2.1 | Subject  ·  How did the Decoder land? | Preheader  ·  A note, a question, and a small next step. | Send  ·  Three days after delivery
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | It is Anna. I wanted to check in. |  | The Decoder is a small piece of work that often opens a bigger door. Some women read it and feel relieved that what they are experiencing has a name. Some find one answer they were not expecting. Some put it down and come back to it weeks later. |  | Wherever you are with it, you are in the right place. |  | If anything came up that you want to talk through, the next step is a free discovery call. Twenty minutes, no pressure, just a conversation about what you noticed and what might help.
+CTA | Button: Book a free discovery call  →  Calendly
+BODY | Or if you are not ready for that yet, the Reset Letters will keep arriving. Sundays and Wednesdays. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.4  ·  Workshop confirmation (Sequence 3.1)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: workshop purchase (£200 or £15) | Subject  ·  You're booked for [workshop name] | Preheader  ·  Date, link, and what to expect. | Send  ·  Immediately on purchase
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | You are in. Thank you for booking [workshop name].
+VIDEO | VIDEO 10 embedded: Workshop thank-you (45 sec, evergreen). Anna welcomes them to the workshop.
+META | Date  ·  [date] | Time  ·  [time, UK] | Where  ·  [Zoom link or Hampton studio address] | Your access  ·  [Full access £200 OR Summary access £15]
+BODY | If you are coming live, the calendar invite is attached. If you are on the summary tier, your recording and written companion will land in your inbox within 48 hours of the live session. |  | A small note. Workshops are small and held with care. Come as you are. There is nothing to prepare.
+CTA | Button: Add to calendar  →  .ics download
+BODY | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+Note for Sameer. The Stripe payment receipt is sent separately by Stripe itself. SYSTEM email. Style it with the wordmark.
+
+
+## B.5  ·  Post-workshop (Sequence 3.2)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  24 hours after workshop end time | Subject  ·  Yesterday's workshop, and what comes next | Preheader  ·  Replay, written companion, optional next step. | Send  ·  24 hours after
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Yesterday was a beautiful room of women. Thank you for being in it (or for being on the summary tier and being part of it that way). |  | Your replay and the written companion are below. Both will live in your account for ninety days.
+CTA | Two buttons: | 1. Watch the replay  →  video link | 2. Download the written companion  →  PDF link
+BODY | If something in the workshop landed and you want to take it further, the Reset Room is the next door. Live monthly reset call, the paid library, members-only events, and 10% off any 1:1 work. £25 a month, cancel any time.
+CTA | Button: Join the Reset Room  →  /community/reset-room
+BODY | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.6  ·  Discovery call booked (Sequence 4)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Calendly booking on /the-work/discovery | Subject  ·  Your discovery call is booked | Preheader  ·  What to expect and a few words before we meet. | Send  ·  Immediately on booking
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Our discovery call is in the diary. Thank you for booking it.
+VIDEO | VIDEO 11 embedded: Discovery call pre-call (60 sec). Anna sets the tone: this isn't a sales call, come as you are.
+META | When  ·  [date and time, UK] | Where  ·  [Zoom link] | Length  ·  Twenty minutes
+BODY | A discovery call is not a sales call. It is twenty minutes for the two of us to meet, for you to say what is bringing you to this work, and for me to say honestly whether I am the right person to walk it with you. |  | You do not need to prepare anything. Come as you are. If there is a particular programme you are curious about (The Reset, Signal, Signal & Build, One Day, or the Collective), you can tell me on the call. |  | See you soon. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+Note for Sameer. Calendly also sends an automatic confirmation with the Zoom link. SYSTEM email. Make sure Calendly is styled with the wordmark.
+
+
+## B.7  ·  Returning Circle RSVP (Sequence 5)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Form submission on /community/returning-circle | Subject  ·  You're in for this week's Circle | Preheader  ·  Link, time, and one small thing to bring. | Send  ·  Immediately on RSVP
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | You are in for this week's Returning Circle. Thank you for saying yes to a Wednesday evening with us.
+VIDEO | VIDEO 12 embedded: Returning Circle thank-you (45 sec, evergreen).
+META | When  ·  [day, date], 7.30pm UK | Where  ·  [Zoom link] or in person on the houseboat at Hampton | Length  ·  Seventy-five minutes
+BODY | There is nothing to prepare. Bring something to drink. If you can, sit somewhere you will not be interrupted. We open with a short reset, sit with a question together, and close as a circle. |  | The Circle is donation-based. If you would like to contribute, the link is below. If you cannot this week, please come anyway.
+CTA | Button: Make a donation  →  Stripe one-off payment
+BODY | See you Wednesday. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.8  ·  Reset Room welcome (Sequence 6.1)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: Reset Room subscription created (£25/month) | Subject  ·  Welcome to The Reset Room | Preheader  ·  Your private podcast, your welcome video, the next live call. | Send  ·  Immediately on subscription
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Welcome to The Reset Room. I am genuinely glad you are here. |  | Below is everything you need to start. A 90-second welcome video from me, your private podcast link, and the date of the next live call. There is no overwhelm here. Take it slowly.
+VIDEO | VIDEO 1 embedded: Reset Room welcome (90 sec). The first thing they see.
+BODY | Set up your private podcast feed. | This is where most of the work lives. Click below and pick the podcast player you already use. Two new intimate episodes drop a month, and the monthly Reset Call replay lands here the day after.
+CTA | Four buttons: | 1. Subscribe in Apple Podcasts  →  apple subscribe link | 2. Subscribe in Spotify  →  spotify subscribe link | 3. Subscribe in Overcast  →  overcast subscribe link | 4. Or copy your private RSS link  →  reveal text field with RSS URL
+BODY | Mark your calendar. | The next live Reset Call is on Thursday [date], 7.30pm UK. The Zoom link arrives the day before. If you cannot make it live, the replay drops to your private podcast within 24 hours.
+CTA | Button: Add the Reset Call to your calendar  →  .ics download
+BODY | Visit your member portal. | This is where the Vault lives and where everything is one click away.
+CTA | Button: Go to your member portal  →  /community/reset-room/dashboard
+BODY | That is plenty for now. I will be in your inbox again in three days with a small map of where to start inside the room. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.9  ·  Reset Room map (Sequence 6.2)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Three days after Sequence 6.1 | Subject  ·  A small map of where to start in the Reset Room | Preheader  ·  A 5-minute orientation tour, plus three things to do this week. | Send  ·  Three days after subscription
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | It is Anna. A small note three days in. |  | Members often tell me the same thing in their first week. The Vault is full, the podcast is queued, and they do not know where to start. So here is the map.
+VIDEO | VIDEO 2 embedded: Orientation tour (5 min). Anna walks through dashboard, Vault, private podcast.
+BODY | Then, this week, in this order: |  | One. Listen to the founding episode in the private podcast, 'Signal Scrambled, and How to Read It.' Twelve minutes. It is the thing most members come back to. |  | Two. Do your first journey in the Vault, 'Coming Back Online.' Twelve minutes, eyes closed, somewhere you will not be interrupted. |  | Three. Add the next live Reset Call to your diary, even if you cannot be sure you will make it. The live is something else.
+CTA | Button: Go to your member portal  →  /community/reset-room/dashboard
+BODY | That is week one. The room is not going anywhere. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.10  ·  Reset Room week-one check-in (Sequence 6.3)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Seven days after Sequence 6.1 | Subject  ·  How is the first week landing? | Preheader  ·  A note from me, and the date of your first live call. | Send  ·  Seven days after subscription
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | A week in. I just wanted to say hello. |  | If you have not made it into the library yet, that is fine. The first month is for finding your shape inside this. Some women dive in. Some come back to it slowly. There is no right way. |  | Your first live Reset Call is on [date]. The link will arrive the day before. Bring a drink and a comfortable place to sit. |  | If you have any questions, or anything is not working, reply to this email. It comes straight to me. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+Note for Sameer. Quiet check-in. No video, no CTA buttons. Personal.
+
+
+## B.11  ·  Reset Room monthly cadence (Sequence 6.4)
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  1st of every month, 9am UK, all active Reset Room members | Subject  ·  This month in the Reset Room  ·  [Month] | Preheader  ·  The new journey, the date of the call, what to listen to first. | Send  ·  Monthly, 1st
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | A new month in the room.
+BODY | This month's new journey in the Vault. | '[Journey name]', [length] minutes. [One-line description.]
+CTA | Button: Listen now  →  Vault journey link
+BODY | This month's Reset Call. | Thursday [date], 7.30pm UK. The theme is [theme]. Send questions ahead to hello@annalouwellness.com if you cannot be there live.
+CTA | Button: Add to calendar  →  .ics
+BODY | Latest in the private podcast. | '[Episode title]' dropped on the [date]. [One-line description.]
+CTA | Button: Open in your podcast player  →  RSS
+BODY | And one more thing. | [Anna's monthly note, written fresh each time, 2-3 sentences. Often previews what is coming, or names a theme she is sitting with.] |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.12  ·  The Reset welcome (Sequence 7.1)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: The Reset purchase confirmed | Subject  ·  Welcome to The Reset | Preheader  ·  Your intake form, your first session, what to expect. | Send  ·  Immediately
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Welcome to The Reset. |  | Six weeks is enough time for something to shift, and not enough to take over your life. That balance is the point. We have just enough room to do real work without it becoming another thing on the list.
+VIDEO | VIDEO 3 embedded: The Reset welcome (60 sec). Anna welcomes them, sets the tone.
+BODY | Here is what happens next. |  | One. The intake form. Twelve questions. About twenty minutes. Please complete it before our first session so we go straight to the work. |  | Two. Book your six sessions. Use the booking link below to put all six in the diary now, one a week. We can move individual ones later if needed, but the rhythm matters. |  | Three. Voxer. I will send you a separate invite to Voxer in the next 48 hours. Tuesday to Thursday between sessions, you can drop me audio or text messages and I will reply.
+CTA | Two buttons: | 1. Complete the intake form  →  form link | 2. Book your six sessions  →  Calendly
+BODY | If anything in your life shifts before we start, message me. The work begins from the moment you say yes. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.13  ·  Signal welcome (Sequence 8.1)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: Signal purchase confirmed | Subject  ·  Welcome to Signal | Preheader  ·  Your intake form, your twelve sessions, what we will build. | Send  ·  Immediately
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Welcome to Signal. |  | Twelve weeks is what we agreed because twelve weeks is what this depth needs. Long enough to rebuild the relationship between you and your inner world from the ground up. Long enough to integrate the changes into your real life as they happen.
+VIDEO | VIDEO 4 embedded: Signal welcome (60 sec).
+BODY | Here is the shape of it. | Week one. A full audit of your inner world. What is online, what is overactive, what has gone quiet. | Weeks two to five. Working on the parts that need attention. | Week six. Midpoint review. | Weeks seven to eleven. Deeper integration. | Week twelve. Closing integration.
+CTA | Two buttons: | 1. Complete the intake form  →  form link | 2. Book your twelve sessions  →  Calendly
+BODY | Voxer access will arrive in a separate email. Tuesday to Thursday between sessions. |  | I am so glad you said yes. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.14  ·  Signal & Build welcome (Sequence 9.1)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: Signal & Build purchase confirmed | Subject  ·  Welcome to Signal & Build | Preheader  ·  The inner work and the business, held together. | Send  ·  Immediately
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Welcome to Signal & Build. |  | You said yes to twelve weeks of doing the inner work and the business work in the same room. That is a brave thing, because most of us are taught to separate them. We are about to do the opposite.
+VIDEO | VIDEO 5 embedded: Signal & Build welcome (60 sec).
+BODY | What to expect. | The Signal layer. Everything in Signal: a full inner-world audit, weekly 1:1 sessions, midpoint review, closing integration, Voxer Tuesday to Thursday. | The Build layer. Business strategy interleaved with the inner work. Pricing, positioning, capacity, decision-making, team, founder energy. | Voxer, widened. For Signal & Build, you can also message me about in-the-moment business questions.
+CTA | Three buttons: | 1. Complete the founder intake form  →  form link | 2. Book your twelve sessions  →  Calendly | 3. Send me a one-page business snapshot before week one  →  template attached
+BODY | Voxer invitation arrives in a separate email. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.15  ·  One Day confirmed (Sequence 10.1)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: One Day payment confirmed | Subject  ·  Your One Day is confirmed | Preheader  ·  The date, the prep, what to bring. | Send  ·  Immediately on payment
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Your One Day is confirmed.
+VIDEO | VIDEO 6 embedded: One Day welcome (90 sec). Anna welcomes them, sets the tone.
+META | Date  ·  [date] | Time  ·  10am to 5pm UK, with breaks | Format  ·  [In person at the Hampton studio OR virtual via Zoom]
+BODY | This is a day that asks for full attention. Please clear your diary completely. Tell your people you are unreachable. Put your phone in another room. The depth of the day depends on the space around it. |  | Here is what happens in the run-up. | Two weeks before. You receive the pre-day intake form. Twenty questions, takes about an hour. Please give it real time, not a quick scribble. | One week before. We have a 30-minute scoping call to set the focus of the day. | The day before. Final logistics email from me. Travel directions if in person, Zoom link if virtual. | Two weeks after. A 60-minute integration call to land everything.
+CTA | Two buttons: | 1. Complete the pre-day intake  →  form link | 2. Book the scoping call  →  Calendly
+BODY | If anything comes up between now and then, message me directly. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.16  ·  Signal Collective welcome (Sequence 11.1)  ★
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: Signal Collective enrolment confirmed | Subject  ·  Welcome to The Signal Collective | Preheader  ·  Six months. Twelve women. Here is what happens first. | Send  ·  Immediately
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Welcome to The Signal Collective. |  | Six months. Twelve women. This room is one of the most important rooms I will be in this year, and you are in it.
+VIDEO | VIDEO 7 embedded: Signal Collective welcome (2 min). Longer because the investment is bigger.
+BODY | Here is the structure for the six months. | Two group calls a month. One teaching, one open circle. 90 minutes each. | A monthly 1:1 with me. 60 minutes. You book these into my calendar yourself, one a month, whenever works. | Two in-person days at the Hampton studio. Opening day and closing day. Both included. Travel and accommodation on you. | The private group space. Off social media, hosted on [Circle / Heartbeat]. Login details below. | Guest sessions. Three across the six months from practitioners I trust.
+CTA | Four buttons: | 1. Complete the Collective intake form  →  form link | 2. Book your first monthly 1:1  →  Calendly | 3. Set up your member profile in the group space  →  group link | 4. Save the opening in-person day  →  .ics download
+BODY | The first group call is on [date]. The link will arrive the day before. |  | I am honoured you are here. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.17  ·  Reset Session booked (Sequence 12.1)  ★
+Applies to Founder Reset, Dating Reset, Nervous System Reset.
+
+
+[TABLE]
+META | Platform  ·  FLODESK | Trigger  ·  Stripe webhook: Reset Session purchase confirmed | Subject  ·  Your [session name] is booked | Preheader  ·  The intake, the link, what to do before we meet. | Send  ·  Immediately
+[/TABLE]
+
+
+
+[TABLE]
+HERO | Header strip  ·  ANNA LOU WELLNESS wordmark on warm cream (#F5F3EF) background. Single horizontal line. No crown monogram.
+BODY | Hi [first name], |  | Your [Founder Reset OR Dating Reset OR Nervous System Reset] is in the diary.
+VIDEO | VIDEO 8 embedded: Reset Session welcome (45 sec, evergreen for all three sessions).
+META | When  ·  [date and time, UK] | Where  ·  [Zoom link] | Length  ·  90 minutes
+BODY | Before we meet, please complete the short intake form. Six questions, takes about ten minutes. It helps us go straight to the work rather than spending the first half hour catching me up.
+CTA | Button: Complete the intake form  →  form link
+BODY | On the day, sit somewhere private, somewhere you can be honest. Bring a notebook if that helps you, do not feel you have to. |  | If you decide before the session that you want to roll into a 6-week or 12-week container, tell me on the call and we will sort the logistics afterwards. There is no pressure either way. |  | Love and healing. Anna Lou x
+FOOT | Anna Lou Wellness  ·  annalouwellness.com | Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna | If this email is no longer for you, you can unsubscribe at any time.
+[/TABLE]
+
+
+
+## B.18  ·  System emails (handled by Stripe and Calendly)
+These fire automatically. Sameer ensures they are styled with the wordmark and brand colours, but Anna does not need to draft them.
+
+
+[TABLE]
+SYSTEM | Stripe payment receipt. | Sent by Stripe automatically on every successful payment. | Sameer customises in Stripe Dashboard > Settings > Branding: wordmark, brand black accent, footer link to annalouwellness.com.
+SYSTEM | Stripe subscription invoice. | Sent monthly on Reset Room renewal. | Same branding as above.
+SYSTEM | Stripe failed payment retry. | Sent on a failed Reset Room payment, retried automatically. Three retry windows. | Same branding as above. If all three fail, member loses access and Flodesk triggers a personal win-back email from Anna.
+SYSTEM | Calendly booking confirmation. | Sent by Calendly on every booking. | Sameer customises in Calendly Settings > Email & Notifications: wordmark, brand voice short message, sign-off 'Love and healing. Anna Lou x.'
+SYSTEM | Calendly reminder. | Sent 24 hours and 1 hour before any Calendly booking. | Same branding as above.
+[/TABLE]
+
+
+
+# Part C  ·  The video map
+Every video Anna records, where it lives, how long it is, and what to say. Thirteen videos total. Batch-record in one or two sittings on the houseboat.
+
+
+[TABLE]
+# | Video | Length | Lives in | What to say (outline)
+1 | Reset Room welcome | 90 sec | Email 6.1 + Member dashboard 'Where to start' block | Warm welcome. 'The Letters are the front door. This is the room behind it.' Name the three pillars quickly: Reset Room Sessions, Reset Call, Reset Vault. Close: take it slowly, see you on the first call.
+2 | Reset Room orientation tour | 5 min | Email 6.2 + Member dashboard | Screenshare-led tour. Walk through dashboard, Vault, private podcast subscribe. End: the room rewards the slow approach.
+3 | The Reset welcome | 60 sec | Email 7.1 (The Reset welcome) | Welcome to The Reset. Six weeks. The shape of it: weekly sessions, Voxer in between, slow honest work. 'I'm so glad you said yes.'
+4 | Signal welcome | 60 sec | Email 8.1 (Signal welcome) | Welcome to Signal. Twelve weeks because this depth needs it. The arc: audit, work, midpoint, integration, close. 'You said yes to depth. Let's go.'
+5 | Signal & Build welcome | 60 sec | Email 9.1 (Signal & Build welcome) | Welcome to Signal & Build. The inner work and the business in the same room. 'The bottleneck in the business is usually the bottleneck in the founder. We're working both at once.'
+6 | One Day welcome | 90 sec | Email 10.1 (One Day confirmed) | Welcome. This is a big day. The run-up matters. Clear the diary, tell your people you're unreachable. 'Trust me to hold the day. You just need to turn up.'
+7 | Signal Collective welcome | 2 min | Email 11.1 (Collective welcome) | Welcome to the Collective. Six months. Twelve women. The structure quickly. 'This room is one of the most important rooms I will be in this year, and you are in it.'
+8 | Reset Session welcome (generic) | 45 sec | Email 12.1 (any Reset Session) | Welcome. 90 minutes with me. 'Bring what you're holding. We will work with it.' Short, warm, sets the tone.
+9 | Decoder thank-you | 45 sec | Email 2.1 (Decoder delivery) | Thank you for downloading. Small instruction: make a drink, give yourself half an hour, the questions are simple but the space around them is the work.
+10 | Workshop thank-you (evergreen) | 45 sec | Email 3.1 (any workshop confirmation) | Generic, evergreen. 'You're in for the workshop. Come as you are. Nothing to prepare. See you on the day.'
+11 | Discovery call pre-call | 60 sec | Email 4 (Discovery call booked) | 'This isn't a sales call. It's twenty minutes for us to meet. You don't need to prepare anything. Just come.'
+12 | Returning Circle thank-you | 45 sec | Email 5 (Returning Circle RSVP) | 'Thank you for saying yes to Wednesday. Bring a drink. Sit somewhere you won't be interrupted. We open with a short reset, sit with a question, and close as a circle.'
+13 | Reset Letters founding welcome | 60 sec | Email 1A (founding pre-launch) and Email 1B (standard post-launch) | 'Welcome. You're in for the first edition on 22 June.' Bit about why you started Reset Letters: wanted a slower space, off social media, a magazine that does not belong to the algorithm. Mention the contributors (coaches, therapists, women you trust). Name the four weekly/monthly features quickly. Close: 'See you in your inbox on 22 June.' For the post-launch version (1B), record an alt second line that says 'Welcome' instead of 'You're in for the first edition.' Two takes in one filming session.
+[/TABLE]
+
+
+
+## Filming notes
+
+[TABLE]
+BODY | Setting  ·  Houseboat at Hampton, natural light, soft background. | Camera  ·  Phone propped at eye level, framed chest-up. | Script  ·  Bullet points only, never read from a script. | Tone  ·  Warm, direct, unhurried. | Wardrobe  ·  Consistent across all thirteen so they feel like a set. | Hosted on  ·  Bunny.net Stream, same provider as the Vault. Each video gets an embed snippet that drops into Flodesk emails and dashboard blocks.
+[/TABLE]
+
+
+
+# Closing
+
+[TABLE]
+BODY | This document is the source of truth for page and email copy. Sameer should not need to flip between docs to find what to write.
+BODY | Other docs in the set: SERVICES_FINAL (services architecture and master rules), EMAIL_AUTOMATIONS_FINAL (legacy reference), RESET_ROOM_BUILD_FINAL (tech setup: Hello Audio, Bunny.net, member portal flow).
+BODY | If anything in those older docs contradicts this one, this one wins.
+[/TABLE]
+
+
+Love and healing. Anna Lou x
+
+================================================================================
+FILE: ALW_RESET_ROOM_BUILD_FINAL_Sameer.docx
+================================================================================
+
+ANNA LOU WELLNESS
+The Reset Room — full build
+Architecture, tech setup, page copy, member portal, welcome emails.
+Prepared for Sameer, Xceed Imagination
+Version FINAL  ·  13 May 2026
+
+
+# Master instructions — read first
+This document is the source of truth for The Reset Room build. It supersedes the Reset Room sections in ALW_SERVICES_FINAL_Sameer.docx and the Sequence 6 welcome emails in ALW_EMAIL_AUTOMATIONS_FINAL_Sameer.docx. Where this document conflicts with those, this one wins.
+
+The Reset Room is restructured on a three-pillar model, inspired by the structure used by Nikki Meyers and Bella Solanot at OOOM (ooomies.com / The Oasis). The model works because it gives the member three clear, tangible things they get for their monthly fee, and it delivers most of the experience through the place they already are: their podcast player.
+
+Anna does not have a Kajabi account and does not need one. The full Reset Room can be built on the existing stack (ReactJS frontend, Strapi CMS, Stripe subscriptions) with two additional integrations: Hello Audio for the private podcast feed, and Zoom for the monthly live call. Detailed setup follows in Section 3.
+
+
+# 1. The three pillars of The Reset Room
+Each pillar has a clear name, a clear value, and a clear delivery method. Together they are what the member is paying £25 a month for. The member-only events and 10% off 1:1 work remain as additional benefits, but the three pillars are the core.
+
+
+## Pillar 1 — Reset Room Sessions (private podcast)
+
+[TABLE]
+What it is.  A members-only podcast feed. Bi-weekly intimate audio from Anna, around 20 to 30 minutes per episode. The kind of conversation that does not belong on the public Reset Letters Substack or the public YouTube channel. Behind the scenes, what Anna is working on this week, the longer-form thinking she does not edit for the public feed. |  | How it is delivered.  Through a private RSS feed the member gets at sign-up. They add it to their existing podcast player (Apple Podcasts, Spotify, Overcast, whatever they already use). They never have to come back to the website to listen. |  | Why it works.  It meets the member where they already are. Most people who subscribe to a wellness podcast want more from that same person, in the same place. Hello Audio's data shows members listen at three to five times the rate of locked content held behind a login wall. |  | Cadence.  Two new episodes a month, dropped on the 1st and 15th. Plus replays of the monthly live Reset Call go into the same feed (see Pillar 2). Plus selected vault meditations as audio (see Pillar 3).
+[/TABLE]
+
+
+
+## Pillar 2 — The Reset Call (monthly live)
+
+[TABLE]
+What it is.  A monthly 90-minute live call with Anna, on Zoom, on the first Thursday of every month at 7.30pm UK. Members can attend live, chat-style Q&A is open, Anna takes questions and threads in transmission and somatic work. If a member cannot make it, they email questions in advance to hello@annalouwellness.com and Anna covers them on the call. |  | How it is delivered.  Live on Zoom. The recording is uploaded as audio to the private podcast feed (Pillar 1) and as video to the member portal (the Vault, Pillar 3) within 24 hours of the call. |  | Why it works.  Live energy is irreplaceable for community membership. People stay subscribed because they want the next call. The replay then has a second life inside the private podcast feed for the members who could not make it live. |  | Cadence.  Monthly, first Thursday, 7.30pm UK. Replay live by Friday lunchtime.
+[/TABLE]
+
+
+
+## Pillar 3 — The Reset Vault (signature journeys library)
+
+[TABLE]
+What it is.  A growing library of guided somatic journeys and signature meditations, exclusive to Reset Room members. Each piece is around 10 to 25 minutes. Music, breath, visualisation, embodiment. Designed to be done eyes-closed, not while doing something else. These are full somatic experiences, not background audio. |  | How it is delivered.  Hosted on the Reset Room member portal page as a streaming library, with both video and audio versions of each piece. Audio versions also push to the private podcast feed (Pillar 1), so members can choose to do them on a walk if they prefer. |  | Why it works.  This is where insight becomes embodied. A member can hear something in the podcast, then do the matching journey in the Vault that same week. Most membership podcasts stop at the talking. The Vault is what makes the work integrate. |  | Cadence.  One new journey added each month, ideally to match a theme that has come up in the public Substack and the private podcast. The Vault launches with seven founding pieces (see Section 5 for the founding roster).
+[/TABLE]
+
+
+
+# 2. What members get, at a glance
+This is the list as it should appear on the public Reset Room landing page, in this order.
+
+
+[TABLE]
+What you get | What it means
+Reset Room Sessions | A members-only podcast, two new intimate episodes a month. Listen where you already listen.
+The Reset Call | Monthly live 90-minute call with Anna, first Thursday, 7.30pm UK. Replay sent the next day.
+The Reset Vault | Growing library of guided somatic journeys. New piece every month.
+Workshop replays | Every workshop Anna has run, in the library, free for you.
+First access to retreats | Forty-eight-hour members-only window before retreat dates go public.
+10% off 1:1 work | Member rate on all Reset Sessions and One Day intensives.
+A small, real community | Members-only events that do not appear on the public calendar.
+[/TABLE]
+
+
+Price: £25 a month. No minimum term. Cancel any time.
+
+
+# 3. Tech setup (no Kajabi needed)
+Everything below integrates with the existing ReactJS plus Strapi plus Stripe build. You will need to set up three new accounts and connect them via webhooks. Estimated build time, on top of the existing build: three to four days.
+
+
+## Stack overview
+
+[TABLE]
+Component | Tool / approach
+Subscription billing | Stripe (already in build). Set up a £25/month recurring product for The Reset Room.
+Member auth and gating | Strapi user model. On Stripe webhook (subscription created), create or activate a Strapi user with role 'reset-room-member'. Gate the member portal pages by this role.
+Private podcast feed | Hello Audio (helloaudio.fm). Each member gets a unique private RSS URL on subscription. Hello Audio integrates with Stripe out of the box. Free trial, then $19/month for unlimited subscribers on the Growth plan.
+Live call | Zoom (Anna's existing account is fine). Recurring meeting link, generated once, used every month.
+Live call replay (audio) | Push to Hello Audio via their dashboard. Tag as 'Reset Call replay'.
+Live call replay (video) | Upload as unlisted to YouTube. Embed in the member portal Vault.
+Vault content (video + audio) | Host on Bunny.net Stream (cheaper than Vimeo, no Vimeo branding, £5 to £15/month at this volume). Embed on Strapi pages gated by member role.
+Email automation | Resend (already in build). All Reset Room welcome and ongoing emails fire from here.
+Member portal | Three new Strapi pages: dashboard, Vault, settings. All gated by 'reset-room-member' role. See Section 5 for the dashboard layout.
+[/TABLE]
+
+
+
+## The signup flow, end to end
+This is exactly what happens, from the moment someone clicks 'Join the Reset Room':
+
+Step 1.  User clicks 'Join the Reset Room' on the Reset Room landing page. Routed to Stripe Checkout for £25/month subscription.
+Step 2.  Stripe processes the payment. Webhook fires to the Strapi backend.
+Step 3.  Strapi creates the member account (or activates an existing user) and stamps the role 'reset-room-member'. Generates a unique member ID.
+Step 4.  Strapi sends the member ID to Hello Audio via API. Hello Audio returns a unique private RSS URL for that member.
+Step 5.  Strapi triggers Resend to send Email 6.1 (Welcome). That email includes: the member portal link, the private podcast RSS URL with subscribe buttons for Apple / Spotify / Overcast, the link to the welcome video (Anna's 90-second intro), and the date of the next Reset Call.
+Step 6.  Member is auto-redirected from Stripe Checkout back to the member portal dashboard (/community/reset-room/dashboard), already logged in.
+
+
+## Cancellation flow
+Step 1.  Member clicks 'Manage subscription' in the portal. Routed to Stripe customer portal.
+Step 2.  On cancellation, Stripe webhook fires. Strapi removes the 'reset-room-member' role at the end of the current billing period (not immediately, so they keep access through what they have paid for).
+Step 3.  Hello Audio is notified via API. The member's private RSS URL is deactivated at period end.
+Step 4.  Resend triggers a short 'we're sorry to see you go' email with one optional question (why are you leaving) and a clean unsubscribe.
+
+
+[TABLE]
+Note for Sameer  ·  If Hello Audio's pricing or terms do not work, the equivalent UK-friendly alternatives are Memberful Podcasts and Supercast. Hello Audio is the recommended starting point because their Stripe integration is one-click. Anna to confirm the chosen tool before you begin building.
+[/TABLE]
+
+
+
+# 4. Reset Room landing page — updated copy
+This replaces the Reset Room page copy in ALW_SERVICES_FINAL_Sameer.docx. Build this version.
+
+
+[TABLE]
+URL | annalouwellness.com/community/reset-room
+SEO page title | The Reset Room | Monthly Somatic Membership | Anna Lou Wellness
+SEO meta description | A monthly membership for women rebuilding the relationship with their own inner guidance system. Private podcast, monthly live call, signature journeys vault. £25/month.
+[/TABLE]
+
+
+
+## Hero
+The Reset Room.
+Where the work moves from podcast to practice.
+
+
+## Body — opening
+The Reset Letters are the front door. The Reset Room is the room behind it.
+This is where the work stops being something you read and starts being something you practice. A members-only podcast, a monthly live call with me, and a growing vault of guided journeys. All for £25 a month. No minimum term. Cancel any time.
+
+
+## Body — three pillars (visual block)
+
+[TABLE]
+Note for Sameer  ·  On the page, build this as three stacked editorial cards on mobile, three columns on desktop. Each card has a short headline, two to three lines of body, and a soft icon or illustration. Use brand colours: Pillar 1 cream, Pillar 2 pink, Pillar 3 blue. Replicate the OOOM visual rhythm but in Anna's brand palette and typography.
+[/TABLE]
+
+
+One. Reset Room Sessions  ·  the private podcast.
+A members-only podcast. Two new episodes a month, the conversations that do not belong on the public feed. Listen where you already listen.
+
+Two. The Reset Call  ·  the monthly live.
+Ninety minutes with me, live on Zoom, first Thursday of every month. Bring your questions, sit with the group, leave with what you came for. Replay sent the next day.
+
+Three. The Reset Vault  ·  the signature journeys.
+A growing library of guided somatic journeys. Music, breath, visualisation, embodiment. New piece every month. Where insight becomes the actual life.
+
+
+## Body — also included
+  - Workshop replays, every workshop I have ever run, free for you inside.
+  - Forty-eight hour members-only window on every new retreat before it goes public.
+  - Ten percent off all 1:1 Reset Sessions and One Day intensives.
+  - Members-only events that never go on the public calendar.
+
+
+## Body — who it is for
+The Reset Room is for the woman who has been reading the Reset Letters, listening to the podcast, doing the work on her own, and is ready for something that holds her more closely. Not therapy. Not a course. A room.
+
+
+## Body — price and close
+£25 a month. No minimum term. Cancel any time. Everything you need is delivered through the podcast player you already use and the member portal you can come back to whenever you want.
+
+
+## CTA
+Join the Reset Room → Stripe checkout
+
+
+# 5. The member portal — dashboard layout
+After login, members land here. Build it as a clean editorial dashboard, not a SaaS UI. Cream background, brand black text, plenty of white space.
+
+
+[TABLE]
+URL | annalouwellness.com/community/reset-room/dashboard
+Access | Logged-in users with role 'reset-room-member' only. Non-members redirected to the landing page.
+[/TABLE]
+
+
+
+## Layout — top to bottom
+
+### Block 1  ·  Welcome strip
+Welcome back, [first name]. Member since [month, year].
+(Small. Cream background. Italic Garamond. Sets the tone, no big banner.)
+
+
+### Block 2  ·  Next live Reset Call
+Next Reset Call  ·  Thursday [date], 7.30pm UK
+Big card, brand pink background, white text. Add to calendar button (.ics download) and Join the call button (Zoom link, only live for 30 minutes either side of the call time).
+
+
+### Block 3  ·  The three pillars, as a row
+Three cards in a row (one column on mobile):
+  - 'Reset Room Sessions' card. Cover art, latest two episodes listed with play buttons inline. 'Subscribe in your podcast player' button that reveals Apple / Spotify / Overcast / generic RSS options.
+  - 'The Reset Call' card. Next call date, plus 'Watch the last replay' button (links to the most recent in the Vault).
+  - 'The Reset Vault' card. Latest journey featured, plus 'Browse the Vault' button.
+
+
+### Block 4  ·  Where to start
+For new members in their first 30 days only. After 30 days, this block hides automatically.
+  - Watch the welcome video (90 seconds from Anna)
+  - Take the orientation tour (5-minute video walking through the room)
+  - Listen to the founding episode: 'Signal Scrambled, and How to Read It'
+  - Do your first journey: 'Coming Back Online' (12 minutes)
+
+
+### Block 5  ·  The Vault preview
+Grid of six tiles showing the most recent six pieces in the Vault. Cover art, title, length, and a small icon showing whether it is audio, video, or both. Click through to '/community/reset-room/vault'.
+
+
+### Block 6  ·  Workshop replays
+Grid of the most recent four workshop replays, with cover art, title, length. Click through to '/community/reset-room/workshops'.
+
+
+### Block 7  ·  Member benefits
+Three small cards at the foot of the page:
+  - '10% off all 1:1 work' with a Use member discount link to the Reset Sessions and One Day pages.
+  - 'Retreat early access' with a See upcoming retreats link.
+  - 'Members-only events' with a See the next event link.
+
+
+### Block 8  ·  Footer
+  - Manage subscription (Stripe customer portal)
+  - Account settings (email, name, password)
+  - Get support (mailto:hello@annalouwellness.com)
+
+
+# 6. The Reset Vault — founding roster
+The Vault launches with seven founding pieces. Anna will record these in the order below. Each one needs a cover image (Anna will provide via the designer), an audio file, and a video file (audio version is the same recording with a still background or simple visual). Subtitles auto-generated.
+
+
+[TABLE]
+Piece | Length | What it is
+Coming Back Online | 12 min | The founding journey. A guided somatic reset for the woman whose signal system is scrambled. Recommended as the first piece every new member does.
+The Three Mantras | 8 min | Anna's three core mantras, recorded with breath spacing and music. Replaces the public YouTube version that has been pending. Lives here, not on YouTube.
+The Body That Has Been Holding It | 18 min | A longer somatic release for the woman who has been functioning beautifully and quietly running on empty.
+The Decision Audit | 15 min | A signature journey for the woman holding a decision she cannot put down. Founder Reset in audio form.
+The Returning | 20 min | A coming-home practice. For evenings, for re-entry after a hard day, for the moments when the world has been loud.
+The Pattern Underneath | 16 min | A journey for the woman who has noticed the same pattern in relationships, work, or in herself. Adjacent to the Dating Reset.
+The Houseboat Reset | 10 min | The shortest piece. A founding signature recorded on the boat. The Reset Room's heartbeat.
+[/TABLE]
+
+
+
+[TABLE]
+Note for Sameer  ·  Anna will record the founding seven before launch. Build the Vault page as a grid of seven cards on day one. Add a 'New journey lands [date of next drop]' line at the top to set the expectation of monthly additions.
+[/TABLE]
+
+
+
+# 7. Updated Reset Room welcome emails — replaces Sequence 6
+This is the full updated welcome flow. It supersedes Sequence 6 in ALW_EMAIL_AUTOMATIONS_FINAL_Sameer.docx. Build these in Resend.
+
+
+## Email 6.1 — Welcome to The Reset Room
+
+[TABLE]
+Trigger | Stripe webhook: Reset Room subscription created (£25/month)
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Welcome to The Reset Room
+Preheader | Your private podcast feed, your welcome video, and the date of the next live call.
+Send | Immediately on subscription
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Welcome to The Reset Room. I am genuinely glad you are here. |  | Below is everything you need to start. A 90-second welcome video from me, your private podcast link, and the date of the next live call. There is no overwhelm here. Take it slowly. |  | Watch the welcome video (90 seconds) |  | Set up your private podcast feed.  This is where most of the work lives. Click below and pick the podcast player you already use. Two new intimate episodes drop a month, and the monthly Reset Call replay lands here the day after. | Subscribe in Apple Podcasts | Subscribe in Spotify | Subscribe in Overcast | Or copy your private RSS link |  | Mark your calendar.  The next live Reset Call is on Thursday [date], 7.30pm UK. The Zoom link arrives the day before. If you cannot make it live, the replay drops to your private podcast within 24 hours. | Add the Reset Call to your calendar |  | Visit your member portal.  This is where the Vault lives and where everything is one click away. | Go to your member portal |  | That is plenty for now. I will be in your inbox again in three days with a small map of where to start inside the room. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 6.2 — A small map of where to start
+
+[TABLE]
+Trigger | Three days after Email 6.1
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | A small map of where to start in the Reset Room
+Preheader | A 5-minute orientation tour, plus three things to do this week.
+Send | Three days after subscription
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | It is Anna. A small note three days in. |  | Members often tell me the same thing in their first week. The Vault is full, the podcast is queued, and they do not know where to start. So here is the map. |  | First, watch the orientation video (5 minutes).  I walk you through every part of the room, what each thing is for, and the order I would do it in if I were you. | Watch the orientation tour |  | Then, this week, in this order: |  | One.  Listen to the founding episode in the private podcast, 'Signal Scrambled, and How to Read It.' Twelve minutes. It is the thing most members come back to. |  | Two.  Do your first journey in the Vault, 'Coming Back Online.' Twelve minutes, eyes closed, somewhere you will not be interrupted. |  | Three.  Add the next live Reset Call to your diary, even if you cannot be sure you will make it. The live is something else. |  | Go to your member portal |  | That is week one. The room is not going anywhere. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 6.3 — End of first week
+
+[TABLE]
+Trigger | Seven days after Email 6.1
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | How is the first week landing?
+Preheader | A note from me, and the date of your first live call.
+Send | Seven days after subscription
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | A week in. Just saying hello. |  | If you have not made it into the room yet, that is fine. The first month is for finding your shape inside it. Some women dive in. Some come back to it slowly. There is no right way. |  | Your first live Reset Call is on [date]. The Zoom link will arrive the day before. Bring a drink. Sit somewhere you will not be interrupted. There will be other women there doing exactly the same. |  | If anything is not working, reply to this email. It comes straight to me. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 6.4 — Monthly cadence email (sent every month)
+Not part of the onboarding flow but worth setting up now: a monthly 'what's new this month' email that goes to every active Reset Room member on the 1st of each month.
+
+
+[TABLE]
+Trigger | First day of every month, sent to all active Reset Room members
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | This month in the Reset Room  ·  [Month]
+Preheader | The new journey, the date of the call, and what to listen to first.
+Send | 1st of every month, 9am UK
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | A new month in the room. |  | This month's new journey in the Vault.  '[Journey name]', [length] minutes. [One-line description.] | Listen now |  | This month's Reset Call.  Thursday [date], 7.30pm UK. The theme is [theme]. Send questions ahead to hello@annalouwellness.com if you cannot be there live. | Add to calendar |  | Latest in the private podcast.  '[Episode title]' dropped on the [date]. [One-line description.] | Open in your podcast player |  | And one more thing.  [Anna's note for the month, written fresh each time, two or three sentences. Often previews what is coming, or names a theme she is sitting with.] |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# 8. The two short videos Anna needs to record
+These are the two videos referenced in Emails 6.1 and 6.2 and on the member portal dashboard. Anna records both before launch. Outlines below.
+
+
+## Video 1  ·  Welcome to the Reset Room (90 seconds)
+Where it appears.  Embedded in Email 6.1. Also on the member portal dashboard, Block 4, for first 30 days.
+
+Outline.
+  - 0-15s. Anna to camera, warmly. 'Hello and welcome to the Reset Room. I'm so glad you are here.'
+  - 15-45s. The one-line frame. 'The Reset Letters are the front door. This is the room behind it. This is where the work moves from podcast to practice.'
+  - 45-75s. The three pillars, named quickly. 'The private podcast is where most of the work lives. The Reset Call is once a month, live, on Zoom. The Vault is the library of journeys you can come back to whenever you need.'
+  - 75-90s. Close. 'Take it slowly. There is no overwhelm here. I will see you on the first call.'
+
+Setting.  Houseboat at Hampton. Natural light. Wordmark visible if comfortable. Sit in front of a soft background. No script reading, please. Bullet points only.
+
+
+## Video 2  ·  Orientation tour (5 minutes)
+Where it appears.  Embedded in Email 6.2. Also on the member portal dashboard, Block 4, for first 30 days.
+
+Outline.
+  - 0-30s. Anna to camera. 'A short tour of the room.'
+  - 30s-1m30s. Screenshare of the member portal dashboard. Walk through each block top to bottom. Welcome strip, next call, three pillars, where to start, vault preview, workshops, benefits, footer.
+  - 1m30-2m30. Open the Vault page. Walk through one journey from clicking through to playing. Show that it is one-click.
+  - 2m30-3m30. Open the private podcast subscribe screen. Show the three buttons (Apple, Spotify, Overcast). Mention the RSS link for everything else.
+  - 3m30-4m30. Cut back to Anna in person. 'The most important thing I can tell you is that the room rewards the slow approach. Find one journey, one episode, the next live call, and start there. The rest is here when you want it.'
+  - 4m30-5m. Close. 'See you in the room.'
+
+Setting.  Same as Video 1 for the in-person sections. Screenshare for the portal walk-through. Anna's voice over the screenshare.
+
+
+# 9. Closing checklist for Sameer
+Before The Reset Room can go live, please confirm each of the following:
+
+  - Stripe £25/month subscription product created and tested end-to-end (purchase, cancellation, reactivation).
+  - Strapi user role 'reset-room-member' created with correct page-level access controls.
+  - Stripe webhook routes to Strapi correctly on subscription created, updated, and cancelled.
+  - Hello Audio account set up, Stripe integration connected, unique private RSS feed generation tested for a test user.
+  - Zoom recurring meeting link generated for the monthly Reset Call. First call date locked in the calendar.
+  - Bunny.net Stream (or chosen alternative) account set up for Vault video hosting. Test upload and embed working.
+  - Member portal pages built: dashboard, Vault, workshops, settings. All gated by 'reset-room-member' role. Non-members redirected to the landing page.
+  - Reset Room landing page built from the copy in Section 4 of this document. SEO title and meta description applied.
+  - Welcome video and orientation video uploaded and embedded in Email 6.1, Email 6.2, and the dashboard Block 4.
+  - All four emails set up in Resend with the correct triggers, send timing, and branded layout.
+  - The seven founding Vault pieces uploaded and live on day one.
+  - Stripe customer portal connected to the 'Manage subscription' link in the dashboard footer.
+  - Cancellation flow tested: role removed at period end, Hello Audio RSS deactivated at period end, win-back email triggered.
+  - Monthly cadence email (Sequence 6.4) scheduled to send on the 1st of every month.
+
+Beautifully Whole.
+
+================================================================================
+FILE: ALW_SERVICES_FINAL_Sameer.docx
+================================================================================
+
+ANNA LOU WELLNESS
+Services and Pages
+Beautifully Whole.
+Prepared for Sameer, Xceed Imagination
+Version FINAL  ·  13 May 2026
+
+
+# Master instructions — read first
+This document is the source of truth for every services page on the new annalouwellness.com site. Use the text in this document as the copy for the relevant pages. Where a page already exists in Volume 3 of the blog content package, this document confirms it and supersedes any earlier version.
+
+
+## Brand rules across every page
+  - No em-dashes or en-dashes anywhere. Use commas, full stops, semicolons, parentheses, or restructure the sentence. Hyphens inside compound words (post-traumatic, trauma-informed) are fine.
+  - No crown monogram on the website. The logo is a typed wordmark on a single horizontal line: ANNA LOU WELLNESS.
+  - Two-layer language. Clinical SEO terms (nervous system regulation, somatic coaching, trauma-informed) appear only in page titles and meta descriptions. In all visible body copy, use the brand language: inner world, inner guidance system, signal system, signal scrambled, signal back online.
+  - Post-traumatic GROWTH framing. Active verbs, forward momentum, what the reader can do and build. Never victim framing (survived, trapped, broken, damaged).
+  - Cup of Jo simplicity. Generous white space, story-first, no commerce pressure on editorial sections, pricing only on the relevant programme or membership page.
+  - Sentence case in body. Never ALL CAPS in copy. Centred titles get letter-spacing 25 or 50 per the brand guidelines.
+
+
+## What is retired from the site
+  - All Sparkle language. Sparkle Mastery, Sparkle Club, Find Your Sparkle, Reclaim Your Sparkle, Level Up and Sparkle. None of these appear on the new site.
+  - Crystal Clear Collective, Crystal Vortex, 10x growth, Zen Hustler, Zen hustling. Retired.
+  - The free engraved silver necklace as a membership hook. Retired.
+  - Personalised Jewellery Business Mentorship (£1,750). Moved to annalouoflondon.com. Do not build a page for this on annalouwellness.com.
+  - Crystal Wellbeing Gatherings for teens (£1,400). Moved to annalouoflondon.com.
+  - Crystal Magic Party for children. Moved to annalouoflondon.com.
+
+
+## What is on the new site
+The full services list, mapped to the sitemap sections:
+
+
+[TABLE]
+Section | Offer | Price
+Free | The Nervous System Decoder | Free
+The Work | The Reset (6-week 1:1) | £1,500
+The Work | Signal (12-week 1:1) | £3,000
+The Work | Signal & Build (12-week 1:1) | £3,000
+The Work | One Day (intensive) | Enquire
+The Work | The Signal Collective (mastermind) | Enquire
+The Work | 1:1 Reset Session (single) | £200
+The Work | Founder Reset (single) | £200
+The Work | Dating Reset (single) | £200
+The Work | Nervous System Reset (single) | £200
+Experiences | Workshop, full access | £200
+Experiences | Workshop, summary access | £15
+Experiences | Retreats (e.g. Align and Amplify) | From £350
+Experiences | Corporate Wellbeing | Enquire
+Experiences | Speaking | Enquire
+Community | The Reset Room (membership) | £25/month
+Community | The Returning Circle | Donation
+[/TABLE]
+
+
+
+[TABLE]
+Note for Sameer  ·  Single 1:1 Reset Sessions are priced at £200 for a single session, with the option to roll into a 6-week or 12-week container after the first session. Anna to confirm final single-session price before launch.
+[/TABLE]
+
+
+
+# The Work — coaching
+Top nav item: The Work. This is the entire coaching section.
+
+
+## 1. The Work hub — Ways to Work With Me
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work | SEO page title  ·  Somatic Coaching London | 1:1 Trauma-Informed Coaching | Anna Lou Wellness | SEO meta description  ·  1:1 somatic coaching for women rebuilding from inside out. Trauma-informed, nervous-system led. Book a free discovery call with Anna in London.
+[/TABLE]
+
+
+
+### Hero
+Ways to work with me.
+There is a moment, usually quiet, where you realise the version of yourself you have been performing is not the one you want to live as. That is the moment my work begins.
+
+
+### Body — opening paragraph
+Most people do not come to me because something has fallen apart. They come because they have been holding it together for a very long time, and the holding has started to cost something. The job still functions. The relationship still functions. The body, the sleep, the patience, the joy, those are the parts that have gone quiet. We are going to bring them back online.
+
+
+### Body — the ladder
+There are four ways to work with me. They are designed to meet you where you are.
+
+Start free.  The Nervous System Decoder is a free guide that helps you read your own signal system. It is the starting point for most people.
+Start small.  A single 1:1 Reset Session, 90 minutes, one focused theme. Founder Reset, Dating Reset, or Nervous System Reset.
+Go deeper.  A 1:1 container. The Reset (6 weeks) or Signal (12 weeks). For founders building alongside the inner work, Signal & Build.
+Go further.  One Day, a full-day private intensive. Or The Signal Collective, a group mastermind for the women who want this work in community.
+
+
+### Body — closing
+If you are not sure which is right for you, take the quiz. Five questions. It will point you toward the right starting place.
+
+
+### CTAs
+  - Take the quiz → /the-work/quiz
+  - Book a free discovery call → /the-work/discovery
+  - Browse client stories → /the-work/client-stories
+
+
+## 2. What Do You Need Right Now? — the quiz
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/quiz | SEO page title  ·  Which Coaching Programme Is Right For Me? | Coaching Quiz | Anna Lou Wellness | SEO meta description  ·  Five questions to help you choose between The Reset, Signal, Signal & Build, One Day, or the Reset Room membership. Free, takes two minutes.
+[/TABLE]
+
+
+
+[TABLE]
+Note for Sameer  ·  Full quiz copy lives in Volume 3 under 'The coaching quiz — your starting point in five questions.' Use that copy unchanged. The quiz routes to a recommendation page that suggests The Reset, Signal, Signal & Build, One Day, the Reset Room, or the Nervous System Decoder based on the answers.
+[/TABLE]
+
+
+
+## 3. Client Stories
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/client-stories | SEO page title  ·  Client Stories | Somatic Coaching Reviews | Anna Lou Wellness | SEO meta description  ·  Real stories from women who have worked with Anna. Editorial, not testimonial wall. Read how the work landed for them.
+[/TABLE]
+
+
+
+### Hero
+Client stories.
+The work changes shape for every person who walks through it. These are the women who said yes to themselves, and what came next.
+
+
+### Body
+Editorial layout, not a wall of quotes. Each story is presented as a short feature: a photograph, a name and first name only, the version of themselves they were when they arrived, the version they built, and one line that holds it together. Stories are written in their voice, not Anna's. The page reads as a magazine spread, not a sales page.
+
+
+[TABLE]
+Note for Sameer  ·  Client Stories use first names only and require written consent before publishing. Anna will provide the stories one at a time as she gathers them. For launch, build the template and seed with three placeholder stories. Anna will replace with real ones as they are written.
+[/TABLE]
+
+
+
+## 4. The Reset — 6-week 1:1
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/the-reset | SEO page title  ·  The Reset | 6-Week 1:1 Somatic Coaching Programme | Anna Lou Wellness | SEO meta description  ·  Six weeks of 1:1 somatic coaching with Anna Lou. Nervous-system led, trauma-informed, designed to bring your signal system back online. £1,500.
+[/TABLE]
+
+
+
+### Hero
+The Reset.
+Six weeks. One-to-one. Signal back online.
+
+
+### Body — opening
+Six weeks is enough time for something to shift. Not enough time to overhaul a life, and that is the point. The Reset is the entry-point container. It is for the woman who knows her signal system is scrambled and wants to get it back online before she does anything else.
+
+
+### Body — what it is
+  - Six 1:1 sessions, weekly, 60 minutes each.
+  - Voxer support between sessions, Tuesday to Thursday, for the questions that come up in real time.
+  - A starting audit of your inner world, what is online, what has gone quiet, what is overactive.
+  - Tools that fit your actual life, not generic protocols.
+  - A clear close at week six. Many clients roll into Signal. Many do not need to.
+
+
+### Body — who it is for
+The woman who has been functioning beautifully on the outside and quietly running on empty on the inside. The founder, the mother, the partner, the friend who is always the strong one. The one who wants the inner work without it taking over the rest of her life.
+
+
+### Body — investment
+£1,500. Paid in full at booking, or two instalments of £750 across the six weeks.
+
+
+### CTA
+Book a discovery call → /the-work/discovery
+
+
+## 5. Signal — 12-week 1:1
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/signal | SEO page title  ·  Signal | 12-Week 1:1 Somatic Coaching | Trauma-Informed | Anna Lou Wellness | SEO meta description  ·  Twelve weeks of 1:1 somatic coaching with Anna Lou. Deeper container for women rebuilding the relationship with their own inner guidance system. £3,000.
+[/TABLE]
+
+
+
+### Hero
+Signal.
+Twelve weeks. One-to-one. The deeper container.
+
+
+### Body — opening
+Signal is what happens when you know six weeks is not enough. The work is the same shape as The Reset, the depth is different. Twelve weeks gives us room to rebuild the relationship between you and your inner world from the ground up, and to integrate the changes into your real life as they happen.
+
+
+### Body — what it is
+  - Twelve 1:1 sessions, weekly, 60 minutes each.
+  - Voxer support between sessions, Tuesday to Thursday.
+  - A full audit of your inner world at the start, a midpoint review at week six, a closing integration at week twelve.
+  - Modalities drawn from the way Anna works: somatic enquiry, IFS, Brainspotting, Flash EMDR, TRE, breathwork, pendulum. Used where they fit, never imposed.
+  - Optional in-person session at the Hampton studio for clients in London.
+
+
+### Body — who it is for
+The woman who has done some of this work before and knows the difference between scratching the surface and going underneath it. The woman who is in a meaningful life transition, divorce, recovery, a career pivot, the end of one chapter and the start of another, and wants to walk through it with someone holding the shape of it with her.
+
+
+### Body — investment
+£3,000. Paid in full at booking, or three instalments of £1,000 across the twelve weeks.
+
+
+### CTA
+Book a discovery call → /the-work/discovery
+
+
+## 6. Signal & Build — 12-week 1:1 for founders
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/signal-and-build | SEO page title  ·  Signal & Build | 12-Week 1:1 Coaching for Founders | Anna Lou Wellness | SEO meta description  ·  Twelve weeks of 1:1 coaching for founders and leaders. The inner work and the business strategy held together. Nervous-system led. £3,000.
+[/TABLE]
+
+
+
+### Hero
+Signal & Build.
+Twelve weeks. The inner work and the business, held together.
+
+
+### Body — opening
+Signal & Build is Signal with a business layer. It is for the founder, the creative, the leader who knows that the bottleneck in the business is the bottleneck in the founder. We work on both at the same time, because they are the same conversation.
+
+
+### Body — what it is
+  - Everything in Signal: twelve 1:1 sessions, Voxer support, full inner-world audit.
+  - Plus business strategy sessions interleaved with the inner work. Pricing, positioning, capacity, decision-making, team, founder energy.
+  - Drawn from twenty years of building Anna Lou of London across Harrods, Selfridges, Liberty, Harvey Nichols, Isetan and Henri Bendel. The strategy is real, not theoretical.
+  - Voxer access widened to include the in-the-moment business questions: a pricing decision, a hire, a difficult email.
+
+
+### Body — who it is for
+The founder who has built something real and is now navigating the next chapter of it. The one who knows her capacity is the actual constraint, not her strategy. The one who wants the somatic work and the business work in the same room, with someone who has lived both.
+
+
+### Body — investment
+£3,000. Paid in full at booking, or three instalments of £1,000 across the twelve weeks.
+
+
+### CTA
+Book a discovery call → /the-work/discovery
+
+
+## 7. One Day — private intensive
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/one-day | SEO page title  ·  One Day | Private Somatic Coaching Intensive | Anna Lou Wellness | SEO meta description  ·  A full day of private 1:1 somatic coaching with Anna Lou. For the woman who needs everything in one held container. Hampton studio or virtual.
+[/TABLE]
+
+
+
+### Hero
+One Day.
+A full day. Held, focused, finished.
+
+
+### Body — opening
+One Day is for the woman who does not have twelve weeks. The one who is at the edge of a decision, the edge of a chapter, the edge of a version of herself she is ready to leave. We sit down, we go all the way in, and we finish the day with the work done.
+
+
+### Body — what it is
+  - A full day, 10am to 5pm, with breaks. In person at the Hampton studio, or virtual.
+  - A pre-day intake form and a 30-minute scoping call the week before.
+  - The day itself: nervous-system work, somatic enquiry, decision mapping, integration.
+  - Lunch and refreshments included if in person.
+  - A 60-minute integration call two weeks later.
+
+
+### Body — who it is for
+The woman at a turning point. The one who needs depth without a long timeline. Founders before a launch, mothers before a return to work, women in the early weeks of a separation, anyone holding a decision they cannot put down.
+
+
+### Body — investment
+By enquiry. Each One Day is shaped around the person it is for.
+
+
+### CTA
+Enquire about One Day → /the-work/one-day#enquire
+
+
+## 8. The Signal Collective — mastermind
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/signal-collective | SEO page title  ·  The Signal Collective | Somatic Coaching Mastermind for Women | Anna Lou Wellness | SEO meta description  ·  A small-group mastermind for women doing the inner work alongside building real lives and real businesses. Six months, 1:1 plus community.
+[/TABLE]
+
+
+
+### Hero
+The Signal Collective.
+The inner work, in community. Six months.
+
+
+### Body — opening
+The Signal Collective is for the women who want this work in a room with other women doing it too. It is not a course. It is a six-month container, small group, that holds the inner work, the business work, and the relationships between the women in it.
+
+
+### Body — what it is
+  - Six months. Twelve women maximum, by application.
+  - Two group calls a month, 90 minutes each. One teaching, one open.
+  - A monthly 1:1 with Anna, 60 minutes.
+  - A private group space, off social media.
+  - Two in-person days at the Hampton studio, one at the start, one at the close.
+  - Guest sessions from practitioners Anna trusts.
+
+
+### Body — who it is for
+Women who have done some of this work, who are running real lives and often real businesses, and who want depth and community at the same time. The women who are tired of doing it alone.
+
+
+### Body — investment
+By enquiry. Application form, then a discovery call.
+
+
+### CTA
+Apply for The Signal Collective → /the-work/signal-collective#apply
+
+
+## 9. 1:1 Reset Sessions — single sessions
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/sessions | SEO page title  ·  1:1 Reset Sessions | Single Somatic Coaching Sessions | Anna Lou Wellness | SEO meta description  ·  Single 1:1 sessions with Anna Lou. Founder Reset, Dating Reset, Nervous System Reset. Ninety minutes, one focused theme. £200.
+[/TABLE]
+
+
+
+### Hero
+1:1 Reset Sessions.
+Ninety minutes. One theme. A clear next step.
+
+
+### Body — opening
+Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation.
+
+
+### Body — three sessions to choose from
+Founder Reset  ·  for the founder at a sticking point in the business or in herself.
+Dating Reset  ·  for the woman noticing the same pattern showing up again.
+Nervous System Reset  ·  for the woman whose signal system is scrambled and needs bringing back online.
+
+
+### Body — what each session includes
+  - 90 minutes, virtual, with Anna.
+  - A short intake form sent on booking.
+  - A written summary after the session with the next steps you agreed.
+  - Option to roll into a 6-week or 12-week container if it feels right.
+
+
+### Body — investment
+£200 per session.
+
+
+### CTA
+Book a Reset Session → /the-work/sessions#book
+
+
+## 10. Founder Reset
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/sessions/founder-reset | SEO page title  ·  Founder Reset | 1:1 Coaching Session for Founders | Anna Lou Wellness | SEO meta description  ·  Ninety minutes with Anna Lou for the founder at a sticking point. The inner work and the business question, held together. £200.
+[/TABLE]
+
+
+
+### Hero
+10. Founder Reset.
+Ninety minutes. The founder, the bottleneck, and what to do about it.
+
+
+### Body — opening
+Most founder problems are not strategy problems. They are capacity problems wearing strategy clothes. A Founder Reset is the session where we work out which one yours is, and we move it.
+
+
+### Body — who it is for
+The founder who is stuck on a decision and cannot tell whether it is the decision that is hard, or her relationship with the decision. The founder who keeps almost making the move and almost is not making it. The founder running on a version of herself she has outgrown.
+
+
+### Body — what you get
+  - 90 minutes with Anna, virtual.
+  - A short intake form sent on booking, with the questions that help us go straight to the work.
+  - A written summary after the session with the next steps.
+  - £200, paid at booking.
+
+
+### CTA
+Book a 10. Founder Reset → /the-work/sessions/founder-reset#book
+
+
+## 11. Dating Reset
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/sessions/dating-reset | SEO page title  ·  Dating Reset | 1:1 Coaching Session After Divorce or Heartbreak | Anna Lou Wellness | SEO meta description  ·  Ninety minutes with Anna Lou for the woman noticing the same pattern. Trauma-informed, somatic, honest. £200.
+[/TABLE]
+
+
+
+### Hero
+11. Dating Reset.
+Ninety minutes. The pattern, the person, and what is underneath it.
+
+
+### Body — opening
+Dating Reset is for the woman who has noticed the same pattern showing up again and is ready to ask why. We do not do dating tips. We do the underneath. The patterns, the attachment shape, the unfinished business with the version of love you grew up with.
+
+
+### Body — who it is for
+The woman post-divorce, post-breakup, or post-realisation that the relationship she is in is not the relationship she wants. The woman dating after domestic abuse. The woman who is good at choosing the wrong person and ready to be good at choosing differently.
+
+
+### Body — what you get
+  - 90 minutes with Anna, virtual.
+  - A short intake form sent on booking, with the questions that help us go straight to the work.
+  - A written summary after the session with the next steps.
+  - £200, paid at booking.
+
+
+### CTA
+Book a 11. Dating Reset → /the-work/sessions/dating-reset#book
+
+
+## 12. Nervous System Reset
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/sessions/nervous-system-reset | SEO page title  ·  Nervous System Reset | 1:1 Somatic Coaching Session | Anna Lou Wellness | SEO meta description  ·  Ninety minutes with Anna Lou for the woman whose signal system is scrambled. Somatic, nervous-system led, trauma-informed. £200.
+[/TABLE]
+
+
+
+### Hero
+12. Nervous System Reset.
+Ninety minutes. The signal system, scrambled. Coming back online.
+
+
+### Body — opening
+Nervous System Reset is for the woman whose body has been holding the line for a long time and has started to lose the signal. We do not talk it out. We work with what is happening in the body, gently and slowly, and we bring the signal back online.
+
+
+### Body — who it is for
+The woman who is tired in a way sleep does not fix. The woman whose body is telling her something she cannot quite read. The woman who is high-functioning on the outside and dysregulated on the inside, and ready to do something about it.
+
+
+### Body — what you get
+  - 90 minutes with Anna, virtual.
+  - A short intake form sent on booking, with the questions that help us go straight to the work.
+  - A written summary after the session with the next steps.
+  - £200, paid at booking.
+
+
+### CTA
+Book a 12. Nervous System Reset → /the-work/sessions/nervous-system-reset#book
+
+
+## 13. Recovery coaching — Untangle, Unbind, Unbound
+
+[TABLE]
+URL  ·  annalouwellness.com/the-work/recovery | SEO page title  ·  Narcissistic Abuse Recovery Coaching | Somatic Trauma-Informed | Anna Lou Wellness | SEO meta description  ·  Three-stage recovery coaching for women rebuilding after narcissistic and domestic abuse. Untangle, Unbind, Unbound. Trauma-informed and somatic.
+[/TABLE]
+
+
+
+[TABLE]
+Note for Sameer  ·  Full page copy lives in Volume 3 under 'COACHING — NARCISSISTIC & DOMESTIC ABUSE RECOVERY.' Use that copy unchanged. Includes the Untangle / Unbind / Unbound stages and the £60/week phone support option. Sits inside The Work.
+[/TABLE]
+
+
+
+# Experiences
+Top nav item: Experiences. Retreats, Workshops, Corporate Wellbeing, Speaking.
+
+
+## 14. Experiences hub
+
+[TABLE]
+URL  ·  annalouwellness.com/experiences | SEO page title  ·  Wellness Retreats, Workshops & Corporate Wellbeing | Anna Lou Wellness | SEO meta description  ·  Retreats in the South Downs, workshops in London, corporate wellbeing days, and speaking engagements with Anna Lou. Browse upcoming experiences.
+[/TABLE]
+
+
+
+### Hero
+Experiences.
+The work, in a room. Or a forest. Or a boardroom.
+
+
+### Body — opening
+There are seasons in this work that ask for a quiet 1:1 conversation. There are also seasons that ask for a room of women, a long table, a fire, a forest, a sound bath. This is the section for the second kind.
+
+
+### Body — four ways
+Retreats  ·  day retreats and overnights in the South Downs and on the houseboat.
+Workshops  ·  live workshops, attended in person or over Zoom, with replay access.
+Corporate Wellbeing  ·  days and half-days for teams, in your space or ours.
+Speaking  ·  keynotes, panels, Q&As, in person and online.
+
+
+## 15. Retreats hub
+
+[TABLE]
+URL  ·  annalouwellness.com/experiences/retreats | SEO page title  ·  Wellness Retreats in the South Downs | Day Retreats Petworth | Anna Lou Wellness | SEO meta description  ·  Day retreats and overnights with Anna Lou. Somatic coaching, sound bath, yin yoga, forest bathing, intentional jewellery. Petworth, West Sussex.
+[/TABLE]
+
+
+
+### Hero
+Retreats.
+A day. A doorway. A different version of yourself, by the time the sun goes down.
+
+
+### Body — opening
+The retreats are days designed to take you out of the version of your life that is too busy to hear itself, and put you somewhere that the signal can come back. South Downs National Park, a private setting, ten women at most. Yin yoga, breathwork, somatic coaching, sound bath, forest bathing, a slow nourishing lunch, an option to design a piece of intentional jewellery to take home.
+
+
+### Body — current and upcoming retreats
+Each retreat has its own page. Build a card layout with date, location, theme, price, and a button through to the single retreat page. Anna will provide the schedule of dates for launch.
+
+
+[TABLE]
+Note for Sameer  ·  Retreats are being brought across from annalouoflondon.com under the new ALW brand. The previous names (Find Your Sparkle, Crystal Healing and Yoga Day Retreat) are retired. New retreat names follow the brand structure, e.g. Align and Amplify, Signal Day, Houseboat Reset. Anna will provide the final retreat names and dates before launch.
+[/TABLE]
+
+
+
+## 16. Retreat single page — template
+
+[TABLE]
+URL  ·  annalouwellness.com/experiences/retreats/[retreat-name] | SEO page title  ·  [Retreat name] | [Date] | South Downs Wellness Retreat | Anna Lou Wellness | SEO meta description  ·  [One-sentence description of the retreat, what it includes, who it is for]. Petworth, West Sussex. Limited to ten women.
+[/TABLE]
+
+
+
+### Hero
+[Retreat name].
+[One-line tagline. Example: A day to bring the signal back.]
+[Date]  ·  [Location]  ·  [Group size]  ·  [Price]
+
+
+### Body — the day
+A long-form, story-led description of the day. Written in Anna's voice. Not a list. Reads like a magazine feature, with the practicalities woven in. Inline mentions of yin yoga, breathwork, somatic coaching, sound bath, forest bathing, the food, the setting. One photograph or carousel at the top of the section.
+
+
+### Body — schedule
+A clean, simple schedule of the day from arrival to departure. Use the existing schedule from the previous retreats as a starting point, rewritten in brand voice (no Sparkle language).
+
+
+### Body — who it is for
+Two short paragraphs in Anna's voice describing the woman this retreat is for. Use brand language. Post-traumatic GROWTH framing.
+
+
+### Body — what is included
+  - All sessions with Anna across the day.
+  - Yin yoga and breathwork.
+  - Somatic coaching and group reset work.
+  - Sound bath.
+  - Forest bathing or beach walk depending on location.
+  - Nourishing lunch and refreshments throughout.
+  - Optional intentional jewellery design with Anna.
+
+
+### CTA
+Book your place → Stripe checkout
+
+
+## 17. Workshops hub
+
+[TABLE]
+URL  ·  annalouwellness.com/experiences/workshops | SEO page title  ·  Workshops with Anna Lou | Somatic Coaching & Trauma-Informed Group Work | SEO meta description  ·  Live workshops with Anna Lou, attended in person or on Zoom, with replay access. Full session £200, summary access £15. Browse upcoming.
+[/TABLE]
+
+
+
+### Hero
+Workshops.
+Live, focused, in good company.
+
+
+### Body — opening
+The workshops are the work in real time, in a small group, over Zoom or in person. Two ways to attend, full access and summary access. The full session is the live experience, with Anna, with everyone in the room together. The summary is the recording and the written companion, for the women who want the work but cannot make the live.
+
+
+### Body — two ways to attend
+Full access  ·  £200.  Live attendance, replay, the written companion, and a private group thread for the week after the workshop.
+Summary access  ·  £15.  The recording and the written companion, sent within 48 hours of the live workshop.
+
+
+### Body — current and upcoming workshops
+Each workshop has its own page. Build a card layout with date, theme, price tier, and a button through to the single workshop page.
+
+
+## 18. Workshop single page — template
+
+[TABLE]
+URL  ·  annalouwellness.com/experiences/workshops/[workshop-name] | SEO page title  ·  [Workshop name] | Live Workshop with Anna Lou | Anna Lou Wellness | SEO meta description  ·  [Workshop topic in one sentence]. Live with Anna, [date]. Full access £200, summary £15. Trauma-informed, somatic, small group.
+[/TABLE]
+
+
+
+### Hero
+[Workshop name].
+[One-line tagline.]
+[Date]  ·  [Time]  ·  [Format: Zoom or Hampton studio]
+
+
+### Body — what we will do
+A short, story-led description of the workshop in Anna's voice. What we will work with, what you will leave with, how it will feel. Brand language throughout.
+
+
+### Body — who it is for
+A paragraph describing the woman this workshop is for. Specific, not generic.
+
+
+### Body — two ways to attend
+Full access  ·  £200.  Live with Anna, plus replay, written companion, and the private group thread.
+Summary access  ·  £15.  The recording and the written companion, sent within 48 hours.
+
+
+### CTA
+  - Book full access (£200) → Stripe checkout
+  - Buy summary access (£15) → Stripe checkout
+
+
+## 19. Corporate Wellbeing
+
+[TABLE]
+URL  ·  annalouwellness.com/experiences/corporate | SEO page title  ·  Corporate Wellbeing Days London | Somatic Team Workshops | Anna Lou Wellness | SEO meta description  ·  Corporate wellbeing days and half-days for teams. Nervous-system led, trauma-informed, designed for real workplaces. London and remote.
+[/TABLE]
+
+
+
+### Hero
+Corporate Wellbeing.
+The inner work, brought to the workplace.
+
+
+### Body — opening
+Most workplace wellbeing days are an hour of mindfulness on a Tuesday, and a return to the same nervous system on the Wednesday. The days I run are different. They give a team a real, somatic, repeatable set of tools, and they treat the team as adults navigating real lives, not delegates ticking a box.
+
+
+### Body — what is offered
+  - Half-day for a team, in your space or in ours.
+  - Full day, including a deeper somatic and nervous-system arc.
+  - A short series across a quarter for ongoing teams.
+  - Founder and leadership 1:1s as an optional add-on.
+
+
+### Body — themes
+  - Nervous-system regulation in high-pressure roles.
+  - Decision-making under load.
+  - Communication and capacity for teams in growth phases.
+  - Founder energy, sustainability, and burnout prevention.
+
+
+### Body — who has worked with Anna
+Anna has run sessions for founders, creative teams, and leadership groups in London. References available on request.
+
+
+### CTA
+Enquire about a corporate day → /experiences/corporate#enquire
+
+
+## 20. Speaking
+
+[TABLE]
+URL  ·  annalouwellness.com/experiences/speaking | SEO page title  ·  Anna Lou Speaking | Keynotes on Trauma, Nervous System & Founder Resilience | SEO meta description  ·  Book Anna Lou to speak at your event. Keynotes, panels, Q&As, workshops. Online or in person. Topics: somatic resilience, founder wellbeing, recovery.
+[/TABLE]
+
+
+
+[TABLE]
+Note for Sameer  ·  Full page copy lives in Volume 3 under 'WORKSHOPS — SPEAKING.' Use that copy unchanged. Update the URL from /workshops/speaking to /experiences/speaking to match the new sitemap.
+[/TABLE]
+
+
+
+# Community
+Top nav item: Community. The Returning Circle, Membership (The Reset Room), Events Calendar, Resource Library.
+
+
+## 21. The Reset Room — membership
+
+[TABLE]
+URL  ·  annalouwellness.com/community/reset-room | SEO page title  ·  The Reset Room | Monthly Somatic Coaching Membership | Anna Lou Wellness | SEO meta description  ·  Monthly membership with Anna Lou. Live monthly reset call, paid library, member-only workshops, community space. £25/month, cancel anytime.
+[/TABLE]
+
+
+
+[TABLE]
+Note for Sameer  ·  Full page copy lives in Volume 3 under 'COMMUNITY — THE RESET ROOM.' Use that copy unchanged. Add the welcome email automation per the email automations document (Sequence 6).
+[/TABLE]
+
+
+
+### Pricing — confirmed
+£25 per month, paid via Stripe subscription. Cancel anytime, no minimum term.
+
+
+### Member benefits — confirmed list
+  - Access to the full Resource Library (workshop replays, written breakdowns, founder resets, paid Substack archive).
+  - Monthly live group reset call with Anna, 90 minutes.
+  - Members-only events and circle dates.
+  - First access to retreat bookings before public release.
+  - 10% off all 1:1 Reset Sessions and One Day intensives.
+
+
+## 22. The Returning Circle
+
+[TABLE]
+URL  ·  annalouwellness.com/community/returning-circle | SEO page title  ·  The Returning Circle | Weekly Women's Circle | Anna Lou Wellness | SEO meta description  ·  A donation-based weekly women's circle held online and in person at the Hampton houseboat. Open to all women. Replays for Reset Room members.
+[/TABLE]
+
+
+
+### Hero
+The Returning Circle.
+Every week. A circle of women coming home to themselves.
+
+
+### Body — opening
+The Returning Circle is a weekly women's circle, held by Anna, donation-based. It is the heartbeat of the community. We meet on the houseboat at Hampton and on Zoom, every week. There is a short reset to open, a question to sit with, and a circle of women who are doing the work alongside you.
+
+
+### Body — how it runs
+  - Weekly, [day to confirm], 7.30pm to 8.45pm UK.
+  - Hybrid. In person on the houseboat for those who can travel, on Zoom for everyone else.
+  - Donation-based. Pay what feels right when you book.
+  - Replays are kept inside the Reset Room library.
+
+
+### CTA
+RSVP for this week's circle → /community/returning-circle#rsvp
+
+
+# Free resources
+
+## 23. The Nervous System Decoder — free lead magnet
+
+[TABLE]
+URL  ·  annalouwellness.com/free/nervous-system-decoder | SEO page title  ·  Free Nervous System Decoder | Somatic Self-Audit | Anna Lou Wellness | SEO meta description  ·  A free downloadable guide. Read your own signal system in seven questions. Trauma-informed, somatic, written by Anna Lou.
+[/TABLE]
+
+
+
+### Hero
+The Nervous System Decoder.
+Free. Seven questions. Read your own signal system.
+
+
+### Body — opening
+Most women carrying a scrambled signal system do not know they are. They know they are tired. They know they are short-tempered, or numb, or running on caffeine, or sleeping badly. They do not know that the body is sending a signal and the signal is being read wrong.
+
+The Nervous System Decoder is a free guide that walks you through seven questions. By the end you will know which part of your signal system is online, which is overactive, and which has gone quiet. From there you can choose what to do next.
+
+
+### Body — what is inside
+  - A short introduction to the inner guidance system in plain language.
+  - Seven self-audit questions with space to write.
+  - A simple key for reading your own answers.
+  - Three small somatic practices to start with, today.
+  - A suggested next step, gently. No pressure.
+
+
+### CTA
+Send me the free Decoder → email capture form, triggers Sequence 2 in the email automations.
+
+
+# Closing checklist for Sameer
+Please confirm each of the following before design review on the services pages:
+
+  - The Work hub built, with the four-way ladder copy and the three CTAs.
+  - Quiz built from Volume 3 copy, routing to the right recommendation.
+  - Client Stories template built, with three placeholder stories Anna will replace.
+  - The Reset, Signal, Signal & Build, One Day, The Signal Collective — five separate pages, each with the copy in this document.
+  - 1:1 Reset Sessions hub plus three single-session pages: Founder Reset, Dating Reset, Nervous System Reset.
+  - Recovery coaching page built from Volume 3 copy.
+  - Experiences hub plus Retreats hub, retreat single-page template, Workshops hub, workshop single-page template, Corporate Wellbeing, Speaking.
+  - The Reset Room page built from Volume 3 copy, with Stripe subscription set up at £25/month.
+  - The Returning Circle page built with donation-based booking.
+  - The Nervous System Decoder landing page built with email capture and lead magnet delivery.
+  - All Sparkle language removed across the build.
+  - Jewellery mentorship, teen crystal parties, and kids crystal parties confirmed not built on annalouwellness.com.
+  - Two-layer language applied: clinical terms in titles and meta only, brand language in all body copy.
+  - No em-dashes anywhere across the site.
+
+Beautifully Whole.
+
+================================================================================
+FILE: ALW_EMAIL_AUTOMATIONS_FINAL_Sameer.docx
+================================================================================
+
+ANNA LOU WELLNESS
+Email Automations
+Beautifully Whole.
+Prepared for Sameer, Xceed Imagination
+Version FINAL  ·  13 May 2026
+
+
+# Master instructions — read first
+This document is the source of truth for every transactional and welcome email sent from the new annalouwellness.com site. It replaces the five sequences in Volume 3 and adds the new ones for The Reset Room and the paid 1:1 coaching programmes.
+
+
+## Technical setup
+  - All emails sent via Resend, free tier up to 3,000/month.
+  - Triggers fire from the events listed at the top of each sequence. Stripe webhooks for paid offers, form submissions for free opt-ins.
+  - From name on every email: Anna Lou. From email: anna@annalouwellness.com. Reply-to: same.
+  - All emails responsive and mobile-first. The cream background is for visual reference, the live emails should match the brand palette in the Brand Guidelines v1.0.
+
+
+## Branding rules for every email
+  - Header on every email: ANNA LOU WELLNESS wordmark on a single horizontal line. No crown monogram.
+  - Background: warm cream #F5F3EF. Text: brand black #231F20. Accent colour varies by section per the colour-coded navigation (Reset Room cream, The Work pink, Experiences blue, Free resources gold).
+  - Typography: Garamond for editorial body where supported; web-safe fallback Georgia. Headings: Nobel Light where supported; fallback Times New Roman. Buttons: Proxima Nova; fallback Helvetica.
+  - CTAs are buttons, full width on mobile, brand black background with cream text. One primary CTA per email. Secondary links are inline text links underlined.
+  - Footer on every email: small italic line including annalouwellness.com, Instagram, Substack, YouTube, and an unsubscribe link.
+  - Sign-off: Anna x (lowercase x, no full stop).
+  - No em-dashes or en-dashes anywhere in the body copy. Hyphens inside compound words are fine.
+  - Brand language throughout: inner world, inner guidance system, signal system, signal scrambled, signal back online. Clinical terms only in subject lines if absolutely needed for clarity.
+
+
+## The twelve sequences
+  - Sequence 1 — Newsletter welcome (Reset Letters free)
+  - Sequence 2 — Free download delivery (Nervous System Decoder)
+  - Sequence 3 — Post-workshop
+  - Sequence 4 — Discovery call booked
+  - Sequence 5 — Returning Circle RSVP
+  - Sequence 6 — Reset Room membership welcome (£25/month)
+  - Sequence 7 — The Reset welcome (6-week 1:1)
+  - Sequence 8 — Signal welcome (12-week 1:1)
+  - Sequence 9 — Signal & Build welcome (12-week 1:1 founder)
+  - Sequence 10 — One Day welcome (intensive)
+  - Sequence 11 — The Signal Collective welcome (mastermind)
+  - Sequence 12 — 1:1 Reset Session welcome (single 90-min session)
+
+
+# Sequence 1 — Newsletter welcome (Reset Letters free)
+
+[TABLE]
+Trigger | Free Substack sign-up confirmed, or homepage / blog / coaching email form submitted
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | You're in. Here's what to expect.
+Preheader | A short letter, a quiet welcome, and where to start.
+Send | Immediately on opt-in
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Thank you for being here. The Reset Letters are a quiet correspondence I write each week, for the women rebuilding the relationship with their own inner guidance system. They are honest, editorial, and free. |  | Here is what you can expect. | Sunday  ·  a Reset Story. A piece of writing that lands at the start of your week. | Wednesday  ·  the Signal Check. A short prompt, a question, something to sit with. | Friday (paid only)  ·  the ESJ Drop, the new piece of Emotional Support Jewellery and the story it carries. |  | If you would like to go a layer deeper, the paid tier opens the Friday letters, the audio sessions, and the paid archive. There is no rush. The free tier is a real welcome, not a teaser. |  | Where to start, if you want a starting point: the free Nervous System Decoder. Seven questions, written by me, to help you read your own signal system. |  | Send me the free Decoder |  | Welcome. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 2 — Free download delivery (Nervous System Decoder)
+A two-email sequence.
+
+
+## Email 2.1 — Decoder delivery
+
+[TABLE]
+Trigger | Form submission on /free/nervous-system-decoder
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Your Nervous System Decoder is here.
+Preheader | Seven questions. A quiet half hour. The signal coming back online.
+Send | Immediately
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Here it is. The Nervous System Decoder, attached and ready when you are. |  | A small suggestion before you open it. Make yourself a drink. Put your phone in another room. Give yourself half an hour with no one needing you. The questions are simple. The space around them is what does the work. |  | Download the Decoder |  | Take your time. There is no right answer, and there is no rush. |  | I will be in touch in a few days to see how it landed. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 2.2 — Decoder follow-up
+
+[TABLE]
+Trigger | Three days after Email 2.1
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | How did the Decoder land?
+Preheader | A note, a question, and one small next step if you want it.
+Send | Three days after delivery
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | It is Anna. I wanted to check in. |  | The Decoder is a small piece of work that often opens a bigger door. Some women read it and feel relieved that what they are experiencing has a name. Some find one answer they were not expecting. Some put it down and come back to it weeks later. |  | Wherever you are with it, you are in the right place. |  | If anything came up that you want to talk through, the next step is a free discovery call. Twenty minutes, no pressure, just a conversation about what you noticed and what might help. |  | Book a free discovery call |  | Or if you are not ready for that yet, the Reset Letters will keep arriving. Sundays and Wednesdays. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 3 — Post-workshop
+Triggers when someone purchases a workshop. Two-email sequence.
+
+
+## Email 3.1 — Workshop confirmation
+
+[TABLE]
+Trigger | Stripe webhook: workshop purchase (£200 full or £15 summary)
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | You're booked for [workshop name]
+Preheader | Date, link, and what to expect on the day.
+Send | Immediately on purchase
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | You are in. Thank you for booking [workshop name]. |  | Date  ·  [date] | Time  ·  [time, UK] | Where  ·  [Zoom link or Hampton studio address] | Your access  ·  [Full access £200 OR Summary access £15] |  | If you are coming live, the calendar invite is attached. If you are on the summary tier, your recording and written companion will land in your inbox within 48 hours of the live session. |  | A small note. Workshops are small and held with care. Come as you are. There is nothing to prepare. |  | Add to calendar |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 3.2 — Post-workshop
+
+[TABLE]
+Trigger | 24 hours after workshop end time
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Yesterday's workshop, and what comes next
+Preheader | Replay, written companion, and the optional next step.
+Send | 24 hours after workshop
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Yesterday was a beautiful room of women. Thank you for being in it (or for being on the summary tier and being part of it that way). |  | Your replay and the written companion are below. Both will live in your account for ninety days. |  | Watch the replay | Download the written companion |  | If something in the workshop landed and you want to take it further, the Reset Room is the next door. Live monthly reset call, the paid library, members-only events, and 10% off any 1:1 work. £25 a month, cancel anytime. |  | Join the Reset Room |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 4 — Discovery call booked
+
+[TABLE]
+Trigger | Calendly booking confirmed on /the-work/discovery
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Your discovery call is booked
+Preheader | What to expect and a few words before we meet.
+Send | Immediately on booking
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Our discovery call is in the diary. Thank you for booking it. |  | When  ·  [date and time, UK] | Where  ·  [Zoom link] | Length  ·  Twenty minutes |  | A discovery call is not a sales call. It is twenty minutes for the two of us to meet, for you to say what is bringing you to this work, and for me to say honestly whether I am the right person to walk it with you. |  | You do not need to prepare anything. Come as you are. If there is a particular programme you are curious about (The Reset, Signal, Signal & Build, One Day, or the Collective), you can tell me on the call. |  | See you soon. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 5 — Returning Circle RSVP
+
+[TABLE]
+Trigger | RSVP submitted on /community/returning-circle
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | You're in for this week's Circle
+Preheader | Link, time, and one small thing to bring.
+Send | Immediately on RSVP
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | You are in for this week's Returning Circle. Thank you for saying yes to a Wednesday evening with us. |  | When  ·  [day, date], 7.30pm UK | Where  ·  [Zoom link] or in person on the houseboat at Hampton | Length  ·  Seventy-five minutes |  | There is nothing to prepare. Bring something to drink. If you can, sit somewhere you will not be interrupted. We open with a short reset, sit with a question together, and close as a circle. |  | The Circle is donation-based. If you would like to contribute, the link is below. If you cannot this week, please come anyway. |  | Make a donation |  | See you Wednesday. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 6 — The Reset Room membership welcome
+Triggers when someone subscribes to The Reset Room via Stripe (£25/month). Three-email onboarding sequence over the first week.
+
+
+## Email 6.1 — Welcome to The Reset Room
+
+[TABLE]
+Trigger | Stripe webhook: Reset Room subscription created (£25/month)
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Welcome to The Reset Room
+Preheader | What's inside, how to start, and where to find the door.
+Send | Immediately on subscription
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Welcome to The Reset Room. |  | This is the quiet, ongoing version of the work. A place to come back to when life gets loud. £25 a month for as long as you want it, no minimum, cancel any time. |  | Here is what you have access to from today. |  | The Resource Library.  Workshop replays, written breakdowns, founder resets, and the full paid Substack archive. Take what you need, when you need it. | The monthly Reset Call.  Ninety minutes with me, live, on the first [day of month] of every month. The next one is [date]. Bring a question or just sit with the room. | Members-only events.  Smaller circles, seasonal resets, and the in-person houseboat days that do not go on the public calendar. | First access to retreats.  New retreats open to members forty-eight hours before public release. | Ten percent off 1:1 work.  Reset Sessions and One Day intensives, member rate. |  | Your member portal is below. Bookmark it. Everything lives there. |  | Go to your member portal |  | I am genuinely glad you are here. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 6.2 — Where to start
+
+[TABLE]
+Trigger | Three days after Email 6.1
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | If you don't know where to start in the Reset Room
+Preheader | Three things to do this week. None of them long. All of them useful.
+Send | Three days after subscription
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Members often tell me the same thing in their first week. The Resource Library is full, and they do not know where to start. |  | So here is a small map. Three things, in this order, none of them long. |  | One.  Watch the ten-minute orientation video. It walks you through the room and tells you what each section is for. | Two.  Read 'Signal Scrambled, and How to Read It,' the foundation piece. Twelve minutes. It is the thing most members come back to. | Three.  Add the next live Reset Call to your diary, even if you cannot be sure you will make it. The replay lands the next day, but the live call is something else. |  | Go to your member portal |  | That is enough for week one. The library is not going anywhere. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 6.3 — End of first week check-in
+
+[TABLE]
+Trigger | Seven days after Email 6.1
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | How is the first week landing?
+Preheader | A note from me, and the date of your first live Reset Call.
+Send | Seven days after subscription
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | A week in. I just wanted to say hello. |  | If you have not made it into the library yet, that is fine. The first month is for finding your shape inside this. Some women dive in. Some come back to it slowly. There is no right way. |  | Your first live Reset Call is on [date]. The link will arrive the day before. Bring a drink and a comfortable place to sit. |  | If you have any questions, or anything is not working, reply to this email. It comes straight to me. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 7 — The Reset welcome (6-week 1:1)
+Triggers when someone books The Reset via Stripe (£1,500 or first instalment of £750). Two-email onboarding.
+
+
+## Email 7.1 — Welcome to The Reset
+
+[TABLE]
+Trigger | Stripe webhook: The Reset purchase confirmed
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Welcome to The Reset
+Preheader | Your intake form, your first session, and what to expect.
+Send | Immediately on purchase
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Welcome to The Reset. |  | Six weeks is enough time for something to shift, and not enough to take over your life. That balance is the point. We have just enough room to do real work without it becoming another thing on the list. |  | Here is what happens next. |  | One.  The intake form. Twelve questions. It takes about twenty minutes. Please complete it before our first session so we go straight to the work. | Two.  Book your six sessions. Use the booking link below to put all six in the diary now, one a week. We can move individual ones later if needed, but the rhythm matters. | Three.  Voxer. I will send you a separate invite to Voxer in the next 48 hours. Tuesday to Thursday between sessions, you can drop me audio or text messages and I will reply. |  | Complete the intake form | Book your six sessions |  | If anything in your life shifts before we start, message me. The work begins from the moment you say yes. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 7.2 — Day before first session
+
+[TABLE]
+Trigger | 24 hours before first scheduled session
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Tomorrow
+Preheader | The link, and a small note before we start.
+Send | 24 hours before first session
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Tomorrow we begin. |  | When  ·  [date and time, UK] | Where  ·  [Zoom link] |  | Nothing to prepare. If you have not finished the intake form, that is fine, send me what you have. The first session is mostly about meeting properly and listening to where your signal system is right now. |  | Sit somewhere comfortable, somewhere you will not be interrupted, and somewhere you can be honest. |  | See you tomorrow. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 8 — Signal welcome (12-week 1:1)
+Triggers when someone books Signal via Stripe (£3,000 or first instalment of £1,000). Two-email onboarding.
+
+
+## Email 8.1 — Welcome to Signal
+
+[TABLE]
+Trigger | Stripe webhook: Signal purchase confirmed
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Welcome to Signal
+Preheader | Your intake form, your twelve sessions, and what we will build.
+Send | Immediately on purchase
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Welcome to Signal. |  | Twelve weeks is what we agreed because twelve weeks is what this depth needs. Long enough to rebuild the relationship between you and your inner world from the ground up. Long enough to integrate the changes into your real life as they happen. |  | Here is the shape of it. |  | Week one.  A full audit of your inner world. What is online, what is overactive, what has gone quiet. | Weeks two to five.  Working on the parts that need attention. Somatic enquiry, IFS, Brainspotting, Flash EMDR, breathwork, pendulum where it fits. | Week six.  Midpoint review. We map what has shifted and what we are turning toward in the second half. | Weeks seven to eleven.  Deeper integration. The new patterns become the actual life. | Week twelve.  Closing integration. We hold the whole arc and you walk out with the work in your body. |  | What you need to do this week: |  | Complete the intake form | Book your twelve sessions |  | Voxer access will arrive in a separate email. Tuesday to Thursday between sessions. |  | I am so glad you said yes. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 8.2 — Day before first session
+
+[TABLE]
+Trigger | 24 hours before first scheduled session
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Tomorrow, we start
+Preheader | The link, and a small note before we begin twelve weeks together.
+Send | 24 hours before first session
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Tomorrow we begin twelve weeks of work together. That is not a small thing, and I want to mark it. |  | When  ·  [date and time, UK] | Where  ·  [Zoom link] |  | Nothing to prepare. Sit somewhere comfortable, somewhere private, somewhere you can be honest. The first session is the audit. Slow, careful, no agenda except listening to where your signal system is right now. |  | See you tomorrow. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 9 — Signal & Build welcome (12-week 1:1 for founders)
+Triggers when someone books Signal & Build via Stripe (£3,000 or first instalment of £1,000). Two-email onboarding.
+
+
+## Email 9.1 — Welcome to Signal & Build
+
+[TABLE]
+Trigger | Stripe webhook: Signal & Build purchase confirmed
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Welcome to Signal & Build
+Preheader | The inner work and the business, held together. Here is how we start.
+Send | Immediately on purchase
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Welcome to Signal & Build. |  | You said yes to twelve weeks of doing the inner work and the business work in the same room. That is a brave thing, because most of us are taught to separate them. We are about to do the opposite. |  | Here is what to expect. |  | The Signal layer.  Everything in Signal: a full inner-world audit, weekly 1:1 sessions, midpoint review at week six, closing integration at week twelve, Voxer support Tuesday to Thursday. | The Build layer.  Business strategy interleaved with the inner work. Pricing, positioning, capacity, decision-making, team, founder energy. Drawn from twenty years building Anna Lou of London across Harrods, Selfridges, Liberty, and international retail. Real, not theoretical. | Voxer, widened.  For Signal & Build, you can also message me about in-the-moment business questions. A pricing decision, a hire, a difficult email. Tuesday to Thursday. |  | What you need to do this week: |  | Complete the founder intake form | Book your twelve sessions | Send me a one-page business snapshot before week one (template attached) |  | Voxer invitation arrives in a separate email. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 9.2 — Day before first session
+
+[TABLE]
+Trigger | 24 hours before first scheduled session
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Tomorrow, both layers
+Preheader | The link, and the question I want you to bring.
+Send | 24 hours before first session
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Tomorrow is week one. Both layers, in the same room. |  | When  ·  [date and time, UK] | Where  ·  [Zoom link] |  | One question to bring. What is the decision in your business right now that you keep almost making? That is what we will start with. |  | See you tomorrow. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 10 — One Day welcome (intensive)
+Triggers when a One Day intensive is confirmed (after enquiry and scoping call, payment processed). Three-email sequence.
+
+
+## Email 10.1 — One Day confirmed
+
+[TABLE]
+Trigger | Stripe webhook: One Day payment confirmed
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Your One Day is confirmed
+Preheader | The date, the prep, and what to bring.
+Send | Immediately on payment
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Your One Day is confirmed. |  | Date  ·  [date] | Time  ·  10am to 5pm UK, with breaks | Format  ·  [In person at the Hampton studio OR virtual via Zoom] |  | This is a day that asks for full attention. Please clear your diary completely. Tell your people you are unreachable. Put your phone in another room. The depth of the day depends on the space around it. |  | Here is what happens in the run-up. |  | Two weeks before.  You receive the pre-day intake form. Twenty questions, takes about an hour. Please give it real time, not a quick scribble. | One week before.  We have a 30-minute scoping call to set the focus of the day. The link is below. | The day before.  Final logistics email from me. Travel directions if in person, Zoom link if virtual. | Two weeks after.  A 60-minute integration call to land everything. |  | Complete the pre-day intake | Book the scoping call |  | If anything comes up between now and then, message me directly. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 10.2 — Day before
+
+[TABLE]
+Trigger | 24 hours before One Day
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Tomorrow, the whole day
+Preheader | Final logistics and one small instruction.
+Send | 24 hours before
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Tomorrow is your day. |  | Arrival  ·  [time, location or Zoom link] | Lunch  ·  [Provided / details] | What to bring  ·  Comfortable clothes. A notebook. A bottle of water. Nothing else. |  | One small instruction. Tonight, do not try to prepare. No reading, no journaling, no thinking through what you want to cover. The prep is done. Tonight, eat well, sleep well, and trust that tomorrow you will be met. |  | See you tomorrow. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 10.3 — Integration
+
+[TABLE]
+Trigger | Three days after One Day
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Three days on
+Preheader | How the day is landing, and your integration call link.
+Send | Three days after
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Three days on. The work is moving in you whether you can feel it or not. That is how this depth integrates: not in a straight line, sometimes in waves, sometimes in unexpected places. |  | Your integration call is in the diary for [date]. Sixty minutes, two weeks after the day. We will land everything together. |  | In the meantime: go gently. Sleep when you can. Drink more water than feels reasonable. Write down anything that comes up. You may find that things you have been holding for years come up to be looked at this week. That is the work doing its work. |  | Add the integration call to your calendar |  | Reply to this email if you need me before then. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 11 — The Signal Collective welcome (mastermind)
+Triggers when a Signal Collective place is confirmed (after application and discovery call, payment processed). Two-email onboarding.
+
+
+## Email 11.1 — Welcome to the Collective
+
+[TABLE]
+Trigger | Stripe webhook: Signal Collective enrolment confirmed
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Welcome to The Signal Collective
+Preheader | Six months. Twelve women. Here is what happens first.
+Send | Immediately on enrolment
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Welcome to The Signal Collective. |  | Six months. Twelve women. This room is one of the most important rooms I will be in this year, and you are in it. |  | Here is the structure for the six months. |  | Two group calls a month.  One teaching, one open circle. 90 minutes each. | A monthly 1:1 with me.  60 minutes. You book these into my calendar yourself, one a month, whenever works. | Two in-person days at the Hampton studio.  Opening day and closing day. Both included. Travel and accommodation on you. | The private group space.  Off social media, hosted on [Circle / Heartbeat / whichever platform]. Login details below. | Guest sessions.  Three across the six months from practitioners I trust. |  | What you need to do in the first week: |  | Complete the Collective intake form | Book your first monthly 1:1 | Set up your member profile in the group space | Save the opening in-person day to your diary [date] |  | The first group call is on [date]. The link will arrive the day before. |  | I am honoured you are here. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 11.2 — Meet the room
+
+[TABLE]
+Trigger | Seven days after Email 11.1, when the cohort is complete
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Meet the room
+Preheader | The other eleven women. A short introduction from each of them.
+Send | Seven days after enrolment, once cohort is full
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | The room is full. Twelve women, six months. Below is a short introduction from each of them, including you. |  | [Cohort introductions, drawn from the intake forms] |  | Read them slowly. These are the women you are going to do the work alongside. Some of them will become real friendships. Some of them will hold a mirror up to you that no one else has held. All of them are choosing to be in this room with you. |  | Our first group call is [date]. Bring yourself. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Sequence 12 — 1:1 Reset Session welcome (90-min single)
+Triggers when someone books a single 1:1 Reset Session via Stripe (£200). Variants for Founder Reset, Dating Reset, Nervous System Reset. Two-email sequence.
+
+
+## Email 12.1 — Reset Session booked
+
+[TABLE]
+Trigger | Stripe webhook: Reset Session purchase confirmed
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Your [session name] is booked
+Preheader | The intake, the link, and what to do before we meet.
+Send | Immediately on purchase
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Your [Founder Reset OR Dating Reset OR Nervous System Reset] is in the diary. |  | When  ·  [date and time, UK] | Where  ·  [Zoom link] | Length  ·  90 minutes |  | Before we meet, please complete the short intake form. Six questions, takes about ten minutes. It helps us go straight to the work rather than spending the first half hour catching me up. |  | Complete the intake form |  | On the day, sit somewhere private, somewhere you can be honest. Bring a notebook if that helps you, do not feel you have to. |  | If you decide before the session that you want to roll into a 6-week or 12-week container, tell me on the call and we will sort the logistics afterwards. There is no pressure either way. |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+## Email 12.2 — After the session
+
+[TABLE]
+Trigger | 24 hours after session end
+From | Anna Lou  ·  anna@annalouwellness.com
+Subject | Your summary, and one quiet next step
+Preheader | The notes from our session, and where to go from here.
+Send | 24 hours after session
+[/TABLE]
+
+
+
+[TABLE]
+Hi [first name], |  | Thank you for yesterday. It was a good ninety minutes. |  | Below is the written summary I promised. The three things we landed, the one practice to take into the week, and the question I want you to sit with. |  | [Personalised summary, written by Anna after the session] |  | There is no obligation to do anything next. Sometimes one session is the whole thing, and that is exactly right. |  | If you want to continue the work, the two natural next steps are below. Either is a fit. Reply to this email if you want to talk it through. |  | The Reset (six weeks 1:1) | The Reset Room (£25/month membership) |  | Anna x |  | If this email is no longer for you, you can unsubscribe at any time. | Anna Lou Wellness  ·  annalouwellness.com  ·  Instagram @annalouofficial  ·  Substack: Reset Letters  ·  YouTube: The Reset with Anna
+[/TABLE]
+
+
+
+
+# Closing checklist for Sameer
+Before launch, please confirm each of the following:
+
+  - All twelve sequences set up in Resend with the correct triggers.
+  - Stripe webhooks configured for: workshop purchase (£200 / £15), Reset Room subscription (£25/month), The Reset (£1,500), Signal (£3,000), Signal & Build (£3,000), One Day, Signal Collective, Reset Sessions (£200).
+  - Calendly integrated for: discovery calls, Reset booking, Signal booking, Signal & Build booking, One Day scoping call, Reset Session booking, Returning Circle RSVP.
+  - Branding applied across every email: wordmark header, cream background, brand black text, button style, footer block.
+  - From name and reply-to set to Anna Lou / anna@annalouwellness.com on every sequence.
+  - No em-dashes anywhere across all email copy. Hyphens inside compound words are fine.
+  - All Voxer, Zoom, and intake form links live and tested.
+  - Test sends to Anna for sign-off before any sequence is switched live.
+
+Beautifully Whole.
