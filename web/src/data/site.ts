@@ -122,10 +122,13 @@ export const navigation: NavItem[] = [
   {
     label: "The Work", href: "/the-work", colour: "#F280AA",
     children: [
-      { label: "Ways to Work With Me", href: "/the-work/ways-to-work-with-me" },
-      { label: "What Do You Need Right Now?", href: "/the-work/quiz" },
+      { label: "Take the Quiz", href: "/the-work/quiz" },
+      { label: "The Reset · 6 weeks", href: "/the-work/the-reset" },
+      { label: "Signal · 12 weeks", href: "/the-work/signal" },
+      { label: "Signal & Build · Founders", href: "/the-work/signal-and-build" },
+      { label: "One Day · Intensive", href: "/the-work/one-day" },
+      { label: "1:1 Reset Sessions", href: "/the-work/sessions" },
       { label: "Client Stories", href: "/the-work/client-stories" },
-      { label: "1:1 Sessions", href: "/the-work/sessions" },
     ],
   },
   {
