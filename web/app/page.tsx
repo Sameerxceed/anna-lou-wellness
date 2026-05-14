@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getFeaturedArticles, getArticles } from '@/lib/cms';
-import { getStockImage } from '@/data/stock-images';
+import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
 
 // Section mapping for article links
 const sectionPaths: Record<string, string> = {
@@ -58,7 +58,7 @@ export default async function HomePage() {
           </div>
           <div
             className="hp-featured-image has-image reveal rd1"
-            style={{ backgroundImage: `url(${featured?.heroImage || getStockImage(featured?.category?.section || 'reset-stories', featured?.slug || 'featured')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${featured?.heroImage || getStockImage(stockCategoryForSection(featured?.category?.section || 'reset-stories'), featured?.slug || 'featured')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
         </div>
       </section>
@@ -73,7 +73,7 @@ export default async function HomePage() {
               <Link key={article.slug} href={`${sectionPath}/${article.slug}`} className={`article-card reveal${i > 0 ? ` rd${i}` : ''}`}>
                 <div
                   className="article-card-img has-image"
-                  style={{ backgroundImage: `url(${article.heroImage || getStockImage(article.category?.section || 'reset-stories', article.slug)})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                  style={{ backgroundImage: `url(${article.heroImage || getStockImage(stockCategoryForSection(article.category?.section || 'reset-stories'), article.slug)})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                 />
                 <div className="article-card-body">
                   <p className="article-card-cat" style={{ color: article.category?.colour || '#6E3A5A' }}>{article.category?.name || 'Stories'}</p>
