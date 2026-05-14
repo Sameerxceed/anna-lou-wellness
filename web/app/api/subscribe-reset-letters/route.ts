@@ -35,11 +35,17 @@ async function pushToFlodesk(email: string, firstName: string, founding: boolean
   if (!apiKey || !segment) {
     return { ok: false, error: 'Flodesk not configured (missing API key or segment ID)' };
   }
-  const auth = 'Basic ' + Buffer.from(apiKey + ':').toString('base64');
-  const headers = { 'Content-Type': 'application/json', Authorization: auth };
+  // Flodesk requires User-Agent identifying the app (per their API docs)
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: 'Basic ' + Buffer.from(apiKey + ':').toString('base64'),
+    'User-Agent': 'Anna Lou Wellness (annalouwellness.com)',
+  };
+
+  let subscriberId: string | undefined;
 
   try {
-    // Step 1: upsert subscriber (creates or updates by email)
+    // Step 1: upsert subscriber WITH segments in the same call
     const createRes = await fetch('https://api.flodesk.com/v1/subscribers', {
       method: 'POST',
       headers,
@@ -47,27 +53,39 @@ async function pushToFlodesk(email: string, firstName: string, founding: boolean
         email,
         first_name: firstName || undefined,
         status: 'active',
+        segments: [{ id: segment }],
       }),
     });
+    const createText = await createRes.text();
     if (!createRes.ok) {
-      const text = await createRes.text();
-      return { ok: false, error: `Flodesk create ${createRes.status}: ${text.slice(0, 200)}` };
+      return { ok: false, error: `Flodesk create ${createRes.status}: ${createText.slice(0, 200)}` };
     }
+    try {
+      const j = JSON.parse(createText);
+      subscriberId = j?.data?.id || j?.id;
+    } catch { /* ignore */ }
+  } catch (err: any) {
+    return { ok: false, error: `Flodesk create fetch failed: ${err?.message}` };
+  }
 
-    // Step 2: add subscriber to the segment (email is a valid subscriber identifier)
-    const segRes = await fetch(`https://api.flodesk.com/v1/subscribers/${encodeURIComponent(email)}/segments`, {
+  // Step 2 (belt-and-suspenders): also POST to /segments endpoint to ensure segment attaches
+  try {
+    const subjectIdentifier = subscriberId || email;
+    const segRes = await fetch(`https://api.flodesk.com/v1/subscribers/${encodeURIComponent(subjectIdentifier)}/segments`, {
       method: 'POST',
       headers,
       body: JSON.stringify({ segment_ids: [segment] }),
     });
     if (!segRes.ok) {
       const text = await segRes.text();
-      return { ok: false, error: `Flodesk segment ${segRes.status}: ${text.slice(0, 200)}` };
+      // Don't fail the whole call — subscriber exists, just log so we can debug.
+      console.warn(`[flodesk] segment attach ${segRes.status}: ${text.slice(0, 200)}`);
     }
-    return { ok: true };
   } catch (err: any) {
-    return { ok: false, error: `Flodesk fetch failed: ${err?.message}` };
+    console.warn('[flodesk] segment attach fetch failed:', err?.message);
   }
+
+  return { ok: true };
 }
 
 async function pushToSubstack(email: string) {
