@@ -12,20 +12,17 @@ export default function ResetLettersPage() {
     if (!email) return;
     setSubmitting(true);
     try {
-      // Substack custom form POST
-      const res = await fetch('https://annalouwellness.substack.com/api/v1/free', {
+      // Server-side dual push: Flodesk (welcome sequence) + Substack (newsletter delivery)
+      const res = await fetch('/api/subscribe-reset-letters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      if (res.ok) {
-        window.location.href = '/welcome';
-      } else {
-        // Fallback: redirect anyway (Substack may block CORS)
-        window.location.href = '/welcome';
-      }
+      // Redirect to welcome regardless — server logged any partial failures, user experience is the same.
+      window.location.href = '/welcome';
+      // Suppress unused var warning
+      void res;
     } catch {
-      // CORS will likely block, redirect to welcome
       window.location.href = '/welcome';
     }
   }
