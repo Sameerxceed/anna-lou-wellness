@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getFeaturedArticles, getArticles } from '@/lib/cms';
+import { getStockImage } from '@/data/stock-images';
 
 // Section mapping for article links
 const sectionPaths: Record<string, string> = {
@@ -29,7 +30,10 @@ export default async function HomePage() {
       {/* ═══ HERO ═══ */}
       <section className="hp-hero">
         <div className="hp-hero-inner">
-          <div className="hp-hero-image reveal" />
+          <div
+            className="hp-hero-image has-image reveal"
+            style={{ backgroundImage: `url(${getStockImage('hero', 'home-hero')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
           <div className="reveal rd1">
             <p className="hp-hero-tag">Reset Stories</p>
             <h1 className="hp-hero-title">Come back to <em>yourself.</em></h1>
@@ -52,7 +56,10 @@ export default async function HomePage() {
             <p className="hp-featured-excerpt"><span className="drop-cap">{(featured?.excerpt || 'T')[0]}</span>{(featured?.excerpt || '').slice(1)}</p>
             <Link href={featured ? `${sectionPaths[featured.category?.section || 'reset-stories'] || '/reset-stories'}/${featured.slug}` : '/reset-stories'} className="cta-link cta-plum">Continue reading <span>&rarr;</span></Link>
           </div>
-          <div className="hp-featured-image reveal rd1" />
+          <div
+            className="hp-featured-image has-image reveal rd1"
+            style={{ backgroundImage: `url(${featured?.heroImage || getStockImage(featured?.category?.section || 'reset-stories', featured?.slug || 'featured')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
         </div>
       </section>
 
@@ -64,7 +71,10 @@ export default async function HomePage() {
             const sectionPath = sectionPaths[section] || '/reset-stories';
             return (
               <Link key={article.slug} href={`${sectionPath}/${article.slug}`} className={`article-card reveal${i > 0 ? ` rd${i}` : ''}`}>
-                <div className="article-card-img" style={{ background: `linear-gradient(160deg,${i === 0 ? '#e2d6ca,#d4c6b8' : i === 1 ? '#ddd2c6,#cfc0b2' : '#d8ccc0,#cabcae'})` }} />
+                <div
+                  className="article-card-img has-image"
+                  style={{ backgroundImage: `url(${article.heroImage || getStockImage(article.category?.section || 'reset-stories', article.slug)})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                />
                 <div className="article-card-body">
                   <p className="article-card-cat" style={{ color: article.category?.colour || '#6E3A5A' }}>{article.category?.name || 'Stories'}</p>
                   <h3 className="article-card-title">{article.title}</h3>
@@ -325,6 +335,7 @@ const homepageStyles = `
 .hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:center; }
 .hp-hero-image { aspect-ratio:4/5; border-radius:6px; overflow:hidden; max-height:420px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; }
 .hp-hero-image::after { content:'Atmospheric photo. Taggs Island, golden hour, Anna'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.12); text-align:center; max-width:80%; }
+.hp-hero-image.has-image::after, .hp-featured-image.has-image::after, .article-card-img.has-image::after { display:none; }
 .hp-hero-tag { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.8rem; }
 .hp-hero-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,3vw,2.6rem); color:#231F20; line-height:1.35; margin-bottom:1.2rem; }
 .hp-hero-title em { font-style:italic; color:#6E3A5A; }
