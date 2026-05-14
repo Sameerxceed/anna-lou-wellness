@@ -110,7 +110,10 @@ export default async function HomePage() {
               <Link href="/the-work/ways-to-work-with-me" className="cta-link cta-muted">Explore all the ways to work <span>&rarr;</span></Link>
             </div>
           </div>
-          <div className="hp-work-image reveal rd2" />
+          <div
+            className="hp-work-image has-image reveal rd2"
+            style={{ backgroundImage: `url(${getStockImage('programmes', 'work-section', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
         </div>
       </section>
 
@@ -184,21 +187,30 @@ export default async function HomePage() {
           <p className="hp-body reveal rd2">I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.</p>
           <div className="hp-shop-grid">
             <div className="product-card reveal">
-              <div className="product-img" />
+              <div
+                className="product-img has-image"
+                style={{ backgroundImage: `url(${getStockImage('product', 'product-1', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              />
               <div className="product-info">
                 <p className="product-hook">I reach for this one when I need to remember what is underneath the noise</p>
                 <p className="product-name">Moonstone Necklace</p>
               </div>
             </div>
             <div className="product-card reveal rd1">
-              <div className="product-img" style={{ background: 'linear-gradient(180deg,#e8e3db,#dbd4ca)' }} />
+              <div
+                className="product-img has-image"
+                style={{ backgroundImage: `url(${getStockImage('product', 'product-2', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              />
               <div className="product-info">
                 <p className="product-hook">For the days my mind is doing too much and I need clarity not calm</p>
                 <p className="product-name">Clear Quartz Necklace</p>
               </div>
             </div>
             <div className="product-card reveal rd2">
-              <div className="product-img" style={{ background: 'linear-gradient(180deg,#ebe6de,#ddd6cc)' }} />
+              <div
+                className="product-img has-image"
+                style={{ backgroundImage: `url(${getStockImage('product', 'product-3', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              />
               <div className="product-info">
                 <p className="product-hook">The word you keep coming back to, worn close to your throat</p>
                 <p className="product-name">Personalised Phrase Necklace</p>
@@ -246,7 +258,10 @@ export default async function HomePage() {
       {/* ═══ COMMUNITY ═══ */}
       <section className="hp-community">
         <div className="hp-community-inner">
-          <div className="hp-community-image reveal" />
+          <div
+            className="hp-community-image has-image reveal"
+            style={{ backgroundImage: `url(${getStockImage('community', 'community-section', 'hero')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
           <div className="reveal rd1">
             <p className="hp-kicker">Community</p>
             <h2 className="hp-section-title">Come and sit with us.</h2>
@@ -265,7 +280,10 @@ export default async function HomePage() {
       {/* ═══ PORTRAIT OF ANNA ═══ */}
       <section className="hp-portrait">
         <div className="hp-portrait-inner">
-          <div className="hp-portrait-image reveal" />
+          <div
+            className="hp-portrait-image has-image reveal"
+            style={{ backgroundImage: `url(${getStockImage('about', 'anna-portrait', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
           <div className="reveal rd1">
             <p className="hp-kicker" style={{ color: '#3D3D3A' }}>About</p>
             <h2 className="hp-portrait-heading">Twenty-five years leaves a trail.</h2>
@@ -335,7 +353,7 @@ const homepageStyles = `
 .hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:center; }
 .hp-hero-image { aspect-ratio:4/5; border-radius:6px; overflow:hidden; max-height:420px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; }
 .hp-hero-image::after { content:'Atmospheric photo. Taggs Island, golden hour, Anna'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.12); text-align:center; max-width:80%; }
-.hp-hero-image.has-image::after, .hp-featured-image.has-image::after, .article-card-img.has-image::after { display:none; }
+.hp-hero-image.has-image::after, .hp-featured-image.has-image::after, .article-card-img.has-image::after, .hp-work-image.has-image::after, .hp-community-image.has-image::after, .hp-portrait-image.has-image::after, .product-img.has-image::after { display:none; }
 .hp-hero-tag { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.8rem; }
 .hp-hero-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,3vw,2.6rem); color:#231F20; line-height:1.35; margin-bottom:1.2rem; }
 .hp-hero-title em { font-style:italic; color:#6E3A5A; }
