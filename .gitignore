@@ -31,3 +31,6 @@ Thumbs.db
 npm-debug.log*
 
 .vercel
+
+# Local summary/working docs (keep local only)
+Docs/TODAY_SUMMARY_*.md
