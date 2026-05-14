@@ -36,22 +36,34 @@ async function pushToFlodesk(email: string, firstName: string, founding: boolean
     return { ok: false, error: 'Flodesk not configured (missing API key or segment ID)' };
   }
   const auth = 'Basic ' + Buffer.from(apiKey + ':').toString('base64');
+  const headers = { 'Content-Type': 'application/json', Authorization: auth };
+
   try {
-    const res = await fetch('https://api.flodesk.com/v1/subscribers', {
+    // Step 1: upsert subscriber (creates or updates by email)
+    const createRes = await fetch('https://api.flodesk.com/v1/subscribers', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: auth,
-      },
+      headers,
       body: JSON.stringify({
         email,
         first_name: firstName || undefined,
-        segments: [{ id: segment }],
         status: 'active',
       }),
     });
-    const text = await res.text();
-    if (!res.ok) return { ok: false, error: `Flodesk ${res.status}: ${text.slice(0, 200)}` };
+    if (!createRes.ok) {
+      const text = await createRes.text();
+      return { ok: false, error: `Flodesk create ${createRes.status}: ${text.slice(0, 200)}` };
+    }
+
+    // Step 2: add subscriber to the segment (email is a valid subscriber identifier)
+    const segRes = await fetch(`https://api.flodesk.com/v1/subscribers/${encodeURIComponent(email)}/segments`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ segment_ids: [segment] }),
+    });
+    if (!segRes.ok) {
+      const text = await segRes.text();
+      return { ok: false, error: `Flodesk segment ${segRes.status}: ${text.slice(0, 200)}` };
+    }
     return { ok: true };
   } catch (err: any) {
     return { ok: false, error: `Flodesk fetch failed: ${err?.message}` };
