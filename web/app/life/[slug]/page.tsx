@@ -76,7 +76,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <p className="article-kicker" style={{ color: '#FAA21B' }}>Life</p>
             <h1 className="article-title">{title}</h1>
             <p className="article-meta">By Anna Lou</p>
-            <div className="article-hero-img" />
+            <img src={getStockImage('life', slug)} alt={title} className="article-hero-img" style={{ objectFit: 'cover' }} />
             <div className="article-content"><p>This article is coming soon.</p></div>
           </div>
         </article>
