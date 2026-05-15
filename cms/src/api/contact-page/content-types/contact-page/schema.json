@@ -7,7 +7,7 @@
     "displayName": "Contact"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "email": {

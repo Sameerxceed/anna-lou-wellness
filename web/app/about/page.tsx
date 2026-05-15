@@ -62,7 +62,10 @@ export default async function AboutPage() {
       {/* Portrait + Story */}
       <section className="about-story">
         <div className="about-story-inner">
-          <div className="about-portrait reveal" />
+          <div
+            className="about-portrait reveal"
+            style={page.portrait ? { backgroundImage: `url(${page.portrait})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+          />
           <div className="reveal rd1">
             <p className="about-body"><span className="about-drop-cap">{story1.charAt(0)}</span>{story1.slice(1)}</p>
             <p className="about-body">{story2}</p>

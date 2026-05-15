@@ -8,7 +8,7 @@
     "description": "Short mantra videos from Anna's YouTube Come Back to Yourself playlist"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "title": {

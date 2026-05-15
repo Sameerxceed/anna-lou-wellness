@@ -8,7 +8,7 @@
     "description": "Community page content"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "kicker": {

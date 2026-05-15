@@ -8,7 +8,7 @@
     "description": "All editable copy for the homepage. Leave a field blank to use the V8 default."
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "issueLine": { "type": "string", "default": "Issue No. 01 · Summer 2026" },

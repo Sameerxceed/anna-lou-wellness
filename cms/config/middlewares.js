@@ -32,6 +32,7 @@ module.exports = ({ env }) => [
   'strapi::poweredBy',
   'strapi::query',
   'strapi::body',
+  'global::image-resize',
   'strapi::session',
   'strapi::favicon',
   'strapi::public',

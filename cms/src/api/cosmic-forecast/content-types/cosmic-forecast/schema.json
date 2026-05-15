@@ -8,7 +8,7 @@
     "description": "Weekly Cosmic Forecast. Summary version for website, full version on Substack."
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "week_of": {

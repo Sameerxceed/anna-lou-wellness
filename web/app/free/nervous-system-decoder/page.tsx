@@ -1,32 +1,24 @@
-'use client';
-
-import { useState } from 'react';
-import Link from 'next/link';
 import { getStockImage } from '@/data/stock-images';
+import { fetchAPI, mediaUrl } from '@/lib/strapi';
+import DecoderForm from './DecoderForm';
 
-export default function DecoderPage() {
-  const [firstName, setFirstName] = useState('');
-  const [email, setEmail] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
+const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
+  const v = cms?.[key];
+  return typeof v === 'string' && v.trim() ? v : fallback;
+};
+const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+const splitLines = (s: string) => s.split('\n').map((p) => p.trim()).filter(Boolean);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email) return;
-    setSubmitting(true);
-    try {
-      // Will fan out to Flodesk (Sequence 2 — Decoder delivery) once API key is wired.
-      // For now, just record the lead and show success.
-      await fetch('/api/lead/decoder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, email, source: 'decoder-landing' }),
-      }).catch(() => null);
-      setDone(true);
-    } finally {
-      setSubmitting(false);
-    }
-  }
+export default async function DecoderPage() {
+  let cms: Record<string, unknown> | null = null;
+  try {
+    const { data: d } = await fetchAPI('/decoder-page', { populate: '*' });
+    cms = (d as Record<string, unknown>) || null;
+  } catch { cms = null; }
+
+  const coverImageUrl = mediaUrl(cms?.coverImage as { url?: string } | undefined) || getStockImage('decoder', 'decoder-cover');
+  const whyParas = splitParas(f(cms, 'whyBody', ''));
+  const insideItems = splitLines(f(cms, 'insideItems', ''));
 
   return (
     <>
@@ -34,86 +26,44 @@ export default function DecoderPage() {
 
       <section className="dec-hero">
         <div className="dec-hero-inner">
-          <p className="dec-eyebrow">Free. Always free.</p>
-          <h1 className="dec-title">The Nervous System Decoder.</h1>
-          <p className="dec-tagline"><em>The first thing if you are new here.</em></p>
+          <p className="dec-eyebrow">{f(cms, 'heroEyebrow', 'Free. Always free.')}</p>
+          <h1 className="dec-title">{f(cms, 'heroTitle', 'The Nervous System Decoder.')}</h1>
+          <p className="dec-tagline"><em>{f(cms, 'heroTagline', 'The first thing if you are new here.')}</em></p>
         </div>
       </section>
 
       <section className="dec-body">
         <div className="dec-grid">
           <div className="dec-left">
-            <div
-              className="dec-cover"
-              style={{ backgroundImage: `url('${getStockImage('decoder', 'decoder-cover')}')` }}
-            >
+            <div className="dec-cover" style={{ backgroundImage: `url('${coverImageUrl}')` }}>
               <div className="dec-cover-overlay" />
               <div className="dec-cover-content">
-                <p className="dec-cover-label">Free Guide</p>
-                <p className="dec-cover-title">The Nervous System Decoder</p>
-                <p className="dec-cover-sub">A somatic self-audit, in seven quiet questions.</p>
-                <p className="dec-cover-author">By Anna Lou Scaife</p>
+                <p className="dec-cover-label">{f(cms, 'coverLabel', 'Free Guide')}</p>
+                <p className="dec-cover-title">{f(cms, 'coverTitle', 'The Nervous System Decoder')}</p>
+                <p className="dec-cover-sub">{f(cms, 'coverSubtitle', 'A somatic self-audit, in seven quiet questions.')}</p>
+                <p className="dec-cover-author">{f(cms, 'coverAuthor', 'By Anna Lou Scaife')}</p>
               </div>
             </div>
           </div>
 
           <div className="dec-right">
-            <p className="dec-section-label">Why this exists</p>
-            <p className="dec-body-text">The Nervous System Decoder is the first thing offered to anyone who finds Anna Lou Wellness. Free. Always free.</p>
-            <p className="dec-body-text">It explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state, you can use today, anywhere, without equipment.</p>
-            <p className="dec-body-text">It was made free because understanding your inner world is not a luxury. It is the foundation. Without it, nothing else on this site makes sense. With it, everything starts to make sense — the patterns, the reactions, the relationships, the exhaustion.</p>
+            <p className="dec-section-label">{f(cms, 'whyTitle', 'Why this exists')}</p>
+            {whyParas.map((p, i) => <p key={i} className="dec-body-text">{p}</p>)}
 
             <div className="dec-whats-inside">
-              <p className="dec-section-label">What&apos;s inside</p>
+              <p className="dec-section-label">{f(cms, 'insideTitle', "What's inside")}</p>
               <ul>
-                <li>A short introduction to the inner guidance system in plain language</li>
-                <li>Seven self-audit questions with space to write</li>
-                <li>A simple key for reading your own answers</li>
-                <li>Three small somatic practices to start with, today</li>
-                <li>A suggested next step, gently. No pressure.</li>
+                {insideItems.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
             </div>
 
-            {!done ? (
-              <form className="dec-form" onSubmit={handleSubmit}>
-                <p className="dec-section-label">Send it to me</p>
-                <label className="dec-label">
-                  <span>First name</span>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
-                    required
-                    autoComplete="given-name"
-                  />
-                </label>
-                <label className="dec-label">
-                  <span>Email</span>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                    autoComplete="email"
-                  />
-                </label>
-                <button type="submit" disabled={submitting} className="dec-submit">
-                  {submitting ? 'Sending...' : 'Send me the Decoder'}
-                </button>
-                <p className="dec-fineprint">No spam. Unsubscribe in one click. We never share your email.</p>
-              </form>
-            ) : (
-              <div className="dec-success">
-                <p className="dec-section-label">Check your inbox</p>
-                <h3 className="dec-success-title">Your Decoder is on its way.</h3>
-                <p className="dec-body-text">Look for an email from Anna in the next few minutes. If it is not there, check spam or promotions.</p>
-                <p className="dec-body-text">In the meantime, if you want to go further, here is what comes next.</p>
-                <div className="dec-cta-row">
-                  <Link href="/the-work/quiz" className="dec-cta-link">Take the 5-minute coaching quiz &rarr;</Link>
-                  <Link href="/community/reset-room" className="dec-cta-link">Step into The Reset Room &rarr;</Link>
-                </div>
-              </div>
-            )}
+            <DecoderForm
+              formTitle={f(cms, 'formTitle', 'Send it to me')}
+              buttonLabel={f(cms, 'formButtonLabel', 'Send me the Decoder')}
+              microcopy={f(cms, 'formMicrocopy', 'No spam. Unsubscribe in one click. We never share your email.')}
+              successTitle={f(cms, 'successTitle', 'Your Decoder is on its way.')}
+              successBody={f(cms, 'successBody', 'Look for an email from Anna in the next few minutes. If it is not there, check spam or promotions.\n\nIn the meantime, if you want to go further, here is what comes next.')}
+            />
           </div>
         </div>
       </section>

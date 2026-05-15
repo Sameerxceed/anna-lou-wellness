@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import { getStockImage } from '@/data/stock-images';
+import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 
 export const metadata: Metadata = {
   title: 'Signal | 12-Week 1:1 Somatic Coaching | Trauma-Informed',
@@ -8,42 +9,27 @@ export const metadata: Metadata = {
   alternates: { canonical: '/the-work/signal' },
 };
 
-export default function SignalPage() {
-  return (
-    <ProgrammePage
-      accentColour="#6E3A5A"
-      hero={{ title: 'Signal.', tagline: 'Twelve weeks. One-to-one. The deeper container.', image: getStockImage('programmes', 'signal') }}
-      intro={[
-        'Twelve weeks is enough time for something to genuinely change. Not the surface, the pattern underneath it. The automatic response that has been running your decisions, your relationships, and your relationship to yourself without your full permission.',
-        'Signal is the full twelve-week somatic coaching programme. Inner world rewire, pattern release, belief repatterning, rebuilding from the inside out. Weekly sessions, integration support throughout. Dormant parts of yourself switch back online. What felt fixed becomes fluid.',
-      ]}
-      sections={[
-        {
-          label: 'The arc',
-          body: [
-            'Week one: a full audit of your inner world',
-            'Weeks two to five: working on the parts that need attention. Somatic enquiry, IFS, Brainspotting, Flash EMDR, breathwork, pendulum where it fits.',
-            'Week six: midpoint review',
-            'Weeks seven to eleven: deeper integration',
-            'Week twelve: closing integration',
-          ],
-        },
-        {
-          label: 'What\'s included',
-          body: [
-            'Twelve 1:1 sessions, weekly, 60 minutes each',
-            'Voxer support Tuesday to Thursday',
-            'Personalised Signal Method workbook',
-            'Lifetime access to recordings',
-            'Optional in-person session at the Hampton studio',
-          ],
-        },
-      ]}
-      pricing={{
-        label: 'Investment',
-        body: '£3,000. Paid in full, or three instalments of £1,000.',
-      }}
-      cta={{ label: 'Book a discovery call', href: '/contact' }}
-    />
-  );
+export default async function SignalPage() {
+  const cms = await getProgrammeBySlug('signal');
+  const props = programmeProps(cms, {
+    title: 'Signal.',
+    tagline: 'Twelve weeks. One-to-one. The deeper container.',
+    accentColour: '#6E3A5A',
+    image: getStockImage('programmes', 'signal'),
+    intro: [
+      'Twelve weeks is enough time for something to genuinely change. Not the surface, the pattern underneath it. The automatic response that has been running your decisions, your relationships, and your relationship to yourself without your full permission.',
+      'Signal is the full twelve-week somatic coaching programme. Inner world rewire, pattern release, belief repatterning, rebuilding from the inside out. Weekly sessions, integration support throughout.',
+    ],
+    whatsIncludedItems: [
+      'Twelve 1:1 sessions, weekly, 60 minutes each',
+      'Voxer support Tuesday to Thursday',
+      'Personalised Signal Method workbook',
+      'Lifetime access to recordings',
+      'Optional in-person session at the Hampton studio',
+    ],
+    pricingBody: '£3,000. Paid in full, or three instalments of £1,000.',
+    ctaLabel: 'Book a discovery call',
+    ctaUrl: '/contact',
+  });
+  return <ProgrammePage {...props} />;
 }

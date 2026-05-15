@@ -1,0 +1,44 @@
+{
+  "kind": "singleType",
+  "collectionName": "reset_letters_pages",
+  "info": {
+    "singularName": "reset-letters-page",
+    "pluralName": "reset-letters-pages",
+    "displayName": "Reset Letters Page",
+    "description": "Holding page copy for /reset-letters (Substack launch)"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "comingSoonLabel": { "type": "string", "default": "COMING SOON" },
+    "strapline": { "type": "string", "default": "for women who have been holding everything" },
+
+    "heroHeadline": { "type": "string", "default": "If you've been holding everything for a long time, this is for you." },
+    "heroBody1": { "type": "text", "default": "Reset Letters is a weekly magazine about what happens when you finally put it all down. The managing. The performing. The pretending you're fine. This is for the women who have been carrying it all and are ready for something different." },
+    "heroBody2": { "type": "text", "default": "It is written by me, Anna Lou, with contributions from coaches, therapists, and women I trust. It covers everything from nervous system work and emotional intelligence to beauty, recipes, dating, motherhood, crystals, career pivots, and whatever else needs saying. It is not a wellness brand. It is a living, breathing magazine for real women." },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+
+    "whatItIsTitle": { "type": "string", "default": "WHAT IT IS" },
+    "whatItIsBody": { "type": "text", "default": "Reset Letters is a Substack publication. Think of it as a weekly magazine that lands in your inbox every Sunday morning. It is free to read, with some content available only to paying members.\n\nEach edition explores a different corner of what it means to live as a woman who is no longer willing to shrink. From the practical (budgeting after divorce, how to actually meditate, what to cook when you cannot think) to the poetic (what your nervous system is trying to tell you, the art of leaving, how crystals hold memory).\n\nIt is broad on purpose. Because women are broad. We do not live in one lane.\n\nSome weeks will make you cry. Some will make you laugh. Some will just make you feel like someone finally said the thing you have been thinking.\n\nThat is the point." },
+
+    "eachWeekTitle": { "type": "string", "default": "EACH WEEK" },
+    "eachWeekBody": { "type": "text", "default": "Sunday Cosmic Forecast — Your weekly energy reading. Moon phases, planetary shifts, and what they mean for your body and your week ahead.\n\nWednesday Signal Check — A midweek nervous system check-in. Short, grounding, practical. The pause you did not know you needed.\n\nMonthly Reset Story — A long-form piece. Real women. Real turning points. Written with care and without filter.\n\nMonthly Contributor Feature — A guest voice. A coach, therapist, artist, or someone with a story worth hearing." },
+
+    "voicesTitle": { "type": "string", "default": "VOICES & CONTRIBUTORS" },
+    "voicesBody": { "type": "text", "default": "Reset Letters is not a solo project. It is a magazine. That means multiple voices, different perspectives, and the kind of editorial range that keeps things honest.\n\nContributors include coaches, therapists, nutritionists, astrologers, designers, mothers, founders, and women who have simply lived through something worth sharing. Some are well known. Some are not. All of them are real.\n\nIf you would like to contribute, or know someone who should, get in touch at hello@annalouwellness.com." },
+
+    "aboutAnnaTitle": { "type": "string", "default": "A BIT ABOUT ANNA" },
+    "aboutAnnaBody": { "type": "text", "default": "Anna Lou Scaife is a somatic coach, nervous system specialist, and jewellery designer based in London. She has spent 25 years working with women through every kind of transition. Divorce. Career change. Motherhood. Burnout. Identity loss. Coming back to life. She created Reset Letters because she wanted a space that did not belong to social media. Something slower. Something you could read with a cup of tea on Sunday morning and actually feel different afterwards." },
+
+    "launchLabel": { "type": "string", "default": "LAUNCHING" },
+    "launchDate": { "type": "string", "default": "22 JUNE 2026" },
+
+    "founderEyebrow": { "type": "string", "default": "FOUNDING MEMBER OFFER" },
+    "founderHeadline": { "type": "string", "default": "First 500 subscribers join free, for life." },
+    "founderBody": { "type": "text", "default": "After the first 500, Reset Letters will cost £7 per month. But if you sign up before launch, you get everything. For ever. No catch." },
+    "founderBenefits": { "type": "text", "default": "Full access to every edition, including paid content\nEarly access to Anna's events, retreats, and new products\nFounding Member badge on your Substack profile\nAccess to the private Reset Letters community thread\nA personal welcome email from Anna" },
+
+    "ctaButtonLabel": { "type": "string", "default": "Claim your founding spot" },
+    "ctaPlaceholder": { "type": "string", "default": "your email" },
+    "ctaMicrocopy": { "type": "string", "default": "No spam. Honest writing. Cancel any time." }
+  }
+}

@@ -126,6 +126,22 @@
     "footer_copyright": {
       "type": "string"
     },
+    "footer_short_about": {
+      "type": "text",
+      "default": "A magazine for women coming back to themselves. Honest writing, somatic practice, and quiet rituals from Anna Lou Scaife."
+    },
+    "contact_email": {
+      "type": "string",
+      "default": "hello@annalouwellness.com"
+    },
+    "address": {
+      "type": "text",
+      "default": "Taggs Island, Hampton, London"
+    },
+    "substack_url": {
+      "type": "string",
+      "default": "https://annalouwellness.substack.com"
+    },
     "maintenance_mode": {
       "type": "boolean",
       "default": false

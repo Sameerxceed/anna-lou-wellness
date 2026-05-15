@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getStockImage, STOCK } from '@/data/stock-images';
+import { fetchAPI, mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
   title: 'The Reset Room | Monthly Somatic Membership',
@@ -14,7 +15,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ResetRoomPage() {
+const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
+  const v = cms?.[key];
+  return typeof v === 'string' && v.trim() ? v : fallback;
+};
+
+const bullets = (raw: string): string[] =>
+  raw.split('\n').map((s) => s.trim()).filter(Boolean);
+
+export default async function ResetRoomPage() {
+  let cms: Record<string, unknown> | null = null;
+  try {
+    const { data: d } = await fetchAPI('/reset-room-page', { populate: '*' });
+    cms = (d as Record<string, unknown>) || null;
+  } catch { cms = null; }
+
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined);
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: roomStyles }} />
@@ -23,22 +40,22 @@ export default function ResetRoomPage() {
       <section className="rr-hero">
         <div className="rr-hero-grid">
           <div className="rr-hero-inner">
-            <p className="rr-eyebrow">Monthly somatic membership</p>
-            <h1 className="rr-title">The Reset Room.</h1>
-            <p className="rr-tagline"><em>Where the work moves from podcast to practice.</em></p>
+            <p className="rr-eyebrow">{f(cms, 'heroEyebrow', 'Monthly somatic membership')}</p>
+            <h1 className="rr-title">{f(cms, 'heroTitle', 'The Reset Room.')}</h1>
+            <p className="rr-tagline"><em>{f(cms, 'heroTagline', 'Where the work moves from podcast to practice.')}</em></p>
             <div className="rr-hero-cta">
-              <a href="#join" className="rr-btn-primary">Join the Reset Room &middot; £25/month</a>
-              <a href="#whats-inside" className="rr-btn-ghost">See what&apos;s inside &darr;</a>
+              <a href="#join" className="rr-btn-primary">{f(cms, 'heroCtaLabel', 'Join the Reset Room · £25/month')}</a>
+              <a href="#whats-inside" className="rr-btn-ghost">{f(cms, 'heroSecondaryLabel', "See what's inside")} &darr;</a>
             </div>
             <div className="rr-hero-strip">
-              <span>£25/month</span><span>&middot;</span>
-              <span>No minimum term</span><span>&middot;</span>
-              <span>Cancel any time</span>
+              {f(cms, 'heroPriceStrip', '£25/month · No minimum term · Cancel any time').split('·').map((part, i, arr) => (
+                <span key={i}>{part.trim()}{i < arr.length - 1 && <span style={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}>·</span>}</span>
+              ))}
             </div>
           </div>
           <div
             className="rr-hero-photo"
-            style={{ backgroundImage: `url('${getStockImage('reset-room', 'reset-room-hero')}')` }}
+            style={{ backgroundImage: `url('${heroImage || getStockImage('reset-room', 'reset-room-hero')}')` }}
           />
         </div>
       </section>
@@ -46,51 +63,45 @@ export default function ResetRoomPage() {
       {/* Opening body */}
       <section className="rr-intro">
         <div className="rr-intro-inner">
-          <p className="rr-intro-lead">The Reset Letters are the front door. The Reset Room is the room behind it.</p>
-          <p className="rr-intro-body">This is where the work stops being something you read and starts being something you practice. A members-only podcast, a monthly live call with me, and a growing vault of guided journeys. All for £25 a month.</p>
+          <p className="rr-intro-lead">{f(cms, 'introLead', 'The Reset Letters are the front door. The Reset Room is the room behind it.')}</p>
+          <p className="rr-intro-body">{f(cms, 'introBody', 'This is where the work stops being something you read and starts being something you practice. A members-only video room, a monthly live call with me, and a growing vault of guided journeys. All for £25 a month.')}</p>
         </div>
       </section>
 
       {/* Three pillars — colour-blocked cards */}
       <section className="rr-pillars" id="whats-inside">
         <div className="rr-pillars-header">
-          <p className="rr-section-label">What&apos;s inside</p>
-          <h2 className="rr-section-title">Three pillars. One quiet room.</h2>
+          <p className="rr-section-label">{f(cms, 'pillarsKicker', "What's inside")}</p>
+          <h2 className="rr-section-title">{f(cms, 'pillarsTitle', 'Three pillars. One quiet room.')}</h2>
         </div>
         <div className="rr-pillar-grid">
           <article className="rr-pillar rr-p-cream">
             <div className="rr-pillar-num">01</div>
-            <p className="rr-pillar-kicker">The Private Podcast</p>
-            <h3 className="rr-pillar-name">Reset Room Sessions</h3>
-            <p className="rr-pillar-body">A members-only podcast. Two new intimate episodes a month, the conversations that do not belong on the public feed. Listen where you already listen — Apple, Spotify, Overcast.</p>
+            <p className="rr-pillar-kicker">{f(cms, 'pillar1Kicker', 'Reset Room Sessions')}</p>
+            <h3 className="rr-pillar-name">{f(cms, 'pillar1Name', 'Bi-weekly intimate sessions')}</h3>
+            <p className="rr-pillar-body">{f(cms, 'pillar1Body', 'Two new intimate video sessions a month, the conversations that do not belong on the public feed. Watch in your own time, inside the room.')}</p>
             <ul className="rr-pillar-list">
-              <li>2 new episodes / month</li>
-              <li>Private RSS — your player, your way</li>
-              <li>Founding episodes already inside</li>
+              {bullets(f(cms, 'pillar1Bullets', '2 new sessions / month\nWatch any time inside the room\nFounding sessions already inside')).map((b, i) => <li key={i}>{b}</li>)}
             </ul>
           </article>
 
           <article className="rr-pillar rr-p-pink">
             <div className="rr-pillar-num">02</div>
-            <p className="rr-pillar-kicker">The Monthly Live</p>
-            <h3 className="rr-pillar-name">The Reset Call</h3>
-            <p className="rr-pillar-body">Ninety minutes with me, live on Zoom, first Thursday of every month. Bring your questions, sit with the group, leave with what you came for. Replay sent the next day.</p>
+            <p className="rr-pillar-kicker">{f(cms, 'pillar2Kicker', 'The Reset Call')}</p>
+            <h3 className="rr-pillar-name">{f(cms, 'pillar2Name', 'Monthly live with Anna')}</h3>
+            <p className="rr-pillar-body">{f(cms, 'pillar2Body', 'Ninety minutes with me, live on Zoom, first Thursday of every month. Bring your questions, sit with the group, leave with what you came for. Replay added to the room the next day.')}</p>
             <ul className="rr-pillar-list">
-              <li>1st Thursday, 7.30pm UK</li>
-              <li>90 minutes, group format</li>
-              <li>Replay in the Vault by Friday</li>
+              {bullets(f(cms, 'pillar2Bullets', '1st Thursday, 7.30pm UK\n90 minutes, group format\nReplay live by Friday lunchtime')).map((b, i) => <li key={i}>{b}</li>)}
             </ul>
           </article>
 
           <article className="rr-pillar rr-p-blue">
             <div className="rr-pillar-num">03</div>
-            <p className="rr-pillar-kicker">The Signature Journeys</p>
-            <h3 className="rr-pillar-name">The Reset Vault</h3>
-            <p className="rr-pillar-body">A growing library of guided somatic journeys. Music, breath, visualisation, embodiment. New piece every month. Where insight becomes the actual life.</p>
+            <p className="rr-pillar-kicker">{f(cms, 'pillar3Kicker', 'The Reset Vault')}</p>
+            <h3 className="rr-pillar-name">{f(cms, 'pillar3Name', 'Signature journeys library')}</h3>
+            <p className="rr-pillar-body">{f(cms, 'pillar3Body', 'A growing library of guided somatic journeys. Music, breath, visualisation, embodiment. New piece every month. Where insight becomes the actual life.')}</p>
             <ul className="rr-pillar-list">
-              <li>7 founding journeys ready</li>
-              <li>1 new piece every month</li>
-              <li>Audio + video + downloadable</li>
+              {bullets(f(cms, 'pillar3Bullets', '7 founding journeys at launch\nNew journey added monthly\nVideo + audio, watch eyes-closed')).map((b, i) => <li key={i}>{b}</li>)}
             </ul>
           </article>
         </div>
@@ -99,28 +110,24 @@ export default function ResetRoomPage() {
       {/* Also included — playful colour band */}
       <section className="rr-extras">
         <div className="rr-extras-inner">
-          <p className="rr-section-label rr-on-dark">Also included</p>
-          <h2 className="rr-section-title rr-on-dark">The room comes with the rest of the house.</h2>
+          <p className="rr-section-label rr-on-dark">{f(cms, 'alsoIncludedKicker', 'Also included')}</p>
+          <h2 className="rr-section-title rr-on-dark">{f(cms, 'alsoIncludedTitle', 'The room comes with the rest of the house.')}</h2>
           <div className="rr-extras-grid">
             <div className="rr-extra">
               <div className="rr-extra-dot" style={{ background: '#FFD07A' }} />
-              <h4>Workshop replays</h4>
-              <p>Every workshop I have ever run, free for you inside.</p>
+              <p>{f(cms, 'alsoIncluded1', 'Workshop replays — every workshop I have ever run, free for you inside.')}</p>
             </div>
             <div className="rr-extra">
               <div className="rr-extra-dot" style={{ background: '#5DCAA5' }} />
-              <h4>Retreat early access</h4>
-              <p>48-hour members-only window on every new retreat before it goes public.</p>
+              <p>{f(cms, 'alsoIncluded2', 'Forty-eight-hour members-only window on every new retreat before it goes public.')}</p>
             </div>
             <div className="rr-extra">
               <div className="rr-extra-dot" style={{ background: '#F280AA' }} />
-              <h4>10% off all 1:1 work</h4>
-              <p>Member rate on all Reset Sessions and One Day intensives.</p>
+              <p>{f(cms, 'alsoIncluded3', 'Ten percent off all 1:1 Reset Sessions and One Day intensives.')}</p>
             </div>
             <div className="rr-extra">
               <div className="rr-extra-dot" style={{ background: '#7BAFDD' }} />
-              <h4>Members-only events</h4>
-              <p>Quiet rooms that never go on the public calendar.</p>
+              <p>{f(cms, 'alsoIncluded4', 'Members-only events that never go on the public calendar.')}</p>
             </div>
           </div>
         </div>
@@ -156,7 +163,7 @@ export default function ResetRoomPage() {
       <section className="rr-who">
         <div className="rr-who-inner">
           <p className="rr-section-label">Who it&apos;s for</p>
-          <p className="rr-who-body">The Reset Room is for the woman who has been reading the Reset Letters, listening to the podcast, doing the work on her own, and is ready for something that holds her more closely.</p>
+          <p className="rr-who-body">{f(cms, 'whoBody', 'The Reset Room is for the woman who has been reading the Reset Letters, doing the work on her own, and is ready for something that holds her more closely.')}</p>
           <p className="rr-who-emphasis"><em>Not therapy. Not a course. A room.</em></p>
         </div>
       </section>
@@ -165,9 +172,9 @@ export default function ResetRoomPage() {
       <section className="rr-final" id="join">
         <div className="rr-final-inner">
           <p className="rr-section-label rr-on-plum">Join</p>
-          <h2 className="rr-final-title">Step inside the room.</h2>
-          <p className="rr-final-body">£25 a month. No minimum term. Cancel any time. Everything you need is delivered through the podcast player you already use and the member portal you can come back to whenever you want.</p>
-          <a href="#" className="rr-btn-large">Join the Reset Room &middot; £25/month &rarr;</a>
+          <h2 className="rr-final-title">{f(cms, 'priceTitle', 'Step inside the room.')}</h2>
+          <p className="rr-final-body">{f(cms, 'priceBody', '£25 a month. No minimum term. Cancel any time. Everything is delivered through the member portal you can come back to whenever you want.')}</p>
+          <a href="#" className="rr-btn-large">{f(cms, 'priceCtaLabel', 'Join the Reset Room')} &middot; £25/month &rarr;</a>
           <p className="rr-final-fineprint">Secured by Stripe. Instant access. Unsubscribe in one click from your member portal.</p>
         </div>
       </section>

@@ -8,7 +8,7 @@
     "description": "Frequently asked questions with FAQ schema for SEO"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "question": {

@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "programmes",
+  "info": {
+    "singularName": "programme",
+    "pluralName": "programmes",
+    "displayName": "Programme",
+    "description": "Individual coaching/membership programmes (The Reset, Signal, Signal & Build, One Day, Reset Sessions, etc.)"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "title": { "type": "string", "required": true },
+    "tagline": { "type": "string" },
+    "accentColour": { "type": "string", "default": "#F280AA", "description": "Brand colour hex (e.g. #F280AA pink, #7BAFDD blue, #FAA21B gold)" },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "intro": { "type": "text", "description": "Multiple paragraphs separated by blank line. Each paragraph becomes its own <p>." },
+    "whatsIncludedLabel": { "type": "string", "default": "What's included" },
+    "whatsIncludedItems": { "type": "text", "description": "One bullet per line." },
+    "approachLabel": { "type": "string", "default": "The approach" },
+    "approachBody": { "type": "text" },
+    "outcomesLabel": { "type": "string", "default": "What changes" },
+    "outcomesBody": { "type": "text" },
+    "pricingLabel": { "type": "string", "default": "Investment" },
+    "pricingBody": { "type": "text" },
+    "ctaLabel": { "type": "string", "default": "Book a discovery call" },
+    "ctaUrl": { "type": "string", "default": "/contact" },
+    "displayOrder": { "type": "integer", "default": 100, "description": "Lower numbers show first in lists." },
+    "seoTitle": { "type": "string" },
+    "seoDescription": { "type": "text" }
+  }
+}

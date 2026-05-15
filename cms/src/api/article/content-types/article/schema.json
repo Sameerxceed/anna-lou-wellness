@@ -8,7 +8,7 @@
     "description": "Editorial articles for Reset Stories, Life, Love & Relationships, Work & Money"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "title": {
