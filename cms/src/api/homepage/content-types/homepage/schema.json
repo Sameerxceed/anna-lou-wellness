@@ -5,72 +5,116 @@
     "singularName": "homepage",
     "pluralName": "homepages",
     "displayName": "Homepage",
-    "description": "Homepage content"
+    "description": "All editable copy for the homepage. Leave a field blank to use the V8 default."
   },
   "options": {
     "draftAndPublish": true
   },
   "attributes": {
-    "hero_title": {
-      "type": "string",
-      "default": "Beautifully Whole"
-    },
-    "hero_subtitle": {
-      "type": "string",
-      "default": "Anna Lou Wellness"
-    },
-    "hero_tagline": {
-      "type": "text"
-    },
-    "hero_video": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "videos"
-      ]
-    },
-    "hero_poster": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
-    "cta_primary_text": {
-      "type": "string",
-      "default": "Work With Me"
-    },
-    "cta_primary_link": {
-      "type": "string",
-      "default": "/coaching"
-    },
-    "cta_secondary_text": {
-      "type": "string",
-      "default": "Shop"
-    },
-    "cta_secondary_link": {
-      "type": "string",
-      "default": "/shop"
-    },
-    "intro_label": {
-      "type": "string",
-      "default": "Reset Stories"
-    },
-    "intro_heading": {
-      "type": "string"
-    },
-    "intro_body": {
-      "type": "richtext"
-    },
-    "intro_quote": {
-      "type": "text"
-    },
-    "intro_image": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
-    }
+    "issueLine": { "type": "string", "default": "Issue No. 01 · Summer 2026" },
+    "insideThisIssueLine": { "type": "string", "default": "Inside this issue" },
+
+    "heroKicker": { "type": "string", "default": "Reset Stories" },
+    "heroTitle": { "type": "string", "default": "Come back to yourself." },
+    "heroBody": { "type": "text", "default": "What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived." },
+    "heroCtaPrimaryLabel": { "type": "string", "default": "Read the Reset Stories" },
+    "heroCtaPrimaryUrl": { "type": "string", "default": "/reset-stories" },
+    "heroCtaSecondaryLabel": { "type": "string", "default": "Work with Anna" },
+    "heroCtaSecondaryUrl": { "type": "string", "default": "/the-work" },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+
+    "featuredFallbackTitle": { "type": "string", "default": "You are not overwhelmed. You are holding everything." },
+    "featuredFallbackAuthor": { "type": "string", "default": "Anna Lou" },
+    "featuredFallbackReadingTime": { "type": "string", "default": "6 min read" },
+    "featuredFallbackExcerpt": { "type": "text" },
+
+    "mantra1": { "type": "text", "default": "You don't have to hold all of this. Come back to yourself." },
+
+    "quote1Text": { "type": "text", "default": "Maybe the next level isn't about managing everything more gracefully. Maybe it's about not gripping so tightly in the first place." },
+    "quote1Attribution": { "type": "string", "default": "Anna Lou" },
+
+    "workKicker": { "type": "string", "default": "The Work" },
+    "workTitle": { "type": "string", "default": "Your inner world already knows." },
+    "workBody1": { "type": "text", "default": "Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live." },
+    "workBody2": { "type": "text", "default": "The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey." },
+    "workCtaPrimaryLabel": { "type": "string", "default": "Start with the free Nervous System Decoder" },
+    "workCtaPrimaryUrl": { "type": "string", "default": "/the-work" },
+    "workCtaSecondaryLabel": { "type": "string", "default": "Explore all the ways to work" },
+    "workCtaSecondaryUrl": { "type": "string", "default": "/the-work/ways-to-work-with-me" },
+    "workImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+
+    "exploreKicker": { "type": "string", "default": "Explore" },
+    "exploreTitle": { "type": "string", "default": "Life, Love, and Work" },
+    "exploreLifeBody": { "type": "text", "default": "Rituals and energy, home and space, style and beauty, food and nourishment, weekend finds." },
+    "exploreLoveBody": { "type": "text", "default": "Dating and patterns, breakups and reset, friendship, motherhood, self worth and identity." },
+    "exploreWorkBody": { "type": "text", "default": "Founder reset, burnout and nervous system, Signal Method™, career and direction, money and worth." },
+
+    "quote2Text": { "type": "text", "default": "Your inner guidance system was never broken. It was waiting for you to stop overriding it." },
+    "quote2Attribution": { "type": "string", "default": "Anna Lou" },
+
+    "experiencesKicker": { "type": "string", "default": "Experiences" },
+    "experiencesTitle": { "type": "string", "default": "Workshops, retreats, and reset days." },
+    "experiencesBody": { "type": "text", "default": "Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself." },
+    "experiencesCtaLabel": { "type": "string", "default": "Browse all experiences" },
+
+    "newsletterKicker": { "type": "string", "default": "Reset Letters" },
+    "newsletterTitle": { "type": "string", "default": "A letter, every week, that feels like coming home." },
+    "newsletterBody": { "type": "text", "default": "Honest, beautiful writing about your inner world, jewellery with meaning, houseboat life, and what it actually feels like to return to yourself." },
+    "newsletterFreeTierLabel": { "type": "string", "default": "Free" },
+    "newsletterFreeTierBody": { "type": "text", "default": "One letter a month. The last Friday digest with a personal note from Anna." },
+    "newsletterPlusTierLabel": { "type": "string", "default": "Plus" },
+    "newsletterPlusTierBody": { "type": "text", "default": "Everything weekly. Full Sunday Cosmic Forecast, Wednesday Signal Check, Friday ESJ Drop, monthly Reset Story, full archive, early event access." },
+    "newsletterCtaLabel": { "type": "string", "default": "Join on Substack →" },
+    "newsletterCtaUrl": { "type": "string", "default": "https://annalouwellness.substack.com" },
+    "newsletterMicrocopy": { "type": "string", "default": "No spam. Honest writing. Cancel any time." },
+
+    "shopKicker": { "type": "string", "default": "Anna Lou of London" },
+    "shopTitle": { "type": "string", "default": "Jewellery with meaning. Made to be worn." },
+    "shopBody": { "type": "text", "default": "I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you." },
+    "shopProduct1Hook": { "type": "text", "default": "I reach for this one when I need to remember what is underneath the noise" },
+    "shopProduct1Name": { "type": "string", "default": "Moonstone Necklace" },
+    "shopProduct2Hook": { "type": "text", "default": "For the days my mind is doing too much and I need clarity not calm" },
+    "shopProduct2Name": { "type": "string", "default": "Clear Quartz Necklace" },
+    "shopProduct3Hook": { "type": "text", "default": "The word you keep coming back to, worn close to your throat" },
+    "shopProduct3Name": { "type": "string", "default": "Personalised Phrase Necklace" },
+    "shopCtaLabel": { "type": "string", "default": "Browse all jewellery" },
+
+    "mediaKicker": { "type": "string", "default": "Watch · Listen · Read" },
+    "mediaTitle": { "type": "string", "default": "The Reset with Anna." },
+    "mediaTile1Label": { "type": "string", "default": "YouTube" },
+    "mediaTile1Title": { "type": "string", "default": "Come Back to Yourself — daily mantras and practices." },
+    "mediaTile1Meta": { "type": "string", "default": "Video series" },
+    "mediaTile1Url": { "type": "string", "default": "#" },
+    "mediaTile2Label": { "type": "string", "default": "Podcast" },
+    "mediaTile2Title": { "type": "string", "default": "The Reset with Anna Lou — honest conversations about the inner world." },
+    "mediaTile2Meta": { "type": "string", "default": "Coming soon" },
+    "mediaTile2Url": { "type": "string", "default": "#" },
+    "mediaTile3Label": { "type": "string", "default": "Substack" },
+    "mediaTile3Title": { "type": "string", "default": "Reset Letters — weekly writing that feels like coming home." },
+    "mediaTile3Meta": { "type": "string", "default": "Weekly newsletter" },
+    "mediaTile3Url": { "type": "string", "default": "https://annalouwellness.substack.com" },
+
+    "quote3Text": { "type": "text", "default": "The feeling itself moves through in ninety seconds if you let it. Nine years of running from ninety seconds of feeling is an extraordinary amount of cardio." },
+    "quote3Attribution": { "type": "string", "default": "Anna Lou" },
+
+    "communityKicker": { "type": "string", "default": "Community" },
+    "communityTitle": { "type": "string", "default": "Come and sit with us." },
+    "communityBody1": { "type": "text", "default": "Every Tuesday I hold a circle at The Hare and the Moon, Twickenham. Donation-based. No agenda except being in the room together. Connection is not a concept. It is biological." },
+    "communityBody2": { "type": "text", "default": "The Returning Circle runs every week without exception. No waitlist needed. Come on Tuesday." },
+    "communityBody3": { "type": "text", "default": "A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Water outside, no agenda, just space to come back to yourself." },
+    "communityCta1Label": { "type": "string", "default": "The Returning Circle" },
+    "communityCta1Url": { "type": "string", "default": "/community/the-returning-circle" },
+    "communityCta2Label": { "type": "string", "default": "The Reset Room" },
+    "communityCta2Url": { "type": "string", "default": "/community/reset-room" },
+    "communityCta3Label": { "type": "string", "default": "Retreat days" },
+    "communityCta3Url": { "type": "string", "default": "/experiences/retreats" },
+    "communityImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+
+    "portraitKicker": { "type": "string", "default": "About" },
+    "portraitTitle": { "type": "string", "default": "Twenty-five years leaves a trail." },
+    "portraitBody": { "type": "text", "default": "From the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot." },
+    "portraitCtaLabel": { "type": "string", "default": "Read Anna's story" },
+    "portraitCtaUrl": { "type": "string", "default": "/about" },
+    "portraitImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
   }
 }

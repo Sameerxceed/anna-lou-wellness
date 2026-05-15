@@ -29,54 +29,23 @@ import {
 export type { Product, Category, Event, SiteSettings, NavItem, FooterLinks };
 
 // ═══ HOMEPAGE ═══
-export async function getHomepage() {
-  const fallback = {
-    hero: {
-      title: 'Beautifully Whole',
-      subtitle: 'Anna Lou Wellness',
-      tagline: 'Coaching, healing, and transformation for women ready\nto step into a more aligned version of themselves.',
-      posterImage: '',
-      ctaPrimary: { text: 'Work With Me', href: '/coaching' },
-      ctaSecondary: { text: 'Shop', href: '/shop' },
-    },
-    intro: {
-      label: 'Reset Stories',
-      heading: 'Come back\nto yourself',
-      body: 'Anna Lou Wellness is a platform for women ready to step into a more aligned, elevated version of themselves.',
-      quote: 'Your reset starts here.\nBeautifully Whole.',
-      image: '',
-    },
-  };
+// Returns the raw Strapi singleType for homepage. The page reads each field
+// with `?? hardcoded-default` fallback so a missing/blank CMS field renders the
+// V8 baseline copy. If Strapi is unreachable, returns null and the page uses
+// every default.
+export type HomepageData = Record<string, unknown> & {
+  heroImage?: { url?: string } | null;
+  workImage?: { url?: string } | null;
+  communityImage?: { url?: string } | null;
+  portraitImage?: { url?: string } | null;
+};
 
+export async function getHomepage(): Promise<HomepageData | null> {
   try {
     const { data: d } = await fetchAPI('/homepage', { populate: '*' });
-    if (!d) return fallback;
-    return {
-      hero: {
-        title: d.hero_title || fallback.hero.title,
-        subtitle: d.hero_subtitle || fallback.hero.subtitle,
-        tagline: d.hero_tagline || fallback.hero.tagline,
-        posterImage: mediaUrl(d.hero_poster) || fallback.hero.posterImage,
-        videoSrc: d.hero_video ? mediaUrl(d.hero_video) : undefined,
-        ctaPrimary: {
-          text: d.cta_primary_text || fallback.hero.ctaPrimary.text,
-          href: d.cta_primary_link || fallback.hero.ctaPrimary.href,
-        },
-        ctaSecondary: {
-          text: d.cta_secondary_text || fallback.hero.ctaSecondary.text,
-          href: d.cta_secondary_link || fallback.hero.ctaSecondary.href,
-        },
-      },
-      intro: {
-        label: d.intro_label || fallback.intro.label,
-        heading: d.intro_heading || fallback.intro.heading,
-        body: d.intro_body || fallback.intro.body,
-        quote: d.intro_quote || fallback.intro.quote,
-        image: mediaUrl(d.intro_image) || fallback.intro.image,
-      },
-    };
+    return (d as HomepageData) || null;
   } catch {
-    return fallback;
+    return null;
   }
 }
 

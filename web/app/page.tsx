@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { getFeaturedArticles, getArticles } from '@/lib/cms';
+import { getFeaturedArticles, getArticles, getHomepage } from '@/lib/cms';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
+import { mediaUrl } from '@/lib/strapi';
 
 // Section mapping for article links
 const sectionPaths: Record<string, string> = {
@@ -10,21 +11,33 @@ const sectionPaths: Record<string, string> = {
   'work-and-money': '/work-and-money',
 };
 
+// Pull a string field from Strapi homepage with fallback. Empty/null/undefined → fallback.
+const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
+  const v = cms?.[key];
+  return typeof v === 'string' && v.trim() ? v : fallback;
+};
+
 export default async function HomePage() {
-  const [featuredArticles, recentArticles] = await Promise.all([
+  const [featuredArticles, recentArticles, homepage] = await Promise.all([
     getFeaturedArticles(1),
     getArticles(),
+    getHomepage(),
   ]);
 
   const featured = featuredArticles[0] || null;
   const gridArticles = recentArticles.filter(a => !a.isFeatured).slice(0, 3);
+  const cms = (homepage as Record<string, unknown> | null) ?? null;
+  const heroImageUrl = mediaUrl(cms?.heroImage as { url?: string } | undefined);
+  const workImageUrl = mediaUrl(cms?.workImage as { url?: string } | undefined);
+  const communityImageUrl = mediaUrl(cms?.communityImage as { url?: string } | undefined);
+  const portraitImageUrl = mediaUrl(cms?.portraitImage as { url?: string } | undefined);
 
   return (
     <>
       {/* ═══ EDITORIAL FRAMING ═══ */}
       <div className="editorial-frame reveal">
-        <p className="editorial-issue">Issue No. 01 &middot; Summer 2026</p>
-        <p className="editorial-inside">Inside this issue</p>
+        <p className="editorial-issue">{f(cms, 'issueLine', 'Issue No. 01 · Summer 2026')}</p>
+        <p className="editorial-inside">{f(cms, 'insideThisIssueLine', 'Inside this issue')}</p>
       </div>
 
       {/* ═══ HERO ═══ */}
@@ -32,15 +45,15 @@ export default async function HomePage() {
         <div className="hp-hero-inner">
           <div
             className="hp-hero-image has-image reveal"
-            style={{ backgroundImage: `url(${getStockImage('hero', 'home-hero', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${heroImageUrl || getStockImage('hero', 'home-hero', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
           <div className="reveal rd1">
-            <p className="hp-hero-tag">Reset Stories</p>
-            <h1 className="hp-hero-title">Come back to <em>yourself.</em></h1>
-            <p className="hp-hero-body">What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.</p>
+            <p className="hp-hero-tag">{f(cms, 'heroKicker', 'Reset Stories')}</p>
+            <h1 className="hp-hero-title">{f(cms, 'heroTitle', 'Come back to yourself.')}</h1>
+            <p className="hp-hero-body">{f(cms, 'heroBody', 'What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.')}</p>
             <div className="hp-hero-ctas">
-              <Link href="/reset-stories" className="cta-link cta-plum">Read the Reset Stories <span>&rarr;</span></Link>
-              <Link href="/the-work" className="cta-link cta-pink">Work with Anna <span>&rarr;</span></Link>
+              <Link href={f(cms, 'heroCtaPrimaryUrl', '/reset-stories')} className="cta-link cta-plum">{f(cms, 'heroCtaPrimaryLabel', 'Read the Reset Stories')} <span>&rarr;</span></Link>
+              <Link href={f(cms, 'heroCtaSecondaryUrl', '/the-work')} className="cta-link cta-pink">{f(cms, 'heroCtaSecondaryLabel', 'Work with Anna')} <span>&rarr;</span></Link>
             </div>
           </div>
         </div>
@@ -51,9 +64,9 @@ export default async function HomePage() {
         <div className="hp-featured-inner">
           <div className="reveal">
             <div className="hp-featured-label">Featured Reset Story</div>
-            <h2 className="hp-featured-title">{featured?.title || 'You are not overwhelmed. You are holding everything.'}</h2>
-            <div className="hp-featured-meta">By {featured?.author || 'Anna Lou'} &middot; {featured?.readingTime || '6 min read'}</div>
-            <p className="hp-featured-excerpt"><span className="drop-cap">{(featured?.excerpt || 'T')[0]}</span>{(featured?.excerpt || '').slice(1)}</p>
+            <h2 className="hp-featured-title">{featured?.title || f(cms, 'featuredFallbackTitle', 'You are not overwhelmed. You are holding everything.')}</h2>
+            <div className="hp-featured-meta">By {featured?.author || f(cms, 'featuredFallbackAuthor', 'Anna Lou')} &middot; {featured?.readingTime || f(cms, 'featuredFallbackReadingTime', '6 min read')}</div>
+            <p className="hp-featured-excerpt"><span className="drop-cap">{(featured?.excerpt || f(cms, 'featuredFallbackExcerpt', 'T'))[0]}</span>{(featured?.excerpt || f(cms, 'featuredFallbackExcerpt', '')).slice(1)}</p>
             <Link href={featured ? `${sectionPaths[featured.category?.section || 'reset-stories'] || '/reset-stories'}/${featured.slug}` : '/reset-stories'} className="cta-link cta-plum">Continue reading <span>&rarr;</span></Link>
           </div>
           <div
@@ -88,31 +101,31 @@ export default async function HomePage() {
 
       {/* ═══ MANTRA STRIP ═══ */}
       <section className="hp-mantras reveal">
-        <p className="hp-mantra-text">You don&rsquo;t have to hold all of this. Come back to yourself.</p>
+        <p className="hp-mantra-text">{f(cms, 'mantra1', 'You don’t have to hold all of this. Come back to yourself.')}</p>
       </section>
 
       {/* ═══ QUOTE SLIDE #1 ═══ */}
       <section className="hp-quote reveal">
-        <p className="hp-quote-text">&ldquo;Maybe the next level isn&rsquo;t about managing everything more gracefully. Maybe it&rsquo;s about not gripping so tightly in the first place.&rdquo;</p>
-        <p className="hp-quote-attr">Anna Lou</p>
+        <p className="hp-quote-text">&ldquo;{f(cms, 'quote1Text', 'Maybe the next level isn’t about managing everything more gracefully. Maybe it’s about not gripping so tightly in the first place.')}&rdquo;</p>
+        <p className="hp-quote-attr">{f(cms, 'quote1Attribution', 'Anna Lou')}</p>
       </section>
 
       {/* ═══ THE WORK — magazine first, no pricing ═══ */}
       <section className="hp-work">
         <div className="hp-work-inner">
           <div className="reveal">
-            <p className="hp-kicker" style={{ color: '#F280AA' }}>The Work</p>
-            <h2 className="hp-section-title">Your inner world already knows.</h2>
-            <p className="hp-body">Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live. Not the story. Not the intellectual understanding. The actual place the pattern lives, in the automatic responses that fire before your conscious mind catches up.</p>
-            <p className="hp-body" style={{ marginBottom: '1.5rem' }}>The Signal Method&#8482; is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey.</p>
+            <p className="hp-kicker" style={{ color: '#F280AA' }}>{f(cms, 'workKicker', 'The Work')}</p>
+            <h2 className="hp-section-title">{f(cms, 'workTitle', 'Your inner world already knows.')}</h2>
+            <p className="hp-body">{f(cms, 'workBody1', 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.')}</p>
+            <p className="hp-body" style={{ marginBottom: '1.5rem' }}>{f(cms, 'workBody2', 'The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey.')}</p>
             <div className="hp-cta-group">
-              <Link href="/the-work" className="cta-link cta-pink">Start with the free Nervous System Decoder <span>&rarr;</span></Link>
-              <Link href="/the-work/ways-to-work-with-me" className="cta-link cta-muted">Explore all the ways to work <span>&rarr;</span></Link>
+              <Link href={f(cms, 'workCtaPrimaryUrl', '/the-work')} className="cta-link cta-pink">{f(cms, 'workCtaPrimaryLabel', 'Start with the free Nervous System Decoder')} <span>&rarr;</span></Link>
+              <Link href={f(cms, 'workCtaSecondaryUrl', '/the-work/ways-to-work-with-me')} className="cta-link cta-muted">{f(cms, 'workCtaSecondaryLabel', 'Explore all the ways to work')} <span>&rarr;</span></Link>
             </div>
           </div>
           <div
             className="hp-work-image has-image reveal rd2"
-            style={{ backgroundImage: `url(${getStockImage('programmes', 'work-section', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${workImageUrl || getStockImage('programmes', 'work-section', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
         </div>
       </section>
@@ -120,71 +133,71 @@ export default async function HomePage() {
       {/* ═══ EDITORIAL SECTIONS: Life, Love, Work ═══ */}
       <section className="hp-editorial-sections">
         <div className="hp-editorial-header reveal">
-          <p className="hp-kicker" style={{ color: '#FAA21B' }}>Explore</p>
-          <h2 className="hp-section-title">Life, Love, and Work</h2>
+          <p className="hp-kicker" style={{ color: '#FAA21B' }}>{f(cms, 'exploreKicker', 'Explore')}</p>
+          <h2 className="hp-section-title">{f(cms, 'exploreTitle', 'Life, Love, and Work')}</h2>
         </div>
         <div className="hp-editorial-grid">
           <Link href="/life" className="hp-editorial-tile reveal" style={{ borderLeft: '3px solid #FAA21B' }}>
             <h3 style={{ color: '#FAA21B' }}>Life</h3>
-            <p>Rituals and energy, home and space, style and beauty, food and nourishment, weekend finds.</p>
+            <p>{f(cms, 'exploreLifeBody', 'Rituals and energy, home and space, style and beauty, food and nourishment, weekend finds.')}</p>
           </Link>
           <Link href="/love-and-relationships" className="hp-editorial-tile reveal rd1" style={{ borderLeft: '3px solid #F280AA' }}>
             <h3 style={{ color: '#F280AA' }}>Love &amp; Relationships</h3>
-            <p>Dating and patterns, breakups and reset, friendship, motherhood, self worth and identity.</p>
+            <p>{f(cms, 'exploreLoveBody', 'Dating and patterns, breakups and reset, friendship, motherhood, self worth and identity.')}</p>
           </Link>
           <Link href="/work-and-money" className="hp-editorial-tile reveal rd2" style={{ borderLeft: '3px solid #FFD07A' }}>
             <h3 style={{ color: '#FFD07A' }}>Work &amp; Money</h3>
-            <p>Founder reset, burnout and nervous system, Signal Method&#8482;, career and direction, money and worth.</p>
+            <p>{f(cms, 'exploreWorkBody', 'Founder reset, burnout and nervous system, Signal Method™, career and direction, money and worth.')}</p>
           </Link>
         </div>
       </section>
 
       {/* ═══ QUOTE SLIDE #2 ═══ */}
       <section className="hp-quote reveal">
-        <p className="hp-quote-text">&ldquo;Your inner guidance system was never broken. It was waiting for you to stop overriding it.&rdquo;</p>
-        <p className="hp-quote-attr">Anna Lou</p>
+        <p className="hp-quote-text">&ldquo;{f(cms, 'quote2Text', 'Your inner guidance system was never broken. It was waiting for you to stop overriding it.')}&rdquo;</p>
+        <p className="hp-quote-attr">{f(cms, 'quote2Attribution', 'Anna Lou')}</p>
       </section>
 
       {/* ═══ EXPERIENCES — magazine first, no pricing ═══ */}
       <section className="hp-experiences">
         <div className="hp-experiences-inner">
           <div className="reveal">
-            <p className="hp-kicker" style={{ color: '#7BAFDD' }}>Experiences</p>
-            <h2 className="hp-section-title">Workshops, retreats, and reset days.</h2>
+            <p className="hp-kicker" style={{ color: '#7BAFDD' }}>{f(cms, 'experiencesKicker', 'Experiences')}</p>
+            <h2 className="hp-section-title">{f(cms, 'experiencesTitle', 'Workshops, retreats, and reset days.')}</h2>
           </div>
-          <p className="hp-body reveal">Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself. Workshops, retreats, corporate wellbeing, and speaking are all here.</p>
-          <Link href="/experiences" className="cta-link cta-blue reveal">Browse all experiences <span>&rarr;</span></Link>
+          <p className="hp-body reveal">{f(cms, 'experiencesBody', 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.')}</p>
+          <Link href="/experiences" className="cta-link cta-blue reveal">{f(cms, 'experiencesCtaLabel', 'Browse all experiences')} <span>&rarr;</span></Link>
         </div>
       </section>
 
       {/* ═══ RESET LETTERS / SUBSTACK ═══ */}
       <section className="hp-newsletter reveal">
-        <p className="hp-kicker" style={{ color: '#6E3A5A' }}>Reset Letters</p>
-        <h2 className="hp-newsletter-title">A letter, every week, that feels like coming home.</h2>
-        <p className="hp-newsletter-body">Honest, beautiful writing about your inner world, jewellery with meaning, houseboat life, and what it actually feels like to return to yourself.</p>
+        <p className="hp-kicker" style={{ color: '#6E3A5A' }}>{f(cms, 'newsletterKicker', 'Reset Letters')}</p>
+        <h2 className="hp-newsletter-title">{f(cms, 'newsletterTitle', 'A letter, every week, that feels like coming home.')}</h2>
+        <p className="hp-newsletter-body">{f(cms, 'newsletterBody', 'Honest, beautiful writing about your inner world, jewellery with meaning, houseboat life, and what it actually feels like to return to yourself.')}</p>
         <div className="hp-newsletter-tiers">
           <div className="hp-newsletter-tier">
-            <strong>Free</strong>
-            One letter a month. The last Friday digest with a personal note from Anna.
+            <strong>{f(cms, 'newsletterFreeTierLabel', 'Free')}</strong>
+            {f(cms, 'newsletterFreeTierBody', 'One letter a month. The last Friday digest with a personal note from Anna.')}
           </div>
           <div className="hp-newsletter-tier">
-            <strong>Plus</strong>
-            Everything weekly. Full Sunday Cosmic Forecast, Wednesday Signal Check, Friday ESJ Drop, monthly Reset Story, Contributor Feature, full archive, early event access.
+            <strong>{f(cms, 'newsletterPlusTierLabel', 'Plus')}</strong>
+            {f(cms, 'newsletterPlusTierBody', 'Everything weekly. Full Sunday Cosmic Forecast, Wednesday Signal Check, Friday ESJ Drop, monthly Reset Story, full archive, early event access.')}
           </div>
         </div>
-        <a href="#" className="hp-btn-substack">Join on Substack &rarr;</a>
+        <a href={f(cms, 'newsletterCtaUrl', 'https://annalouwellness.substack.com')} className="hp-btn-substack">{f(cms, 'newsletterCtaLabel', 'Join on Substack →')}</a>
         <p className="hp-newsletter-small" style={{ marginTop: '0.6rem' }}>
           <Link href="/cosmic-forecast" className="cta-link cta-plum" style={{ fontSize: '0.7rem' }}>Read this week&rsquo;s Cosmic Forecast summary &rarr;</Link>
         </p>
-        <p className="hp-newsletter-small">No spam. Honest writing. Cancel any time.</p>
+        <p className="hp-newsletter-small">{f(cms, 'newsletterMicrocopy', 'No spam. Honest writing. Cancel any time.')}</p>
       </section>
 
       {/* ═══ SHOP PREVIEW ═══ */}
       <section className="hp-shop">
         <div className="hp-shop-inner">
-          <p className="hp-kicker reveal" style={{ color: '#5DCAA5' }}>Anna Lou of London</p>
-          <h2 className="hp-section-title reveal rd1">Jewellery with meaning. Made to be worn.</h2>
-          <p className="hp-body reveal rd2">I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.</p>
+          <p className="hp-kicker reveal" style={{ color: '#5DCAA5' }}>{f(cms, 'shopKicker', 'Anna Lou of London')}</p>
+          <h2 className="hp-section-title reveal rd1">{f(cms, 'shopTitle', 'Jewellery with meaning. Made to be worn.')}</h2>
+          <p className="hp-body reveal rd2">{f(cms, 'shopBody', 'I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.')}</p>
           <div className="hp-shop-grid">
             <div className="product-card reveal">
               <div
@@ -192,8 +205,8 @@ export default async function HomePage() {
                 style={{ backgroundImage: `url(${getStockImage('product', 'product-1', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
               />
               <div className="product-info">
-                <p className="product-hook">I reach for this one when I need to remember what is underneath the noise</p>
-                <p className="product-name">Moonstone Necklace</p>
+                <p className="product-hook">{f(cms, 'shopProduct1Hook', 'I reach for this one when I need to remember what is underneath the noise')}</p>
+                <p className="product-name">{f(cms, 'shopProduct1Name', 'Moonstone Necklace')}</p>
               </div>
             </div>
             <div className="product-card reveal rd1">
@@ -202,8 +215,8 @@ export default async function HomePage() {
                 style={{ backgroundImage: `url(${getStockImage('product', 'product-2', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
               />
               <div className="product-info">
-                <p className="product-hook">For the days my mind is doing too much and I need clarity not calm</p>
-                <p className="product-name">Clear Quartz Necklace</p>
+                <p className="product-hook">{f(cms, 'shopProduct2Hook', 'For the days my mind is doing too much and I need clarity not calm')}</p>
+                <p className="product-name">{f(cms, 'shopProduct2Name', 'Clear Quartz Necklace')}</p>
               </div>
             </div>
             <div className="product-card reveal rd2">
@@ -212,47 +225,47 @@ export default async function HomePage() {
                 style={{ backgroundImage: `url(${getStockImage('product', 'product-3', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
               />
               <div className="product-info">
-                <p className="product-hook">The word you keep coming back to, worn close to your throat</p>
-                <p className="product-name">Personalised Phrase Necklace</p>
+                <p className="product-hook">{f(cms, 'shopProduct3Hook', 'The word you keep coming back to, worn close to your throat')}</p>
+                <p className="product-name">{f(cms, 'shopProduct3Name', 'Personalised Phrase Necklace')}</p>
               </div>
             </div>
           </div>
-          <Link href="/shop" className="btn btn-green reveal">Browse all jewellery &rarr;</Link>
+          <Link href="/shop" className="btn btn-green reveal">{f(cms, 'shopCtaLabel', 'Browse all jewellery')} &rarr;</Link>
         </div>
       </section>
 
       {/* ═══ MEDIA HUB ═══ */}
       <section className="hp-media">
         <div className="hp-media-inner">
-          <p className="hp-kicker reveal" style={{ color: '#FFD07A' }}>Watch &middot; Listen &middot; Read</p>
-          <h2 className="hp-section-title reveal rd1">The Reset with Anna.</h2>
+          <p className="hp-kicker reveal" style={{ color: '#FFD07A' }}>{f(cms, 'mediaKicker', 'Watch · Listen · Read')}</p>
+          <h2 className="hp-section-title reveal rd1">{f(cms, 'mediaTitle', 'The Reset with Anna.')}</h2>
           <div className="hp-media-grid">
-            <div className="hp-media-tile reveal">
-              <p className="hp-media-label">YouTube</p>
-              <h3 className="hp-media-tile-title">Come Back to Yourself &mdash; daily mantras and practices.</h3>
-              <p className="hp-media-meta">Video series</p>
+            <a href={f(cms, 'mediaTile1Url', '#')} className="hp-media-tile reveal">
+              <p className="hp-media-label">{f(cms, 'mediaTile1Label', 'YouTube')}</p>
+              <h3 className="hp-media-tile-title">{f(cms, 'mediaTile1Title', 'Come Back to Yourself — daily mantras and practices.')}</h3>
+              <p className="hp-media-meta">{f(cms, 'mediaTile1Meta', 'Video series')}</p>
               <span className="hp-media-link">Watch <span>&rarr;</span></span>
-            </div>
-            <div className="hp-media-tile reveal rd1">
-              <p className="hp-media-label">Podcast</p>
-              <h3 className="hp-media-tile-title">The Reset with Anna Lou &mdash; honest conversations about the inner world.</h3>
-              <p className="hp-media-meta">Coming soon</p>
+            </a>
+            <a href={f(cms, 'mediaTile2Url', '#')} className="hp-media-tile reveal rd1">
+              <p className="hp-media-label">{f(cms, 'mediaTile2Label', 'Podcast')}</p>
+              <h3 className="hp-media-tile-title">{f(cms, 'mediaTile2Title', 'The Reset with Anna Lou — honest conversations about the inner world.')}</h3>
+              <p className="hp-media-meta">{f(cms, 'mediaTile2Meta', 'Coming soon')}</p>
               <span className="hp-media-link">Listen <span>&rarr;</span></span>
-            </div>
-            <div className="hp-media-tile reveal rd2">
-              <p className="hp-media-label">Substack</p>
-              <h3 className="hp-media-tile-title">Reset Letters &mdash; weekly writing that feels like coming home.</h3>
-              <p className="hp-media-meta">Weekly newsletter</p>
+            </a>
+            <a href={f(cms, 'mediaTile3Url', 'https://annalouwellness.substack.com')} className="hp-media-tile reveal rd2">
+              <p className="hp-media-label">{f(cms, 'mediaTile3Label', 'Substack')}</p>
+              <h3 className="hp-media-tile-title">{f(cms, 'mediaTile3Title', 'Reset Letters — weekly writing that feels like coming home.')}</h3>
+              <p className="hp-media-meta">{f(cms, 'mediaTile3Meta', 'Weekly newsletter')}</p>
               <span className="hp-media-link">Read <span>&rarr;</span></span>
-            </div>
+            </a>
           </div>
         </div>
       </section>
 
       {/* ═══ QUOTE SLIDE #3 ═══ */}
       <section className="hp-quote reveal">
-        <p className="hp-quote-text">&ldquo;The feeling itself moves through in ninety seconds if you let it. Nine years of running from ninety seconds of feeling is an extraordinary amount of cardio.&rdquo;</p>
-        <p className="hp-quote-attr">Anna Lou</p>
+        <p className="hp-quote-text">&ldquo;{f(cms, 'quote3Text', 'The feeling itself moves through in ninety seconds if you let it. Nine years of running from ninety seconds of feeling is an extraordinary amount of cardio.')}&rdquo;</p>
+        <p className="hp-quote-attr">{f(cms, 'quote3Attribution', 'Anna Lou')}</p>
       </section>
 
       {/* ═══ COMMUNITY ═══ */}
@@ -260,18 +273,18 @@ export default async function HomePage() {
         <div className="hp-community-inner">
           <div
             className="hp-community-image has-image reveal"
-            style={{ backgroundImage: `url(${getStockImage('community', 'community-section', 'hero')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${communityImageUrl || getStockImage('community', 'community-section', 'hero')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
           <div className="reveal rd1">
-            <p className="hp-kicker">Community</p>
-            <h2 className="hp-section-title">Come and sit with us.</h2>
-            <p className="hp-body">Every Tuesday I hold a circle at The Hare and the Moon, Twickenham. Donation-based. No agenda except being in the room together. Connection is not a concept. It is biological.</p>
-            <p className="hp-body">The Returning Circle runs every week without exception. No waitlist needed. Come on Tuesday.</p>
-            <p className="hp-body" style={{ marginBottom: '1.5rem' }}>A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Water outside, no agenda, just space to come back to yourself.</p>
+            <p className="hp-kicker">{f(cms, 'communityKicker', 'Community')}</p>
+            <h2 className="hp-section-title">{f(cms, 'communityTitle', 'Come and sit with us.')}</h2>
+            <p className="hp-body">{f(cms, 'communityBody1', 'Every Tuesday I hold a circle at The Hare and the Moon, Twickenham. Donation-based. No agenda except being in the room together. Connection is not a concept. It is biological.')}</p>
+            <p className="hp-body">{f(cms, 'communityBody2', 'The Returning Circle runs every week without exception. No waitlist needed. Come on Tuesday.')}</p>
+            <p className="hp-body" style={{ marginBottom: '1.5rem' }}>{f(cms, 'communityBody3', 'A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Water outside, no agenda, just space to come back to yourself.')}</p>
             <div className="hp-cta-group">
-              <Link href="/community/the-returning-circle" className="btn-dark">The Returning Circle</Link>
-              <Link href="/community/membership" className="btn-dark">The Reset Room</Link>
-              <Link href="/experiences/retreats" className="btn-outline-dark-sm">Retreat days</Link>
+              <Link href={f(cms, 'communityCta1Url', '/community/the-returning-circle')} className="btn-dark">{f(cms, 'communityCta1Label', 'The Returning Circle')}</Link>
+              <Link href={f(cms, 'communityCta2Url', '/community/reset-room')} className="btn-dark">{f(cms, 'communityCta2Label', 'The Reset Room')}</Link>
+              <Link href={f(cms, 'communityCta3Url', '/experiences/retreats')} className="btn-outline-dark-sm">{f(cms, 'communityCta3Label', 'Retreat days')}</Link>
             </div>
           </div>
         </div>
@@ -282,13 +295,13 @@ export default async function HomePage() {
         <div className="hp-portrait-inner">
           <div
             className="hp-portrait-image has-image reveal"
-            style={{ backgroundImage: `url(${getStockImage('about', 'anna-portrait', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${portraitImageUrl || getStockImage('about', 'anna-portrait', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
           <div className="reveal rd1">
-            <p className="hp-kicker" style={{ color: '#3D3D3A' }}>About</p>
-            <h2 className="hp-portrait-heading">Twenty-five years leaves a trail.</h2>
-            <p className="hp-portrait-body"><span className="drop-cap">F</span>rom the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot. The question is no longer just how did you build it but what did building it cost you, what did you learn, and who are you now.</p>
-            <Link href="/about" className="cta-link" style={{ color: '#231F20', borderColor: '#231F20' }}>Read Anna&rsquo;s story <span>&rarr;</span></Link>
+            <p className="hp-kicker" style={{ color: '#3D3D3A' }}>{f(cms, 'portraitKicker', 'About')}</p>
+            <h2 className="hp-portrait-heading">{f(cms, 'portraitTitle', 'Twenty-five years leaves a trail.')}</h2>
+            <p className="hp-portrait-body"><span className="drop-cap">{f(cms, 'portraitBody', 'F').charAt(0)}</span>{f(cms, 'portraitBody', 'From the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot.').slice(1)}</p>
+            <Link href={f(cms, 'portraitCtaUrl', '/about')} className="cta-link" style={{ color: '#231F20', borderColor: '#231F20' }}>{f(cms, 'portraitCtaLabel', 'Read Anna’s story')} <span>&rarr;</span></Link>
           </div>
         </div>
       </section>
