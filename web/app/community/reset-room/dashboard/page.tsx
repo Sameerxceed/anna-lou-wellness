@@ -39,13 +39,13 @@ export default async function DashboardPage() {
           {/* Three-pillar row */}
           <div className="dash-grid">
             <article className="dash-card" style={{ borderTopColor: '#F280AA' }}>
-              <p className="dash-card-kicker">01 · Private Podcast</p>
+              <p className="dash-card-kicker">01 · Sessions</p>
               <h3 className="dash-card-name">Reset Room Sessions</h3>
-              <p className="dash-card-body">Two new intimate episodes a month. Listen in your own player.</p>
+              <p className="dash-card-body">Two new intimate sessions a month. Watch inside the room, anytime.</p>
               <div className="dash-card-meta">
-                <span>Latest:</span> <em>The first founding episode</em>
+                <span>Latest:</span> <em>The first founding session</em>
               </div>
-              <button className="dash-card-btn" disabled>Subscribe in your podcast player</button>
+              <Link href="/community/reset-room/sessions" className="dash-card-btn">Watch sessions &rarr;</Link>
             </article>
 
             <article className="dash-card" style={{ borderTopColor: '#7BAFDD' }}>

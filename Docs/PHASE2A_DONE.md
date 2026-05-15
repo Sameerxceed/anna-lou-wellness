@@ -4,9 +4,9 @@
 
 ### Strapi side
 - **User schema extended** ([cms/src/extensions/users-permissions/content-types/user/schema.json](cms/src/extensions/users-permissions/content-types/user/schema.json)) with:
-  `firstName, lastName, stripeCustomerId, stripeSubscriptionId, subscriptionStatus, memberSince, accessUntil, podcastRssUrl, helloAudioSubscriberId`
+  `firstName, lastName, stripeCustomerId, stripeSubscriptionId, subscriptionStatus, memberSince, accessUntil`
 - **`reset-room-member` role** auto-created on Strapi boot ([cms/src/index.js](cms/src/index.js)). Granted: read own customer record, find/findOne on vault journeys.
-- **Internal API** `/api/reset-room/grant|revoke|cancel-at-period-end|update-podcast-url` ([cms/src/api/reset-room-member-action/](cms/src/api/reset-room-member-action/)). All require header `x-reset-room-secret: <RESET_ROOM_ADMIN_SECRET env>`. Stripe webhook in Phase 2B will call these.
+- **Internal API** `/api/reset-room/grant|revoke|cancel-at-period-end` ([cms/src/api/reset-room-member-action/](cms/src/api/reset-room-member-action/)). All require header `x-reset-room-secret: <RESET_ROOM_ADMIN_SECRET env>`. Stripe webhook in Phase 2B will call these.
 - **Hourly cron** ([cms/config/tasks/reset-room-access-revoke.js](cms/config/tasks/reset-room-access-revoke.js)) downgrades any member whose `accessUntil` has passed.
 
 ### Next.js side
@@ -35,10 +35,9 @@
 ## What's NOT yet wired
 
 - ❌ No Stripe checkout. Members are manually created in Strapi admin for now.
-- ❌ No Hello Audio RSS — `podcastRssUrl` field exists but nothing populates it
 - ❌ No welcome emails firing on signup
-- ❌ Vault content is hardcoded list (7 founding pieces) — not yet a Strapi content type
-- ❌ Bunny.net video embeds not wired (vault detail page still placeholder)
+- ❌ Vault / Sessions / Replays content is hardcoded — not yet Strapi content types
+- ❌ YouTube unlisted embeds not wired in vault/sessions/replays pages
 
 ## Required env vars
 
@@ -51,6 +50,10 @@
 ## Next: Phase 2B
 
 Stripe checkout + webhook → grant/revoke role automatically. Need from Anna:
-- Stripe test mode keys
+- Stripe test mode keys (publishable + secret)
 - Stripe product "Reset Room Membership" £25/month created
 - Webhook endpoint URL set to `https://staging.annalouwellness.com/api/webhooks/stripe`
+- Webhook signing secret
+
+Then Phase 2C: Flodesk welcome push from webhook (no Zapier needed — Anna confirmed direct API call).
+Then Phase 2D: YouTube-embedded vault, sessions, replays content types in Strapi.

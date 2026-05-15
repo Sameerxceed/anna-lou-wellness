@@ -144,22 +144,4 @@ module.exports = {
     ctx.body = { ok: true, userId: user.id };
   },
 
-  // POST /api/reset-room/update-podcast-url
-  // Body: { email, podcastRssUrl, helloAudioSubscriberId? }
-  async updatePodcastUrl(ctx) {
-    const failed = assertSecret(ctx);
-    if (failed) return;
-    const { email, podcastRssUrl, helloAudioSubscriberId } = ctx.request.body || {};
-    if (!email || !podcastRssUrl) return ctx.badRequest('email and podcastRssUrl required');
-    const user = await strapi.query('plugin::users-permissions.user').findOne({
-      where: { email: email.toLowerCase() },
-    });
-    if (!user) return ctx.notFound('User not found');
-
-    await strapi.query('plugin::users-permissions.user').update({
-      where: { id: user.id },
-      data: { podcastRssUrl, helloAudioSubscriberId: helloAudioSubscriberId || null },
-    });
-    ctx.body = { ok: true };
-  },
 };

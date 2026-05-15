@@ -99,15 +99,6 @@
     "accessUntil": {
       "type": "datetime",
       "description": "When canceled, set to current_period_end. Cron revokes role after this."
-    },
-    "podcastRssUrl": {
-      "type": "string",
-      "private": true,
-      "description": "Hello Audio (or alternative) private feed URL per member"
-    },
-    "helloAudioSubscriberId": {
-      "type": "string",
-      "private": true
     }
   }
 }

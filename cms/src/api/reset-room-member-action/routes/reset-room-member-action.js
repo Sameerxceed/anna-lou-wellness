@@ -34,13 +34,5 @@ module.exports = {
         auth: false,
       },
     },
-    {
-      method: 'POST',
-      path: '/reset-room/update-podcast-url',
-      handler: 'reset-room-member-action.updatePodcastUrl',
-      config: {
-        auth: false,
-      },
-    },
   ],
 };
