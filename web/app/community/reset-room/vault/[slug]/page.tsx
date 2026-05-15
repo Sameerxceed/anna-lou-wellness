@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getSession } from '@/lib/auth';
 
 export const metadata: Metadata = {
   title: 'Vault Journey',
@@ -12,6 +14,9 @@ interface PageProps {
 
 export default async function VaultSinglePage({ params }: PageProps) {
   const { slug } = await params;
+  const session = await getSession();
+  if (!session) redirect(`/login?next=/community/reset-room/vault/${slug}`);
+  if (!session.isMember) redirect('/community/reset-room');
   const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   return (

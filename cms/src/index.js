@@ -99,6 +99,40 @@ module.exports = {
       strapi.log.info('Authenticated API permissions configured');
     }
 
+    // ═══ Reset Room member role ═══
+    let resetRoomRole = await strapi.query('plugin::users-permissions.role').findOne({
+      where: { type: 'reset-room-member' },
+    });
+
+    if (!resetRoomRole) {
+      resetRoomRole = await strapi.query('plugin::users-permissions.role').create({
+        data: {
+          name: 'Reset Room Member',
+          description: 'Paid £25/mo Reset Room subscriber. Access to dashboard, vault, replays, account.',
+          type: 'reset-room-member',
+        },
+      });
+      strapi.log.info('Created reset-room-member role');
+    }
+
+    if (resetRoomRole) {
+      // Members can read their own customer record + read vault journeys
+      const memberAPIs = [
+        { api: 'api::customer.customer', actions: ['find', 'findOne', 'update'] },
+        { api: 'api::vault-journey.vault-journey', actions: ['find', 'findOne'] },
+      ];
+      for (const { api, actions } of memberAPIs) {
+        for (const action of actions) {
+          try {
+            await strapi.query('plugin::users-permissions.permission').create({
+              data: { action: `${api}.${action}`, role: resetRoomRole.id },
+            });
+          } catch (err) { /* exists */ }
+        }
+      }
+      strapi.log.info('Reset Room member permissions configured');
+    }
+
     strapi.log.info('CMS ready');
 
     // ═══ Seed placeholder content on first boot ═══

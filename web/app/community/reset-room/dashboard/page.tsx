@@ -1,14 +1,28 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getSession } from '@/lib/auth';
 
 export const metadata: Metadata = {
   title: 'Member Dashboard',
   robots: { index: false, follow: false },
 };
 
-// PLACEHOLDER: real auth gating wired once Stripe webhook + Strapi reset-room-member role are in place.
-// For now, this page renders a "coming soon" state visible to anyone, so the URL exists for layout testing.
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await getSession();
+  if (!session) redirect('/login?next=/community/reset-room/dashboard');
+  if (!session.isMember) redirect('/community/reset-room');
+
+  const { user } = session;
+  const firstName = user.firstName || (user.email ? user.email.split('@')[0] : 'there');
+  const memberSinceMonth = user.memberSince
+    ? new Date(user.memberSince).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+    : null;
+  const daysSinceJoin = user.memberSince
+    ? Math.floor((Date.now() - new Date(user.memberSince).getTime()) / 86400000)
+    : 0;
+  const showWelcomeBlock = daysSinceJoin <= 30;
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: dashStyles }} />
@@ -16,13 +30,11 @@ export default function DashboardPage() {
       <section className="dash-page">
         <div className="dash-inner">
           <p className="dash-eyebrow">Reset Room · Member portal</p>
-          <h1 className="dash-greeting">Welcome back.</h1>
-          <p className="dash-sub"><em>The room is open. Take it slowly.</em></p>
-
-          <div className="dash-notice">
-            <p className="dash-notice-label">Pre-launch placeholder</p>
-            <p>The full member dashboard goes live with the Stripe billing integration. This page exists today so the URL structure is ready.</p>
-          </div>
+          <h1 className="dash-greeting">Welcome back, {firstName}.</h1>
+          <p className="dash-sub">
+            <em>The room is open. Take it slowly.</em>
+            {memberSinceMonth && <span className="dash-since"> · Member since {memberSinceMonth}</span>}
+          </p>
 
           {/* Three-pillar row */}
           <div className="dash-grid">
@@ -57,7 +69,8 @@ export default function DashboardPage() {
             </article>
           </div>
 
-          {/* Where to start */}
+          {/* Where to start — first 30 days only */}
+          {showWelcomeBlock && (
           <div className="dash-where">
             <p className="dash-section-label">Where to start</p>
             <h2 className="dash-section-title">First 30 days, made simple.</h2>
@@ -80,6 +93,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+          )}
 
           {/* Member benefits row */}
           <div className="dash-benefits">
@@ -100,9 +114,11 @@ export default function DashboardPage() {
           <div className="dash-footer-links">
             <Link href="/community/reset-room/vault">The Vault</Link>
             <span>·</span>
-            <Link href="/community/reset-room">About the room</Link>
+            <Link href="/community/reset-room/replays">Workshop replays</Link>
             <span>·</span>
-            <Link href="/account">Manage subscription</Link>
+            <Link href="/community/reset-room/account">Account</Link>
+            <span>·</span>
+            <Link href="/community/reset-room">About the room</Link>
           </div>
         </div>
       </section>
@@ -128,6 +144,7 @@ const dashStyles = `
   font-family: 'EB Garamond', Georgia, serif; font-style: italic;
   font-size: 1.15rem; color: #3D3D3A; margin-bottom: 1.5rem;
 }
+.dash-since { font-style: normal; color: #8C8880; font-size: 0.9rem; margin-left: 0.4rem; }
 
 .dash-notice {
   background: #FFE9C4; border-left: 3px solid #FAA21B;

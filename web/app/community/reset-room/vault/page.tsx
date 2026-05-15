@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getSession } from '@/lib/auth';
 
 export const metadata: Metadata = {
   title: 'The Vault',
@@ -16,7 +18,11 @@ const VAULT = [
   { slug: 'houseboat-reset', name: 'The Houseboat Reset', length: '10 min', tone: '#A67C3A', kind: 'Founding signature', desc: 'The shortest piece. A founding signature recorded on the boat. The Reset Room\'s heartbeat.' },
 ];
 
-export default function VaultPage() {
+export default async function VaultPage() {
+  const session = await getSession();
+  if (!session) redirect('/login?next=/community/reset-room/vault');
+  if (!session.isMember) redirect('/community/reset-room');
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: vaultStyles }} />
