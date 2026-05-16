@@ -37,6 +37,7 @@ module.exports = {
         'api::article.article',
         'api::article-category.article-category',
         'api::programme.programme',
+        'api::experience-page.experience-page',
         'api::team-member.team-member',
         'api::page.page',
         'api::mantra.mantra',

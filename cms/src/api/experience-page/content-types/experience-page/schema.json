@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "experience_pages",
+  "info": {
+    "singularName": "experience-page",
+    "pluralName": "experience-pages",
+    "displayName": "Experience Page",
+    "description": "Sub-pages under /experiences (Workshops, Retreats, Corporate, Speaking)"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "description": "Must match the URL path, e.g. 'workshops', 'retreats', 'corporate-wellbeing', 'speaking'"
+    },
+    "title": { "type": "string", "required": true },
+    "kicker": { "type": "string", "default": "Experiences" },
+    "kickerColour": { "type": "string", "default": "#7BAFDD" },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "intro": {
+      "type": "text",
+      "description": "Multiple paragraphs separated by blank line. Each becomes its own <p>."
+    },
+    "ctaLabel": { "type": "string", "default": "View upcoming" },
+    "ctaUrl": { "type": "string", "default": "/community/events" },
+    "seoTitle": { "type": "string" },
+    "seoDescription": { "type": "text" }
+  }
+}

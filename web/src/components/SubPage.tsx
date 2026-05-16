@@ -10,9 +10,10 @@ interface SubPageProps {
   paragraphs?: string[];
   cta?: { label: string; href: string };
   details?: { label: string; value: string }[];
+  heroImage?: string; // optional CMS or stock image URL — kills the beige placeholder when set
 }
 
-export default function SubPage({ kicker, kickerColour, title, parentLabel, parentHref, description, paragraphs, cta, details }: SubPageProps) {
+export default function SubPage({ kicker, kickerColour, title, parentLabel, parentHref, description, paragraphs, cta, details, heroImage }: SubPageProps) {
   const content = paragraphs || (description ? [description] : ['This page will be populated from the CMS (Strapi) when connected.']);
 
   return (
@@ -22,7 +23,10 @@ export default function SubPage({ kicker, kickerColour, title, parentLabel, pare
         <div className="sub-inner">
           <p className="sub-kicker" style={{ color: kickerColour }}>{kicker}</p>
           <h1 className="sub-title">{title}</h1>
-          <div className="sub-hero" />
+          <div
+            className={heroImage ? 'sub-hero has-image' : 'sub-hero'}
+            style={heroImage ? { backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+          />
           <div className="sub-content">
             {content.map((p, i) => <p key={i}>{p}</p>)}
           </div>
@@ -59,6 +63,7 @@ const subStyles = `
 .sub-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,4vw,2.6rem); color:#231F20; line-height:1.3; margin-bottom:2rem; text-align:center; }
 .sub-hero { aspect-ratio:16/9; border-radius:6px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); margin-bottom:2rem; position:relative; }
 .sub-hero::after { content:'Page image. CMS managed.'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.12); }
+.sub-hero.has-image::after { display:none; }
 .sub-content { font-family:'EB Garamond',Georgia,serif; font-size:1.1rem; color:#3D3D3A; line-height:1.9; margin-bottom:2.5rem; }
 .sub-content p { margin-bottom:1.2rem; }
 .sub-details { margin-bottom:2rem; border-top:1px solid rgba(0,0,0,0.06); padding-top:1rem; }
