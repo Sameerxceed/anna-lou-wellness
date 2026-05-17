@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const metadata: Metadata = {
   title: 'You\'re In — Reset Letters',
@@ -6,7 +7,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function WelcomePage() {
+const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+export default async function WelcomePage() {
+  const cms = await getGenericPageBySlug('welcome');
+  const headline = cms?.title || "You're in.";
+  const bodyParas = cms?.intro ? splitParas(cms.intro) : [
+    'Welcome to Reset Letters. You are now a Founding Member, which means you get full access to everything, for life. No charge. Ever.',
+    'Your first edition will land in your inbox on **22 June 2026**. Until then, here are three things you can do:',
+  ];
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: welcomeStyles }} />
@@ -40,10 +50,11 @@ export default function WelcomePage() {
 
         {/* Confirmation */}
         <div className="wl-content">
-          <h1 className="wl-headline"><em>You&apos;re in.</em></h1>
+          <h1 className="wl-headline"><em>{headline}</em></h1>
 
-          <p className="wl-body">Welcome to Reset Letters. You are now a Founding Member, which means you get full access to everything, for life. No charge. Ever.</p>
-          <p className="wl-body">Your first edition will land in your inbox on <strong>22 June 2026</strong>. Until then, here are three things you can do:</p>
+          {bodyParas.map((p, i) => (
+            <p key={i} className="wl-body" dangerouslySetInnerHTML={{ __html: p.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
+          ))}
 
           <div className="wl-steps">
             <div className="wl-step">

@@ -264,6 +264,34 @@ async function seedPages(strapi) {
     tagline: "This week's energy, moon phase, and stone.",
   });
 
+  await ensure(strapi, 'api::generic-page.generic-page', 'contact', {
+    title: 'Contact',
+    kicker: 'Say Hello',
+    kickerColour: '#6E3A5A',
+  });
+
+  await ensure(strapi, 'api::generic-page.generic-page', 'welcome', {
+    title: "You're in.",
+    kicker: 'Reset Letters · Confirmation',
+    kickerColour: '#F280AA',
+    intro: [
+      'Welcome to Reset Letters. You are now a Founding Member, which means you get full access to everything, for life. No charge. Ever.',
+      'Your first edition will land in your inbox on **22 June 2026**. Until then, here are three things you can do:',
+    ].join('\n\n'),
+  });
+
+  await ensure(strapi, 'api::generic-page.generic-page', 'terms', {
+    title: 'Terms & Conditions',
+    kicker: 'Legal',
+    kickerColour: '#8C8880',
+  });
+
+  await ensure(strapi, 'api::generic-page.generic-page', 'privacy', {
+    title: 'Privacy Policy',
+    kicker: 'Legal',
+    kickerColour: '#8C8880',
+  });
+
   strapi.log.info('[seed-pages] Page content seed run complete');
 }
 

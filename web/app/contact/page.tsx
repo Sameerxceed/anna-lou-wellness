@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import PageHero from '@/components/PageHero';
 import { getContactInfo } from '@/lib/cms';
+import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -8,11 +9,14 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const siteConfig = await getContactInfo();
+  const [siteConfig, cms] = await Promise.all([
+    getContactInfo(),
+    getGenericPageBySlug('contact'),
+  ]);
 
   return (
     <>
-      <PageHero label="Say Hello" title="Contact" bgClass="hero-contact" height="30vh" />
+      <PageHero label={cms?.kicker || 'Say Hello'} title={cms?.title || 'Contact'} bgClass="hero-contact" height="30vh" />
 
       <section className="py-8 px-8">
         <div className="max-w-[1000px] mx-auto grid grid-cols-2 gap-10 max-md:grid-cols-1 max-md:gap-6">
