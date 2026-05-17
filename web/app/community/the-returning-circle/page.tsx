@@ -12,11 +12,6 @@ export const metadata: Metadata = {
 
 const ACCENT = '#5DCAA5';
 
-const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
-  const v = cms?.[key];
-  return typeof v === 'string' && v.trim() ? v : fallback;
-};
-
 export default async function CirclePage() {
   const cms = await getCommunityEventBySlug('the-returning-circle');
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'returning-circle');
@@ -29,7 +24,7 @@ export default async function CirclePage() {
         <div className="rc-hero-grid">
           <div className="rc-hero-text">
             <p className="rc-eyebrow">Community · Weekly · Donation-based</p>
-            <h1 className="rc-title">{f(cms, 'title', 'The Returning Circle.')}</h1>
+            <h1 className="rc-title">{cms?.title || 'The Returning Circle.'}</h1>
             <p className="rc-tagline"><em>A room. People who are honest. Connection that regulates the nervous system.</em></p>
           </div>
           <div className="rc-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />

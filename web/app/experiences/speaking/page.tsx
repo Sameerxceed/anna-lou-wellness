@@ -12,11 +12,6 @@ export const metadata: Metadata = {
 
 const ACCENT = '#FAA21B';
 
-const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
-  const v = cms?.[key];
-  return typeof v === 'string' && v.trim() ? v : fallback;
-};
-
 export default async function SpeakingPage() {
   const cms = await getExperienceBySlug('speaking');
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'speaking-hero');
@@ -34,7 +29,7 @@ export default async function SpeakingPage() {
         <div className="sp-hero-grid">
           <div className="sp-hero-text">
             <p className="sp-eyebrow">Experiences · For events</p>
-            <h1 className="sp-title">{f(cms, 'title', 'Speaking.')}</h1>
+            <h1 className="sp-title">{cms?.title || 'Speaking.'}</h1>
             <p className="sp-tagline"><em>Keynotes, panels, Q&amp;As. Online and in person.</em></p>
           </div>
           <div className="sp-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />

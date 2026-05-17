@@ -12,11 +12,6 @@ export const metadata: Metadata = {
 
 const ACCENT = '#7BAFDD';
 
-const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
-  const v = cms?.[key];
-  return typeof v === 'string' && v.trim() ? v : fallback;
-};
-
 export default async function CorporatePage() {
   const cms = await getExperienceBySlug('corporate-wellbeing');
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'corporate-hero');
@@ -35,7 +30,7 @@ export default async function CorporatePage() {
         <div className="cw-hero-grid">
           <div className="cw-hero-text">
             <p className="cw-eyebrow">Experiences · For teams</p>
-            <h1 className="cw-title">{f(cms, 'title', 'Corporate Wellbeing.')}</h1>
+            <h1 className="cw-title">{cms?.title || 'Corporate Wellbeing.'}</h1>
             <p className="cw-tagline"><em>Nervous system work that actually changes how people show up.</em></p>
           </div>
           <div className="cw-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
