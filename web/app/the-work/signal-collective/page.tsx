@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
+import { getProgrammeBySlug } from '@/lib/programme';
+import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
   title: 'The Signal Collective | Somatic Coaching Mastermind for Women',
@@ -10,7 +12,15 @@ export const metadata: Metadata = {
 
 const ACCENT = '#6E3A5A';
 
-export default function SignalCollectivePage() {
+export default async function SignalCollectivePage() {
+  const cms = await getProgrammeBySlug('signal-collective');
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'signal-collective');
+  const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const introParas = cms?.intro ? splitParas(cms.intro) : [
+    'The Signal Collective is the mastermind. For coaches, founders, practitioners, and leaders who want depth plus community. Group and 1:1 coaching combined. Monthly intensive sessions. Peer co-regulation with people at the same level of seriousness. Direct access to the Signal Method applied to everything: business, relationships, creative work, leadership.',
+    'A curated community committed to operating from their highest level. Not a course. A container for those already in motion who want to accelerate.',
+  ];
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
@@ -19,17 +29,16 @@ export default function SignalCollectivePage() {
         <div className="sc-hero-grid">
           <div className="sc-hero-text">
             <p className="sc-eyebrow">The Work · By application</p>
-            <h1 className="sc-title">The Signal Collective.</h1>
-            <p className="sc-tagline"><em>The inner work, in community. Six months.</em></p>
+            <h1 className="sc-title">{cms?.title || 'The Signal Collective.'}</h1>
+            <p className="sc-tagline"><em>{cms?.tagline || 'The inner work, in community. Six months.'}</em></p>
           </div>
-          <div className="sc-hero-img" style={{ backgroundImage: `url('${getStockImage('community', 'signal-collective')}')` }} />
+          <div className="sc-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>
       </section>
 
       <section className="sc-body">
         <div className="sc-body-inner">
-          <p className="sc-body-text">The Signal Collective is the mastermind. For coaches, founders, practitioners, and leaders who want depth plus community. Group and 1:1 coaching combined. Monthly intensive sessions. Peer co-regulation with people at the same level of seriousness. Direct access to the Signal Method applied to everything: business, relationships, creative work, leadership.</p>
-          <p className="sc-body-text">A curated community committed to operating from their highest level. Not a course. A container for those already in motion who want to accelerate.</p>
+          {introParas.map((p, i) => <p key={i} className="sc-body-text">{p}</p>)}
         </div>
       </section>
 

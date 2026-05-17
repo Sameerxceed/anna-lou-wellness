@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getLatestForecast } from '@/lib/cms';
+import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const metadata: Metadata = {
   title: 'Cosmic Forecast',
@@ -11,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function CosmicForecastPage() {
-  const forecast = await getLatestForecast();
+  const [forecast, cms] = await Promise.all([
+    getLatestForecast(),
+    getGenericPageBySlug('cosmic-forecast'),
+  ]);
 
   return (
     <>
@@ -19,9 +23,9 @@ export default async function CosmicForecastPage() {
 
       <section className="cosmic-page">
         <div className="cosmic-inner">
-          <p className="cosmic-kicker reveal">Life &middot; Rituals and Energy</p>
-          <h1 className="cosmic-title reveal rd1">Cosmic Forecast</h1>
-          <p className="cosmic-subtitle reveal rd2">This week&rsquo;s energy, moon phase, and stone.</p>
+          <p className="cosmic-kicker reveal">{cms?.kicker || 'Life · Rituals and Energy'}</p>
+          <h1 className="cosmic-title reveal rd1">{cms?.title || 'Cosmic Forecast'}</h1>
+          <p className="cosmic-subtitle reveal rd2">{cms?.tagline || 'This week’s energy, moon phase, and stone.'}</p>
 
           <div className="cosmic-content reveal">
             {forecast ? (

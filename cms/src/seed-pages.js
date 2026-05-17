@@ -170,6 +170,100 @@ async function seedPages(strapi) {
     ctaUrl: '/contact',
   });
 
+  // ═══ Programmes (Reset Sessions + Recovery + Signal Collective) ═══
+  await ensure(strapi, 'api::programme.programme', 'founder-reset', {
+    title: 'Founder Reset',
+    tagline: 'For the founder at a sticking point in the business or in herself.',
+    accentColour: '#FAA21B',
+    intro: 'Most founder problems are not strategy problems. They are capacity problems wearing strategy clothes. A Founder Reset is the session where we work out which one yours is, and we move it.',
+    pricingLabel: 'Investment',
+    pricingBody: '£200, paid at booking. 90 minutes, virtual.',
+    ctaLabel: 'Book this session',
+    ctaUrl: '/contact',
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'dating-reset', {
+    title: 'Dating Reset',
+    tagline: 'For the woman noticing the same pattern showing up again.',
+    accentColour: '#F280AA',
+    intro: 'Dating Reset is for the woman who has noticed the same pattern showing up again and is ready to ask why. We do not do dating tips. We do the underneath. The patterns, the attachment shape, the unfinished business with the version of love you grew up with.',
+    pricingLabel: 'Investment',
+    pricingBody: '£200, paid at booking. 90 minutes, virtual.',
+    ctaLabel: 'Book this session',
+    ctaUrl: '/contact',
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'nervous-system-reset', {
+    title: 'Nervous System Reset',
+    tagline: 'For the woman whose signal system is scrambled and needs bringing back online.',
+    accentColour: '#7BAFDD',
+    intro: 'Nervous System Reset is for the woman whose body has been holding the line for a long time and has started to lose the signal. We do not talk it out. We work with what is happening in the body, gently and slowly, and we bring the signal back online.',
+    pricingLabel: 'Investment',
+    pricingBody: '£200, paid at booking. 90 minutes, virtual.',
+    ctaLabel: 'Book this session',
+    ctaUrl: '/contact',
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'recovery', {
+    title: 'Untangle. Unbind. Unbound.',
+    tagline: 'Three months to reclaim yourself, permanently.',
+    accentColour: '#6E3A5A',
+    intro: [
+      'Gaslighting does not just confuse your thinking. It dismantles your ability to trust your own body. The signals that used to tell you something is wrong — the tightening in your chest, the instinct to leave the room, the quiet voice that says this is not right — those signals get systematically overridden until you cannot hear them at all.',
+      'What remains is hypervigilance. Freeze. Fawn. A nervous system permanently scanning for threat, even years after the relationship has ended. The body-level residue of narcissistic abuse is not a mindset problem. It is a nervous system injury.',
+      'This is why talk therapy alone often is not enough. You can understand what happened intellectually and still feel the activation in your body every time you hear a particular tone of voice or walk into a room with a certain energy.',
+      'Somatic coaching works at the level where the damage actually lives. In the body. In the automatic responses. In the nervous system patterns that were rewired by someone who needed you to doubt yourself.',
+    ].join('\n\n'),
+    pricingLabel: 'Investment',
+    pricingBody: 'By enquiry. Anna shapes the price to your situation. Payment plans available. Some places held at reduced rate for women genuinely unable to pay full price.',
+    ctaLabel: 'Send a private enquiry',
+    ctaUrl: '#enquire',
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'signal-collective', {
+    title: 'The Signal Collective.',
+    tagline: 'The inner work, in community. Six months.',
+    accentColour: '#6E3A5A',
+    intro: [
+      'The Signal Collective is the mastermind. For coaches, founders, practitioners, and leaders who want depth plus community. Group and 1:1 coaching combined. Monthly intensive sessions. Peer co-regulation with people at the same level of seriousness. Direct access to the Signal Method applied to everything: business, relationships, creative work, leadership.',
+      'A curated community committed to operating from their highest level. Not a course. A container for those already in motion who want to accelerate.',
+    ].join('\n\n'),
+    pricingLabel: 'Investment',
+    pricingBody: 'By enquiry. Application form first, then a discovery call.',
+    ctaLabel: 'Apply',
+    ctaUrl: '#apply',
+  });
+
+  // ═══ Section landing pages + standalone ═══
+  await ensure(strapi, 'api::generic-page.generic-page', 'the-work', {
+    title: 'Your inner world already knows.',
+    kicker: 'The Work',
+    kickerColour: '#F280AA',
+    intro: 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.',
+  });
+
+  await ensure(strapi, 'api::generic-page.generic-page', 'experiences-landing', {
+    title: 'Workshops, retreats, and reset days.',
+    kicker: 'Experiences',
+    kickerColour: '#7BAFDD',
+    intro: 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.',
+  });
+
+  await ensure(strapi, 'api::generic-page.generic-page', 'mantras', {
+    title: 'Mantras',
+    kicker: 'Life · Rituals and Energy',
+    kickerColour: '#FAA21B',
+    tagline: 'Short practices to bring you back to yourself. 60 to 90 seconds each.',
+    intro: 'These are not affirmations. They are somatic anchors — phrases paired with breath and body awareness to help regulate your nervous system in real time. Each one comes from the "Come Back to Yourself" series.',
+  });
+
+  await ensure(strapi, 'api::generic-page.generic-page', 'cosmic-forecast', {
+    title: 'Cosmic Forecast',
+    kicker: 'Life · Rituals and Energy',
+    kickerColour: '#FAA21B',
+    tagline: "This week's energy, moon phase, and stone.",
+  });
+
   strapi.log.info('[seed-pages] Page content seed run complete');
 }
 

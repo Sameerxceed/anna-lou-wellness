@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getMantras } from '@/lib/cms';
+import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const revalidate = 3600;
 
@@ -28,7 +29,10 @@ function youtubeEmbedUrl(url: string): string | null {
 }
 
 export default async function MantrasPage() {
-  const cmsMantras = await getMantras();
+  const [cmsMantras, cms] = await Promise.all([
+    getMantras(),
+    getGenericPageBySlug('mantras'),
+  ]);
   const mantras = cmsMantras.length > 0 ? cmsMantras : fallbackMantras;
 
   return (
@@ -37,10 +41,10 @@ export default async function MantrasPage() {
 
       <section className="mantras-page">
         <div className="mantras-inner">
-          <p className="mantras-kicker reveal">Life &middot; Rituals and Energy</p>
-          <h1 className="mantras-title reveal rd1">Mantras</h1>
-          <p className="mantras-subtitle reveal rd2">Short practices to bring you back to yourself. 60 to 90 seconds each.</p>
-          <p className="mantras-intro reveal rd2">These are not affirmations. They are somatic anchors — phrases paired with breath and body awareness to help regulate your nervous system in real time. Each one comes from the &ldquo;Come Back to Yourself&rdquo; series.</p>
+          <p className="mantras-kicker reveal">{cms?.kicker || 'Life · Rituals and Energy'}</p>
+          <h1 className="mantras-title reveal rd1">{cms?.title || 'Mantras'}</h1>
+          <p className="mantras-subtitle reveal rd2">{cms?.tagline || 'Short practices to bring you back to yourself. 60 to 90 seconds each.'}</p>
+          <p className="mantras-intro reveal rd2">{cms?.intro || 'These are not affirmations. They are somatic anchors — phrases paired with breath and body awareness to help regulate your nervous system in real time. Each one comes from the “Come Back to Yourself” series.'}</p>
 
           <div className="mantras-grid">
             {mantras.map((mantra, i) => {

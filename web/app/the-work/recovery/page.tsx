@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
+import { getProgrammeBySlug } from '@/lib/programme';
+import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
   title: 'Narcissistic Abuse Recovery Coaching | Untangle, Unbind, Unbound',
@@ -11,7 +13,17 @@ export const metadata: Metadata = {
 
 const ACCENT = '#6E3A5A';
 
-export default function RecoveryPage() {
+export default async function RecoveryPage() {
+  const cms = await getProgrammeBySlug('recovery');
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('reset-stories', 'recovery-hero');
+  const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const introParas = cms?.intro ? splitParas(cms.intro) : [
+    'Gaslighting does not just confuse your thinking. It dismantles your ability to trust your own body. The signals that used to tell you something is wrong — the tightening in your chest, the instinct to leave the room, the quiet voice that says this is not right — those signals get systematically overridden until you cannot hear them at all.',
+    'What remains is hypervigilance. Freeze. Fawn. A nervous system permanently scanning for threat, even years after the relationship has ended. The body-level residue of narcissistic abuse is not a mindset problem. It is a nervous system injury.',
+    'This is why talk therapy alone often is not enough. You can understand what happened intellectually and still feel the activation in your body every time you hear a particular tone of voice or walk into a room with a certain energy.',
+    'Somatic coaching works at the level where the damage actually lives. In the body. In the automatic responses. In the nervous system patterns that were rewired by someone who needed you to doubt yourself.',
+  ];
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
@@ -20,19 +32,16 @@ export default function RecoveryPage() {
         <div className="rec-hero-grid">
           <div className="rec-hero-text">
             <p className="rec-eyebrow">The Work · Recovery coaching</p>
-            <h1 className="rec-title">Untangle. Unbind. Unbound.</h1>
-            <p className="rec-tagline"><em>Three months to reclaim yourself, permanently.</em></p>
+            <h1 className="rec-title">{cms?.title || 'Untangle. Unbind. Unbound.'}</h1>
+            <p className="rec-tagline"><em>{cms?.tagline || 'Three months to reclaim yourself, permanently.'}</em></p>
           </div>
-          <div className="rec-hero-img" style={{ backgroundImage: `url('${getStockImage('reset-stories', 'recovery-hero')}')` }} />
+          <div className="rec-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>
       </section>
 
       <section className="rec-body">
         <div className="rec-body-inner">
-          <p className="rec-body-text">Gaslighting does not just confuse your thinking. It dismantles your ability to trust your own body. The signals that used to tell you something is wrong — the tightening in your chest, the instinct to leave the room, the quiet voice that says this is not right — those signals get systematically overridden until you cannot hear them at all.</p>
-          <p className="rec-body-text">What remains is hypervigilance. Freeze. Fawn. A nervous system permanently scanning for threat, even years after the relationship has ended. The body-level residue of narcissistic abuse is not a mindset problem. It is a nervous system injury.</p>
-          <p className="rec-body-text">This is why talk therapy alone often is not enough. You can understand what happened intellectually and still feel the activation in your body every time you hear a particular tone of voice or walk into a room with a certain energy.</p>
-          <p className="rec-body-text">Somatic coaching works at the level where the damage actually lives. In the body. In the automatic responses. In the nervous system patterns that were rewired by someone who needed you to doubt yourself.</p>
+          {introParas.map((p, i) => <p key={i} className="rec-body-text">{p}</p>)}
         </div>
       </section>
 

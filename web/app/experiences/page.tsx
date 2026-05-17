@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getExperiences } from '@/lib/cms';
+import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const revalidate = 3600;
 
@@ -29,7 +30,10 @@ const fallbackUpcoming = [
 ];
 
 export default async function ExperiencesPage() {
-  const cmsExperiences = await getExperiences();
+  const [cmsExperiences, cms] = await Promise.all([
+    getExperiences(),
+    getGenericPageBySlug('experiences-landing'),
+  ]);
   const upcoming = cmsExperiences.length > 0
     ? cmsExperiences.map(e => ({ name: e.name, date: e.date, location: e.location, type: e.type, href: `/experiences/${e.type === 'retreat' ? 'retreats' : e.type === 'workshop' ? 'workshops' : e.type === 'corporate' ? 'corporate-wellbeing' : 'speaking'}`, sub: e.priceLabel || undefined }))
     : fallbackUpcoming;
@@ -41,9 +45,9 @@ export default async function ExperiencesPage() {
       {/* Header */}
       <section className="exp-header">
         <div className="exp-header-inner reveal">
-          <p className="exp-kicker">Experiences</p>
-          <h1 className="exp-title">Workshops, retreats, and reset days.</h1>
-          <p className="exp-intro">Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.</p>
+          <p className="exp-kicker">{cms?.kicker || 'Experiences'}</p>
+          <h1 className="exp-title">{cms?.title || 'Workshops, retreats, and reset days.'}</h1>
+          <p className="exp-intro">{cms?.intro || 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.'}</p>
         </div>
       </section>
 
