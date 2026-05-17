@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "generic_pages",
+  "info": {
+    "singularName": "generic-page",
+    "pluralName": "generic-pages",
+    "displayName": "Page (generic)",
+    "description": "Catch-all CMS for one-off pages: Quiz, Client Stories, Ways to Work, Mantras, Cosmic Forecast, Press, Partnerships, etc."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "description": "Must match URL path. Examples: 'the-work-quiz', 'the-work-client-stories', 'the-work-ways-to-work-with-me', 'mantras', 'cosmic-forecast', 'about-press', 'about-partnerships', 'the-work-recovery-coaching', 'the-work-signal-collective'"
+    },
+    "title": { "type": "string", "required": true },
+    "kicker": { "type": "string" },
+    "kickerColour": { "type": "string", "default": "#6E3A5A" },
+    "tagline": { "type": "string" },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "intro": { "type": "text", "description": "Paragraphs separated by blank lines." },
+    "ctaLabel": { "type": "string" },
+    "ctaUrl": { "type": "string" },
+    "seoTitle": { "type": "string" },
+    "seoDescription": { "type": "text" }
+  }
+}

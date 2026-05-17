@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "community_event_pages",
+  "info": {
+    "singularName": "community-event-page",
+    "pluralName": "community-event-pages",
+    "displayName": "Community Event Page",
+    "description": "Sub-pages under /community (Returning Circle, Events, etc.)"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "description": "Must match URL: 'the-returning-circle', 'events'"
+    },
+    "title": { "type": "string", "required": true },
+    "kicker": { "type": "string", "default": "Community" },
+    "kickerColour": { "type": "string", "default": "#5DCAA5" },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "intro": { "type": "text", "description": "Paragraphs separated by blank lines." },
+    "ctaLabel": { "type": "string", "default": "Join the Circle" },
+    "ctaUrl": { "type": "string", "default": "/contact" },
+    "seoTitle": { "type": "string" },
+    "seoDescription": { "type": "text" }
+  }
+}

@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
+import { getExperienceBySlug } from '@/lib/experience-page';
+import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
   title: 'Corporate Wellbeing | Bespoke Workplace Programmes',
@@ -10,7 +12,21 @@ export const metadata: Metadata = {
 
 const ACCENT = '#7BAFDD';
 
-export default function CorporatePage() {
+const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
+  const v = cms?.[key];
+  return typeof v === 'string' && v.trim() ? v : fallback;
+};
+
+export default async function CorporatePage() {
+  const cms = await getExperienceBySlug('corporate-wellbeing');
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'corporate-hero');
+  const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const introParas = cms?.intro ? splitParas(cms.intro) : [
+    'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes tailored to your workplace. The Signal Method adapted for corporate environments.',
+    'Formats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.',
+    'Anna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.',
+  ];
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
@@ -19,18 +35,16 @@ export default function CorporatePage() {
         <div className="cw-hero-grid">
           <div className="cw-hero-text">
             <p className="cw-eyebrow">Experiences · For teams</p>
-            <h1 className="cw-title">Corporate Wellbeing.</h1>
+            <h1 className="cw-title">{f(cms, 'title', 'Corporate Wellbeing.')}</h1>
             <p className="cw-tagline"><em>Nervous system work that actually changes how people show up.</em></p>
           </div>
-          <div className="cw-hero-img" style={{ backgroundImage: `url('${getStockImage('work-and-money', 'corporate-hero')}')` }} />
+          <div className="cw-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>
       </section>
 
       <section className="cw-body">
         <div className="cw-body-inner">
-          <p className="cw-body-text">Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes tailored to your workplace. The Signal Method adapted for corporate environments.</p>
-          <p className="cw-body-text">Formats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.</p>
-          <p className="cw-body-text">Anna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.</p>
+          {introParas.map((p, i) => <p key={i} className="cw-body-text">{p}</p>)}
         </div>
       </section>
 

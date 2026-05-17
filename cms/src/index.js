@@ -38,6 +38,8 @@ module.exports = {
         'api::article-category.article-category',
         'api::programme.programme',
         'api::experience-page.experience-page',
+        'api::community-event-page.community-event-page',
+        'api::generic-page.generic-page',
         'api::team-member.team-member',
         'api::page.page',
         'api::mantra.mantra',
@@ -149,6 +151,14 @@ module.exports = {
     // ═══ Seed placeholder content on first boot ═══
     const seedDatabase = require('./seed');
     await seedDatabase(strapi);
+
+    // ═══ Seed page-content collections (idempotent — runs every boot, only fills gaps) ═══
+    try {
+      const seedPages = require('./seed-pages');
+      await seedPages(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-pages] failed:', err.message);
+    }
 
     // ═══ Set media upload descriptions ═══
     try {

@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
+import { getCommunityEventBySlug } from '@/lib/generic-page';
+import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
   title: 'The Returning Circle | Weekly Donation-Based Circle',
@@ -10,7 +12,15 @@ export const metadata: Metadata = {
 
 const ACCENT = '#5DCAA5';
 
-export default function CirclePage() {
+const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
+  const v = cms?.[key];
+  return typeof v === 'string' && v.trim() ? v : fallback;
+};
+
+export default async function CirclePage() {
+  const cms = await getCommunityEventBySlug('the-returning-circle');
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'returning-circle');
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
@@ -19,10 +29,10 @@ export default function CirclePage() {
         <div className="rc-hero-grid">
           <div className="rc-hero-text">
             <p className="rc-eyebrow">Community · Weekly · Donation-based</p>
-            <h1 className="rc-title">The Returning Circle.</h1>
+            <h1 className="rc-title">{f(cms, 'title', 'The Returning Circle.')}</h1>
             <p className="rc-tagline"><em>A room. People who are honest. Connection that regulates the nervous system.</em></p>
           </div>
-          <div className="rc-hero-img" style={{ backgroundImage: `url('${getStockImage('community', 'returning-circle')}')` }} />
+          <div className="rc-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>
       </section>
 

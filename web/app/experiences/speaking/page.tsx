@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
+import { getExperienceBySlug } from '@/lib/experience-page';
+import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
   title: 'Speaking | Keynotes, Panels, Online Events',
@@ -10,7 +12,20 @@ export const metadata: Metadata = {
 
 const ACCENT = '#FAA21B';
 
-export default function SpeakingPage() {
+const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
+  const v = cms?.[key];
+  return typeof v === 'string' && v.trim() ? v : fallback;
+};
+
+export default async function SpeakingPage() {
+  const cms = await getExperienceBySlug('speaking');
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'speaking-hero');
+  const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const introParas = cms?.intro ? splitParas(cms.intro) : [
+    'Anna speaks on the inner guidance system, the nervous system, somatic coaching, the recovery work that follows narcissistic abuse, and what it actually takes for a woman to rebuild from burnout. She also speaks to founders on the link between the body and the business.',
+    'Format depends on what your audience needs. Keynote, panel, fireside, intimate Q&A. Online or in the room.',
+  ];
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
@@ -19,17 +34,16 @@ export default function SpeakingPage() {
         <div className="sp-hero-grid">
           <div className="sp-hero-text">
             <p className="sp-eyebrow">Experiences · For events</p>
-            <h1 className="sp-title">Speaking.</h1>
+            <h1 className="sp-title">{f(cms, 'title', 'Speaking.')}</h1>
             <p className="sp-tagline"><em>Keynotes, panels, Q&amp;As. Online and in person.</em></p>
           </div>
-          <div className="sp-hero-img" style={{ backgroundImage: `url('${getStockImage('community', 'speaking-hero')}')` }} />
+          <div className="sp-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>
       </section>
 
       <section className="sp-body">
         <div className="sp-body-inner">
-          <p className="sp-body-text">Anna speaks on the inner guidance system, the nervous system, somatic coaching, the recovery work that follows narcissistic abuse, and what it actually takes for a woman to rebuild from burnout. She also speaks to founders on the link between the body and the business.</p>
-          <p className="sp-body-text">Format depends on what your audience needs. Keynote, panel, fireside, intimate Q&amp;A. Online or in the room.</p>
+          {introParas.map((p, i) => <p key={i} className="sp-body-text">{p}</p>)}
         </div>
       </section>
 
