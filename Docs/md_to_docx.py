@@ -4,8 +4,9 @@ from docx import Document
 from docx.shared import Pt, RGBColor, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
-SRC = r"e:\Xceed\Code\Clients\anna-lou-wellness\Docs\ANNA_CMS_GUIDE.md"
-DST = r"e:\Xceed\Code\Clients\anna-lou-wellness\Docs\ANNA_CMS_GUIDE.docx"
+import sys
+SRC = sys.argv[1] if len(sys.argv) > 1 else r"e:\Xceed\Code\Clients\anna-lou-wellness\Docs\ANNA_CMS_GUIDE.md"
+DST = sys.argv[2] if len(sys.argv) > 2 else SRC.rsplit('.', 1)[0] + '.docx'
 
 PLUM = RGBColor(0x6E, 0x3A, 0x5A)
 DARK = RGBColor(0x23, 0x1F, 0x20)
