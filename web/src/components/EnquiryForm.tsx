@@ -43,7 +43,7 @@ export default function EnquiryForm({
     setSubmitting(true);
     setError(null);
     try {
-      // Real Flodesk/CRM wiring lands once API key is configured.
+      // Real Mailchimp/CRM wiring lands once API key is configured.
       // For now, log to /api/lead/* (or quietly succeed if endpoint not implemented).
       await fetch(endpoint, {
         method: 'POST',

@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 
 /**
  * Reset Letters dual-push subscribe endpoint.
  *
  * On submit:
- *  1. POST to Flodesk Subscribers API → segment based on launch state
- *     - Pre-22 June 2026 OR before 500-subscriber cap → Founding Members segment (Sequence 1A welcome)
- *     - After cap or after launch date → Standard Subscribers segment (Sequence 1B welcome)
+ *  1. POST to Mailchimp API → tag based on launch state
+ *     - Pre-22 June 2026 OR before 500-subscriber cap → "Founding Members" tag (welcome automation 1A)
+ *     - After cap or after launch date → "Standard Subscribers" tag (welcome automation 1B)
  *  2. POST to Substack subscribe API in parallel (newsletter delivery)
  *
  * Returns 200 on success even if one of the two pushes fails (we want partial success
- * so a Flodesk outage doesn't block Substack signups and vice versa). The error is logged.
+ * so a Mailchimp outage doesn't block Substack signups and vice versa). The error is logged.
  *
  * Env vars (set in Coolify → Next.js → Environment Variables):
- *   FLODESK_API_KEY                - from Flodesk → Account → Integrations → API
- *   FLODESK_SEGMENT_FOUNDING       - segment ID for founding members
- *   FLODESK_SEGMENT_STANDARD       - segment ID for standard subscribers
+ *   MAILCHIMP_API_KEY              - from Mailchimp → Profile → Extras → API keys. Format: 'xxxxxxxx-us8'
+ *   MAILCHIMP_LIST_ID              - Audience ID (Audience → Settings → "Unique id for audience")
+ *   MAILCHIMP_TAG_FOUNDING         - tag name for founding members (default 'Founding Members')
+ *   MAILCHIMP_TAG_STANDARD         - tag name for standard subscribers (default 'Standard Subscribers')
  *   RESET_LETTERS_LAUNCH_DATE      - ISO date when standard tier kicks in (default 2026-06-22)
  *   SUBSTACK_PUBLICATION_URL       - default https://annalouwellness.substack.com
  */
@@ -27,62 +29,65 @@ function isFoundingWindow(): boolean {
   return new Date() < LAUNCH_DATE;
 }
 
-async function pushToFlodesk(email: string, firstName: string, founding: boolean) {
-  const apiKey = process.env.FLODESK_API_KEY;
-  const segment = founding
-    ? process.env.FLODESK_SEGMENT_FOUNDING
-    : process.env.FLODESK_SEGMENT_STANDARD;
-  if (!apiKey || !segment) {
-    return { ok: false, error: 'Flodesk not configured (missing API key or segment ID)' };
+async function pushToMailchimp(email: string, firstName: string, founding: boolean) {
+  const apiKey = process.env.MAILCHIMP_API_KEY;
+  const listId = process.env.MAILCHIMP_LIST_ID;
+  const tagFounding = process.env.MAILCHIMP_TAG_FOUNDING || 'Founding Members';
+  const tagStandard = process.env.MAILCHIMP_TAG_STANDARD || 'Standard Subscribers';
+
+  if (!apiKey || !listId) {
+    return { ok: false, error: 'Mailchimp not configured (missing API key or list ID)' };
   }
-  // Flodesk requires User-Agent identifying the app (per their API docs)
+
+  // Datacenter is the suffix after the last '-' in the API key (e.g. '...-us8' → 'us8')
+  const dc = apiKey.split('-').pop();
+  if (!dc || dc === apiKey) {
+    return { ok: false, error: 'Mailchimp API key malformed (missing datacenter suffix)' };
+  }
+
+  const baseUrl = `https://${dc}.api.mailchimp.com/3.0`;
+  const tag = founding ? tagFounding : tagStandard;
+  const subscriberHash = crypto.createHash('md5').update(email.toLowerCase()).digest('hex');
+
   const headers = {
     'Content-Type': 'application/json',
-    Authorization: 'Basic ' + Buffer.from(apiKey + ':').toString('base64'),
-    'User-Agent': 'Anna Lou Wellness (annalouwellness.com)',
+    Authorization: 'Basic ' + Buffer.from('any:' + apiKey).toString('base64'),
   };
 
-  let subscriberId: string | undefined;
-
   try {
-    // Step 1: upsert subscriber WITH segments in the same call
-    const createRes = await fetch('https://api.flodesk.com/v1/subscribers', {
+    // Step 1: upsert subscriber (PUT — creates if missing, updates if exists)
+    const upsertRes = await fetch(`${baseUrl}/lists/${listId}/members/${subscriberHash}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        email_address: email,
+        status_if_new: 'subscribed',
+        merge_fields: firstName ? { FNAME: firstName } : {},
+      }),
+    });
+    if (!upsertRes.ok) {
+      const text = await upsertRes.text();
+      return { ok: false, error: `Mailchimp upsert ${upsertRes.status}: ${text.slice(0, 200)}` };
+    }
+  } catch (err: any) {
+    return { ok: false, error: `Mailchimp upsert fetch failed: ${err?.message}` };
+  }
+
+  // Step 2: attach tag (separate endpoint — Mailchimp keeps tags out of member upsert body)
+  try {
+    const tagRes = await fetch(`${baseUrl}/lists/${listId}/members/${subscriberHash}/tags`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        email,
-        first_name: firstName || undefined,
-        status: 'active',
-        segments: [{ id: segment }],
+        tags: [{ name: tag, status: 'active' }],
       }),
     });
-    const createText = await createRes.text();
-    if (!createRes.ok) {
-      return { ok: false, error: `Flodesk create ${createRes.status}: ${createText.slice(0, 200)}` };
-    }
-    try {
-      const j = JSON.parse(createText);
-      subscriberId = j?.data?.id || j?.id;
-    } catch { /* ignore */ }
-  } catch (err: any) {
-    return { ok: false, error: `Flodesk create fetch failed: ${err?.message}` };
-  }
-
-  // Step 2 (belt-and-suspenders): also POST to /segments endpoint to ensure segment attaches
-  try {
-    const subjectIdentifier = subscriberId || email;
-    const segRes = await fetch(`https://api.flodesk.com/v1/subscribers/${encodeURIComponent(subjectIdentifier)}/segments`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ segment_ids: [segment] }),
-    });
-    if (!segRes.ok) {
-      const text = await segRes.text();
-      // Don't fail the whole call — subscriber exists, just log so we can debug.
-      console.warn(`[flodesk] segment attach ${segRes.status}: ${text.slice(0, 200)}`);
+    if (!tagRes.ok) {
+      const text = await tagRes.text();
+      console.warn(`[mailchimp] tag attach ${tagRes.status}: ${text.slice(0, 200)}`);
     }
   } catch (err: any) {
-    console.warn('[flodesk] segment attach fetch failed:', err?.message);
+    console.warn('[mailchimp] tag attach fetch failed:', err?.message);
   }
 
   return { ok: true };
@@ -98,7 +103,6 @@ async function pushToSubstack(email: string) {
     if (!res.ok) return { ok: false, error: `Substack ${res.status}` };
     return { ok: true };
   } catch (err: any) {
-    // Substack often has CORS/network quirks server-side. Treat soft-fail as ok=false but don't block.
     return { ok: false, error: `Substack fetch failed: ${err?.message}` };
   }
 }
@@ -120,29 +124,25 @@ export async function POST(req: NextRequest) {
 
   const founding = isFoundingWindow();
 
-  // Fan out to both providers in parallel.
-  const [flodesk, substack] = await Promise.all([
-    pushToFlodesk(email, firstName, founding),
+  const [mailchimp, substack] = await Promise.all([
+    pushToMailchimp(email, firstName, founding),
     pushToSubstack(email),
   ]);
 
-  // Log any partial failure for ops visibility (Coolify/Strapi logs).
-  if (!flodesk.ok) console.warn('[reset-letters subscribe] Flodesk error:', flodesk.error);
+  if (!mailchimp.ok) console.warn('[reset-letters subscribe] Mailchimp error:', mailchimp.error);
   if (!substack.ok) console.warn('[reset-letters subscribe] Substack error:', substack.error);
 
-  // Success if at least Flodesk worked (Substack confirmation email also closes the loop on their side).
-  if (flodesk.ok) {
+  if (mailchimp.ok) {
     return NextResponse.json({
       ok: true,
       founding,
-      flodesk: flodesk.ok,
+      mailchimp: mailchimp.ok,
       substack: substack.ok,
     });
   }
 
-  // Both failed → return error so the form shows a retry message.
   return NextResponse.json({
     error: 'We could not save your subscription. Please try again or email hello@annalouwellness.com.',
-    detail: flodesk.error,
+    detail: mailchimp.error,
   }, { status: 502 });
 }
