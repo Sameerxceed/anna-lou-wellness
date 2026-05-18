@@ -22,6 +22,7 @@
     "intro": { "type": "text", "description": "Main body. Separate paragraphs with a BLANK LINE between them." },
     "ctaLabel": { "type": "string", "default": "View upcoming", "description": "Optional button text." },
     "ctaUrl": { "type": "string", "default": "/community/events", "description": "Optional button link." },
+    "secondaryList": { "type": "text", "description": "Optional. For pages with a list of cards (Corporate 'Formats' grid, Speaking 'Talks' list, etc.). One item per line. Format: 'Title|Body description'. Example: '90-minute session|A single workshop. Online or in person.'. Leave blank if not needed." },
     "seoTitle": { "type": "string", "description": "Optional SEO override." },
     "seoDescription": { "type": "text", "description": "Optional SEO description for Google." }
   }

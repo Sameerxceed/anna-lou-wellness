@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
-import { getExperienceBySlug } from '@/lib/experience-page';
+import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
 import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
@@ -19,6 +19,13 @@ export default async function SpeakingPage() {
   const introParas = cms?.intro ? splitParas(cms.intro) : [
     'Anna speaks on the inner guidance system, the nervous system, somatic coaching, the recovery work that follows narcissistic abuse, and what it actually takes for a woman to rebuild from burnout. She also speaks to founders on the link between the body and the business.',
     'Format depends on what your audience needs. Keynote, panel, fireside, intimate Q&A. Online or in the room.',
+  ];
+  const talks = parseSecondaryList(cms?.secondaryList) || [
+    { title: 'The Inner Guidance System.', body: 'What it is, how it gets scrambled, how to bring it back online.' },
+    { title: 'Burnout is a nervous system event.', body: 'The biology of what happens, and why willpower will not fix it.' },
+    { title: 'Recovering from narcissistic abuse.', body: 'Honest, somatic, no jargon. For survivors and the people supporting them.' },
+    { title: 'The body knows first.', body: 'Why founder decisions made from a dysregulated body are almost always wrong.' },
+    { title: 'The Signal Method.', body: 'A framework for living and leading from your own signal, not someone else\'s noise.' },
   ];
 
   return (
@@ -44,13 +51,11 @@ export default async function SpeakingPage() {
 
       <section className="sp-talks">
         <div className="sp-talks-inner">
-          <p className="sp-section-label">Five talks she gives most</p>
+          <p className="sp-section-label">Talks she gives most</p>
           <ol className="sp-talks-list">
-            <li><strong>The Inner Guidance System.</strong> What it is, how it gets scrambled, how to bring it back online.</li>
-            <li><strong>Burnout is a nervous system event.</strong> The biology of what happens, and why willpower will not fix it.</li>
-            <li><strong>Recovering from narcissistic abuse.</strong> Honest, somatic, no jargon. For survivors and the people supporting them.</li>
-            <li><strong>The body knows first.</strong> Why founder decisions made from a dysregulated body are almost always wrong.</li>
-            <li><strong>The Signal Method.</strong> A framework for living and leading from your own signal, not someone else&apos;s noise.</li>
+            {talks.map((t, i) => (
+              <li key={i}><strong>{t.title}</strong> {t.body}</li>
+            ))}
           </ol>
         </div>
       </section>

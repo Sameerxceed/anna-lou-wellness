@@ -71,6 +71,12 @@ async function seedPages(strapi) {
       'Formats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.',
       'Anna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.',
     ].join('\n\n'),
+    secondaryList: [
+      '90-minute session|A single workshop. Online or in person. Topic shaped to your team.',
+      'Half-day or full-day|Immersive teambuilding plus nervous system regulation. On houseboat or at your space.',
+      'Keynote / panel|For conferences and offsites. Up to 200 attendees.',
+      'Ongoing programme|Quarterly or monthly cadence. Depth over time. Bespoke design.',
+    ].join('\n'),
   });
 
   await ensure(strapi, 'api::experience-page.experience-page', 'speaking', {
@@ -81,6 +87,13 @@ async function seedPages(strapi) {
       'Anna speaks on the inner guidance system, the nervous system, somatic coaching, the recovery work that follows narcissistic abuse, and what it actually takes for a woman to rebuild from burnout. She also speaks to founders on the link between the body and the business.',
       'Format depends on what your audience needs. Keynote, panel, fireside, intimate Q&A. Online or in the room.',
     ].join('\n\n'),
+    secondaryList: [
+      'The Inner Guidance System.|What it is, how it gets scrambled, how to bring it back online.',
+      'Burnout is a nervous system event.|The biology of what happens, and why willpower will not fix it.',
+      'Recovering from narcissistic abuse.|Honest, somatic, no jargon. For survivors and the people supporting them.',
+      'The body knows first.|Why founder decisions made from a dysregulated body are almost always wrong.',
+      "The Signal Method.|A framework for living and leading from your own signal, not someone else's noise.",
+    ].join('\n'),
   });
 
   // ═══ Community Event pages ═══
@@ -214,6 +227,11 @@ async function seedPages(strapi) {
       'This is why talk therapy alone often is not enough. You can understand what happened intellectually and still feel the activation in your body every time you hear a particular tone of voice or walk into a room with a certain energy.',
       'Somatic coaching works at the level where the damage actually lives. In the body. In the automatic responses. In the nervous system patterns that were rewired by someone who needed you to doubt yourself.',
     ].join('\n\n'),
+    stagesList: [
+      'Month One|Untangle.|Somatic mapping, breathwork, Flash EMDR for specific traumatic memories. We identify where the patterns live in the body and begin to separate your responses from the ones that were installed by someone else.',
+      'Month Two|Unbind.|TRE for trauma release, Internal Family Systems parts work, boundary recalibration. The parts of you that learned to fawn, freeze, or fight begin to find new options. Your boundaries stop being theoretical and become felt.',
+      'Month Three|Unbound.|Integration, intuition strengthening, personal recovery map. The signal comes back. You start hearing your own body again. By month three something genuine has shifted, not at the level of insight but at the level of automatic response.',
+    ].join('\n'),
     pricingLabel: 'Investment',
     pricingBody: 'By enquiry. Anna shapes the price to your situation. Payment plans available. Some places held at reduced rate for women genuinely unable to pay full price.',
     ctaLabel: 'Send a private enquiry',

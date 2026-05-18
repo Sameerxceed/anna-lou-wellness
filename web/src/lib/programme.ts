@@ -17,6 +17,24 @@ export interface ProgrammeCMS {
   pricingBody?: string;
   ctaLabel?: string;
   ctaUrl?: string;
+  stagesList?: string;
+}
+
+/**
+ * Parse a pipe-separated stages list. Each line: "Label|Title|Body".
+ * Returns array of {label, title, body} or null if input is blank.
+ */
+export function parseStages(raw: string | undefined): { label: string; title: string; body: string }[] | null {
+  if (!raw || !raw.trim()) return null;
+  const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean);
+  const stages = lines
+    .map((line) => {
+      const parts = line.split('|').map((p) => p.trim());
+      if (parts.length < 3) return null;
+      return { label: parts[0], title: parts[1], body: parts[2] };
+    })
+    .filter((s): s is { label: string; title: string; body: string } => s !== null);
+  return stages.length > 0 ? stages : null;
 }
 
 export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | null> {

@@ -10,6 +10,24 @@ export interface ExperiencePageCMS {
   intro?: string;
   ctaLabel?: string;
   ctaUrl?: string;
+  secondaryList?: string;
+}
+
+/**
+ * Parse a pipe-separated list of {title, body} items.
+ * Each line: "Title|Body". Returns array or null if blank.
+ */
+export function parseSecondaryList(raw: string | undefined): { title: string; body: string }[] | null {
+  if (!raw || !raw.trim()) return null;
+  const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean);
+  const items = lines
+    .map((line) => {
+      const parts = line.split('|').map((p) => p.trim());
+      if (parts.length < 2) return null;
+      return { title: parts[0], body: parts[1] };
+    })
+    .filter((i): i is { title: string; body: string } => i !== null);
+  return items.length > 0 ? items : null;
 }
 
 export async function getExperienceBySlug(slug: string): Promise<ExperiencePageCMS | null> {

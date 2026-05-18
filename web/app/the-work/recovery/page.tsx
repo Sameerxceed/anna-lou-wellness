@@ -2,8 +2,10 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
-import { getProgrammeBySlug } from '@/lib/programme';
+import { getProgrammeBySlug, parseStages } from '@/lib/programme';
 import { mediaUrl } from '@/lib/strapi';
+
+const STAGE_COLOURS = ['#EE312F', '#FAA21B', '#5DCAA5', '#7BAFDD', '#F280AA'];
 
 export const metadata: Metadata = {
   title: 'Narcissistic Abuse Recovery Coaching | Untangle, Unbind, Unbound',
@@ -22,6 +24,11 @@ export default async function RecoveryPage() {
     'What remains is hypervigilance. Freeze. Fawn. A nervous system permanently scanning for threat, even years after the relationship has ended. The body-level residue of narcissistic abuse is not a mindset problem. It is a nervous system injury.',
     'This is why talk therapy alone often is not enough. You can understand what happened intellectually and still feel the activation in your body every time you hear a particular tone of voice or walk into a room with a certain energy.',
     'Somatic coaching works at the level where the damage actually lives. In the body. In the automatic responses. In the nervous system patterns that were rewired by someone who needed you to doubt yourself.',
+  ];
+  const stages = parseStages(cms?.stagesList) || [
+    { label: 'Month One', title: 'Untangle.', body: 'Somatic mapping, breathwork, Flash EMDR for specific traumatic memories. We identify where the patterns live in the body and begin to separate your responses from the ones that were installed by someone else.' },
+    { label: 'Month Two', title: 'Unbind.', body: 'TRE for trauma release, Internal Family Systems parts work, boundary recalibration. The parts of you that learned to fawn, freeze, or fight begin to find new options. Your boundaries stop being theoretical and become felt.' },
+    { label: 'Month Three', title: 'Unbound.', body: 'Integration, intuition strengthening, personal recovery map. The signal comes back. You start hearing your own body again. By month three something genuine has shifted, not at the level of insight but at the level of automatic response.' },
   ];
 
   return (
@@ -49,21 +56,13 @@ export default async function RecoveryPage() {
         <div className="rec-stages-inner">
           <p className="rec-section-label">The three months</p>
           <div className="rec-stages-grid">
-            <article className="rec-stage" style={{ borderTopColor: '#EE312F' }}>
-              <p className="rec-stage-num">Month One</p>
-              <h3>Untangle.</h3>
-              <p>Somatic mapping, breathwork, Flash EMDR for specific traumatic memories. We identify where the patterns live in the body and begin to separate your responses from the ones that were installed by someone else.</p>
-            </article>
-            <article className="rec-stage" style={{ borderTopColor: '#FAA21B' }}>
-              <p className="rec-stage-num">Month Two</p>
-              <h3>Unbind.</h3>
-              <p>TRE for trauma release, Internal Family Systems parts work, boundary recalibration. The parts of you that learned to fawn, freeze, or fight begin to find new options. Your boundaries stop being theoretical and become felt.</p>
-            </article>
-            <article className="rec-stage" style={{ borderTopColor: '#5DCAA5' }}>
-              <p className="rec-stage-num">Month Three</p>
-              <h3>Unbound.</h3>
-              <p>Integration, intuition strengthening, personal recovery map. The signal comes back. You start hearing your own body again. By month three something genuine has shifted, not at the level of insight but at the level of automatic response.</p>
-            </article>
+            {stages.map((stage, i) => (
+              <article key={i} className="rec-stage" style={{ borderTopColor: STAGE_COLOURS[i % STAGE_COLOURS.length] }}>
+                <p className="rec-stage-num">{stage.label}</p>
+                <h3>{stage.title}</h3>
+                <p>{stage.body}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

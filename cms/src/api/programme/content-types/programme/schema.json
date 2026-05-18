@@ -31,6 +31,7 @@
     "ctaLabel": { "type": "string", "default": "Book a discovery call", "description": "Bottom button text." },
     "ctaUrl": { "type": "string", "default": "/contact", "description": "Where the bottom button links to." },
     "displayOrder": { "type": "integer", "default": 100, "description": "Lower numbers show first in any list. Default 100." },
+    "stagesList": { "type": "text", "description": "Optional. For programmes shown as 3+ stages (Recovery / Untangle-Unbind-Unbound). One stage per line. Format: 'Label|Title|Body description'. Example: 'Month One|Untangle.|We identify where the patterns live in the body.'. Leave blank if not needed." },
     "seoTitle": { "type": "string", "description": "Optional SEO override. Leave blank to use the title." },
     "seoDescription": { "type": "text", "description": "Optional SEO description for Google. Keep under 160 characters." }
   }

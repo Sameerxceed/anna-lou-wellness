@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import { getStockImage } from '@/data/stock-images';
-import { getExperienceBySlug } from '@/lib/experience-page';
+import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
 import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
@@ -20,6 +20,12 @@ export default async function CorporatePage() {
     'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes tailored to your workplace. The Signal Method adapted for corporate environments.',
     'Formats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.',
     'Anna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.',
+  ];
+  const formats = parseSecondaryList(cms?.secondaryList) || [
+    { title: '90-minute session', body: 'A single workshop. Online or in person. Topic shaped to your team.' },
+    { title: 'Half-day or full-day', body: 'Immersive teambuilding plus nervous system regulation. On houseboat or at your space.' },
+    { title: 'Keynote / panel', body: 'For conferences and offsites. Up to 200 attendees.' },
+    { title: 'Ongoing programme', body: 'Quarterly or monthly cadence. Depth over time. Bespoke design.' },
   ];
 
   return (
@@ -47,22 +53,12 @@ export default async function CorporatePage() {
         <div className="cw-formats-inner">
           <p className="cw-section-label">Formats</p>
           <div className="cw-formats-grid">
-            <div className="cw-format">
-              <h3>90-minute session</h3>
-              <p>A single workshop. Online or in person. Topic shaped to your team.</p>
-            </div>
-            <div className="cw-format">
-              <h3>Half-day or full-day</h3>
-              <p>Immersive teambuilding plus nervous system regulation. On houseboat or at your space.</p>
-            </div>
-            <div className="cw-format">
-              <h3>Keynote / panel</h3>
-              <p>For conferences and offsites. Up to 200 attendees.</p>
-            </div>
-            <div className="cw-format">
-              <h3>Ongoing programme</h3>
-              <p>Quarterly or monthly cadence. Depth over time. Bespoke design.</p>
-            </div>
+            {formats.map((f, i) => (
+              <div key={i} className="cw-format">
+                <h3>{f.title}</h3>
+                <p>{f.body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
