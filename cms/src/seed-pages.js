@@ -213,6 +213,11 @@ async function seedPages(strapi) {
     pricingBody: '£200, paid at booking. 90 minutes, virtual.',
     ctaLabel: 'Book this session',
     ctaUrl: '/contact',
+    pricePence: 20000,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'Reset Session (90-min)',
+    grantsResetRoomAccess: false,
   });
 
   await ensure(strapi, 'api::programme.programme', 'dating-reset', {
@@ -224,6 +229,11 @@ async function seedPages(strapi) {
     pricingBody: '£200, paid at booking. 90 minutes, virtual.',
     ctaLabel: 'Book this session',
     ctaUrl: '/contact',
+    pricePence: 20000,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'Reset Session (90-min)',
+    grantsResetRoomAccess: false,
   });
 
   await ensure(strapi, 'api::programme.programme', 'nervous-system-reset', {
@@ -235,6 +245,11 @@ async function seedPages(strapi) {
     pricingBody: '£200, paid at booking. 90 minutes, virtual.',
     ctaLabel: 'Book this session',
     ctaUrl: '/contact',
+    pricePence: 20000,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'Reset Session (90-min)',
+    grantsResetRoomAccess: false,
   });
 
   await ensure(strapi, 'api::programme.programme', 'recovery', {
@@ -256,6 +271,11 @@ async function seedPages(strapi) {
     pricingBody: 'By enquiry. Anna shapes the price to your situation. Payment plans available. Some places held at reduced rate for women genuinely unable to pay full price.',
     ctaLabel: 'Send a private enquiry',
     ctaUrl: '#enquire',
+    pricePence: 0,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'The Reset (6-week)',
+    grantsResetRoomAccess: false,
   });
 
   await ensure(strapi, 'api::programme.programme', 'signal-collective', {
@@ -270,6 +290,125 @@ async function seedPages(strapi) {
     pricingBody: 'By enquiry. Application form first, then a discovery call.',
     ctaLabel: 'Apply',
     ctaUrl: '#apply',
+    pricePence: 0,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'Signal Collective',
+    grantsResetRoomAccess: false,
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'the-reset', {
+    title: 'The Reset.',
+    tagline: 'Six weeks. One-to-one. Signal back online.',
+    accentColour: '#F280AA',
+    intro: [
+      'Most people arrive at The Reset after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall.',
+      'The Reset is six weeks, 1:1, working directly with your inner guidance system. Not the story. Not the intellectual understanding of the pattern. The actual place the pattern lives, in the body, in the automatic responses that fire before your conscious mind catches up.',
+      'Most of us spend years trying to fight the current. The Reset is the work of learning to stop gripping. Because when you stop gripping you realise the river was always guiding you. Your inner guidance system was never broken. It was waiting for you to stop overriding it.',
+      'Week one: baseline. Where are you arriving from? What is your inner world doing right now? What does safety feel like in your body, and how long since you genuinely felt it?',
+      'By week three something usually shifts. A decision becomes clear. A pattern stops activating the same response.',
+    ].join('\n\n'),
+    whatsIncludedLabel: "What's included",
+    whatsIncludedItems: [
+      'Six 1:1 sessions, weekly, 60 minutes each',
+      'Voxer support between sessions, Tuesday to Thursday',
+      'Starting audit of your inner world',
+      'Tools that fit your actual life',
+      'A clear close at week six. Many clients roll into Signal. Many do not need to.',
+    ].join('\n'),
+    pricingLabel: 'Investment',
+    pricingBody: '£1,500. Paid in full at booking, or two instalments of £750 across the six weeks. If you are not sure, book a free fifteen-minute discovery call.',
+    ctaLabel: 'Book a discovery call',
+    ctaUrl: '/contact',
+    pricePence: 150000,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'The Reset (6-week)',
+    grantsResetRoomAccess: false,
+    displayOrder: 10,
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'signal', {
+    title: 'Signal.',
+    tagline: 'Twelve weeks. One-to-one. The deeper container.',
+    accentColour: '#6E3A5A',
+    intro: [
+      'Twelve weeks is enough time for something to genuinely change. Not the surface, the pattern underneath it. The automatic response that has been running your decisions, your relationships, and your relationship to yourself without your full permission.',
+      'Signal is the full twelve-week somatic coaching programme. Inner world rewire, pattern release, belief repatterning, rebuilding from the inside out. Weekly sessions, integration support throughout.',
+    ].join('\n\n'),
+    whatsIncludedLabel: "What's included",
+    whatsIncludedItems: [
+      'Twelve 1:1 sessions, weekly, 60 minutes each',
+      'Voxer support Tuesday to Thursday',
+      'Personalised Signal Method workbook',
+      'Lifetime access to recordings',
+      'Optional in-person session at the Hampton studio',
+    ].join('\n'),
+    pricingLabel: 'Investment',
+    pricingBody: '£3,000. Paid in full, or three instalments of £1,000.',
+    ctaLabel: 'Book a discovery call',
+    ctaUrl: '/contact',
+    pricePence: 300000,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'Signal (12-week)',
+    grantsResetRoomAccess: false,
+    displayOrder: 20,
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'signal-and-build', {
+    title: 'Signal & Build.',
+    tagline: 'Twelve weeks. The inner work and the business, held together.',
+    accentColour: '#FAA21B',
+    intro: [
+      'Signal & Build is Signal with a second track: heart-led business strategy using the Signal Method. For founders, coaches, and leaders who want to regulate their inner world and build from that place.',
+    ].join('\n\n'),
+    whatsIncludedLabel: "What's included",
+    whatsIncludedItems: [
+      'Everything in Signal: twelve 1:1 sessions, Voxer support, full inner-world audit',
+      'Business strategy sessions interleaved with the inner work — pricing, positioning, capacity, decision-making, team, founder energy',
+      'Drawn from twenty years building Anna Lou of London across Harrods, Selfridges, Liberty, Harvey Nichols',
+      'Voxer access widened to include in-the-moment business questions',
+    ].join('\n'),
+    pricingLabel: 'Investment',
+    pricingBody: '£3,000. Paid in full, or three instalments of £1,000.',
+    ctaLabel: 'Book a discovery call',
+    ctaUrl: '/contact',
+    pricePence: 300000,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'Signal & Build (founders)',
+    grantsResetRoomAccess: false,
+    displayOrder: 25,
+  });
+
+  await ensure(strapi, 'api::programme.programme', 'one-day', {
+    title: 'One Day.',
+    tagline: 'A full day. Held, focused, finished.',
+    accentColour: '#5DCAA5',
+    intro: [
+      'One Day is exactly that. A full day, 1:1, on the houseboat at Taggs Island or online. No multi-week commitment. One concentrated, unhurried, immersive day.',
+      'We begin with a full inner guidance system audit. We move through whatever the day calls for: somatic work, belief repatterning, breathwork, Signal Method, pendulum alignment, business strategy if you are building something.',
+    ].join('\n\n'),
+    whatsIncludedLabel: "What's included",
+    whatsIncludedItems: [
+      'A full day, 10am to 5pm UK, with breaks',
+      'In person at the Hampton studio, or virtual via Zoom',
+      'Pre-day intake form and a 30-minute scoping call the week before',
+      'The day itself: nervous-system work, somatic enquiry, decision mapping, integration',
+      'Lunch and refreshments included if in person',
+      'A 60-minute integration call two weeks later',
+    ].join('\n'),
+    pricingLabel: 'Investment',
+    pricingBody: 'By enquiry. Each One Day is shaped around the person it is for.',
+    ctaLabel: 'Send an enquiry below',
+    ctaUrl: '#enquire',
+    pricePence: 0,
+    currency: 'gbp',
+    isRecurring: false,
+    mailchimpTag: 'One Day Intensive',
+    grantsResetRoomAccess: false,
+    displayOrder: 30,
   });
 
   // ═══ Section landing pages + standalone ═══
