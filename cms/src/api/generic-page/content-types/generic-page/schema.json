@@ -5,25 +5,25 @@
     "singularName": "generic-page",
     "pluralName": "generic-pages",
     "displayName": "Page (generic)",
-    "description": "Catch-all CMS for one-off pages: Quiz, Client Stories, Ways to Work, Mantras, Cosmic Forecast, Press, Partnerships, etc."
+    "description": "Catch-all CMS for one-off pages. Each entry's slug must match the URL path. Examples: 'the-work', 'mantras', 'about-press', 'contact', etc."
   },
   "options": { "draftAndPublish": false },
   "attributes": {
+    "title": { "type": "string", "required": true, "description": "The big heading at the top of the page." },
     "slug": {
       "type": "uid",
       "targetField": "title",
       "required": true,
-      "description": "Must match URL path. Examples: 'the-work-quiz', 'the-work-client-stories', 'the-work-ways-to-work-with-me', 'mantras', 'cosmic-forecast', 'about-press', 'about-partnerships', 'the-work-recovery-coaching', 'the-work-signal-collective'"
+      "description": "URL slug. Must match the route. Examples: 'the-work', 'experiences-landing', 'mantras', 'cosmic-forecast', 'contact', 'welcome', 'about-press', 'about-partnerships', 'the-work-client-stories', 'the-work-ways-to-work-with-me'."
     },
-    "title": { "type": "string", "required": true },
-    "kicker": { "type": "string" },
-    "kickerColour": { "type": "string", "default": "#6E3A5A" },
-    "tagline": { "type": "string" },
-    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
-    "intro": { "type": "text", "description": "Paragraphs separated by blank lines." },
-    "ctaLabel": { "type": "string" },
-    "ctaUrl": { "type": "string" },
-    "seoTitle": { "type": "string" },
-    "seoDescription": { "type": "text" }
+    "kicker": { "type": "string", "description": "Small uppercase label above the title. e.g. 'About', 'The Work', 'Community'." },
+    "kickerColour": { "type": "string", "default": "#6E3A5A", "description": "Hex colour for the kicker. Pink #F280AA, blue #7BAFDD, gold #FAA21B, mint #5DCAA5, plum #6E3A5A." },
+    "tagline": { "type": "string", "description": "Italic subtitle under the main title. One sentence." },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "Main image. Landscape orientation works best." },
+    "intro": { "type": "text", "description": "Main body. Separate paragraphs with a BLANK LINE between them." },
+    "ctaLabel": { "type": "string", "description": "Optional button text at the bottom." },
+    "ctaUrl": { "type": "string", "description": "Optional button link." },
+    "seoTitle": { "type": "string", "description": "Optional SEO override." },
+    "seoDescription": { "type": "text", "description": "Optional SEO description for Google. Keep under 160 characters." }
   }
 }

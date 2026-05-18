@@ -5,32 +5,33 @@
     "singularName": "programme",
     "pluralName": "programmes",
     "displayName": "Programme",
-    "description": "Individual coaching/membership programmes (The Reset, Signal, Signal & Build, One Day, Reset Sessions, etc.)"
+    "description": "One entry per coaching offer or 1:1 session (The Reset, Signal, Founder Reset, etc.). The slug must match the URL path."
   },
   "options": { "draftAndPublish": false },
   "attributes": {
+    "title": { "type": "string", "required": true, "description": "Programme name as it appears on the page (e.g. 'The Reset.' or 'Founder Reset')." },
     "slug": {
       "type": "uid",
       "targetField": "title",
-      "required": true
+      "required": true,
+      "description": "URL slug. Must match the route — e.g. 'the-reset', 'signal', 'founder-reset'. Strapi auto-generates from title but you can edit."
     },
-    "title": { "type": "string", "required": true },
-    "tagline": { "type": "string" },
-    "accentColour": { "type": "string", "default": "#F280AA", "description": "Brand colour hex (e.g. #F280AA pink, #7BAFDD blue, #FAA21B gold)" },
-    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
-    "intro": { "type": "text", "description": "Multiple paragraphs separated by blank line. Each paragraph becomes its own <p>." },
-    "whatsIncludedLabel": { "type": "string", "default": "What's included" },
-    "whatsIncludedItems": { "type": "text", "description": "One bullet per line." },
-    "approachLabel": { "type": "string", "default": "The approach" },
-    "approachBody": { "type": "text" },
-    "outcomesLabel": { "type": "string", "default": "What changes" },
-    "outcomesBody": { "type": "text" },
-    "pricingLabel": { "type": "string", "default": "Investment" },
-    "pricingBody": { "type": "text" },
-    "ctaLabel": { "type": "string", "default": "Book a discovery call" },
-    "ctaUrl": { "type": "string", "default": "/contact" },
-    "displayOrder": { "type": "integer", "default": 100, "description": "Lower numbers show first in lists." },
-    "seoTitle": { "type": "string" },
-    "seoDescription": { "type": "text" }
+    "tagline": { "type": "string", "description": "Short italic line under the title. One sentence." },
+    "accentColour": { "type": "string", "default": "#F280AA", "description": "Brand colour hex. Common options: pink #F280AA, blue #7BAFDD, gold #FAA21B, mint #5DCAA5, plum #6E3A5A." },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "Image at the top of the programme page. Portrait orientation works best." },
+    "intro": { "type": "text", "description": "Main body. Separate paragraphs with a BLANK LINE between them. Each blank line creates a new paragraph on the page." },
+    "whatsIncludedLabel": { "type": "string", "default": "What's included", "description": "Heading for the bullet-point section." },
+    "whatsIncludedItems": { "type": "text", "description": "One bullet per line. Each line becomes a separate bullet point." },
+    "approachLabel": { "type": "string", "default": "The approach", "description": "Optional — heading for a second info section." },
+    "approachBody": { "type": "text", "description": "Optional — second info section body." },
+    "outcomesLabel": { "type": "string", "default": "What changes", "description": "Optional — heading for a third info section." },
+    "outcomesBody": { "type": "text", "description": "Optional — third info section body." },
+    "pricingLabel": { "type": "string", "default": "Investment", "description": "Heading for the pricing block." },
+    "pricingBody": { "type": "text", "description": "Pricing details. e.g. '£1,500. Paid in full or two instalments of £750.'" },
+    "ctaLabel": { "type": "string", "default": "Book a discovery call", "description": "Bottom button text." },
+    "ctaUrl": { "type": "string", "default": "/contact", "description": "Where the bottom button links to." },
+    "displayOrder": { "type": "integer", "default": 100, "description": "Lower numbers show first in any list. Default 100." },
+    "seoTitle": { "type": "string", "description": "Optional SEO override. Leave blank to use the title." },
+    "seoDescription": { "type": "text", "description": "Optional SEO description for Google. Keep under 160 characters." }
   }
 }
