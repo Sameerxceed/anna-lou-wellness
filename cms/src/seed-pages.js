@@ -18,7 +18,27 @@ async function ensure(strapi, uid, slug, data) {
       filters: { slug },
       limit: 1,
     });
-    if (existing && existing.length > 0) return false;
+    if (existing && existing.length > 0) {
+      // Entry exists — backfill any fields that are null/empty (new schema fields).
+      // Never overwrites a field Anna has already filled.
+      const current = existing[0];
+      const patch = {};
+      for (const [key, val] of Object.entries(data)) {
+        const cur = current[key];
+        if (cur === null || cur === undefined || cur === '') {
+          patch[key] = val;
+        }
+      }
+      if (Object.keys(patch).length > 0) {
+        await strapi.documents(uid).update({
+          documentId: current.documentId,
+          data: patch,
+          status: 'published',
+        });
+        strapi.log.info(`[seed-pages] Backfilled ${uid} (${slug}): ${Object.keys(patch).join(', ')}`);
+      }
+      return false;
+    }
     await strapi.documents(uid).create({
       data: { ...data, slug },
       status: 'published',
