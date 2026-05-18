@@ -32,6 +32,12 @@
     "ctaUrl": { "type": "string", "default": "/contact", "description": "Where the bottom button links to." },
     "displayOrder": { "type": "integer", "default": 100, "description": "Lower numbers show first in any list. Default 100." },
     "stagesList": { "type": "text", "description": "Optional. For programmes shown as 3+ stages (Recovery / Untangle-Unbind-Unbound). One stage per line. Format: 'Label|Title|Body description'. Example: 'Month One|Untangle.|We identify where the patterns live in the body.'. Leave blank if not needed." },
+    "pricePence": { "type": "integer", "default": 0, "description": "Optional. Price in pence (e.g. 150000 = £1,500). Leave 0 or blank for 'by enquiry' programmes — the Book button won't show a price button." },
+    "currency": { "type": "string", "default": "gbp", "description": "Three-letter ISO currency code, lowercase." },
+    "isRecurring": { "type": "boolean", "default": false, "description": "Tick only if billed monthly/yearly. Leave unchecked for one-off programme payment." },
+    "recurringInterval": { "type": "enumeration", "enum": ["month", "year"], "description": "Only used when 'isRecurring' is on." },
+    "mailchimpTag": { "type": "string", "description": "Tag attached on successful payment. Must match a Mailchimp tag name EXACTLY (case-sensitive). Examples: 'The Reset (6-week)', 'Signal (12-week)', 'Signal & Build (founders)'." },
+    "grantsResetRoomAccess": { "type": "boolean", "default": false, "description": "Leave OFF for normal programmes. Only the Reset Room membership should have this on." },
     "seoTitle": { "type": "string", "description": "Optional SEO override. Leave blank to use the title." },
     "seoDescription": { "type": "text", "description": "Optional SEO description for Google. Keep under 160 characters." }
   }

@@ -1,120 +1,151 @@
 # Stripe Integration — Build Notes
 
-**Status:** Plumbing built 18 May 2026. **Not live yet — Anna must create products + you must register the webhook before anything works.**
+**Status:** Plumbing built 18 May 2026, refactored same day. **Not live yet — Anna must enter prices in Strapi + you must register the webhook before anything works.**
+
+## Architecture principle
+
+**Strapi is the source of truth. Stripe is JUST a payment gateway.**
+
+- All products, prices, recurring/one-off flags, Mailchimp tag names, and "grants Reset Room access" flags live in Strapi.
+- Anna manages everything from the CMS admin (iPhone-friendly).
+- Stripe sees an inline price built at request time. No products created in Stripe. No price IDs stored in env vars.
+- Webhook reads metadata `{ strapi_type, strapi_id }` from the event → re-fetches the Strapi record → applies the current tag/role rules.
+
+If Anna changes a price or tag in Strapi, the next checkout uses the new value immediately — no developer touch, no redeploy.
+
+---
 
 ## What's wired
 
 ### Code (committed)
-- `web/src/lib/stripe.ts` — Stripe SDK init + price-ID → tag/role map
+
+- `web/src/lib/stripe.ts` — Stripe SDK init (just the SDK, no business logic)
+- `web/src/lib/strapi-purchasable.ts` — Fetches and normalizes any purchasable Strapi record
 - `web/src/lib/mailchimp.ts` — Reusable Mailchimp helpers (`subscribeAndTag`, `removeTag`)
 - `web/src/lib/strapi-admin.ts` — Strapi user/role management via admin API token
-- `web/app/api/stripe/checkout/route.ts` — Creates Checkout Sessions
-- `web/app/api/stripe/webhook/route.ts` — Handles Stripe events with signature verification
+- `web/app/api/stripe/checkout/route.ts` — Builds Stripe Checkout sessions from Strapi
+- `web/app/api/stripe/webhook/route.ts` — Signature-verified handler; metadata-driven Strapi lookup
+
+### Strapi schemas updated
+
+These fields now exist on every "purchasable" content type:
+
+| Field | Type | Purpose |
+|---|---|---|
+| `pricePence` | integer | Price in pence. £25 = 2500. 0 = "by enquiry". |
+| `currency` | string | ISO code, lowercase. Default `gbp`. |
+| `isRecurring` | boolean | Tick for subscription, unchecked for one-off. |
+| `recurringInterval` | enum | `month` or `year` (only used when `isRecurring`). |
+| `mailchimpTag` | string | Tag attached on successful payment. Must match Mailchimp tag name EXACTLY. |
+| `grantsResetRoomAccess` | boolean | Tick ONLY for the Reset Room membership — promotes user to `reset-room-member` role. |
+
+Applied to: `Membership` (singleType — Reset Room), `Programme` (collection), `Experience Page` (collection).
 
 ### Env vars set in Coolify (Next.js)
 - ✅ `STRIPE_SECRET_KEY` (test mode `sk_test_...`)
 - ✅ `STRIPE_PUBLISHABLE_KEY` (test mode `pk_test_...`)
 - ⏳ `STRIPE_WEBHOOK_SECRET` (set after step 2 below)
-- ⏳ `STRIPE_PRICE_RESET_ROOM` (set after step 1 below)
-- ⏳ Other product price IDs as products are created
 - ⏳ `STRAPI_ADMIN_API_TOKEN` (Strapi admin → Settings → API Tokens → Create token, full-access)
+
+**No `STRIPE_PRICE_*` env vars exist.** Prices live in Strapi.
 
 ---
 
 ## Setup steps (do in this order)
 
-### 1. Anna creates products in Stripe (Test mode)
+### 1. Anna enters the Reset Room price in Strapi
 
-Stripe Dashboard → **Product catalog → Add product**
+Strapi admin → **Single Types → Membership (Reset Room)**:
 
-For Reset Room (the first one we need):
-- Name: `The Reset Room`
-- Description: Monthly membership — Reset Room access
-- Price: **£25.00 GBP, recurring monthly**
-- Click Save → grab the **Price ID** (starts with `price_...`)
+- `pricePence`: `2500` (= £25.00)
+- `currency`: `gbp` (already default)
+- `isRecurring`: ✅ ON
+- `recurringInterval`: `month`
+- `mailchimpTag`: `Reset Room Members` (must match the Mailchimp tag exactly)
+- `grantsResetRoomAccess`: ✅ ON
 
-Paste that price ID into Coolify env:
-- `STRIPE_PRICE_RESET_ROOM = price_XXXXXXX`
+Save. Done. No Stripe dashboard action needed for the Reset Room.
 
-Repeat for each programme as Anna decides pricing (The Reset, Signal, Workshops, etc.) — each gets its own `STRIPE_PRICE_*` env var.
+For programmes (The Reset, Signal, etc.) — Anna opens each Programme entry and fills the same fields. `isRecurring` stays OFF, `grantsResetRoomAccess` stays OFF, `mailchimpTag` is one of the names from `MAILCHIMP_BUILD_SPEC.md`.
 
 ### 2. Register webhook endpoint in Stripe
 
-Stripe Dashboard (Test mode) → **Developers → Webhooks → Add endpoint**
+Stripe Dashboard (Test mode) → **Developers → Webhooks → Add endpoint**:
 
 - Endpoint URL: `https://staging.annalouwellness.com/api/stripe/webhook`
-- Events to listen for (click "+ Select events"):
+- Events to listen for:
   - `checkout.session.completed`
   - `customer.subscription.created`
   - `customer.subscription.deleted`
   - `invoice.payment_failed`
-- Click "Add endpoint"
-- On the next screen, click **"Reveal signing secret"** — copy it
-- Paste into Coolify env:
-  - `STRIPE_WEBHOOK_SECRET = whsec_XXXXX`
+- Click "Add endpoint" → click **"Reveal signing secret"** → copy
+- Paste into Coolify env: `STRIPE_WEBHOOK_SECRET = whsec_...`
 
 ### 3. Create Strapi admin API token
 
-Strapi admin (`cms.annalouwellness.com/admin`) → **Settings → API Tokens → Create new API Token**
+Strapi admin → **Settings → API Tokens → Create new API Token**:
 
 - Name: `nextjs-stripe-webhook`
 - Token duration: Unlimited
 - Token type: **Full access**
-- Click Save → copy the token (only shown once)
-- Paste into Coolify env:
-  - `STRAPI_ADMIN_API_TOKEN = <token>`
+- Save → copy the token (only shown once)
+- Paste into Coolify env: `STRAPI_ADMIN_API_TOKEN = <token>`
 
-### 4. Redeploy Next.js
+### 4. Redeploy Strapi (schema changes), then Next.js
 
-Coolify → Next.js → Redeploy. This picks up:
-- New code (Stripe routes)
-- New env vars
-- New `stripe` npm dependency (auto-installed on build)
+Schema changes need a Strapi rebuild. Use the established OOM-safe recipe:
+1. IONOS → Restart VPS
+2. Coolify → Next.js → Stop
+3. Coolify → Strapi → Redeploy
+4. After `Rolling update completed`, Coolify → Next.js → Redeploy (picks up code + env + the new `stripe` npm dep)
 
-### 5. Test end-to-end (Test mode)
+### 5. End-to-end test (Test mode)
 
-1. Open `https://staging.annalouwellness.com/community/reset-room`
-2. Click subscribe (once UI button is wired — see "Frontend wiring" below)
-3. On Stripe Checkout, use test card: `4242 4242 4242 4242`, any future date, any CVC
-4. After redirect, check:
+1. (For now) Use a temporary test page that posts to `/api/stripe/checkout` — UI button comes after first successful test
+2. Body: `{ "strapi_type": "membership" }`
+3. Get back `{ url }` → open in browser
+4. Use Stripe test card: `4242 4242 4242 4242`, any future date, any CVC
+5. After redirect, check:
    - Stripe Dashboard → Subscriptions → new sub appears
    - Mailchimp Audience → new contact with `Reset Room Members` tag
    - Strapi admin → Users → new user created with `reset-room-member` role
-   - User should receive password-reset email from Strapi
-5. Cancel the subscription in Stripe Dashboard → check Strapi user role reverts to `authenticated`
+   - User receives password-reset email from Strapi
+6. Cancel the subscription in Stripe Dashboard → check Strapi user role reverts to `authenticated` + tag goes inactive in Mailchimp
 
 ---
 
-## Architecture
+## Architecture: end-to-end flow
 
-### Flow: Reset Room signup
+### Buying a subscription (Reset Room)
 
 ```
-User clicks "Subscribe" on /community/reset-room
-  → POST /api/stripe/checkout { product: 'reset-room', email? }
-  → Returns { url: stripe.checkout.session.url }
-  → Frontend redirects to Stripe Checkout
-  → User pays
+User on /community/reset-room clicks "Subscribe £25/month"
+  → POST /api/stripe/checkout { strapi_type: 'membership' }
+  → Backend fetches Membership from Strapi
+  → Builds inline price_data: { currency: 'gbp', unit_amount: 2500, recurring: { interval: 'month' } }
+  → Creates Checkout Session with mode='subscription' and metadata { strapi_type, strapi_id }
+  → Returns { url: session.url }
+  → Frontend redirects user to Stripe Checkout
+  → User pays (4242 4242 4242 4242 in test mode)
   → Stripe redirects to /community/reset-room/dashboard?session_id=...
   → IN PARALLEL: Stripe fires webhook to /api/stripe/webhook
-    → Webhook: verify signature
-    → Get email + price ID from event
-    → Look up product config in stripe.ts
-    → IF grantRole=true:
-       - Create or update Strapi user
-       - Assign role: reset-room-member
-       - Send password-reset email (so user can set their own password)
+    → Verify signature
+    → Read { strapi_type, strapi_id } from metadata
+    → Re-fetch Strapi record (current source of truth for tag + role)
     → Tag in Mailchimp: 'Reset Room Members' (triggers Customer Journey 6)
+    → grantsResetRoomAccess === true → create/update Strapi user + assign role
+    → Send password-reset email so user can set their own password
 ```
 
-### Flow: One-off purchase (Workshop, The Reset, etc.)
+### Buying a one-off programme (e.g. The Reset)
 
 ```
-User clicks "Book" on /experiences/workshops (or similar)
-  → POST /api/stripe/checkout { product: 'workshop', email? }
-  → Stripe Checkout (one-off payment, not subscription)
-  → On success: Stripe fires checkout.session.completed
-  → Webhook tags user in Mailchimp (no Strapi role grant for one-offs)
+User on /the-work/the-reset clicks "Book £1,500"
+  → POST /api/stripe/checkout { strapi_type: 'programme', strapi_id: 'the-reset' }
+  → Same flow but mode='payment' (one-off)
+  → Webhook attaches tag (e.g. 'The Reset (6-week)')
+  → grantsResetRoomAccess === false → no Strapi role change
+  → Mailchimp Customer Journey 7 starts
 ```
 
 ### Why webhook lives on Next.js (not Strapi)
@@ -127,40 +158,41 @@ User clicks "Book" on /experiences/workshops (or similar)
 
 ## Frontend wiring (TODO)
 
-The checkout endpoint exists but no UI button calls it yet. Two locations to wire:
+The checkout endpoint exists but no UI buttons call it yet. Plan:
 
 1. **Reset Room page** (`web/app/community/reset-room/page.tsx`)
-   - Add a "Subscribe — £25/month" button
-   - On click: POST to `/api/stripe/checkout` with `{ product: 'reset-room', email: session?.user?.email }`
-   - Redirect `window.location = response.url`
+   - Read Membership from Strapi (price + recurring info)
+   - Show "Subscribe £25/month" button
+   - On click: POST to `/api/stripe/checkout { strapi_type: 'membership' }` → `window.location = response.url`
 
-2. **Per-programme pages** (eventually, as Anna confirms pricing)
-   - Same pattern with different `product` keys
+2. **Programme pages** (`web/app/the-work/[slug]/page.tsx` etc.)
+   - Read Programme from Strapi
+   - If `pricePence > 0`: show "Book £X" button → POST `{ strapi_type: 'programme', strapi_id: slug }`
+   - If `pricePence === 0`: keep the existing "Book a discovery call" CTA
 
-Recommend: wait until Anna creates the Reset Room product + we have the price ID before building UI. Easier to test with a real product.
+Wire after first successful end-to-end test.
 
 ---
 
-## Pending Anna decisions
+## Pending Anna decisions / inputs
 
-- Pricing for the 7 other programmes (The Reset, Signal, etc.)
-- Whether programmes are one-off payments OR payment plans (e.g. 3 installments)
-- Workshop pricing — flat fee or tiered (£15 access / £200 in-person)?
-- Refund policy (Stripe supports refunds; we don't need a UI for it now)
+- Set `pricePence` and `mailchimpTag` on each programme she wants to sell
+- Decide whether some programmes are payment plans (Stripe supports — needs schema extension if so)
+- Default from-email in Mailchimp is `anna@annalouoflondon.com` — may want `hello@annalouwellness.com`
 
 ---
 
 ## Tag-to-Customer-Journey map (for Anna's reference)
 
-Stripe webhook attaches these Mailchimp tags. Each tag triggers the matching Customer Journey in `MAILCHIMP_BUILD_SPEC.md`.
+The mailchimpTag value Anna sets on each Strapi record must match a tag name in Mailchimp exactly. These map to Customer Journeys in `MAILCHIMP_BUILD_SPEC.md`:
 
-| Stripe price env var | Mailchimp tag | Mailchimp Journey |
+| Where set in Strapi | mailchimpTag | Mailchimp Journey |
 |---|---|---|
-| `STRIPE_PRICE_RESET_ROOM` | `Reset Room Members` | Journey 6 |
-| `STRIPE_PRICE_THE_RESET` | `The Reset (6-week)` | Journey 7 |
-| `STRIPE_PRICE_SIGNAL` | `Signal (12-week)` | Journey 8 |
-| `STRIPE_PRICE_SIGNAL_BUILD` | `Signal & Build (founders)` | Journey 9 |
-| `STRIPE_PRICE_ONE_DAY` | `One Day Intensive` | Journey 10 |
-| `STRIPE_PRICE_SIGNAL_COLLECTIVE` | `Signal Collective` | Journey 11 |
-| `STRIPE_PRICE_RESET_SESSION` | `Reset Session (90-min)` | Journey 12 |
-| `STRIPE_PRICE_WORKSHOP` | `Workshop Buyers` | Journey 3 |
+| Membership (singleType) | `Reset Room Members` | Journey 6 |
+| Programme "The Reset" | `The Reset (6-week)` | Journey 7 |
+| Programme "Signal" | `Signal (12-week)` | Journey 8 |
+| Programme "Signal & Build" | `Signal & Build (founders)` | Journey 9 |
+| Programme "One Day Intensive" | `One Day Intensive` | Journey 10 |
+| Programme "Signal Collective" | `Signal Collective` | Journey 11 |
+| Programme Reset Sessions (any variant) | `Reset Session (90-min)` | Journey 12 |
+| Experience Page workshops/retreats | `Workshop Buyers` | Journey 3 |

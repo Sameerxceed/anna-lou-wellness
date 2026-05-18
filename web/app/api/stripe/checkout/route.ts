@@ -1,31 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
+import { fetchPurchasable, validateForCheckout, type PurchasableType } from '@/lib/strapi-purchasable';
 
 /**
- * Create a Stripe Checkout Session for a given product.
+ * Create a Stripe Checkout Session for any Strapi-managed purchasable.
  *
- * POST body: { product: string, email?: string }
- *   product = key from PRODUCT_TO_ENV_PRICE map (e.g. 'reset-room', 'the-reset')
- *   email   = optional, pre-fills Stripe Checkout
+ * POST body:
+ *   {
+ *     strapi_type: 'membership' | 'programme' | 'experience-page',
+ *     strapi_id?:  string | number,   // slug or numeric id (ignored for membership)
+ *     email?:      string,            // pre-fills Stripe Checkout
+ *   }
  *
- * Returns { url } — frontend redirects user to this URL.
+ * The Strapi record drives price, recurring/one-off, tag, role grant.
+ * Stripe sees only an inline price built at request time. No price IDs anywhere.
  *
- * Configure success/cancel URLs via env:
+ * Returns { url } — frontend redirects user.
+ *
+ * Env:
  *   PUBLIC_SITE_URL (default https://staging.annalouwellness.com)
  */
 
-const PRODUCT_TO_ENV_PRICE: Record<string, { envVar: string; mode: 'subscription' | 'payment' }> = {
-  'reset-room': { envVar: 'STRIPE_PRICE_RESET_ROOM', mode: 'subscription' },
-  'the-reset': { envVar: 'STRIPE_PRICE_THE_RESET', mode: 'payment' },
-  signal: { envVar: 'STRIPE_PRICE_SIGNAL', mode: 'payment' },
-  'signal-build': { envVar: 'STRIPE_PRICE_SIGNAL_BUILD', mode: 'payment' },
-  'one-day': { envVar: 'STRIPE_PRICE_ONE_DAY', mode: 'payment' },
-  'signal-collective': { envVar: 'STRIPE_PRICE_SIGNAL_COLLECTIVE', mode: 'payment' },
-  'reset-session': { envVar: 'STRIPE_PRICE_RESET_SESSION', mode: 'payment' },
-  workshop: { envVar: 'STRIPE_PRICE_WORKSHOP', mode: 'payment' },
-};
-
 const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://staging.annalouwellness.com';
+
+const VALID_TYPES: PurchasableType[] = ['membership', 'programme', 'experience-page'];
 
 export async function POST(req: NextRequest) {
   let body: any;
@@ -35,36 +33,71 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const product = (body?.product || '').trim();
+  const strapiType = String(body?.strapi_type || '') as PurchasableType;
+  const strapiId = body?.strapi_id;
   const email = (body?.email || '').trim().toLowerCase() || undefined;
-  const mapping = PRODUCT_TO_ENV_PRICE[product];
 
-  if (!mapping) {
-    return NextResponse.json({ error: `Unknown product: ${product}` }, { status: 400 });
+  if (!VALID_TYPES.includes(strapiType)) {
+    return NextResponse.json({ error: `Invalid strapi_type. Must be one of: ${VALID_TYPES.join(', ')}` }, { status: 400 });
   }
 
-  const priceId = process.env[mapping.envVar];
-  if (!priceId) {
+  const purchasable = await fetchPurchasable(strapiType, strapiId);
+  if (!purchasable) {
     return NextResponse.json(
-      { error: `Stripe price not configured for ${product} (set ${mapping.envVar})` },
-      { status: 500 },
+      { error: `Could not find ${strapiType}${strapiId ? ` "${strapiId}"` : ''} in Strapi` },
+      { status: 404 },
     );
   }
 
-  try {
-    const successPath = product === 'reset-room' ? '/community/reset-room/dashboard' : '/thank-you';
-    const cancelPath = product === 'reset-room' ? '/community/reset-room' : `/${product}`;
+  const invalid = validateForCheckout(purchasable);
+  if (invalid) {
+    return NextResponse.json({ error: invalid }, { status: 400 });
+  }
 
+  const mode = purchasable.isRecurring ? 'subscription' : 'payment';
+  const successPath = purchasable.grantsResetRoomAccess
+    ? '/community/reset-room/dashboard'
+    : '/thank-you';
+  const cancelPath = purchasable.grantsResetRoomAccess
+    ? '/community/reset-room'
+    : '/';
+
+  // Metadata flows from checkout session -> subscription (via subscription_data) -> webhook event.
+  // The webhook re-fetches from Strapi using strapi_type + strapi_id rather than trusting the metadata
+  // tag/grant flags — Strapi is the source of truth even at webhook time.
+  const metadata = {
+    strapi_type: purchasable.type,
+    strapi_id: String(purchasable.id),
+    strapi_document_id: purchasable.documentId,
+  };
+
+  try {
     const session = await stripe.checkout.sessions.create({
-      mode: mapping.mode,
-      line_items: [{ price: priceId, quantity: 1 }],
+      mode,
+      line_items: [
+        {
+          price_data: {
+            currency: purchasable.currency,
+            product_data: { name: purchasable.name },
+            unit_amount: purchasable.pricePence,
+            ...(purchasable.isRecurring &&
+              purchasable.recurringInterval && {
+                recurring: { interval: purchasable.recurringInterval },
+              }),
+          },
+          quantity: 1,
+        },
+      ],
       customer_email: email,
       success_url: `${SITE_URL}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}${cancelPath}`,
-      // Pass product key in metadata so webhook can route without re-reading the price
-      metadata: { product },
-      // For subscriptions, allow promo codes
-      ...(mapping.mode === 'subscription' && { allow_promotion_codes: true }),
+      metadata,
+      // For subscriptions, copy metadata onto the subscription itself so
+      // customer.subscription.* events carry it
+      ...(mode === 'subscription' && {
+        subscription_data: { metadata },
+        allow_promotion_codes: true,
+      }),
     });
 
     if (!session.url) {
