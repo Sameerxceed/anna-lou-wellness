@@ -14,17 +14,22 @@ import crypto from 'node:crypto';
 
 export type MailchimpResult = { ok: true } | { ok: false; error: string };
 
-function getConfig() {
+type Config =
+  | { ok: false; error: string }
+  | { ok: true; apiKey: string; listId: string; baseUrl: string; headers: Record<string, string> };
+
+function getConfig(): Config {
   const apiKey = process.env.MAILCHIMP_API_KEY;
   const listId = process.env.MAILCHIMP_LIST_ID;
   if (!apiKey || !listId) {
-    return { error: 'Mailchimp not configured (missing API key or list ID)' as const };
+    return { ok: false, error: 'Mailchimp not configured (missing API key or list ID)' };
   }
   const dc = apiKey.split('-').pop();
   if (!dc || dc === apiKey) {
-    return { error: 'Mailchimp API key malformed (missing datacenter suffix)' as const };
+    return { ok: false, error: 'Mailchimp API key malformed (missing datacenter suffix)' };
   }
   return {
+    ok: true,
     apiKey,
     listId,
     baseUrl: `https://${dc}.api.mailchimp.com/3.0`,
@@ -48,7 +53,7 @@ export async function upsertSubscriber(
   firstName?: string,
 ): Promise<MailchimpResult> {
   const cfg = getConfig();
-  if ('error' in cfg) return { ok: false, error: cfg.error };
+  if (!cfg.ok) return { ok: false, error: cfg.error };
 
   try {
     const res = await fetch(`${cfg.baseUrl}/lists/${cfg.listId}/members/${subscriberHash(email)}`, {
@@ -76,7 +81,7 @@ export async function upsertSubscriber(
  */
 export async function addTag(email: string, tag: string): Promise<MailchimpResult> {
   const cfg = getConfig();
-  if ('error' in cfg) return { ok: false, error: cfg.error };
+  if (!cfg.ok) return { ok: false, error: cfg.error };
 
   try {
     const res = await fetch(`${cfg.baseUrl}/lists/${cfg.listId}/members/${subscriberHash(email)}/tags`, {
@@ -101,7 +106,7 @@ export async function addTag(email: string, tag: string): Promise<MailchimpResul
  */
 export async function removeTag(email: string, tag: string): Promise<MailchimpResult> {
   const cfg = getConfig();
-  if ('error' in cfg) return { ok: false, error: cfg.error };
+  if (!cfg.ok) return { ok: false, error: cfg.error };
 
   try {
     const res = await fetch(`${cfg.baseUrl}/lists/${cfg.listId}/members/${subscriberHash(email)}/tags`, {
