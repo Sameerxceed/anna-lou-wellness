@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import { stripe, type StripeEvent } from '@/lib/stripe';
 import { fetchPurchasable, type PurchasableType } from '@/lib/strapi-purchasable';
 import { subscribeAndTag, removeTag } from '@/lib/mailchimp';
 import { grantResetRoomMembership, revokeResetRoomMembership } from '@/lib/strapi-admin';
-import type Stripe from 'stripe';
 
 /**
  * Stripe webhook handler.
@@ -31,7 +30,7 @@ const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 type StrapiRef = { strapi_type: PurchasableType; strapi_id: string };
 
-function readStrapiRef(metadata: Stripe.Metadata | null | undefined): StrapiRef | null {
+function readStrapiRef(metadata: Record<string, string> | null | undefined): StrapiRef | null {
   if (!metadata) return null;
   const strapi_type = metadata.strapi_type as PurchasableType | undefined;
   const strapi_id = metadata.strapi_id;
@@ -39,13 +38,13 @@ function readStrapiRef(metadata: Stripe.Metadata | null | undefined): StrapiRef 
   return { strapi_type, strapi_id };
 }
 
-async function getEmailFromEvent(event: Stripe.Event): Promise<string | null> {
+async function getEmailFromEvent(event: StripeEvent): Promise<string | null> {
   const obj = event.data.object as any;
   if (obj?.customer_email) return String(obj.customer_email).toLowerCase();
   if (obj?.customer_details?.email) return String(obj.customer_details.email).toLowerCase();
-  if (obj?.customer) {
+  if (obj?.customer && typeof obj.customer === 'string') {
     try {
-      const customer = await stripe.customers.retrieve(obj.customer as string);
+      const customer = await stripe.customers.retrieve(obj.customer);
       if (!customer.deleted && customer.email) return customer.email.toLowerCase();
     } catch (err: any) {
       console.warn('[stripe webhook] customer fetch failed:', err?.message);
@@ -54,19 +53,17 @@ async function getEmailFromEvent(event: Stripe.Event): Promise<string | null> {
   return null;
 }
 
-async function getStrapiRefFromEvent(event: Stripe.Event): Promise<StrapiRef | null> {
+async function getStrapiRefFromEvent(event: StripeEvent): Promise<StrapiRef | null> {
   const obj = event.data.object as any;
-  // 1. Metadata directly on the event object (checkout.session.completed has this)
+
   const direct = readStrapiRef(obj?.metadata);
   if (direct) return direct;
 
-  // 2. For subscription events, metadata is on the subscription itself (set via subscription_data in Checkout)
   if (event.type.startsWith('customer.subscription.') && obj?.metadata) {
     const fromSub = readStrapiRef(obj.metadata);
     if (fromSub) return fromSub;
   }
 
-  // 3. For invoice events, drill into the subscription
   if (obj?.subscription && typeof obj.subscription === 'string') {
     try {
       const sub = await stripe.subscriptions.retrieve(obj.subscription);
@@ -80,7 +77,7 @@ async function getStrapiRefFromEvent(event: Stripe.Event): Promise<StrapiRef | n
   return null;
 }
 
-async function handleSuccessfulPurchase(event: Stripe.Event) {
+async function handleSuccessfulPurchase(event: StripeEvent) {
   const email = await getEmailFromEvent(event);
   const ref = await getStrapiRefFromEvent(event);
 
@@ -93,8 +90,6 @@ async function handleSuccessfulPurchase(event: Stripe.Event) {
     return;
   }
 
-  // Strapi is source of truth — re-fetch even on webhook (catches the case where
-  // Anna updated the tag or role-grant flag after the checkout was created)
   const purchasable = await fetchPurchasable(ref.strapi_type, ref.strapi_id);
   if (!purchasable) {
     console.warn(`[stripe webhook] ${event.type}: ${ref.strapi_type}/${ref.strapi_id} not found in Strapi`);
@@ -103,7 +98,6 @@ async function handleSuccessfulPurchase(event: Stripe.Event) {
 
   console.info(`[stripe webhook] ${event.type}: ${email} -> ${purchasable.name}`);
 
-  // 1. Tag in Mailchimp (triggers welcome Customer Journey for that tag)
   if (purchasable.mailchimpTag) {
     const tagResult = await subscribeAndTag(email, purchasable.mailchimpTag);
     if (!tagResult.ok) {
@@ -113,7 +107,6 @@ async function handleSuccessfulPurchase(event: Stripe.Event) {
     console.info(`[stripe webhook] ${purchasable.name}: no mailchimpTag set — skipping tag step`);
   }
 
-  // 2. Grant Reset Room role if this purchasable unlocks gated access
   if (purchasable.grantsResetRoomAccess) {
     try {
       const result = await grantResetRoomMembership({ email });
@@ -124,7 +117,7 @@ async function handleSuccessfulPurchase(event: Stripe.Event) {
   }
 }
 
-async function handleSubscriptionCancelled(event: Stripe.Event) {
+async function handleSubscriptionCancelled(event: StripeEvent) {
   const email = await getEmailFromEvent(event);
   const ref = await getStrapiRefFromEvent(event);
 
@@ -134,9 +127,7 @@ async function handleSubscriptionCancelled(event: Stripe.Event) {
   }
 
   const purchasable = await fetchPurchasable(ref.strapi_type, ref.strapi_id);
-  if (!purchasable || !purchasable.grantsResetRoomAccess) {
-    return;
-  }
+  if (!purchasable || !purchasable.grantsResetRoomAccess) return;
 
   console.info(`[stripe webhook] ${event.type}: revoking access for ${email}`);
 
@@ -163,7 +154,7 @@ export async function POST(req: NextRequest) {
 
   const rawBody = await req.text();
 
-  let event: Stripe.Event;
+  let event: StripeEvent;
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, WEBHOOK_SECRET);
   } catch (err: any) {
@@ -174,8 +165,6 @@ export async function POST(req: NextRequest) {
   try {
     switch (event.type) {
       case 'checkout.session.completed':
-        await handleSuccessfulPurchase(event);
-        break;
       case 'customer.subscription.created':
         await handleSuccessfulPurchase(event);
         break;
