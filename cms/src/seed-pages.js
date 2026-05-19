@@ -51,7 +51,54 @@ async function ensure(strapi, uid, slug, data) {
   }
 }
 
+// Same as ensure() but for singleTypes (no slug — exactly one record per UID).
+async function ensureSingleType(strapi, uid, data) {
+  try {
+    const existing = await strapi.documents(uid).findFirst({});
+    if (existing) {
+      // Backfill empty fields only
+      const patch = {};
+      for (const [key, val] of Object.entries(data)) {
+        const cur = existing[key];
+        if (cur === null || cur === undefined || cur === '') {
+          patch[key] = val;
+        }
+      }
+      if (Object.keys(patch).length > 0) {
+        await strapi.documents(uid).update({
+          documentId: existing.documentId,
+          data: patch,
+          status: 'published',
+        });
+        strapi.log.info(`[seed-pages] Backfilled singleType ${uid}: ${Object.keys(patch).join(', ')}`);
+      }
+      return false;
+    }
+    await strapi.documents(uid).create({
+      data,
+      status: 'published',
+    });
+    strapi.log.info(`[seed-pages] Created singleType ${uid}`);
+    return true;
+  } catch (err) {
+    strapi.log.warn(`[seed-pages] Skipped singleType ${uid}: ${err.message}`);
+    return false;
+  }
+}
+
 async function seedPages(strapi) {
+  // ═══ Membership singleType (Reset Room subscription) ═══
+  await ensureSingleType(strapi, 'api::membership.membership', {
+    title: 'The Reset Room',
+    description: 'A monthly membership for women rebuilding their nervous system. Live calls, somatic library, a quiet room of women doing the work.',
+    pricePence: 2500,
+    currency: 'gbp',
+    isRecurring: true,
+    recurringInterval: 'month',
+    mailchimpTag: 'Reset Room Members',
+    grantsResetRoomAccess: true,
+  });
+
   // ═══ Experience pages ═══
   await ensure(strapi, 'api::experience-page.experience-page', 'workshops', {
     title: 'Workshops',
@@ -274,7 +321,7 @@ async function seedPages(strapi) {
     pricePence: 0,
     currency: 'gbp',
     isRecurring: false,
-    mailchimpTag: 'The Reset (6-week)',
+    mailchimpTag: '',
     grantsResetRoomAccess: false,
   });
 
