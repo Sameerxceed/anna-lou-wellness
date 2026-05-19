@@ -99,6 +99,17 @@ async function seedPages(strapi) {
     grantsResetRoomAccess: true,
   });
 
+  // ═══ Reset Room Page singleType (landing page copy) ═══
+  // Schema defines defaults for every field; passing empty object lets Strapi
+  // materialize the entry with schema defaults. Anna edits in admin.
+  await ensureSingleType(strapi, 'api::reset-room-page.reset-room-page', {});
+
+  // ═══ Reset Letters Page singleType (holding page copy) ═══
+  await ensureSingleType(strapi, 'api::reset-letters-page.reset-letters-page', {});
+
+  // ═══ Decoder Page singleType (free lead-magnet page) ═══
+  await ensureSingleType(strapi, 'api::decoder-page.decoder-page', {});
+
   // ═══ Experience pages ═══
   await ensure(strapi, 'api::experience-page.experience-page', 'workshops', {
     title: 'Workshops',
