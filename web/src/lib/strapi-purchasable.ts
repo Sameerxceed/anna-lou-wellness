@@ -85,11 +85,27 @@ export async function fetchPurchasable(
     return null;
   }
 
-  // Numeric id fallback
-  const res = await fetch(`${STRAPI_URL}/api/${pluralPath}/${identifier}`, { cache: 'no-store' });
-  if (!res.ok) return null;
-  const json = await res.json();
-  return normalize(type, json?.data);
+  // Numeric id fallback — Strapi 5 expects documentId for direct path lookups,
+  // so we use a filter query on the `id` field instead. Works for both legacy
+  // numeric IDs and the new documentId hashes.
+  const url = new URL(`${STRAPI_URL}/api/${pluralPath}`);
+  const idStr = String(identifier);
+  // Try numeric id filter (works for legacy IDs from Strapi 4 metadata + new Strapi 5 numeric IDs)
+  url.searchParams.set('filters[id][$eq]', idStr);
+  const res = await fetch(url.toString(), { cache: 'no-store' });
+  if (res.ok) {
+    const json = await res.json();
+    const first = Array.isArray(json?.data) ? json.data[0] : null;
+    if (first) return normalize(type, first);
+  }
+  // Last resort: try documentId match in case identifier IS a documentId hash
+  const url2 = new URL(`${STRAPI_URL}/api/${pluralPath}`);
+  url2.searchParams.set('filters[documentId][$eq]', idStr);
+  const res2 = await fetch(url2.toString(), { cache: 'no-store' });
+  if (!res2.ok) return null;
+  const json2 = await res2.json();
+  const first2 = Array.isArray(json2?.data) ? json2.data[0] : null;
+  return first2 ? normalize(type, first2) : null;
 }
 
 /**
