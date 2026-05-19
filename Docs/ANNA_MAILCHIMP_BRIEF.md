@@ -1,75 +1,76 @@
-# Hi Anna — Mailchimp next steps
+# Hi Anna — Mailchimp is ready for you
 
-The Stripe + Mailchimp wiring is live on staging. Every signup / purchase / RSVP will automatically tag the right contact in your Mailchimp audience. What's left is for you to build the **welcome email automations** in Mailchimp so those tags actually send emails.
+The Stripe + Mailchimp wiring is live on staging. Every signup / purchase / RSVP from the website will automatically tag the right contact in your audience.
 
-## What's done for you
+## What I've set up for you
 
-I've already created **13 email templates** in your Mailchimp account, one for each automation. You'll find them in **Mailchimp → Templates** with names like:
+### 1. A master email template — `ALW Master`
+In Mailchimp → **Email Templates → Saved templates** you'll see `ALW Master`. It has:
+- The Anna Lou Wellness wordmark at the top
+- `Hello *|FNAME|*,` greeting (auto-fills the contact's first name)
+- A placeholder paragraph in the middle for you to replace with each email's actual copy
+- "Still Sparkling, Anna Lou x" signoff
+- Branded footer + unsubscribe link
 
-- `ALW J1A — Reset Letters Founding`
-- `ALW J1B — Reset Letters Standard`
-- `ALW J2 — Decoder Delivery`
-- `ALW J3 — Workshops Confirmation`
-- `ALW J4 — Discovery Call Booked`
-- `ALW J5 — Returning Circle RSVP`
-- `ALW J6 — Reset Room Member`
-- `ALW J7 — The Reset (6-week)`
-- `ALW J8 — Signal (12-week)`
-- `ALW J9 — Signal & Build`
-- `ALW J10 — One Day Intensive`
-- `ALW J11 — Signal Collective`
-- `ALW J12 — Reset Session 90-min`
+You don't need to touch this template. Every journey email already uses it.
 
-Each template has:
-- Your branding (header + footer + colours)
-- `Hello *|FNAME|*,` greeting
-- A placeholder paragraph to replace with your copy
-- Your "Still Sparkling, Anna Lou x" signoff
-- Footer with copyright + unsubscribe
+### 2. Thirteen Customer Journey drafts
+In Mailchimp → **Automations → Customer Journeys** you'll see 13 drafts:
 
-## Your job — for each of the 13
+| Journey name | Triggered when… |
+|---|---|
+| Reset Letters - Founding Welcome | Someone signs up as a Founding Member |
+| Reset Letters - Standard Welcome | Someone signs up after launch (post 22 June) |
+| Decoder - Free Download | Someone downloads the free Nervous System Decoder |
+| Workshops - Confirmation | Someone buys any workshop |
+| Discovery Call - Booked | Someone books a free discovery call |
+| Returning Circle - RSVP | Someone RSVPs to a weekly Circle |
+| Reset Room - Member Onboarding | Someone subscribes (£25/month) |
+| The Reset - Programme Onboarding | Someone books The Reset (6-week) |
+| Signal - Programme Onboarding | Someone books Signal (12-week) |
+| Signal & Build - Founder Onboarding | Someone books Signal & Build |
+| One Day - Intensive Onboarding | Someone books a One Day Intensive |
+| Signal Collective - Mastermind | Someone joins the Collective |
+| Reset Session - 90min Booking | Someone books a 90-min session |
 
-In Mailchimp:
+Each one already has:
+- The trigger wired (the right tag)
+- The subject line and preview text set
+- The ALW Master template attached
 
-1. **Mailchimp → Automations → Customer Journeys → Create journey**
-2. **Starting point:** "When a tag is added"
-3. Pick the matching tag (e.g. for J7 use tag `The Reset (6-week)`)
-4. Add an **Email** step
-5. **Pick a template** → choose `ALW J7 — The Reset (6-week)` (the one matching the journey)
-6. Edit the placeholder paragraph with your actual welcome copy (subjects + preheaders are suggested in the Mailchimp build spec doc I sent earlier)
-7. **Turn the journey ON** when you're ready
+## Your job
 
-That's it. The trigger fires automatically from the website — your only job is the writing.
+For each of the 13 journeys:
+
+1. Click the journey in the list
+2. Click on the **Send email** step
+3. Click **Edit Email Content** (or **Design Email**)
+4. The ALW Master template loads with brand header/footer already there
+5. **Replace the middle placeholder paragraph** with the actual welcome copy you want to send
+6. Save the email
+7. Back on the canvas, click **Continue** at the top → **Turn flow on** (when you're ready to go live)
+
+The journey starts firing as soon as you turn it on. Until then it stays paused.
 
 ## Priority order
 
-Start with these (they fire most often):
-1. **J1A — Reset Letters Founding** (already getting signups daily)
-2. **J7 — The Reset (6-week)** (highest-value programme)
-3. **J6 — Reset Room Member** (subscription welcome)
+Start with these — they fire most often:
 
-Then work through the rest at your own pace. Until each journey is ON, the tag still goes on the contact but no email goes out.
+1. **Reset Letters - Founding Welcome** (daily signups happening already)
+2. **Reset Room - Member Onboarding** (subscription welcome)
+3. **The Reset - Programme Onboarding** (highest-value programme)
 
-## Tag → Journey reference (paste into Mailchimp trigger config)
+Then work through the rest at your own pace. Until each is turned ON, the tag still gets applied to the contact but no email goes out.
 
-| Journey | Tag to listen for |
-|---|---|
-| J1A | Founding Members |
-| J1B | Standard Subscribers |
-| J2 | Decoder Downloaders |
-| J3 | Workshop Buyers |
-| J4 | Discovery Call Booked |
-| J5 | Returning Circle RSVPs |
-| J6 | Reset Room Members |
-| J7 | The Reset (6-week) |
-| J8 | Signal (12-week) |
-| J9 | Signal & Build (founders) |
-| J10 | One Day Intensive |
-| J11 | Signal Collective |
-| J12 | Reset Session (90-min) |
+## A few notes
 
-If you create a tag with a different name than what's listed here, just let Sameer know and he'll update the code.
+- **Dynamic content** (like workshop dates or Zoom links): we haven't wired this yet. Right now your emails will go to everyone with the same body. If you need any line to vary per recipient (workshop date, programme start date, session Zoom link), tell Sameer which fields and he'll add them as merge tags.
+- **From name** is currently `AnnaLouWellness` (your audience name). You can change it to just `Anna Lou` in each email's "To & From" section if you prefer.
+- **Default Mailchimp From email** is `anna@annalouoflondon.com`. If you'd rather these come from `hello@annalouwellness.com`, update it in Mailchimp → Audience → Settings → Defaults.
 
-## Anything missing?
+## If something doesn't fire
 
-If you want a journey for something not on this list (e.g. abandoned cart, post-workshop follow-up, birthday email) — just message and we'll wire it.
+If you turn a journey ON and emails aren't sending:
+- Check the journey status is "Active" (not Draft or Paused)
+- Confirm the trigger tag exists in your audience (Audience → Tags)
+- Send Sameer a screenshot — most issues are 5-min fixes
