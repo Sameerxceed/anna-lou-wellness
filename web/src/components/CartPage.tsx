@@ -54,7 +54,7 @@ export default function CartPage() {
                 </a>
               </td>
               <td style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.8rem', color: '#1a1a18' }}>
-                &euro;{item.price.toFixed(2)}
+                &pound;{item.price.toFixed(2)}
               </td>
               <td>
                 <input
@@ -68,7 +68,7 @@ export default function CartPage() {
                 />
               </td>
               <td style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.8rem', color: '#1a1a18' }}>
-                &euro;{(item.price * item.qty).toFixed(2)}
+                &pound;{(item.price * item.qty).toFixed(2)}
               </td>
               <td>
                 <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#c8c4bc', padding: '0.2rem', transition: 'color 0.3s' }}
@@ -86,7 +86,7 @@ export default function CartPage() {
 
       <div style={{ background: '#f5f0e8', padding: '2rem', marginTop: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.45rem 0', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#6e6a62' }}>
-          <span>Subtotal</span><span>&euro;{total.toFixed(2)}</span>
+          <span>Subtotal</span><span>&pound;{total.toFixed(2)}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.45rem 0', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#6e6a62' }}>
           <span>Shipping</span><span style={{ fontStyle: 'italic', fontSize: '0.78rem', color: '#c8c4bc' }}>Calculated at checkout</span>
@@ -96,7 +96,7 @@ export default function CartPage() {
           borderTop: '1px solid #c8c4bc', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400,
           fontSize: '0.92rem', letterSpacing: '0.04em', color: '#1a1a18',
         }}>
-          <span>Total</span><span>&euro;{total.toFixed(2)}</span>
+          <span>Total</span><span>&pound;{total.toFixed(2)}</span>
         </div>
       </div>
 

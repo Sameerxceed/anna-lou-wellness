@@ -51,7 +51,7 @@ export default function ShopGrid({ products, categories }: Props) {
                 <p className="font-body text-[0.78rem] text-stone mb-2 line-clamp-2">{product.shortDescription}</p>
               </Link>
               <div className="flex items-center justify-between">
-                <span className="font-sans font-light text-[0.8rem] text-ink">&euro;{product.price.toFixed(2)}</span>
+                <span className="font-sans font-light text-[0.8rem] text-ink">&pound;{product.price.toFixed(2)}</span>
                 <AddToCartButton
                   id={product.id}
                   name={product.name}

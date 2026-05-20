@@ -74,7 +74,7 @@ export default async function ProductDetailPage({ params }: Props) {
             <div className="reveal reveal-delay-1">
               <p className="font-sans font-light text-[0.52rem] tracking-[0.2em] uppercase text-sage mb-3">{product.category}</p>
               <h1 className="font-display font-normal text-[2rem] text-ink mb-3 leading-tight">{product.name}</h1>
-              <p className="font-sans font-light text-[1.4rem] text-ink mb-6">&euro;{product.price.toFixed(2)}</p>
+              <p className="font-sans font-light text-[1.4rem] text-ink mb-6">&pound;{product.price.toFixed(2)}</p>
 
               <p className="section-body max-w-none mb-8">{product.description}</p>
 
@@ -119,7 +119,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     />
                   </div>
                   <h3 className="font-display font-normal text-[0.95rem] text-ink mb-1">{p.name}</h3>
-                  <p className="font-sans font-light text-[0.8rem] text-ink">&euro;{p.price.toFixed(2)}</p>
+                  <p className="font-sans font-light text-[0.8rem] text-ink">&pound;{p.price.toFixed(2)}</p>
                 </Link>
               ))}
             </div>
