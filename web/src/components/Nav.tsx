@@ -109,50 +109,50 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
             </Link>
           </div>
 
-          {/* Right nav items (desktop) */}
-          <div className="nav-right">
-            {rightNav.map((item, i) => (
-              <div key={item.href} className="nav-item">
-                <Link
-                  href={item.href}
-                  className={pathname.startsWith(item.href) ? 'active' : ''}
-                  style={{ color: item.colour }}
-                >
-                  {item.label}
-                </Link>
-                {item.children && (
-                  <div className="nav-dropdown">
-                    {item.children.map(child => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        style={{ '--hover-color': item.colour } as any}
-                        onClick={e => {
-                          (e.currentTarget.closest('.nav-item') as HTMLElement | null)?.classList.add('nav-item-dismiss');
-                        }}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Actions (desktop: cart + login, mobile: hamburger) */}
-          <div className="nav-actions">
-            <Link href="/account" className="nav-action-btn">Login</Link>
-            <Link href="/cart" className="nav-action-btn nav-action-accent">
-              Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
-            </Link>
-            <button
-              className={`hamburger${mobileOpen ? ' open' : ''}`}
-              aria-label="Menu"
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              <span /><span /><span />
-            </button>
+          {/* Right zone: nav links + actions inline so flex can balance the layout */}
+          <div className="nav-right-wrap">
+            <div className="nav-right">
+              {rightNav.map((item, i) => (
+                <div key={item.href} className="nav-item">
+                  <Link
+                    href={item.href}
+                    className={pathname.startsWith(item.href) ? 'active' : ''}
+                    style={{ color: item.colour }}
+                  >
+                    {item.label}
+                  </Link>
+                  {item.children && (
+                    <div className="nav-dropdown">
+                      {item.children.map(child => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          style={{ '--hover-color': item.colour } as any}
+                          onClick={e => {
+                            (e.currentTarget.closest('.nav-item') as HTMLElement | null)?.classList.add('nav-item-dismiss');
+                          }}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="nav-actions">
+              <Link href="/account" className="nav-action-btn">Login</Link>
+              <Link href="/cart" className="nav-action-btn nav-action-accent">
+                Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
+              </Link>
+              <button
+                className={`hamburger${mobileOpen ? ' open' : ''}`}
+                aria-label="Menu"
+                onClick={() => setMobileOpen(!mobileOpen)}
+              >
+                <span /><span /><span />
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -232,16 +232,24 @@ const navStyles = `
   border-bottom: 1px solid rgba(0,0,0,0.04);
 }
 .nav-row {
-  max-width: 1400px; margin: 0 auto;
-  display: flex; justify-content: center; align-items: center;
-  padding: 1rem 13rem 1rem 1.5rem;
+  max-width: 1700px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0.85rem 1.5rem;
+  gap: 0.4rem;
   position: relative;
 }
-.nav-left, .nav-right {
-  display: flex; align-items: center; gap: 0.1rem;
+.nav-left {
+  display: flex; align-items: center; justify-content: flex-end; gap: 0;
+}
+.nav-right-wrap {
+  display: flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
+}
+.nav-right {
+  display: flex; align-items: center; gap: 0;
 }
 .nav-center-logo {
-  text-align: center; padding: 0.2rem 1.5rem; flex-shrink: 0;
+  text-align: center; padding: 0.2rem 0.8rem; flex-shrink: 0;
 }
 .nav-logo {
   display: block;
@@ -249,7 +257,7 @@ const navStyles = `
   line-height: 0;
 }
 .nav-logo-img {
-  height: 56px;
+  height: 48px;
   width: auto;
   display: block;
 }
@@ -259,10 +267,10 @@ const navStyles = `
 .nav-item > a {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 0.5rem 0.4rem;
+  padding: 0.5rem 0.45rem;
   transition: opacity 0.3s;
   position: relative;
   white-space: nowrap;
@@ -316,9 +324,8 @@ const navStyles = `
 
 /* ═══ NAV ACTIONS ═══ */
 .nav-actions {
-  position: absolute; right: 1.5rem; top: 50%;
-  transform: translateY(-50%);
-  display: flex; gap: 0.6rem; align-items: center;
+  display: flex; gap: 0.5rem; align-items: center;
+  flex-shrink: 0;
 }
 .nav-action-btn {
   font-family: Mulish, sans-serif;
@@ -467,20 +474,24 @@ const navStyles = `
 }
 
 /* ═══ RESPONSIVE ═══ */
-/* iPad + narrow desktop: nav-row needs ~1400px to fit all 9 items + logo + actions
-   without clipping. Below that, switch to hamburger menu so left items don't
-   overflow the viewport edge. */
-@media (max-width: 1200px) {
+/* Anna's nav has 9 desktop items + logo + login + cart.
+   That comfortably fits at 1441px+. Below that we go hamburger
+   so nothing gets clipped on iPad, laptops, or split-screen browsers. */
+@media (max-width: 1440px) {
   .nav-left, .nav-right { display: none; }
-  .nav-row { padding: 0.8rem 1.2rem; justify-content: space-between; }
-  .nav-center-logo { order: 0; padding: 0; }
-  .nav-actions { position: static; transform: none; display: flex; gap: 0.6rem; align-items: center; }
+  .nav-right-wrap { gap: 0; }
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.7rem 1.2rem;
+  }
+  .nav-center-logo { padding: 0; }
   .nav-action-btn { display: none; }
   .hamburger { display: block; }
   .nav-dropdown { display: none !important; }
 }
 @media (max-width: 480px) {
-  .nav-logo-img { height: 38px; }
+  .nav-logo-img { height: 36px; }
   .top-strip-text { font-size: 0.45rem; letter-spacing: 0.15em; }
 }
 `;
