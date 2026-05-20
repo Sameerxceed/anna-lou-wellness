@@ -467,7 +467,10 @@ const navStyles = `
 }
 
 /* ═══ RESPONSIVE ═══ */
-@media (max-width: 900px) {
+/* iPad + narrow desktop: nav-row needs ~1400px to fit all 9 items + logo + actions
+   without clipping. Below that, switch to hamburger menu so left items don't
+   overflow the viewport edge. */
+@media (max-width: 1200px) {
   .nav-left, .nav-right { display: none; }
   .nav-row { padding: 0.8rem 1.2rem; justify-content: space-between; }
   .nav-center-logo { order: 0; padding: 0; }
