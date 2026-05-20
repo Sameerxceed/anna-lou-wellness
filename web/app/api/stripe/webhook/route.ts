@@ -173,6 +173,9 @@ async function handleSubscriptionCancelled(event: StripeEvent) {
     return;
   }
 
+  // Shop orders are one-off payments, not subscriptions — nothing to revoke
+  if (ref.strapi_type === 'order') return;
+
   const purchasable = await fetchPurchasable(ref.strapi_type, ref.strapi_id);
   if (!purchasable || !purchasable.grantsResetRoomAccess) return;
 
