@@ -235,21 +235,21 @@ const navStyles = `
   max-width: 1700px; margin: 0 auto;
   display: grid; grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 0.85rem 1.5rem;
-  gap: 0.4rem;
+  padding: 0.8rem 1.2rem;
+  gap: 0.3rem;
   position: relative;
 }
 .nav-left {
   display: flex; align-items: center; justify-content: flex-end; gap: 0;
 }
 .nav-right-wrap {
-  display: flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
+  display: flex; align-items: center; justify-content: flex-start; gap: 0.6rem;
 }
 .nav-right {
   display: flex; align-items: center; gap: 0;
 }
 .nav-center-logo {
-  text-align: center; padding: 0.2rem 0.8rem; flex-shrink: 0;
+  text-align: center; padding: 0.2rem 0.6rem; flex-shrink: 0;
 }
 .nav-logo {
   display: block;
@@ -257,7 +257,7 @@ const navStyles = `
   line-height: 0;
 }
 .nav-logo-img {
-  height: 48px;
+  height: 44px;
   width: auto;
   display: block;
 }
@@ -267,10 +267,10 @@ const navStyles = `
 .nav-item > a {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 0.5rem 0.45rem;
+  padding: 0.5rem 0.35rem;
   transition: opacity 0.3s;
   position: relative;
   white-space: nowrap;
@@ -330,11 +330,11 @@ const navStyles = `
 .nav-action-btn {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.5rem;
-  letter-spacing: 0.08em;
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #3D3D3A;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.45rem;
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 3px;
   transition: all 0.3s;
@@ -474,10 +474,12 @@ const navStyles = `
 }
 
 /* ═══ RESPONSIVE ═══ */
-/* Anna's nav has 9 desktop items + logo + login + cart.
-   That comfortably fits at 1441px+. Below that we go hamburger
-   so nothing gets clipped on iPad, laptops, or split-screen browsers. */
-@media (max-width: 1440px) {
+/* Min viewport for full nav (9 items + logo + login + cart) is ~1280px CSS pixels.
+   That covers HP ProBook 14" at 125% Windows scaling (1536 effective), MacBook Pro
+   14" at default (1512 effective), and Dell XPS 13 (1536 effective).
+   Below 1280 (iPad landscape ~1180, MacBook Air 13" default 1280-borderline)
+   we go hamburger. */
+@media (max-width: 1279px) {
   .nav-left, .nav-right { display: none; }
   .nav-right-wrap { gap: 0; }
   .nav-row {
