@@ -16,6 +16,13 @@ export default function ResetSessionPage({ name, tagline, opening, accentColour,
       <section className="rsp-hero" style={{ background: `linear-gradient(160deg, #F1EAE0 0%, ${accentColour}22 100%)` }}>
         <div className="rsp-hero-grid">
           <div className="rsp-hero-text">
+            <nav className="rsp-breadcrumb" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              <span className="rsp-breadcrumb-sep">›</span>
+              <Link href="/the-work">The Work</Link>
+              <span className="rsp-breadcrumb-sep">›</span>
+              <Link href="/the-work/sessions">Sessions</Link>
+            </nav>
             <p className="rsp-eyebrow" style={{ color: accentColour }}>1:1 Reset Session · 90 minutes · £200</p>
             <h1 className="rsp-title">{name}.</h1>
             <p className="rsp-tagline"><em>{tagline}</em></p>
@@ -67,6 +74,13 @@ const styles = `
   background-size: cover; background-position: center;
   border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,0.08);
 }
+.rsp-breadcrumb {
+  font-family: Mulish, sans-serif; font-size: 0.7rem; color: #8C8880;
+  letter-spacing: 0.05em; margin-bottom: 1rem;
+}
+.rsp-breadcrumb a { color: #8C8880; text-decoration: none; transition: color 0.2s; }
+.rsp-breadcrumb a:hover { color: #231F20; }
+.rsp-breadcrumb-sep { margin: 0 0.5rem; color: #c8c4bc; }
 .rsp-eyebrow {
   font-family: Mulish, sans-serif; font-weight: 500;
   font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;

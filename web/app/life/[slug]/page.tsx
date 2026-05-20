@@ -73,6 +73,11 @@ export default async function ArticlePage({ params }: PageProps) {
         <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
         <article className="article-page">
           <div className="article-inner">
+            <nav className="article-breadcrumb" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              <span className="article-breadcrumb-sep">›</span>
+              <Link href="/life">Life</Link>
+            </nav>
             <p className="article-kicker" style={{ color: '#FAA21B' }}>Life</p>
             <h1 className="article-title">{title}</h1>
             <p className="article-meta">By Anna Lou</p>
@@ -94,6 +99,11 @@ export default async function ArticlePage({ params }: PageProps) {
       <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
       <article className="article-page">
         <div className="article-inner">
+          <nav className="article-breadcrumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <span className="article-breadcrumb-sep">›</span>
+            <Link href="/life">Life</Link>
+          </nav>
           <p className="article-kicker" style={{ color: article.category?.colour || '#FAA21B' }}>
             {article.category?.name || 'Life'}
           </p>
@@ -151,6 +161,10 @@ export default async function ArticlePage({ params }: PageProps) {
 const articleStyles = `
 .article-page { background:#fff; padding:2rem 3rem 3rem; }
 .article-inner { max-width:900px; margin:0 auto; }
+.article-breadcrumb { font-family:Mulish,sans-serif; font-size:0.7rem; color:#8C8880; letter-spacing:0.05em; margin-bottom:1.25rem; text-align:center; }
+.article-breadcrumb a { color:#8C8880; text-decoration:none; transition:color 0.2s; }
+.article-breadcrumb a:hover { color:#FAA21B; }
+.article-breadcrumb-sep { margin:0 0.5rem; color:#c8c4bc; }
 .article-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:0.5rem; text-align:center; }
 .article-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,4vw,2.6rem); color:#231F20; line-height:1.3; margin-bottom:0.8rem; text-align:center; }
 .article-meta { font-family:Mulish,sans-serif; font-size:0.72rem; color:#8C8880; letter-spacing:0.05em; margin-bottom:2rem; text-align:center; }

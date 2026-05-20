@@ -22,6 +22,11 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
       <section className="prog-hero" style={{ background: `linear-gradient(160deg, #F1EAE0 0%, ${accentColour}22 100%)` }}>
         <div className="prog-hero-grid">
           <div className="prog-hero-text">
+            <nav className="prog-breadcrumb" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              <span className="prog-breadcrumb-sep">›</span>
+              <Link href="/the-work">The Work</Link>
+            </nav>
             <p className="prog-eyebrow" style={{ color: accentColour }}>The Work</p>
             <h1 className="prog-title">{hero.title}</h1>
             <p className="prog-tagline"><em>{hero.tagline}</em></p>
@@ -93,6 +98,13 @@ const styles = `
   .prog-hero-text { text-align: center; }
   .prog-hero-img { max-height: 360px; aspect-ratio: 16/10; }
 }
+.prog-breadcrumb {
+  font-family: Mulish, sans-serif; font-size: 0.7rem; color: #8C8880;
+  letter-spacing: 0.05em; margin-bottom: 1rem;
+}
+.prog-breadcrumb a { color: #8C8880; text-decoration: none; transition: color 0.2s; }
+.prog-breadcrumb a:hover { color: #231F20; }
+.prog-breadcrumb-sep { margin: 0 0.5rem; color: #c8c4bc; }
 .prog-eyebrow {
   font-family: Mulish, sans-serif; font-weight: 500;
   font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase;
