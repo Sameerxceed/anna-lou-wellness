@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug } from '@/lib/cms';
+import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
 import { getStockImage } from '@/data/stock-images';
@@ -49,7 +49,10 @@ export default async function ArticlePage({ params }: PageProps) {
     // Try to render as a category filter view
     const category = await getArticleCategoryBySlug(slug, 'reset-stories');
     if (category) {
-      const categoryArticles = await getArticlesByCategorySlug(slug);
+      const [categoryArticles, allCategories] = await Promise.all([
+        getArticlesByCategorySlug(slug),
+        getArticleCategories('reset-stories'),
+      ]);
       const feedArticles = categoryArticles.map(a => ({
         slug: a.slug,
         title: a.title,
@@ -60,6 +63,10 @@ export default async function ArticlePage({ params }: PageProps) {
         heroImage: a.heroImage || undefined,
         isFree: a.isFree,
       }));
+      const subcategories = allCategories.map(c => ({
+        label: c.name,
+        href: `/reset-stories/${c.slug}`,
+      }));
       return (
         <EditorialFeed
           kicker={`Reset Stories · ${category.name}`}
@@ -68,6 +75,8 @@ export default async function ArticlePage({ params }: PageProps) {
           intro={category.description || `Honest stories filed under ${category.name}.`}
           articles={feedArticles}
           sectionHref="/reset-stories"
+          subcategories={subcategories}
+          activeSubcategoryHref={`/reset-stories/${slug}`}
           stockCategory="reset-stories"
         />
       );

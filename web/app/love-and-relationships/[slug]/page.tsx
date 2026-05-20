@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug } from '@/lib/cms';
+import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
 import { getStockImage } from '@/data/stock-images';
@@ -44,7 +44,10 @@ export default async function ArticlePage({ params }: PageProps) {
   if (!article) {
     const category = await getArticleCategoryBySlug(slug, 'love-and-relationships');
     if (category) {
-      const categoryArticles = await getArticlesByCategorySlug(slug);
+      const [categoryArticles, allCategories] = await Promise.all([
+        getArticlesByCategorySlug(slug),
+        getArticleCategories('love-and-relationships'),
+      ]);
       const feedArticles = categoryArticles.map(a => ({
         slug: a.slug,
         title: a.title,
@@ -55,6 +58,10 @@ export default async function ArticlePage({ params }: PageProps) {
         heroImage: a.heroImage || undefined,
         isFree: a.isFree,
       }));
+      const subcategories = allCategories.map(c => ({
+        label: c.name,
+        href: `/love-and-relationships/${c.slug}`,
+      }));
       return (
         <EditorialFeed
           kicker={`Love & Relationships · ${category.name}`}
@@ -63,6 +70,8 @@ export default async function ArticlePage({ params }: PageProps) {
           intro={category.description || `Stories filed under ${category.name}.`}
           articles={feedArticles}
           sectionHref="/love-and-relationships"
+          subcategories={subcategories}
+          activeSubcategoryHref={`/love-and-relationships/${slug}`}
           stockCategory="love-and-relationships"
         />
       );

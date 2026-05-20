@@ -21,6 +21,7 @@ interface EditorialFeedProps {
   articles: Article[];
   sectionHref: string;
   subcategories?: Array<{ label: string; href: string }>;
+  activeSubcategoryHref?: string; // when on a subcategory view, mark the matching tab active
   stockCategory?: StockCategory; // controls fallback image pool when articles have no heroImage
 }
 
@@ -32,6 +33,7 @@ export default function EditorialFeed({
   articles,
   sectionHref,
   subcategories,
+  activeSubcategoryHref,
   stockCategory = 'reset-stories',
 }: EditorialFeedProps) {
   const imageFor = (article: Article) =>
@@ -51,9 +53,20 @@ export default function EditorialFeed({
         {/* Subcategory filter */}
         {subcategories && subcategories.length > 0 && (
           <nav className="feed-filters reveal">
-            <Link href={sectionHref} className="feed-filter active">All</Link>
+            <Link
+              href={sectionHref}
+              className={`feed-filter${!activeSubcategoryHref ? ' active' : ''}`}
+            >
+              All
+            </Link>
             {subcategories.map(sub => (
-              <Link key={sub.href} href={sub.href} className="feed-filter">{sub.label}</Link>
+              <Link
+                key={sub.href}
+                href={sub.href}
+                className={`feed-filter${activeSubcategoryHref === sub.href ? ' active' : ''}`}
+              >
+                {sub.label}
+              </Link>
             ))}
           </nav>
         )}
