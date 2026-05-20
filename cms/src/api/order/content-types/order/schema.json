@@ -72,7 +72,7 @@
     },
     "currency": {
       "type": "string",
-      "default": "EUR"
+      "default": "gbp"
     },
     "exchange_rate": {
       "type": "decimal",

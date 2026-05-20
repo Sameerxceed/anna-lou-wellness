@@ -179,3 +179,135 @@ export async function revokeResetRoomMembership(email: string): Promise<void> {
 
   await updateUserRole(user.id, authenticatedRole.id);
 }
+
+// ─── Shop / Order helpers ───
+
+export type ShopProduct = {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  price: number;
+  stock: number;
+  is_active: boolean;
+};
+
+/**
+ * Fetch products by their numeric IDs. Used by checkout to validate cart
+ * contents against current prices and stock before creating an Order.
+ */
+export async function fetchProductsByIds(ids: number[]): Promise<ShopProduct[]> {
+  if (ids.length === 0) return [];
+  const url = new URL(`${STRAPI_URL}/api/products`);
+  ids.forEach((id, i) => url.searchParams.append(`filters[id][$in][${i}]`, String(id)));
+  url.searchParams.set('pagination[limit]', '100');
+
+  const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+  if (!res.ok) throw new Error(`fetchProductsByIds ${res.status}: ${await res.text()}`);
+  const json = await res.json();
+  return Array.isArray(json?.data) ? json.data : [];
+}
+
+export type CreateOrderInput = {
+  order_number: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  shipping_address: string;
+  items: Array<{ id: number; name: string; price: number; qty: number; slug?: string }>;
+  subtotal: number;
+  shipping_cost?: number;
+  total: number;
+  currency?: string;
+  payment_method: 'stripe' | 'paypal' | 'bank_transfer';
+  notes?: string;
+};
+
+export type StrapiOrder = {
+  id: number;
+  documentId: string;
+  order_number: string;
+  status: string;
+  payment_method: string;
+  customer_email: string;
+  items: any;
+  total: number;
+};
+
+/**
+ * Create a pending order. Returns the created order with documentId.
+ */
+export async function createOrder(input: CreateOrderInput): Promise<StrapiOrder> {
+  const body = {
+    data: {
+      ...input,
+      currency: input.currency || 'gbp',
+      shipping_cost: input.shipping_cost ?? 0,
+      status: 'pending',
+    },
+  };
+  const res = await fetch(`${STRAPI_URL}/api/orders`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`createOrder ${res.status}: ${await res.text()}`);
+  const json = await res.json();
+  return json.data as StrapiOrder;
+}
+
+/**
+ * Fetch an order by documentId. Used by the Stripe webhook handler.
+ */
+export async function fetchOrder(documentId: string): Promise<StrapiOrder | null> {
+  const res = await fetch(`${STRAPI_URL}/api/orders/${encodeURIComponent(documentId)}`, {
+    headers: authHeaders(),
+    cache: 'no-store',
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`fetchOrder ${res.status}: ${await res.text()}`);
+  const json = await res.json();
+  return (json.data || null) as StrapiOrder | null;
+}
+
+/**
+ * Mark an order paid + store the Stripe payment ID. Called from webhook.
+ */
+export async function markOrderPaid(documentId: string, stripePaymentId: string): Promise<void> {
+  const res = await fetch(`${STRAPI_URL}/api/orders/${encodeURIComponent(documentId)}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ data: { status: 'paid', stripe_payment_id: stripePaymentId } }),
+  });
+  if (!res.ok) throw new Error(`markOrderPaid ${res.status}: ${await res.text()}`);
+}
+
+/**
+ * Decrement stock on a product by `qty`. Best-effort — logs warning on failure
+ * rather than throwing so a stock-update bug never blocks order completion.
+ */
+export async function decrementProductStock(productId: number, qty: number): Promise<void> {
+  try {
+    const url = new URL(`${STRAPI_URL}/api/products`);
+    url.searchParams.set('filters[id][$eq]', String(productId));
+    const findRes = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+    if (!findRes.ok) {
+      console.warn(`[strapi] decrementProductStock find ${findRes.status}`);
+      return;
+    }
+    const findJson = await findRes.json();
+    const product = Array.isArray(findJson?.data) ? findJson.data[0] : null;
+    if (!product) return;
+    const newStock = Math.max(0, Number(product.stock || 0) - qty);
+    const updateRes = await fetch(`${STRAPI_URL}/api/products/${encodeURIComponent(product.documentId)}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({ data: { stock: newStock } }),
+    });
+    if (!updateRes.ok) {
+      console.warn(`[strapi] decrementProductStock update ${updateRes.status}: ${await updateRes.text()}`);
+    }
+  } catch (err: any) {
+    console.warn(`[strapi] decrementProductStock failed for product ${productId}:`, err?.message);
+  }
+}

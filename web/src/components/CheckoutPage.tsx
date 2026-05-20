@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { getCart, getCartTotal, clearCart, type CartItem } from '@/lib/cart';
 import { showToast } from '@/components/Toast';
 
+type BankDetails = {
+  accountName: string;
+  sortCode: string;
+  accountNumber: string;
+  iban: string;
+  reference: string;
+};
+
 export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
@@ -11,6 +19,8 @@ export default function CheckoutPage() {
   const [orderNum, setOrderNum] = useState('');
   const [email, setEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'bank' | 'stripe'>('bank');
+  const [bankDetails, setBankDetails] = useState<BankDetails | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const c = getCart();
@@ -19,18 +29,61 @@ export default function CheckoutPage() {
     setTotal(getCartTotal());
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setStep('processing');
+
     const fd = new FormData(e.target as HTMLFormElement);
-    setPaymentMethod((fd.get('payment') as 'bank' | 'stripe') || 'bank');
-    const num = 'ALW-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-    setOrderNum(num);
-    setTimeout(() => {
-      setStep('confirmed');
+    const payment = (fd.get('payment') as 'bank' | 'stripe') || 'bank';
+    setPaymentMethod(payment);
+
+    const payload = {
+      customer: {
+        name: String(fd.get('name') || '').trim(),
+        email: String(fd.get('email') || '').trim().toLowerCase(),
+        phone: String(fd.get('phone') || '').trim() || undefined,
+        address: String(fd.get('address') || '').trim(),
+      },
+      items: cart.map((i) => ({ productId: i.id, qty: i.qty })),
+      paymentMethod: payment,
+    };
+
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data?.error || 'Checkout failed. Please try again.');
+        setStep('form');
+        return;
+      }
+
+      if (payment === 'stripe') {
+        if (data.url) {
+          // Cart cleared on /thank-you page (after Stripe confirms payment)
+          window.location.href = data.url;
+          return;
+        }
+        setError('Stripe session error. Please try again.');
+        setStep('form');
+        return;
+      }
+
+      // Bank transfer
+      setOrderNum(data.orderNumber);
+      setBankDetails(data.bankDetails);
       clearCart();
-      showToast('Order placed successfully!');
-    }, 1500);
+      setStep('confirmed');
+      showToast('Order placed. Bank details below.');
+    } catch (err: any) {
+      setError(err?.message || 'Network error. Please try again.');
+      setStep('form');
+    }
   };
 
   if (step === 'confirmed') {
@@ -52,26 +105,26 @@ export default function CheckoutPage() {
             {cart.map(i => (
               <div key={i.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 0', fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#6e6a62' }}>
                 <span>{i.name} &times; {i.qty}</span>
-                <span>&euro;{(i.price * i.qty).toFixed(2)}</span>
+                <span>&pound;{(i.price * i.qty).toFixed(2)}</span>
               </div>
             ))}
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.7rem 0 0', marginTop: '0.4rem', borderTop: '1px solid #c8c4bc', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400, fontSize: '0.9rem', color: '#1a1a18' }}>
-              <span>Total</span><span>&euro;{total.toFixed(2)}</span>
+              <span>Total</span><span>&pound;{total.toFixed(2)}</span>
             </div>
           </div>
         </div>
-        {paymentMethod === 'bank' && (
+        {bankDetails && (
           <div style={{ maxWidth: 460, margin: '1.5rem auto 0', textAlign: 'left', background: '#fff', border: '1px solid #c8c4bc', padding: '1.5rem' }}>
             <p className="section-label" style={{ marginBottom: '0.6rem', color: '#6E3A5A' }}>Bank Transfer Details</p>
             <p style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#3D3D3A', lineHeight: 1.7, marginBottom: '0.8rem' }}>
-              Please transfer <strong>&euro;{total.toFixed(2)}</strong> using your order number <strong>{orderNum}</strong> as the reference.
+              Please transfer <strong>&pound;{total.toFixed(2)}</strong> using your order number <strong>{bankDetails.reference}</strong> as the reference.
             </p>
             <div style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#3D3D3A', lineHeight: 1.8 }}>
-              <div><strong>Account name:</strong> Anna Lou Wellness</div>
-              <div><strong>Sort code:</strong> XX-XX-XX</div>
-              <div><strong>Account number:</strong> XXXXXXXX</div>
-              <div><strong>IBAN:</strong> GB00 XXXX XXXX XXXX XXXX XX</div>
-              <div><strong>Reference:</strong> {orderNum}</div>
+              <div><strong>Account name:</strong> {bankDetails.accountName}</div>
+              <div><strong>Sort code:</strong> {bankDetails.sortCode}</div>
+              <div><strong>Account number:</strong> {bankDetails.accountNumber}</div>
+              <div><strong>IBAN:</strong> {bankDetails.iban}</div>
+              <div><strong>Reference:</strong> {bankDetails.reference}</div>
             </div>
             <p style={{ fontFamily: "'Lora', serif", fontSize: '0.75rem', color: '#8C8880', marginTop: '0.8rem', fontStyle: 'italic' }}>
               Your order will be confirmed and dispatched once payment is received. For any questions, email hello@annalouwellness.com.
@@ -90,14 +143,14 @@ export default function CheckoutPage() {
           <p className="section-label">Your Details</p>
           <h2 className="section-heading" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Shipping Information</h2>
           {[
-            { label: 'Full Name *', type: 'text', required: true, placeholder: 'Your full name' },
-            { label: 'Email *', type: 'email', required: true, placeholder: 'your@email.com', isEmail: true },
-            { label: 'Phone', type: 'tel', required: false, placeholder: '+353...' },
+            { name: 'name', label: 'Full Name *', type: 'text', required: true, placeholder: 'Your full name' },
+            { name: 'email', label: 'Email *', type: 'email', required: true, placeholder: 'your@email.com', isEmail: true },
+            { name: 'phone', label: 'Phone', type: 'tel', required: false, placeholder: '+44...' },
           ].map(field => (
             <div key={field.label} style={{ marginBottom: '1.4rem' }}>
               <label style={{ display: 'block', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.5rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6e6a62', marginBottom: '0.4rem' }}>{field.label}</label>
               <input
-                type={field.type} required={field.required} placeholder={field.placeholder}
+                name={field.name} type={field.type} required={field.required} placeholder={field.placeholder}
                 onChange={field.isEmail ? (e) => setEmail(e.target.value) : undefined}
                 style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }}
               />
@@ -105,7 +158,7 @@ export default function CheckoutPage() {
           ))}
           <div style={{ marginBottom: '1.4rem' }}>
             <label style={{ display: 'block', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.5rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6e6a62', marginBottom: '0.4rem' }}>Shipping Address *</label>
-            <textarea required placeholder="Full postal address" style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: '1px solid #c8c4bc', padding: '0.7rem', outline: 'none', minHeight: 80, resize: 'vertical' }} />
+            <textarea name="address" required placeholder="Full postal address" style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: '1px solid #c8c4bc', padding: '0.7rem', outline: 'none', minHeight: 80, resize: 'vertical' }} />
           </div>
           <div style={{ marginTop: '1.8rem' }}>
             <p className="section-label">Payment Method</p>
@@ -126,9 +179,14 @@ export default function CheckoutPage() {
               </label>
             </div>
           </div>
+          {error && (
+            <p style={{ marginTop: '1rem', padding: '0.7rem 1rem', background: 'rgba(238,49,47,0.08)', border: '1px solid rgba(238,49,47,0.3)', color: '#a01f1d', fontFamily: "'Lora', serif", fontSize: '0.85rem' }}>
+              {error}
+            </p>
+          )}
           <button type="submit" disabled={step === 'processing'} className="btn btn-accent"
             style={{ width: '100%', textAlign: 'center', marginTop: '1.8rem', padding: '0.9rem' }}>
-            {step === 'processing' ? 'Processing...' : `Place Order \u2014 \u20AC${total.toFixed(2)}`}
+            {step === 'processing' ? 'Processing...' : `Place Order — £${total.toFixed(2)}`}
           </button>
           <p style={{ textAlign: 'center', marginTop: '0.7rem', fontFamily: "'Lora', serif", fontSize: '0.72rem', color: '#c8c4bc' }}>
             Your order will be confirmed by email.
@@ -144,18 +202,18 @@ export default function CheckoutPage() {
                 <div style={{ fontFamily: "'Lora', serif", fontSize: '0.8rem', color: '#1a1a18', lineHeight: 1.3 }}>{i.name}</div>
                 <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontSize: '0.48rem', letterSpacing: '0.1em', color: '#6e6a62' }}>Qty: {i.qty}</div>
               </div>
-              <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontSize: '0.76rem', color: '#1a1a18', flexShrink: 0 }}>&euro;{(i.price * i.qty).toFixed(2)}</div>
+              <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontSize: '0.76rem', color: '#1a1a18', flexShrink: 0 }}>&pound;{(i.price * i.qty).toFixed(2)}</div>
             </div>
           ))}
           <div style={{ marginTop: '0.8rem', paddingTop: '0.6rem', borderTop: '1px solid #c8c4bc' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0', fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#6e6a62' }}>
-              <span>Subtotal</span><span>&euro;{total.toFixed(2)}</span>
+              <span>Subtotal</span><span>&pound;{total.toFixed(2)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0', fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#6e6a62' }}>
-              <span>Shipping</span><span>TBC</span>
+              <span>Shipping</span><span>Free</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem 0 0', marginTop: '0.3rem', borderTop: '1px solid #c8c4bc', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400, fontSize: '0.9rem', color: '#1a1a18' }}>
-              <span>Total</span><span>&euro;{total.toFixed(2)}</span>
+              <span>Total</span><span>&pound;{total.toFixed(2)}</span>
             </div>
           </div>
           <a href="/cart" style={{ display: 'block', textAlign: 'center', marginTop: '0.8rem', fontFamily: "'Josefin Sans', sans-serif", fontSize: '0.5rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#6e6a62', textDecoration: 'none' }}>&larr; Edit Cart</a>

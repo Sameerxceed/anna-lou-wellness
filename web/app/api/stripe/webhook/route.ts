@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe, type StripeEvent } from '@/lib/stripe';
 import { fetchPurchasable, type PurchasableType } from '@/lib/strapi-purchasable';
 import { subscribeAndTag, removeTag } from '@/lib/mailchimp';
-import { grantResetRoomMembership, revokeResetRoomMembership } from '@/lib/strapi-admin';
+import {
+  grantResetRoomMembership,
+  revokeResetRoomMembership,
+  fetchOrder,
+  markOrderPaid,
+  decrementProductStock,
+} from '@/lib/strapi-admin';
 
 /**
  * Stripe webhook handler.
@@ -28,11 +34,12 @@ export const dynamic = 'force-dynamic';
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
-type StrapiRef = { strapi_type: PurchasableType; strapi_id: string };
+type StrapiRefType = PurchasableType | 'order';
+type StrapiRef = { strapi_type: StrapiRefType; strapi_id: string };
 
 function readStrapiRef(metadata: Record<string, string> | null | undefined): StrapiRef | null {
   if (!metadata) return null;
-  const strapi_type = metadata.strapi_type as PurchasableType | undefined;
+  const strapi_type = metadata.strapi_type as StrapiRefType | undefined;
   const strapi_id = metadata.strapi_id;
   if (!strapi_type || !strapi_id) return null;
   return { strapi_type, strapi_id };
@@ -77,6 +84,41 @@ async function getStrapiRefFromEvent(event: StripeEvent): Promise<StrapiRef | nu
   return null;
 }
 
+async function handleShopOrder(event: StripeEvent, ref: StrapiRef, email: string) {
+  const order = await fetchOrder(ref.strapi_id);
+  if (!order) {
+    console.warn(`[stripe webhook] order ${ref.strapi_id} not found in Strapi`);
+    return;
+  }
+  if (order.status === 'paid') {
+    console.info(`[stripe webhook] order ${order.order_number} already paid — idempotent skip`);
+    return;
+  }
+
+  const obj = event.data.object as any;
+  const stripePaymentId = String(obj?.payment_intent || obj?.id || event.id);
+
+  try {
+    await markOrderPaid(order.documentId, stripePaymentId);
+    console.info(`[stripe webhook] order ${order.order_number} marked paid`);
+  } catch (err: any) {
+    console.error('[stripe webhook] markOrderPaid failed:', err?.message);
+  }
+
+  if (Array.isArray(order.items)) {
+    for (const item of order.items) {
+      if (item?.id && item?.qty) {
+        await decrementProductStock(Number(item.id), Number(item.qty));
+      }
+    }
+  }
+
+  const tagResult = await subscribeAndTag(email, 'Shop Customers');
+  if (!tagResult.ok) {
+    console.error(`[stripe webhook] Shop Customers tag failed for ${email}:`, tagResult.error);
+  }
+}
+
 async function handleSuccessfulPurchase(event: StripeEvent) {
   const email = await getEmailFromEvent(event);
   const ref = await getStrapiRefFromEvent(event);
@@ -88,6 +130,11 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
   if (!ref) {
     console.warn(`[stripe webhook] ${event.type}: no Strapi ref in metadata — skipping (likely test event)`);
     return;
+  }
+
+  // Shop orders have their own Strapi record + stock logic
+  if (ref.strapi_type === 'order') {
+    return handleShopOrder(event, ref, email);
   }
 
   const purchasable = await fetchPurchasable(ref.strapi_type, ref.strapi_id);
