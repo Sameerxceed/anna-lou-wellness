@@ -86,35 +86,39 @@ const adminFetch = async (path: string) => {
   return res.json();
 };
 
-// Factory: returns a loadChildren function that fetches articles in the
-// given section slug, mapped to ChildItem shape for the dashboard tree.
+// Factory: returns a loadChildren function that fetches the sub-menu items
+// in a given section, mapped to ChildItem for the dashboard tree.
 //
-// Filter shape uses relation hop: category > section enum (slug). Same key
-// shape that SectionFilterPills writes to the URL, so behaviour matches.
-const articlesInSection = (sectionSlug: string): LoadChildren => async () => {
+// IMPORTANT — these are Article Categories, NOT Articles. The live-site
+// dropdown menu under each editorial section is auto-derived from Article
+// Categories (see web/src/lib/cms.ts fetchCategoriesBySection). So the
+// vocabulary Anna sees on the site (Holding Everything / The Strong One /
+// Houseboat Life under Reset Stories) maps 1:1 to Article Category records.
+//
+// Clicking a sub-menu row here opens that Category for editing — same place
+// Anna goes to rename a dropdown item or add a new one to the menu.
+const categoriesInSection = (sectionSlug: string): LoadChildren => async () => {
   const url =
-    `/content-manager/collection-types/api::article.article` +
-    `?page=1&pageSize=50&sort=title:ASC` +
-    `&filters[category][section][$eq]=${encodeURIComponent(sectionSlug)}`;
+    `/content-manager/collection-types/api::article-category.article-category` +
+    `?page=1&pageSize=50&sort=sort_order:ASC,name:ASC` +
+    `&filters[section][$eq]=${encodeURIComponent(sectionSlug)}`;
   const data = await adminFetch(url);
   const results: Array<Record<string, unknown>> = data?.results || [];
-  return results.map((a): ChildItem => {
-    const documentId = (a.documentId as string) || String(a.id);
-    const title = (a.title as string) || '(untitled article)';
-    const publishedAt = a.publishedAt as string | null | undefined;
+  return results.map((c): ChildItem => {
+    const documentId = (c.documentId as string) || String(c.id);
+    const name = (c.name as string) || '(untitled sub-menu item)';
     return {
       id: documentId,
-      label: title,
-      to: `/content-manager/collection-types/api::article.article/${documentId}`,
-      badge: publishedAt ? undefined : 'draft',
+      label: name,
+      to: `/content-manager/collection-types/api::article-category.article-category/${documentId}`,
     };
   });
 };
 
-// URL to create a new article. Pre-selecting the category isn't reliably
-// supported via querystring across Strapi v5 versions, so we just open the
-// blank create form and Anna picks the category from the form's dropdown.
-const NEW_ARTICLE_URL = '/content-manager/collection-types/api::article.article/create';
+// URL to create a new sub-menu item (Article Category). Anna will pick the
+// section (Reset Stories / Life / etc.) in the form's dropdown after this.
+const NEW_CATEGORY_URL =
+  '/content-manager/collection-types/api::article-category.article-category/create';
 
 // Editorial sub-links — Categories list (filtered to this section) and
 // Articles list (filtered through the category relation hop). The filter
@@ -151,45 +155,45 @@ const GROUPS: Group[] = [
         uid: 'api::reset-stories-page.reset-stories-page',
         kind: 'single-types',
         label: 'Reset Stories',
-        description: 'Section landing + sub-pages',
+        description: 'Section landing + sub-menu items',
         colour: '#6E3A5A',
         sublinks: editorialSublinks('reset-stories'),
-        loadChildren: articlesInSection('reset-stories'),
-        newItemTo: NEW_ARTICLE_URL,
-        newItemLabel: 'New article (then tag it Reset Stories)',
+        loadChildren: categoriesInSection('reset-stories'),
+        newItemTo: NEW_CATEGORY_URL,
+        newItemLabel: 'New sub-menu item (set section = Reset Stories)',
       },
       {
         uid: 'api::life-page.life-page',
         kind: 'single-types',
         label: 'Life',
-        description: 'Section landing + sub-pages',
+        description: 'Section landing + sub-menu items',
         colour: '#FAA21B',
         sublinks: editorialSublinks('life'),
-        loadChildren: articlesInSection('life'),
-        newItemTo: NEW_ARTICLE_URL,
-        newItemLabel: 'New article (then tag it Life)',
+        loadChildren: categoriesInSection('life'),
+        newItemTo: NEW_CATEGORY_URL,
+        newItemLabel: 'New sub-menu item (set section = Life)',
       },
       {
         uid: 'api::love-and-relationships-page.love-and-relationships-page',
         kind: 'single-types',
         label: 'Love & Relationships',
-        description: 'Section landing + sub-pages',
+        description: 'Section landing + sub-menu items',
         colour: '#F280AA',
         sublinks: editorialSublinks('love-and-relationships'),
-        loadChildren: articlesInSection('love-and-relationships'),
-        newItemTo: NEW_ARTICLE_URL,
-        newItemLabel: 'New article (then tag it Love & Relationships)',
+        loadChildren: categoriesInSection('love-and-relationships'),
+        newItemTo: NEW_CATEGORY_URL,
+        newItemLabel: 'New sub-menu item (set section = Love & Relationships)',
       },
       {
         uid: 'api::work-and-money-page.work-and-money-page',
         kind: 'single-types',
         label: 'Work & Money',
-        description: 'Section landing + sub-pages',
+        description: 'Section landing + sub-menu items',
         colour: '#FFD07A',
         sublinks: editorialSublinks('work-and-money'),
-        loadChildren: articlesInSection('work-and-money'),
-        newItemTo: NEW_ARTICLE_URL,
-        newItemLabel: 'New article (then tag it Work & Money)',
+        loadChildren: categoriesInSection('work-and-money'),
+        newItemTo: NEW_CATEGORY_URL,
+        newItemLabel: 'New sub-menu item (set section = Work & Money)',
       },
     ],
   },
@@ -245,8 +249,9 @@ const QuickEditDashboard = () => {
           Quick Edit
         </h2>
         <p style={{ fontSize: 13, color: '#666687', margin: 0, lineHeight: 1.45 }}>
-          Click any card to edit. Click "Show contents" on editorial cards to
-          see the same sub-pages your visitors see in the dropdown menu.
+          Click any card to edit its landing page. Click "Show contents" on
+          an editorial card to see the same sub-menu items your visitors see
+          in the live dropdown — click any one to edit or rename it.
         </p>
       </header>
 
