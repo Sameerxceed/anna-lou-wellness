@@ -37,9 +37,27 @@ export async function fetchAPI<T = any>(
 
 // ═══ Media helpers (Strapi 5 flat format) ═══
 
-/** Get full URL from a Strapi media object */
-export function mediaUrl(media: any): string {
+export type MediaSize = 'thumbnail' | 'small' | 'medium' | 'large' | 'xlarge' | 'original';
+
+/**
+ * Strapi auto-generates resized variants on upload (see cms/config/plugins.js
+ * breakpoints: thumbnail 245, small 500, medium 750, large 1200, xlarge 1920).
+ * Pass a `size` to opt into the smaller variant for cards/thumbnails — saves
+ * payload weight. Default returns the original (full-res), so all existing
+ * call sites keep working unchanged.
+ *
+ * Use:
+ *   - article/product card thumbnails: 'medium' (750)
+ *   - page hero / featured image: 'large' (1200)
+ *   - logo / icon / cert badge: 'small' (500) or 'thumbnail' (245)
+ *   - OG / share image: 'large'
+ */
+export function mediaUrl(media: any, size: MediaSize = 'original'): string {
   if (!media?.url) return '';
+  if (size !== 'original' && media.formats?.[size]?.url) {
+    const u = media.formats[size].url as string;
+    return u.startsWith('http') ? u : `${STRAPI_URL}${u}`;
+  }
   if (media.url.startsWith('http')) return media.url;
   return `${STRAPI_URL}${media.url}`;
 }
