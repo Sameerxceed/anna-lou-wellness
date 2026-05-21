@@ -110,6 +110,133 @@ async function seedPages(strapi) {
   // ═══ Decoder Page singleType (free lead-magnet page) ═══
   await ensureSingleType(strapi, 'api::decoder-page.decoder-page', {});
 
+  // ═══ Navigation singleType — Anna edits all menus + sub-menus here ═══
+  // Seeded with the current site.ts fallback so the first admin page-load
+  // shows the live nav rather than an empty form. The frontend reads this
+  // singleType at request time (cached) and falls back to site.ts if Strapi
+  // is unreachable, so editing here is the source of truth going forward.
+  await ensureSingleType(strapi, 'api::navigation.navigation', {
+    top_strip_text: 'Stories · Work with Anna · Experiences · Shop · Community',
+    items: [
+      {
+        __component: 'nav.menu-item',
+        label: 'Reset Stories',
+        href: '/reset-stories',
+        colour: '#6E3A5A',
+        children: [
+          { __component: 'nav.child-link', label: 'All Stories', href: '/reset-stories' },
+          { __component: 'nav.child-link', label: 'Holding Everything', href: '/reset-stories/holding-everything' },
+          { __component: 'nav.child-link', label: 'The Strong One', href: '/reset-stories/the-strong-one' },
+          { __component: 'nav.child-link', label: 'Signal vs Noise', href: '/reset-stories/signal-vs-noise' },
+          { __component: 'nav.child-link', label: 'Houseboat Life', href: '/life/houseboat-life' },
+          { __component: 'nav.child-link', label: 'Spiritual Hygiene', href: '/life/spiritual-hygiene' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'Life',
+        href: '/life',
+        colour: '#FAA21B',
+        children: [
+          { __component: 'nav.child-link', label: 'Rituals and Energy', href: '/life/rituals-and-energy' },
+          { __component: 'nav.child-link', label: 'Home and Space', href: '/life/home-and-space' },
+          { __component: 'nav.child-link', label: 'Style and Beauty', href: '/life/style-and-beauty' },
+          { __component: 'nav.child-link', label: 'Food and Nourishment', href: '/life/food-and-nourishment' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'Love & Relationships',
+        href: '/love-and-relationships',
+        colour: '#F280AA',
+        children: [
+          { __component: 'nav.child-link', label: 'Dating and Patterns', href: '/love-and-relationships/dating-and-patterns' },
+          { __component: 'nav.child-link', label: 'Breakups and Reset', href: '/love-and-relationships/breakups-and-reset' },
+          { __component: 'nav.child-link', label: 'Friendship', href: '/love-and-relationships/friendship' },
+          { __component: 'nav.child-link', label: 'Motherhood', href: '/love-and-relationships/motherhood' },
+          { __component: 'nav.child-link', label: 'Self Worth and Identity', href: '/love-and-relationships/self-worth-and-identity' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'Work & Money',
+        href: '/work-and-money',
+        colour: '#FFD07A',
+        children: [
+          { __component: 'nav.child-link', label: 'Founder Reset', href: '/work-and-money/founder-reset' },
+          { __component: 'nav.child-link', label: 'Burnout and Nervous System', href: '/work-and-money/burnout-and-nervous-system' },
+          { __component: 'nav.child-link', label: 'Career and Direction', href: '/work-and-money/career-and-direction' },
+          { __component: 'nav.child-link', label: 'Money and Worth', href: '/work-and-money/money-and-worth' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'Experiences',
+        href: '/experiences',
+        colour: '#7BAFDD',
+        children: [
+          { __component: 'nav.child-link', label: 'Retreats', href: '/experiences/retreats' },
+          { __component: 'nav.child-link', label: 'Workshops', href: '/experiences/workshops' },
+          { __component: 'nav.child-link', label: 'Corporate Wellbeing', href: '/experiences/corporate-wellbeing' },
+          { __component: 'nav.child-link', label: 'Speaking', href: '/experiences/speaking' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'Work with Anna',
+        href: '/the-work',
+        colour: '#F280AA',
+        children: [
+          { __component: 'nav.child-link', label: 'Take the Quiz', href: '/the-work/quiz' },
+          { __component: 'nav.child-link', label: 'The Reset · 6 weeks', href: '/the-work/the-reset' },
+          { __component: 'nav.child-link', label: 'Signal · 12 weeks', href: '/the-work/signal' },
+          { __component: 'nav.child-link', label: 'Signal & Build · Founders', href: '/the-work/signal-and-build' },
+          { __component: 'nav.child-link', label: 'One Day · Intensive', href: '/the-work/one-day' },
+          { __component: 'nav.child-link', label: 'Signal Collective · Mastermind', href: '/the-work/signal-collective' },
+          { __component: 'nav.child-link', label: '1:1 Reset Sessions', href: '/the-work/sessions' },
+          { __component: 'nav.child-link', label: 'Recovery Coaching', href: '/the-work/recovery' },
+          { __component: 'nav.child-link', label: 'Client Stories', href: '/the-work/client-stories' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'Shop',
+        href: '/shop',
+        colour: '#5DCAA5',
+        children: [
+          { __component: 'nav.child-link', label: 'All Jewellery', href: '/shop' },
+          { __component: 'nav.child-link', label: 'Emotional Support Jewellery', href: '/shop/emotional-support-jewellery' },
+          { __component: 'nav.child-link', label: 'Personalised Pieces', href: '/shop/personalised' },
+          { __component: 'nav.child-link', label: 'New In', href: '/shop/new-in' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'Community',
+        href: '/community',
+        colour: '#231F20',
+        children: [
+          { __component: 'nav.child-link', label: 'The Returning Circle', href: '/community/the-returning-circle' },
+          { __component: 'nav.child-link', label: 'The Reset Room', href: '/community/reset-room' },
+          { __component: 'nav.child-link', label: 'Events Calendar', href: '/community/events' },
+          { __component: 'nav.child-link', label: 'Resource Library', href: '/community/resources' },
+        ],
+      },
+      {
+        __component: 'nav.menu-item',
+        label: 'About',
+        href: '/about',
+        colour: '#231F20',
+        children: [
+          { __component: 'nav.child-link', label: "Anna's Story", href: '/about' },
+          { __component: 'nav.child-link', label: 'Press', href: '/about/press' },
+          { __component: 'nav.child-link', label: 'Work With Me', href: '/about/partnerships' },
+          { __component: 'nav.child-link', label: 'Contact', href: '/contact' },
+        ],
+      },
+    ],
+  });
+
   // ═══ Experience pages ═══
   await ensure(strapi, 'api::experience-page.experience-page', 'workshops', {
     title: 'Workshops',

@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "navigations",
+  "info": {
+    "singularName": "navigation",
+    "pluralName": "navigations",
+    "displayName": "Navigation",
+    "description": "Main site navigation — top-level items and their dropdown children"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "nav.menu-item"
+    },
+    "top_strip_text": {
+      "type": "string",
+      "description": "Tiny text strip across the very top of every page. Use middle-dot (·) between words, e.g. 'Stories · Work with Anna · Experiences · Shop · Community'",
+      "default": "Stories · Work with Anna · Experiences · Shop · Community"
+    }
+  }
+}

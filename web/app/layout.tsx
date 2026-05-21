@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getSiteSettings, getNavigation, getFooterLinks } from '@/lib/cms';
+import { getSiteSettings, getNavigation, getFooterLinks, getTopStripText } from '@/lib/cms';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import Lightbox from '@/components/Lightbox';
@@ -95,10 +95,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [siteSettings, navigation, footerLinks] = await Promise.all([
+  const [siteSettings, navigation, footerLinks, topStripText] = await Promise.all([
     getSiteSettings(),
     getNavigation(),
     getFooterLinks(),
+    getTopStripText(),
   ]);
 
   return (
@@ -114,7 +115,7 @@ export default async function RootLayout({
         <LocalBusinessSchema />
       </head>
       <body>
-        <Nav navigation={navigation} siteSettings={siteSettings} />
+        <Nav navigation={navigation} siteSettings={siteSettings} topStripText={topStripText} />
         <main>{children}</main>
         <Footer siteSettings={siteSettings} footerLinks={footerLinks} />
         <Lightbox />

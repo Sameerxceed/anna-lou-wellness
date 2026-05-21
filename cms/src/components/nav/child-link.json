@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_nav_child_links",
+  "info": {
+    "displayName": "Sub-menu Item",
+    "icon": "link",
+    "description": "A single sub-menu link (label + href) shown in a top-level menu's dropdown"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

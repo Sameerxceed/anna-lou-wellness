@@ -16,9 +16,10 @@ interface NavProps {
   transparent?: boolean;
   navigation: NavItem[];
   siteSettings: any;
+  topStripText?: string;
 }
 
-export default function Nav({ transparent = false, navigation, siteSettings }: NavProps) {
+export default function Nav({ transparent = false, navigation, siteSettings, topStripText }: NavProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -61,7 +62,7 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
 
       {/* Top strip */}
       <div className="top-strip">
-        <p className="top-strip-text">Stories &middot; Work with Anna &middot; Experiences &middot; Shop &middot; Community</p>
+        <p className="top-strip-text">{topStripText || 'Stories · Work with Anna · Experiences · Shop · Community'}</p>
       </div>
 
       {/* Main nav */}

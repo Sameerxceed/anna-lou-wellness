@@ -154,8 +154,45 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   }
 }
 
-// Navigation & footer links (static — rarely CMS-driven)
-export const getNavigation = (): NavItem[] => fallbackNavigation;
+// Navigation — fetched from Strapi `navigation` singleType (Anna edits in CMS),
+// falls back to the hardcoded list in `src/data/site.ts` if Strapi is unreachable
+// or hasn't been seeded yet.
+export async function getNavigation(): Promise<NavItem[]> {
+  try {
+    const { data: d } = await fetchAPI('/navigation', { populate: { items: { populate: 'children' } } });
+    const items = (d as { items?: unknown[] } | null)?.items;
+    if (!Array.isArray(items) || items.length === 0) return fallbackNavigation;
+    return items.map((raw) => {
+      const item = raw as { label?: string; href?: string; colour?: string; children?: unknown[] };
+      const children = Array.isArray(item.children)
+        ? item.children.map((c) => {
+            const child = c as { label?: string; href?: string };
+            return { label: String(child.label || ''), href: String(child.href || '#') };
+          })
+        : undefined;
+      return {
+        label: String(item.label || ''),
+        href: String(item.href || '#'),
+        colour: item.colour || undefined,
+        children,
+      };
+    });
+  } catch {
+    return fallbackNavigation;
+  }
+}
+
+// Top-strip text fetched from same `navigation` singleType (cheap, no extra request)
+export async function getTopStripText(): Promise<string> {
+  try {
+    const { data: d } = await fetchAPI('/navigation');
+    const text = (d as { top_strip_text?: string } | null)?.top_strip_text;
+    return text && text.trim() ? text : 'Stories · Work with Anna · Experiences · Shop · Community';
+  } catch {
+    return 'Stories · Work with Anna · Experiences · Shop · Community';
+  }
+}
+
 export const getFooterLinks = (): FooterLinks => fallbackFooterLinks;
 
 // ═══ ARTICLES ═══

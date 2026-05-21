@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_nav_menu_items",
+  "info": {
+    "displayName": "Top-Level Menu Item",
+    "icon": "bars",
+    "description": "A top-level item in the main navigation. Includes optional dropdown children."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "colour": {
+      "type": "string",
+      "description": "Hex colour (e.g. #6E3A5A) used for the label tint and dropdown hover accent. Leave blank for default."
+    },
+    "children": {
+      "type": "component",
+      "repeatable": true,
+      "component": "nav.child-link"
+    }
+  }
+}
