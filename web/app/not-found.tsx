@@ -15,7 +15,7 @@ export default function NotFound() {
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <Link href="/" className="btn btn-outline-light">Return Home</Link>
-          <Link href="/the-work" className="btn btn-outline-light" style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)' }}>Explore The Work</Link>
+          <Link href="/the-work" className="btn btn-outline-light" style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)' }}>Explore Work with Anna</Link>
           <Link href="/shop" className="btn btn-outline-light" style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)' }}>Visit the Shop</Link>
         </div>
         <p className="font-sans font-extralight text-[0.55rem] text-white/20 mt-8 tracking-wide">

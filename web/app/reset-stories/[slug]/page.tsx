@@ -72,7 +72,7 @@ export default async function ArticlePage({ params }: PageProps) {
           kicker={`Reset Stories · ${category.name}`}
           kickerColour={category.colour}
           title={category.name}
-          intro={category.description || `Honest stories filed under ${category.name}.`}
+          intro={category.description || ''}
           articles={feedArticles}
           sectionHref="/reset-stories"
           subcategories={subcategories}

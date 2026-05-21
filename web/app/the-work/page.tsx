@@ -5,11 +5,11 @@ import { FAQSchema, ServiceSchema, BreadcrumbSchema } from '@/components/Structu
 import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const metadata: Metadata = {
-  title: 'The Work',
-  description: 'Somatic coaching with Anna Lou. The Signal Method, 1:1 sessions, founder reset, dating reset, nervous system reset. Ways to work with Anna.',
+  title: 'Work with Anna',
+  description: 'Somatic coaching with Anna Lou. The Signal Method, 1:1 sessions, founder reset, dating reset, nervous system reset.',
   alternates: { canonical: '/the-work' },
   openGraph: {
-    title: 'The Work — Anna Lou Wellness',
+    title: 'Work with Anna — Anna Lou Wellness',
     description: 'Somatic coaching with Anna Lou. The Signal Method and 1:1 sessions.',
     url: '/the-work',
   },
@@ -23,7 +23,7 @@ export default async function TheWorkPage() {
   ]);
   return (
     <>
-      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'The Work', href: '/the-work' }]} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }]} />
       <ServiceSchema name="Somatic Coaching with Anna Lou" description="1:1 coaching sessions using The Signal Method. Nervous system regulation, emotional healing, and personal transformation." url="/the-work" />
       {faqs.length > 0 && <FAQSchema faqs={faqs} />}
       <style dangerouslySetInnerHTML={{ __html: workStyles }} />
@@ -31,7 +31,7 @@ export default async function TheWorkPage() {
       {/* Header */}
       <section className="work-header">
         <div className="work-header-inner reveal">
-          <p className="work-kicker">{cms?.kicker || 'The Work'}</p>
+          <p className="work-kicker">{cms?.kicker || 'Work with Anna'}</p>
           <h1 className="work-title">{cms?.title || 'Your inner world already knows.'}</h1>
           <p className="work-intro">{cms?.intro || 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.'}</p>
         </div>

@@ -11,9 +11,9 @@ export default async function WaysPage() {
   const cms = await getGenericPageBySlug('the-work-ways-to-work-with-me');
   const props = genericPageProps(cms, {
     title: 'Ways to Work With Me',
-    kicker: 'The Work',
+    kicker: 'Work with Anna',
     kickerColour: '#F280AA',
-    parentLabel: 'The Work',
+    parentLabel: 'Work with Anna',
     parentHref: '/the-work',
     stockCategory: 'programmes',
     stockSeed: 'ways-to-work',

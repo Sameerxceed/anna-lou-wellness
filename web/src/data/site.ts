@@ -120,7 +120,7 @@ export const navigation: NavItem[] = [
     ],
   },
   {
-    label: "The Work", href: "/the-work", colour: "#F280AA",
+    label: "Work with Anna", href: "/the-work", colour: "#F280AA",
     children: [
       { label: "Take the Quiz", href: "/the-work/quiz" },
       { label: "The Reset · 6 weeks", href: "/the-work/the-reset" },
@@ -171,7 +171,7 @@ export const footerLinks: FooterLinks = {
     { label: "Experiences", href: "/experiences" },
   ],
   connect: [
-    { label: "The Work", href: "/the-work" },
+    { label: "Work with Anna", href: "/the-work" },
     { label: "Shop", href: "/shop" },
     { label: "Community", href: "/community" },
     { label: "About", href: "/about" },

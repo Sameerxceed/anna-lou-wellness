@@ -25,9 +25,9 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
             <nav className="prog-breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
               <span className="prog-breadcrumb-sep">›</span>
-              <Link href="/the-work">The Work</Link>
+              <Link href="/the-work">Work with Anna</Link>
             </nav>
-            <p className="prog-eyebrow" style={{ color: accentColour }}>The Work</p>
+            <p className="prog-eyebrow" style={{ color: accentColour }}>Work with Anna</p>
             <h1 className="prog-title">{hero.title}</h1>
             <p className="prog-tagline"><em>{hero.tagline}</em></p>
           </div>

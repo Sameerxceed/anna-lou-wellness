@@ -11,9 +11,9 @@ export default async function ClientStoriesPage() {
   const cms = await getGenericPageBySlug('the-work-client-stories');
   const props = genericPageProps(cms, {
     title: 'Client Stories',
-    kicker: 'The Work',
+    kicker: 'Work with Anna',
     kickerColour: '#F280AA',
-    parentLabel: 'The Work',
+    parentLabel: 'Work with Anna',
     parentHref: '/the-work',
     stockCategory: 'reset-stories',
     stockSeed: 'client-stories',

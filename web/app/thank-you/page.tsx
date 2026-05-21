@@ -73,7 +73,7 @@ export default async function ThankYouPage({ searchParams }: PageProps) {
 
           <div className="ty-actions">
             <Link href="/" className="ty-btn-secondary">Return home</Link>
-            <Link href="/the-work" className="ty-btn-primary">Explore The Work</Link>
+            <Link href="/the-work" className="ty-btn-primary">Explore Work with Anna</Link>
           </div>
         </div>
       </section>

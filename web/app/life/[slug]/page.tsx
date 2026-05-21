@@ -67,7 +67,7 @@ export default async function ArticlePage({ params }: PageProps) {
           kicker={`Life · ${category.name}`}
           kickerColour={category.colour}
           title={category.name}
-          intro={category.description || `Stories filed under ${category.name}.`}
+          intro={category.description || ''}
           articles={feedArticles}
           sectionHref="/life"
           subcategories={subcategories}

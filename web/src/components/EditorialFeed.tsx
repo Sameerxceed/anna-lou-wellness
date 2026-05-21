@@ -159,7 +159,8 @@ const feedStyles = `
 .feed-filter { font-family:Mulish,sans-serif; font-weight:400; font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase; color:#8C8880; text-decoration:none; padding-bottom:3px; border-bottom:2px solid transparent; transition:all 0.3s; white-space:nowrap; flex-shrink:0; }
 .feed-filter:hover, .feed-filter.active { color:#231F20; border-bottom-color:#231F20; }
 @media (max-width:640px) {
-  .feed-filters { justify-content:flex-start; gap:1rem; padding:1rem 1rem 0.5rem; }
+  .feed-filters { flex-wrap:wrap; justify-content:center; gap:0.7rem 1.1rem; padding:1rem 1rem 0.5rem; overflow-x:visible; }
+  .feed-filter { font-size:0.75rem; letter-spacing:0.06em; padding-bottom:2px; }
 }
 
 /* ═══ FEATURED ARTICLE ═══ */

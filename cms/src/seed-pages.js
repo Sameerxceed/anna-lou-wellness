@@ -231,7 +231,7 @@ async function seedPages(strapi) {
 
   await ensure(strapi, 'api::generic-page.generic-page', 'the-work-client-stories', {
     title: 'Client Stories',
-    kicker: 'The Work',
+    kicker: 'Work with Anna',
     kickerColour: '#F280AA',
     intro: [
       'These are not testimonials. They are editorial pieces — real stories from real clients about what happens when you come home to yourself.',
@@ -245,7 +245,7 @@ async function seedPages(strapi) {
 
   await ensure(strapi, 'api::generic-page.generic-page', 'the-work-ways-to-work-with-me', {
     title: 'Ways to Work With Me',
-    kicker: 'The Work',
+    kicker: 'Work with Anna',
     kickerColour: '#F280AA',
     intro: [
       'The Signal Method™ is the umbrella for all the coaching work here. It is a somatic framework Anna developed from fifteen years of personal practice and clinical training.',
@@ -472,7 +472,7 @@ async function seedPages(strapi) {
   // ═══ Section landing pages + standalone ═══
   await ensure(strapi, 'api::generic-page.generic-page', 'the-work', {
     title: 'Your inner world already knows.',
-    kicker: 'The Work',
+    kicker: 'Work with Anna',
     kickerColour: '#F280AA',
     intro: 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.',
   });

@@ -61,7 +61,7 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
 
       {/* Top strip */}
       <div className="top-strip">
-        <p className="top-strip-text">Stories &middot; The Work &middot; Experiences &middot; Community</p>
+        <p className="top-strip-text">Stories &middot; Work with Anna &middot; Experiences &middot; Shop &middot; Community</p>
       </div>
 
       {/* Main nav */}
@@ -417,35 +417,35 @@ const navStyles = `
   flex-shrink: 0;
 }
 .mobile-section {
-  padding: 1.2rem 0 0.4rem;
+  padding: 1.5rem 0 0.6rem;
 }
 .mobile-category {
   font-family: 'EB Garamond', Georgia, serif;
   font-weight: 400;
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   text-decoration: none;
   display: block;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
 }
 .mobile-divider {
   height: 2px;
   width: 100%;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
   opacity: 0.4;
 }
 .mobile-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.15rem 1.5rem;
-  padding-bottom: 0.4rem;
+  gap: 0.5rem 1.5rem;
+  padding-bottom: 0.6rem;
 }
 .mobile-grid a {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   color: #3D3D3A;
   text-decoration: none;
-  padding: 0.35rem 0;
+  padding: 0.55rem 0;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }

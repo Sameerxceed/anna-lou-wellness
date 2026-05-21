@@ -28,24 +28,10 @@ export default async function WelcomePage() {
           <p className="wl-tagline">BEAUTIFULLY WHOLE</p>
         </header>
 
-        {/* Reset Letters wordmark */}
+        {/* Reset Letters wordmark — RESET plum, LETTERS blue (per Anna 20 May) */}
         <div className="wl-wordmark" aria-label="Reset Letters">
-          <div className="wl-word">
-            <span style={{ color: '#231F20' }}>R</span>
-            <span style={{ color: '#EE312F' }}>E</span>
-            <span style={{ color: '#FAA21B' }}>S</span>
-            <span style={{ color: '#7BAFDD' }}>E</span>
-            <span style={{ color: '#F280AA' }}>T</span>
-          </div>
-          <div className="wl-word">
-            <span style={{ color: '#5DCAA5' }}>L</span>
-            <span style={{ color: '#FFD07A' }}>E</span>
-            <span style={{ color: '#7BAFDD' }}>T</span>
-            <span style={{ color: '#F280AA' }}>T</span>
-            <span style={{ color: '#D5D0C8' }}>E</span>
-            <span style={{ color: '#FAA21B' }}>R</span>
-            <span style={{ color: '#5DCAA5' }}>S</span>
-          </div>
+          <div className="wl-word" style={{ color: '#5B2E55' }}>RESET</div>
+          <div className="wl-word" style={{ color: '#7BAFDD' }}>LETTERS</div>
         </div>
 
         {/* Confirmation */}

@@ -114,7 +114,7 @@ export default async function HomePage() {
       <section className="hp-work">
         <div className="hp-work-inner">
           <div className="reveal">
-            <p className="hp-kicker" style={{ color: '#F280AA' }}>{f(cms, 'workKicker', 'The Work')}</p>
+            <p className="hp-kicker" style={{ color: '#F280AA' }}>{f(cms, 'workKicker', 'Work with Anna')}</p>
             <h2 className="hp-section-title">{f(cms, 'workTitle', 'Your inner world already knows.')}</h2>
             <p className="hp-body">{f(cms, 'workBody1', 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.')}</p>
             <p className="hp-body" style={{ marginBottom: '1.5rem' }}>{f(cms, 'workBody2', 'The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey.')}</p>
@@ -357,14 +357,14 @@ export default async function HomePage() {
 
 const homepageStyles = `
 /* ═══ EDITORIAL FRAME ═══ */
-.editorial-frame { background:#fff; text-align:center; padding:1rem 2rem 0.3rem; border-bottom:1px solid rgba(0,0,0,0.04); }
+.editorial-frame { background:#fff; text-align:center; padding:0.7rem 2rem 0.25rem; border-bottom:1px solid rgba(0,0,0,0.04); }
 .editorial-issue { font-family:Mulish,system-ui,sans-serif; font-weight:300; font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:#3D3D3A; margin-bottom:0.3rem; }
 .editorial-inside { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:0.75rem; color:#8C8880; }
 
 /* ═══ HERO ═══ */
-.hp-hero { background:#fff; padding:1.5rem 3rem 2rem; }
-.hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:center; }
-.hp-hero-image { aspect-ratio:4/5; border-radius:6px; overflow:hidden; max-height:420px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; }
+.hp-hero { background:#fff; padding:1rem 3rem 1.5rem; }
+.hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.1fr 1fr; gap:2rem; align-items:center; }
+.hp-hero-image { aspect-ratio:4/5; border-radius:6px; overflow:hidden; max-height:560px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; }
 .hp-hero-image::after { content:'Atmospheric photo. Taggs Island, golden hour, Anna'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.12); text-align:center; max-width:80%; }
 .hp-hero-image.has-image::after, .hp-featured-image.has-image::after, .article-card-img.has-image::after, .hp-work-image.has-image::after, .hp-community-image.has-image::after, .hp-portrait-image.has-image::after, .product-img.has-image::after { display:none; }
 .hp-hero-tag { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.8rem; }
@@ -384,7 +384,7 @@ const homepageStyles = `
 /* ═══ FEATURED STORY ═══ */
 .hp-featured { background:#fff; padding:0.8rem 3rem; }
 .hp-featured-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.1fr 0.9fr; gap:2.5rem; align-items:center; }
-.hp-featured-image { aspect-ratio:4/3; border-radius:6px; overflow:hidden; max-height:320px; background:linear-gradient(160deg,#e4d8cc,#d0c2b4); position:relative; }
+.hp-featured-image { aspect-ratio:4/3; border-radius:6px; overflow:hidden; max-height:440px; background:linear-gradient(160deg,#e4d8cc,#d0c2b4); position:relative; }
 .hp-featured-image::after { content:'Featured story image'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.1); }
 .hp-featured-label { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.5rem; display:inline-block; position:relative; }
 .hp-featured-label::after { content:''; display:block; width:30px; height:1.5px; background:#6E3A5A; margin-top:0.3rem; }
@@ -406,7 +406,7 @@ const homepageStyles = `
 .article-card-date { font-family:Mulish,sans-serif; font-size:0.6rem; color:#8C8880; }
 
 /* ═══ MANTRA STRIP ═══ */
-.hp-mantras { background:#FFF0D2; padding:1.2rem 2rem; text-align:center; overflow:hidden; }
+.hp-mantras { background:#FAF6E8; padding:1.2rem 2rem; text-align:center; overflow:hidden; }
 .hp-mantra-text { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:clamp(1.3rem,2.5vw,1.8rem); color:#3D3D3A; line-height:1.6; max-width:900px; margin:0 auto; opacity:0.5; text-wrap:pretty; }
 .hp-mantra-note { font-family:Mulish,sans-serif; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:#8C8880; margin-top:0.8rem; }
 
@@ -428,7 +428,7 @@ const homepageStyles = `
 .hp-work-image::after { content:'Photo. Coaching session on the houseboat'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.1); text-align:center; }
 
 /* ═══ EDITORIAL SECTIONS ═══ */
-.hp-editorial-sections { background:#FFF0D2; padding:1.5rem 2rem; }
+.hp-editorial-sections { background:#FAF6E8; padding:1.5rem 2rem; }
 .hp-editorial-header { max-width:1200px; margin:0 auto 1rem; }
 .hp-editorial-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
 .hp-editorial-tile { background:rgba(255,255,255,0.7); backdrop-filter:blur(8px); border-radius:8px; padding:1.5rem; cursor:pointer; transition:all 0.3s; border:1px solid rgba(255,255,255,0.5); text-decoration:none; }
