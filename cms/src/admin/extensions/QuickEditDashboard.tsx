@@ -120,6 +120,55 @@ const categoriesInSection = (sectionSlug: string): LoadChildren => async () => {
 const NEW_CATEGORY_URL =
   '/content-manager/collection-types/api::article-category.article-category/create';
 
+// ─── Non-editorial sub-menus ──────────────────────────────────────────────
+//
+// For non-editorial menu items (Experiences, Work with Anna, Shop, Community,
+// About), the sub-menu links are stored DIRECTLY in the Navigation
+// singletype's `children` repeatable component — not derived from any
+// collection. So loading "what's under Experiences in the live dropdown"
+// means fetching Navigation and finding the item whose href matches.
+//
+// Strapi doesn't expose a deep-link to edit a single nested component child,
+// so clicking a sub-menu row opens the full Navigation form. Anna finds the
+// item by label (thanks to mainField fix) and edits its children there.
+
+const NAVIGATION_EDIT_URL =
+  '/content-manager/single-types/api::navigation.navigation';
+
+// Cache the Navigation fetch so expanding 5 non-editorial cards in a row
+// only hits the API once. Cleared on error so retries can succeed.
+let navItemsCache:
+  | Promise<Array<{ href?: string; children?: Array<{ label?: string; href?: string }> }>>
+  | null = null;
+const getNavItems = () => {
+  if (!navItemsCache) {
+    navItemsCache = (async () => {
+      try {
+        const data = await adminFetch(NAVIGATION_EDIT_URL);
+        const items = (data?.items as Array<Record<string, unknown>>) || [];
+        return items as Array<{ href?: string; children?: Array<{ label?: string; href?: string }> }>;
+      } catch (err) {
+        navItemsCache = null; // allow retry
+        throw err;
+      }
+    })();
+  }
+  return navItemsCache;
+};
+
+const navChildrenByHref = (href: string): LoadChildren => async () => {
+  const items = await getNavItems();
+  const item = items.find((i) => i.href === href);
+  const children = Array.isArray(item?.children) ? item!.children! : [];
+  return children.map((c, idx): ChildItem => ({
+    id: `${href}-${idx}-${c.label || idx}`,
+    label: c.label || '(unlabelled link)',
+    // No deep-link to a single nested child — opens the full Navigation form
+    // where Anna finds the item by label and edits its children there.
+    to: NAVIGATION_EDIT_URL,
+  }));
+};
+
 // Editorial sub-links — Categories list (filtered to this section) and
 // Articles list (filtered through the category relation hop). The filter
 // keys match what SectionFilterPills writes to the URL, so clicking a chip
@@ -199,19 +248,64 @@ const GROUPS: Group[] = [
   },
   {
     title: 'Other landing pages',
-    description: 'Section landings for non-editorial parts of the site.',
+    description: 'Section landings for non-editorial parts of the site. "Show contents" reveals the same dropdown links your visitors see on the live menu — edit them in Navigation.',
     pages: [
-      { uid: 'api::experience-page.experience-page', kind: 'single-types', label: 'Experiences', description: 'Retreats, workshops, corporate', colour: '#7BAFDD' },
-      { uid: 'api::work-with-anna-page.work-with-anna-page', kind: 'single-types', label: 'Work with Anna', description: 'Coaching landing page', colour: '#F280AA' },
-      { uid: 'api::community-page.community-page', kind: 'single-types', label: 'Community', description: 'Circles, Reset Room, events', colour: '#231F20' },
-      { uid: 'api::about-page.about-page', kind: 'single-types', label: 'About', description: "Anna's story, press, certifications", colour: '#231F20' },
+      {
+        uid: 'api::experience-page.experience-page',
+        kind: 'single-types',
+        label: 'Experiences',
+        description: 'Retreats, workshops, corporate',
+        colour: '#7BAFDD',
+        loadChildren: navChildrenByHref('/experiences'),
+        newItemTo: NAVIGATION_EDIT_URL,
+        newItemLabel: 'Edit sub-menu in Navigation',
+      },
+      {
+        uid: 'api::work-with-anna-page.work-with-anna-page',
+        kind: 'single-types',
+        label: 'Work with Anna',
+        description: 'Coaching landing page',
+        colour: '#F280AA',
+        loadChildren: navChildrenByHref('/the-work'),
+        newItemTo: NAVIGATION_EDIT_URL,
+        newItemLabel: 'Edit sub-menu in Navigation',
+      },
+      {
+        uid: 'api::community-page.community-page',
+        kind: 'single-types',
+        label: 'Community',
+        description: 'Circles, Reset Room, events',
+        colour: '#231F20',
+        loadChildren: navChildrenByHref('/community'),
+        newItemTo: NAVIGATION_EDIT_URL,
+        newItemLabel: 'Edit sub-menu in Navigation',
+      },
+      {
+        uid: 'api::about-page.about-page',
+        kind: 'single-types',
+        label: 'About',
+        description: "Anna's story, press, certifications",
+        colour: '#231F20',
+        loadChildren: navChildrenByHref('/about'),
+        newItemTo: NAVIGATION_EDIT_URL,
+        newItemLabel: 'Edit sub-menu in Navigation',
+      },
     ],
   },
   {
     title: 'Commerce',
     description: 'Shop catalogue and customer orders.',
     pages: [
-      { uid: 'api::shop-page.shop-page', kind: 'single-types', label: '🛒 Shop landing', description: 'Jewellery shop landing page copy', colour: '#5DCAA5' },
+      {
+        uid: 'api::shop-page.shop-page',
+        kind: 'single-types',
+        label: '🛒 Shop landing',
+        description: 'Jewellery shop landing page copy',
+        colour: '#5DCAA5',
+        loadChildren: navChildrenByHref('/shop'),
+        newItemTo: NAVIGATION_EDIT_URL,
+        newItemLabel: 'Edit sub-menu in Navigation',
+      },
       { uid: 'api::product.product', kind: 'collection-types', label: '🛍 Products', description: 'Shop catalogue — add, edit, restock items', colour: '#5DCAA5' },
       { uid: 'api::order.order', kind: 'collection-types', label: '📦 Orders', description: 'Customer orders + statuses', colour: '#5DCAA5' },
     ],
