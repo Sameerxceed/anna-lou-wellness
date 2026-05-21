@@ -105,7 +105,7 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
           {/* Center logo */}
           <div className="nav-center-logo">
             <Link href="/" className="nav-logo" aria-label={siteSettings?.siteName || 'Anna Lou Wellness'}>
-              <img src="/brand/alw-wordmark-wide.svg" alt={siteSettings?.siteName || 'Anna Lou Wellness'} className="nav-logo-img" />
+              <img src="/brand/alw-wordmark-stacked.svg" alt={siteSettings?.siteName || 'Anna Lou Wellness'} className="nav-logo-img" />
             </Link>
           </div>
 
@@ -162,7 +162,7 @@ export default function Nav({ transparent = false, navigation, siteSettings }: N
         <div className="mobile-menu">
           <div className="mobile-menu-header">
             <Link href="/" className="mobile-logo" onClick={() => setMobileOpen(false)} aria-label={siteSettings?.siteName || 'Anna Lou Wellness'}>
-              <img src="/brand/alw-wordmark-wide.svg" alt={siteSettings?.siteName || 'Anna Lou Wellness'} style={{ height: 40, width: 'auto', display: 'block' }} />
+              <img src="/brand/alw-wordmark-stacked.svg" alt={siteSettings?.siteName || 'Anna Lou Wellness'} style={{ height: 56, width: 'auto', display: 'block' }} />
             </Link>
             <button
               className="mobile-close"
@@ -259,7 +259,7 @@ const navStyles = `
   line-height: 0;
 }
 .nav-logo-img {
-  height: 40px;
+  height: 56px;
   width: auto;
   display: block;
 }
@@ -495,7 +495,7 @@ const navStyles = `
   .nav-dropdown { display: none !important; }
 }
 @media (max-width: 480px) {
-  .nav-logo-img { height: 36px; }
+  .nav-logo-img { height: 48px; }
   .top-strip-text { font-size: 0.45rem; letter-spacing: 0.15em; }
 }
 `;
