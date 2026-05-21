@@ -39,15 +39,15 @@ Strapi automatically generates 5 smaller variants (245 / 500 / 750 / 1200 / 1920
 
 | Where | Field |
 |---|---|
-| `Page · About` | `portrait` — main "Anna's story" photo (portrait orientation) |
-| `Page · About` | `press_logos` — one logo per row (Aneeza is sending the licensed artwork) |
-| `Page · About` | `certifications` — ICF, CPD, TRE badge per row |
-| `Page · Community` | `circle_image` — Returning Circle photo |
-| `Page · Community` | `reset_room_image` — Reset Room visual |
-| `Page · Reset Letters` | (uses brand colour wordmark, no extra image needed for now) |
-| `Page · Reset Room` | `hero_image` |
-| `Page · Decoder (free)` | `hero_image` |
-| `Page · Experiences` | `hero_image` |
+| `About` | `portrait` — main "Anna's story" photo (portrait orientation) |
+| `About` | `press_logos` — one logo per row (Aneeza is sending the licensed artwork) |
+| `About` | `certifications` — ICF, CPD, TRE badge per row |
+| `Community` | `circle_image` — Returning Circle photo |
+| `Community` | `reset_room_image` — Reset Room visual |
+| `Reset Letters` | (uses brand colour wordmark, no extra image needed for now) |
+| `Reset Room` | `hero_image` |
+| `Decoder` | `hero_image` |
+| `Experiences` | `hero_image` |
 | `Work · Membership (Reset Room)` | `hero_image` |
 
 ### Work with Anna — programmes (5 images)
@@ -115,8 +115,8 @@ Content Manager splits into Single Types and Collection Types. Both are grouped 
 - `2. Navigation` — the menu items + top strip
 - `3. Site Settings` — global logo / SEO / social URLs / bank details
 
-**Page singletons** (`Page · X`):
-- Page · About / Community / Contact / Decoder (free) / Experiences / Reset Letters / Reset Room / Sub-page / Community Event / Welcome
+**Page singletons** (each one matches a menu item on the website — click `ABOUT` in the menu, edit `About` in the CMS):
+- About / Community / Contact / Decoder / Experiences / Reset Letters / Reset Room / Sub-pages / Community Event / Welcome
 
 **Editorial content** (`Story · X`):
 - Story · Article (every blog/Reset Story/Life/Love/Work article lives here, separated by Category)
@@ -260,9 +260,9 @@ Every field has a placeholder showing the default copy. Empty fields use the def
 
 ### About, Community, Contact, etc.
 
-Same shape: open the single type (`Page · About`, `Page · Community`, etc.) → edit kicker + title + body + intro paragraphs + CTA. Click Preview to see how it lands.
+Same shape: open the single type (`About`, `Community`, etc.) → edit kicker + title + body + intro paragraphs + CTA. Click Preview to see how it lands.
 
-**About page — press logos and certifications:** these are now editable as form lists, not raw text. Open `Page · About` → scroll to **press_logos** → each row is one outlet (name + logo upload). Same for **certifications** (name + colour + badge upload). Click "Add an entry to press_logos" / "Add an entry to certifications" to add rows. Drag the handle to reorder. Click the trash icon to remove. When Aneeza sends the licensed press artwork and certification badges, upload them into the existing rows.
+**About page — press logos and certifications:** these are now editable as form lists, not raw text. Open `About` → scroll to **press_logos** → each row is one outlet (name + logo upload). Same for **certifications** (name + colour + badge upload). Click "Add an entry to press_logos" / "Add an entry to certifications" to add rows. Drag the handle to reorder. Click the trash icon to remove. When Aneeza sends the licensed press artwork and certification badges, upload them into the existing rows.
 
 ### Reset Letters Holding Page
 
