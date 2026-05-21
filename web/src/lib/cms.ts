@@ -159,7 +159,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 // or hasn't been seeded yet.
 export async function getNavigation(): Promise<NavItem[]> {
   try {
-    const { data: d } = await fetchAPI('/navigation', { populate: { items: { populate: 'children' } } });
+    // Strapi v5 nested populate: populate items, and within each item populate everything (incl. children)
+    const { data: d } = await fetchAPI('/navigation', { 'populate[items][populate]': '*' });
     const items = (d as { items?: unknown[] } | null)?.items;
     if (!Array.isArray(items) || items.length === 0) return fallbackNavigation;
     return items.map((raw) => {
