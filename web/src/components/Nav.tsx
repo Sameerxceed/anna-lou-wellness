@@ -482,6 +482,15 @@ const navStyles = `
 }
 
 /* ═══ RESPONSIVE ═══ */
+/* Larger screens have room for bigger nav text — bump font/padding/gap once
+   viewport is comfortably wide enough that 1280px constraint no longer applies. */
+@media (min-width: 1500px) {
+  .nav-item > a { font-size: 0.72rem; letter-spacing: 0.05em; padding: 0.5rem 0.45rem; }
+  .nav-action-btn { font-size: 0.52rem; padding: 0.28rem 0.55rem; }
+  .nav-logo-img { height: 48px; }
+  .nav-right-wrap { gap: 0.7rem; }
+}
+
 /* Min viewport for full nav (9 items + logo + login + cart) is ~1280px CSS pixels.
    That covers HP ProBook 14" at 125% Windows scaling (1536 effective), MacBook Pro
    14" at default (1512 effective), and Dell XPS 13 (1536 effective).
