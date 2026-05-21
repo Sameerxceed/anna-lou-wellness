@@ -8,6 +8,74 @@ A 2-page cheatsheet with the 10 most common tasks is included separately (`ANNA_
 
 ---
 
+## 0. First-time image upload (do this once, before anything else)
+
+To make the site look "finished" on day one, upload these ~25 images into the Media Library and attach them to the corresponding pages. Total time: roughly 45 minutes.
+
+Image specs to aim for:
+- **Hero / portrait images:** 1600 × 1200 px or larger, JPG/PNG
+- **Logo / wordmark / badge:** SVG preferred (vector), or transparent PNG 600 × 600
+- **Square / product images:** 1500 × 1500 px
+
+Strapi automatically generates 5 smaller variants (245 / 500 / 750 / 1200 / 1920 px wide) on upload — you upload once at full resolution and the site picks the right size per use.
+
+### Site-wide (3 images)
+
+| Where to upload | What to upload |
+|---|---|
+| `3. Site Settings → logo` | Anna Lou Wellness wordmark (light background) |
+| `3. Site Settings → og_default_image` | 1200 × 630 social-share image (Anna portrait + wordmark) |
+| `3. Site Settings → favicon` | (already set — only re-upload if you want a new one) |
+
+### Homepage (4 images)
+
+`1. Homepage` →
+- `heroImage` — main portrait/hero (1600 × 1200, portrait orientation, e.g. you on the houseboat or studio shot)
+- `workImage` — the "Work with Anna" section photo
+- `communityImage` — the Community teaser photo
+- `portraitImage` — small portrait for the About teaser block
+
+### Pillar pages (8 images)
+
+| Where | Field |
+|---|---|
+| `Page · About` | `portrait` — main "Anna's story" photo (portrait orientation) |
+| `Page · About` | `press_logos` — one logo per row (Aneeza is sending the licensed artwork) |
+| `Page · About` | `certifications` — ICF, CPD, TRE badge per row |
+| `Page · Community` | `circle_image` — Returning Circle photo |
+| `Page · Community` | `reset_room_image` — Reset Room visual |
+| `Page · Reset Letters` | (uses brand colour wordmark, no extra image needed for now) |
+| `Page · Reset Room` | `hero_image` |
+| `Page · Decoder (free)` | `hero_image` |
+| `Page · Experiences` | `hero_image` |
+| `Work · Membership (Reset Room)` | `hero_image` |
+
+### Work with Anna — programmes (5 images)
+
+`Work · Programme` → for each entry (The Reset, Signal, Signal & Build, One Day, Signal Collective):
+- `hero_image` — one portrait photo per programme
+
+### Work with Anna — coaching sessions (3 images)
+
+`Work · Coaching Session` → for each entry (Dating Reset, Founder Reset, Nervous System Reset):
+- `hero_image`
+
+### Articles, products, events
+
+You add these gradually as you publish — each new article needs a `hero_image`, each product needs `images` (gallery), each event needs `hero_image`. No "first-time" lift; just attach the image when you create the entry.
+
+### Tips for choosing photos
+
+- **Portrait orientation** for hero images on individual pages (works better with the side-by-side image+text layout)
+- **Landscape** for full-bleed sections (like community circle, retreat photos)
+- **Square** for product photography and Instagram shares
+- Same colour grading / mood across the brand for visual cohesion
+- Avoid stock photo cliches — your own photography always reads better
+
+When in doubt, upload what you have. The site degrades gracefully to placeholders if a field is empty.
+
+---
+
 ## 1. Getting started
 
 ### What runs the site
