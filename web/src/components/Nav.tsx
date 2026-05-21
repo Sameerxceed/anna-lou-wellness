@@ -234,7 +234,12 @@ const navStyles = `
 }
 .nav-row {
   max-width: 1700px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr auto 1fr;
+  display: grid;
+  /* minmax(0, 1fr) instead of 1fr — without this the column refuses to shrink
+     below its intrinsic content width, so an asymmetric nav (more items on right
+     than left) pushes the logo off-center. With minmax(0, 1fr) both side columns
+     are guaranteed equal width and the auto-sized logo stays dead centre. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   padding: 0.75rem 1rem;
   gap: 0.3rem;
