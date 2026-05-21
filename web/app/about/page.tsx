@@ -13,16 +13,16 @@ export const metadata: Metadata = {
   },
 };
 
-const defaultPressLogos = [
-  { name: 'Harrods', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'1.1rem',letterSpacing:'0.12em',textTransform:'uppercase'" },
-  { name: 'Selfridges', style: "fontFamily:'Times New Roman,serif',fontWeight:700,fontSize:'1rem',letterSpacing:'0.08em',textTransform:'uppercase'" },
-  { name: 'Harvey Nichols', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'0.85rem',letterSpacing:'0.15em',textTransform:'uppercase'" },
-  { name: 'Liberty', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'1.05rem',letterSpacing:'0.1em',textTransform:'uppercase'" },
-  { name: 'QVC Japan', style: "fontFamily:'Arial Narrow,sans-serif',fontWeight:700,fontSize:'0.95rem',letterSpacing:'0.1em',textTransform:'uppercase'" },
-  { name: 'Disney', style: "fontFamily:'Georgia,serif',fontWeight:400,fontSize:'1rem',letterSpacing:'0.08em'" },
-  { name: 'The Telegraph', style: "fontFamily:'Georgia,serif',fontWeight:400,fontStyle:'italic',fontSize:'1.15rem',letterSpacing:'0.02em'" },
-  { name: 'Stylist', style: "fontFamily:'Helvetica Neue,sans-serif',fontWeight:300,fontSize:'1rem',letterSpacing:'0.18em',textTransform:'uppercase'" },
-  { name: 'SheerLuxe', style: "fontFamily:'Helvetica Neue,sans-serif',fontWeight:300,fontSize:'0.9rem',letterSpacing:'0.12em',textTransform:'uppercase'" },
+const defaultPressLogos: { name: string; logo?: string }[] = [
+  { name: 'Harrods' },
+  { name: 'Selfridges' },
+  { name: 'Harvey Nichols' },
+  { name: 'Liberty' },
+  { name: 'QVC Japan' },
+  { name: 'Disney' },
+  { name: 'The Telegraph' },
+  { name: 'Stylist' },
+  { name: 'SheerLuxe' },
 ];
 
 const defaultCertifications = [
