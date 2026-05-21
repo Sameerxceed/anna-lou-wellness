@@ -246,7 +246,7 @@ const navStyles = `
   position: relative;
 }
 .nav-left {
-  display: flex; align-items: center; justify-content: flex-end; gap: 0;
+  display: flex; align-items: center; justify-content: flex-end; gap: 0.2rem;
   min-width: 0; /* allow grid 1fr to shrink past content's intrinsic min */
 }
 .nav-right-wrap {
@@ -254,7 +254,7 @@ const navStyles = `
   min-width: 0;
 }
 .nav-right {
-  display: flex; align-items: center; gap: 0;
+  display: flex; align-items: center; gap: 0.2rem;
 }
 .nav-center-logo {
   text-align: center; padding: 0.2rem 0.5rem; flex-shrink: 0;
@@ -507,5 +507,18 @@ const navStyles = `
 @media (max-width: 480px) {
   .nav-logo-img { height: 48px; }
   .top-strip-text { font-size: 0.45rem; letter-spacing: 0.15em; }
+}
+
+/* Wider viewports get more breathing room between menu names.
+   Base (1280-1439): 0.2rem — minimal, just enough not to feel cramped.
+   1440+ : 0.5rem — comfortable separation on mid-size laptops.
+   1700+ : 0.9rem — luxurious spacing on Anna's 1920px effective viewport. */
+@media (min-width: 1440px) {
+  .nav-left, .nav-right { gap: 0.5rem; }
+  .nav-item > a { padding: 0.5rem 0.4rem; }
+}
+@media (min-width: 1700px) {
+  .nav-left, .nav-right { gap: 0.9rem; }
+  .nav-item > a { padding: 0.5rem 0.5rem; }
 }
 `;
