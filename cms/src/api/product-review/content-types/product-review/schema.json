@@ -37,5 +37,13 @@
       "type": "boolean",
       "default": false
     }
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": false
+    },
+    "content-type-builder": {
+      "visible": false
+    }
   }
 }

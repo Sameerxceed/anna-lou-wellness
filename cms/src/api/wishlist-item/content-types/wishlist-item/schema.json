@@ -29,5 +29,13 @@
     "added_at": {
       "type": "datetime"
     }
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": false
+    },
+    "content-type-builder": {
+      "visible": false
+    }
   }
 }

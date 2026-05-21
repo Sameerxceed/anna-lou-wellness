@@ -60,5 +60,13 @@
         "store_credit"
       ]
     }
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": false
+    },
+    "content-type-builder": {
+      "visible": false
+    }
   }
 }

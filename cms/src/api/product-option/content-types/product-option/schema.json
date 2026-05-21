@@ -28,5 +28,13 @@
       "type": "integer",
       "default": 0
     }
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": false
+    },
+    "content-type-builder": {
+      "visible": false
+    }
   }
 }
