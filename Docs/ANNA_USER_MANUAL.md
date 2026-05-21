@@ -106,35 +106,44 @@ After login, you see a sidebar on the left with these main areas:
 
 You'll spend 90% of your time in Content Manager.
 
-### Where things live in Content Manager
+### Where things live in Content Manager — the new sidebar layout
 
-Content Manager splits into two columns:
+Content Manager splits into Single Types and Collection Types. Both are grouped using prefix labels so you can scan them quickly. Reading top to bottom, you'll see:
 
-**Collection Types** (left column) — content where there can be many entries:
-- Articles (Reset Stories, Life, Love & Relationships, Work & Money)
-- Article Categories (the subcategory tabs you see on the live site)
-- Products (shop items)
-- Product Categories
-- Orders
-- Customers
-- Coaching Sessions
-- Experiences
-- Mantras
-- Events
-- Programmes
-- Memberships
-- Coupons
-- Tax Rules
-- Shipping Methods
+**Pinned at top (the three you'll touch most often):**
+- `1. Homepage` — the front page of the site
+- `2. Navigation` — the menu items + top strip
+- `3. Site Settings` — global logo / SEO / social URLs / bank details
 
-**Single Types** (left column, lower) — content where there is exactly one entry:
-- Homepage
-- Navigation (the new editable menu)
-- Site Settings
-- About Page, Community Page, Contact Page, Experience Page, Decoder Page, Reset Room Page, Reset Letters Page, Welcome Page
-- Cosmic Forecast
+**Page singletons** (`Page · X`):
+- Page · About / Community / Contact / Decoder (free) / Experiences / Reset Letters / Reset Room / Sub-page / Community Event / Welcome
 
-For each one, click to open. Most singles are "one big form". Most collections show a list with filter + search; click any row to edit.
+**Editorial content** (`Story · X`):
+- Story · Article (every blog/Reset Story/Life/Love/Work article lives here, separated by Category)
+- Story · Category (the subcategory tabs)
+- Story · Mantra (the rotating quote strip)
+- Story · Cosmic Forecast
+
+**Coaching / programmes** (`Work · X`):
+- Work · Programme (The Reset, Signal, Signal & Build, One Day, Signal Collective)
+- Work · Coaching Session (Dating Reset, Founder Reset, Nervous System Reset)
+- Work · Membership (Reset Room subscription settings)
+- Work · FAQ
+- Work · Experience
+
+**E-commerce** (`Shop · X`):
+- Shop · Product
+- Shop · Category
+- Shop · Order
+- Shop · Customer
+
+**Other groups:**
+- Event · Event
+- Team · Member
+
+**Sorted to the very bottom** (`zz · X (unused)`) — internal/system content types you should ignore. Cart, Coupon, Currency Rate, Page-legacy, Product Option / Review / Variant, Return Request, Shipping Method / Zone, Tax Rule, Wishlist. They sort last and are marked "(unused)" so you know to skip them.
+
+For each one, click to open. Singles are "one big form"; collections show a list with filter + search; click any row to edit.
 
 ---
 
@@ -236,7 +245,7 @@ Sections you can edit:
 - **Hero** — kicker, title, body paragraph, two CTA buttons (label + URL each), hero image
 - **Featured story** — fallback fields if no featured article is set; usually leave defaults
 - **Editorial sections** — the colored tiles (Life, Love, Work & Money)
-- **The Work** section — kicker, title, body, two CTAs
+- **Work with Anna** section — kicker, title, body, two CTAs
 - **Quote slides** — two quote sections, each with text + attribution
 - **Newsletter / Substack** — Reset Letters callout
 - **Shop teaser** — kicker, title, body
@@ -251,7 +260,9 @@ Every field has a placeholder showing the default copy. Empty fields use the def
 
 ### About, Community, Contact, etc.
 
-Same shape: open the single type → edit kicker + title + body + intro paragraphs + CTA. Click Preview to see how it lands.
+Same shape: open the single type (`Page · About`, `Page · Community`, etc.) → edit kicker + title + body + intro paragraphs + CTA. Click Preview to see how it lands.
+
+**About page — press logos and certifications:** these are now editable as form lists, not raw text. Open `Page · About` → scroll to **press_logos** → each row is one outlet (name + logo upload). Same for **certifications** (name + colour + badge upload). Click "Add an entry to press_logos" / "Add an entry to certifications" to add rows. Drag the handle to reorder. Click the trash icon to remove. When Aneeza sends the licensed press artwork and certification badges, upload them into the existing rows.
 
 ### Reset Letters Holding Page
 
@@ -289,7 +300,11 @@ Fields:
 
 These are the smaller 1:1 sessions (Founder Reset, Dating Reset, Nervous System Reset).
 
-Content Manager → Coaching Sessions → click any. Same pattern as Programmes — title, tagline, opening, accent colour, image.
+Content Manager → **Work · Coaching Session** → click any. Same pattern as Programmes — title, tagline, opening, accent colour, image.
+
+### Programmes
+
+Each coaching programme is one entry under **Work · Programme** (The Reset, Signal, Signal & Build, One Day, Signal Collective).
 
 ---
 
@@ -299,7 +314,7 @@ This is the editorial heart of the site. Each article is one entry in **Articles
 
 ### Creating a new article
 
-1. Content Manager → **Articles** → click **Create new entry** (top right)
+1. Content Manager → **Story · Article** → click **Create new entry** (top right)
 2. Fill in:
    - **Title** — the article headline
    - **Slug** — the URL part. Auto-fills from title but you can edit. Use lowercase, dashes, no special characters.
@@ -325,7 +340,7 @@ Click the row in the Articles list → edit fields → Save.
 
 These are the labels under each editorial section (e.g. "Holding Everything" sits under Reset Stories). 
 
-To rename a category: Content Manager → **Article Categories** → click row → edit the name → Save. The change reflects on every article under that category and in the subcategory tab strip.
+To rename a category: Content Manager → **Story · Category** → click row → edit the name → Save. The change reflects on every article under that category and in the subcategory tab strip.
 
 To delete a category: only do this if no articles are filed under it. Click the row → bottom of form → **Delete**. Articles previously filed under it will show "no category" until you reassign.
 
@@ -345,7 +360,7 @@ For Reset Letters Founding Members, this distinction goes away — the page trea
 
 ### Adding a new product
 
-1. Content Manager → **Products** → **Create new entry**
+1. Content Manager → **Shop · Product** → **Create new entry**
 2. Fill in:
    - **Name** — product name
    - **Slug** — URL part (auto-generated)
@@ -388,7 +403,7 @@ Customers can submit reviews. They appear in **Product Reviews**. By default rev
 
 ### Where to find orders
 
-Content Manager → **Orders**. List shows the latest orders with order number, customer name, total, status.
+Content Manager → **Shop · Order**. List shows the latest orders with order number, customer name, total, status.
 
 Click any row to see the full order details:
 - Order number (ALW-XXXXXXXX format)

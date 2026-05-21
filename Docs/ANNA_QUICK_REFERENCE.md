@@ -8,7 +8,7 @@ Log in: `cms.annalouwellness.com/admin`
 
 ## 1. Publish a new Reset Story (or any article)
 
-Content Manager → **Articles** → **Create new entry**
+Content Manager → **Story · Article** → **Create new entry**
 → Title, Slug, Excerpt, Body, Hero image, Category (REQUIRED — picks the section), Author, Reading time
 → Toggle **Is free** if it's not paywalled
 → **Save & Publish**
@@ -19,14 +19,14 @@ Live within 1 minute.
 
 ## 2. Edit an article body
 
-Content Manager → **Articles** → click row
+Content Manager → **Story · Article** → click row
 → Edit fields → **Preview** (top right) to check → **Save & Publish**
 
 ---
 
 ## 3. Add a new product to the shop
 
-Content Manager → **Products** → **Create new entry**
+Content Manager → **Shop · Product** → **Create new entry**
 → Name, Slug, Short description, Description, Price (number only), Stock (integer), Is active = ON, Images (drag first one as main), Category
 → **Save & Publish**
 
@@ -34,7 +34,7 @@ Content Manager → **Products** → **Create new entry**
 
 ## 4. Mark an order as shipped
 
-Content Manager → **Orders** → click the order
+Content Manager → **Shop · Order** → click the order
 → **Status** = `shipped`
 → Add tracking number to **Notes**
 → **Save**
@@ -87,7 +87,7 @@ Max 10 MB. JPG/PNG/WebP/SVG. iPhone photos auto-rotate correctly.
 
 ## 10. Toggle a programme on/off temporarily
 
-Content Manager → **Programmes** → click the programme
+Content Manager → **Work · Programme** → click the programme
 → Toggle **Is active** OFF (hides it)
 → **Save**
 
