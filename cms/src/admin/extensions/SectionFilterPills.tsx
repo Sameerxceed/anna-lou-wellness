@@ -1,27 +1,37 @@
 /**
- * Section Filter Pills — Story · Category list view enhancement.
+ * Section Filter Pills — quick filter row at the top of editorial list views.
  *
- * Renders a row of pills at the top of the Story · Category list:
- *   [All]  [Reset Stories]  [Life]  [Love & Rels]  [Work & Money]
+ * Currently active on TWO collection types:
  *
- * Click a pill → URL updates with ?filters[section][$eq]=<slug>&page=1
- * The list re-fetches automatically (Strapi reads filter from URL).
+ *   1. Story · Category   — direct `section` field on the category
+ *   2. Story · Article    — articles filtered by their category's section
  *
- * Only renders when the user is on the article-category list page.
- * On any other content type's list view, returns null (invisible).
+ * Renders a row of pills:
+ *   [Filter by section]  [All]  [Reset Stories]  [Life]  [Love & Rels]  [Work & Money]
+ *
+ * Click a pill → URL updates with the appropriate `filters[...][$eq]=<slug>`,
+ * page resets to 1, and Strapi re-fetches automatically.
+ *
+ * Only renders when the user is on one of the configured collection list pages.
+ * Invisible everywhere else.
  *
  * --- Xceed pattern ---
- * This is the template approach for "section-aware quick filters" on any
- * collection that has an enum-typed `section`/`category`/`group` field.
- * To reuse on another project:
- *   1. Copy this file, rename the SECTIONS array
- *   2. Update TARGET_UID to the new content type's UID
- *   3. Update the filter field name if not 'section'
+ * Template approach for "section-aware quick filters". To reuse on another
+ * project: copy this file, edit the TARGETS array (each one declares the
+ * collection UID + the filter field path) and the SECTIONS array.
  */
 
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const TARGET_UID = 'api::article-category.article-category';
+// Map each editorial collection to the filter-field path Strapi expects.
+// Direct field:  'section'                       → filters[section][$eq]=...
+// Relation hop:  'category][section'             → filters[category][section][$eq]=...
+//   (Strapi v5 bracket-notation: each level is its own []-segment in the key)
+type Target = { uid: string; filterField: string };
+const TARGETS: Target[] = [
+  { uid: 'api::article-category.article-category', filterField: 'section' },
+  { uid: 'api::article.article', filterField: 'category][section' },
+];
 
 // Editorial sections that have article categories. Mirror of the enum in
 // cms/src/api/article-category/content-types/article-category/schema.json
@@ -37,24 +47,28 @@ const SectionFilterPills = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Only show on the article-category list page
-  const isTargetList =
-    location.pathname.includes('/content-manager/collection-types/') &&
-    location.pathname.includes(TARGET_UID);
-  if (!isTargetList) return null;
+  // Match the current path against any of the configured target UIDs
+  const target = TARGETS.find(
+    (t) =>
+      location.pathname.includes('/content-manager/collection-types/') &&
+      location.pathname.includes(t.uid),
+  );
+  if (!target) return null;
+
+  const filterKey = `filters[${target.filterField}][$eq]`;
 
   // Determine current active filter from URL (if any)
   const params = new URLSearchParams(location.search);
-  const activeSection = params.get('filters[section][$eq]') || '';
+  const activeSection = params.get(filterKey) || '';
 
   const goTo = (section: string) => {
     const next = new URLSearchParams(location.search);
     if (section) {
-      next.set('filters[section][$eq]', section);
+      next.set(filterKey, section);
     } else {
-      next.delete('filters[section][$eq]');
+      next.delete(filterKey);
     }
-    // Reset to page 1 when filter changes
+    // Reset to page 1 whenever the filter changes
     next.set('page', '1');
     navigate(`${location.pathname}?${next.toString()}`);
   };
