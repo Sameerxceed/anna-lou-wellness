@@ -29,30 +29,34 @@ This folder is where we make those better — one customization at a time.
 
 In rough priority order. Each step is independently deployable.
 
-### Phase 1 — Foundation (current) ✅
+### Phase 1 — Foundation ✅
 - Custom translations (welcome message, brand name)
 - Brand-aligned theme (plum #6E3A5A primary)
 - Console marker on load (so build failures are obvious)
 - This README
 
-### Phase 2 — List view enhancements ⏳
+### Phase 2 — List view enhancements ✅
 - **Section filter pills on Story · Category** — pills at the top of the
   list (All / Reset Stories / Life / Love & Rels / Work & Money) — click one
   to filter the list. Anna doesn't have to use the Filters button.
 - Same pattern for Story · Article (filter articles by their category's section).
 
-### Phase 3 — Custom dashboard ⏳
-- Replace the generic "Hello Anna" home page with a dashboard of:
-  - Quick links to the 6 menu-section landings (Edit Reset Stories ...)
-  - "Recent orders" widget
-  - "Today's drafts" widget
-  - "Things waiting on you" widget (e.g. unactivated Mailchimp journeys)
+### Phase 3 — Quick Edit dashboard ✅
+- Homepage widget that renders a grid of cards, one per editable page.
+- Each card links straight to the Strapi edit view for that singletype or
+  collection — Anna lands on /admin and is one click from any page on the site.
 
-### Phase 4 — Sidebar tree ⏳
-- Windows-Explorer-style expandable sidebar:
-  - Top-level: each main menu section (Reset Stories ▾ / Life ▾ / Shop ▾)
-  - Expand: shows that section's landing page, sub-pages, category collection
-- Hides the flat "Content Manager → 30 collections" overwhelm
+### Phase 4 — In-page sub-menus ✅
+- Dashboard is now grouped (Pinned essentials / Editorial / Other landings /
+  Commerce / Articles) with a header per group.
+- Each editorial card exposes sub-link chips (`Categories`, `Articles`) that
+  jump to the pre-filtered list for that section — a "tree" experience
+  without touching the Strapi sidebar.
+- **Why not a sidebar tree:** Strapi v5's sidebar APIs (`addMenuLink`,
+  plugin route registration, internal slot injection) are version-fragile.
+  A broken sidebar registration crashes the entire admin. We get 90% of the
+  tree benefit by keeping the hierarchy on the homepage page itself, where
+  we have full React control and zero risk.
 
 ### Phase 5 — Inline preview edit ⏳
 - When Anna clicks Preview, the iframe renders the page with edit overlays —

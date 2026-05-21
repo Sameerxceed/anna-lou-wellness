@@ -8,9 +8,15 @@
  *  ✅ 1. Translations — replace generic Strapi labels with Anna-friendly copy
  *  ✅ 2. Theme — light tweaks to match Anna's brand (plum accent)
  *  ✅ 3. Section filter pills on Story · Category + Story · Article list views
- *  ✅ 4. Quick-edit dashboard — grid of clickable cards (one per menu page)
- *  ⏳ 5. Sidebar tree — Windows-Explorer-style expandable groups
+ *  ✅ 4. Quick-edit dashboard — grouped grid of cards, one per menu page
+ *  ✅ 5. Dashboard sub-menus — editorial cards expose Categories + Articles chips
  *  ⏳ 6. Inline preview-edit affordances
+ *
+ * Conscious choice: we do NOT mutate Strapi's left sidebar (no addMenuLink,
+ * no plugin route registration). Strapi v5's sidebar APIs are version-fragile
+ * and a broken sidebar registration crashes the whole admin. Instead, all
+ * navigation enhancements live on pages we already render (the homepage
+ * widget) as in-page groups + sub-menu chips.
  *
  * Pattern note: every customization here belongs to the Xceed CMS template,
  * not Anna specifically. Anna-specific branding (the actual hex codes, image
@@ -57,7 +63,7 @@ const bootstrap = (app: StrapiApp) => {
   // Stamp a console marker so we know our customizations loaded.
   // If admin breaks, the missing log narrows the diagnosis.
   // eslint-disable-next-line no-console
-  console.info('[ALW admin] Customizations loaded · v0.3 (pills + dashboard)');
+  console.info('[ALW admin] Customizations loaded · v0.4 (pills + grouped dashboard with sub-menus)');
 
   // Inject section filter pills above the list view actions area.
   // The component itself checks the current URL and only renders when
