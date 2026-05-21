@@ -167,6 +167,18 @@ module.exports = {
     } catch (err) {
       // media-guide is optional
     }
+
+    // ═══ Seed friendly field labels in admin Content Manager ═══
+    // Without this, fields show as raw camelCase (heroKicker instead of
+    // "Hero kicker"). Anna flagged this on the Homepage edit screen.
+    // Auto-discovers every api::* content type so menu / sub-menu / footer /
+    // landing pages / articles / orders all get friendly labels in one pass.
+    try {
+      const seedFieldLabels = require('./seed-field-labels');
+      await seedFieldLabels(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-field-labels] failed:', err.message);
+    }
   },
 
   destroy(/* { strapi } */) {},
