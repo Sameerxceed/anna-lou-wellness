@@ -4,7 +4,7 @@
   "info": {
     "singularName": "reset-room-page",
     "pluralName": "reset-room-pages",
-    "displayName": "Page \u00b7 Reset Room",
+    "displayName": "Reset Room",
     "description": "Public landing page copy for /community/reset-room"
   },
   "options": {

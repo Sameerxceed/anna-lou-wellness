@@ -4,7 +4,7 @@
   "info": {
     "singularName": "reset-letters-page",
     "pluralName": "reset-letters-pages",
-    "displayName": "Page \u00b7 Reset Letters",
+    "displayName": "Reset Letters",
     "description": "Holding page copy for /reset-letters (Substack launch)"
   },
   "options": {

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "generic-page",
     "pluralName": "generic-pages",
-    "displayName": "Page \u00b7 Sub-page",
+    "displayName": "Sub-pages",
     "description": "Catch-all CMS for one-off pages. Each entry's slug must match the URL path. Examples: 'the-work', 'mantras', 'about-press', 'contact', etc."
   },
   "options": {

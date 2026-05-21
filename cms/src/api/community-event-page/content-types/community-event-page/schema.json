@@ -4,7 +4,7 @@
   "info": {
     "singularName": "community-event-page",
     "pluralName": "community-event-pages",
-    "displayName": "Page \u00b7 Community Event",
+    "displayName": "Community Event",
     "description": "Sub-pages under /community (Returning Circle, Events)."
   },
   "options": {
