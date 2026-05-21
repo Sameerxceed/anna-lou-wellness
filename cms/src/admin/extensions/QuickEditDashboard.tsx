@@ -11,7 +11,10 @@
  *   ║                                              ║
  *   ║  EDITORIAL SECTIONS                          ║
  *   ║  [Reset Stories ↓ Cats Articles] [Life ...]  ║
- *   ║  [Love & Rels ...]              [Work...]    ║
+ *   ║      ▾ 6 articles                            ║
+ *   ║        • Holding Everything                  ║
+ *   ║        • The Strong One                      ║
+ *   ║        + Add new article                     ║
  *   ║                                              ║
  *   ║  OTHER LANDING PAGES                         ║
  *   ║  [Experiences] [Work with Anna] [About] ...  ║
@@ -20,21 +23,22 @@
  *   ║  [Shop landing] [Products] [Orders]          ║
  *   ╚══════════════════════════════════════════════╝
  *
- * Sub-link chips on each editorial card give Anna a "sub-menu" inside the
- * dashboard so she can drill into Categories or filtered Articles for that
- * section without leaving the dashboard. This is the "tree without
- * touching the sidebar" pattern — safer than mutating Strapi's left rail
- * and survives version updates.
+ * Editorial section cards (Reset Stories, Life, Love & Rels, Work & Money)
+ * expose two extras beyond the basic edit-the-landing click:
  *
- * Renders as a homepage widget (registered in app.tsx) so Anna lands on
- * /admin and sees this immediately under the welcome banner.
+ *   - Sublink chips → jump to filtered Categories / Articles list views
+ *   - Expandable contents tree → click "Show contents" to fetch articles in
+ *     that section and render them inline. Each article is clickable to edit.
+ *     This mirrors the live site's nav dropdown: same vocabulary, same shape.
+ *
+ * No sidebar mutation — everything happens inside the dashboard page.
  *
  * --- Xceed pattern ---
- * Grouped quick-edit dashboard with optional per-card sub-links. Future
- * clients re-use by editing the GROUPS array — everything else is generic.
+ * Grouped quick-edit dashboard with optional per-card sub-links AND optional
+ * async children loader. Future clients re-use by editing the GROUPS array.
  */
 
-import QuickEditCard, { type Sublink } from './QuickEditCard';
+import QuickEditCard, { type Sublink, type LoadChildren, type ChildItem } from './QuickEditCard';
 
 type PageCard = {
   uid: string;
@@ -43,6 +47,9 @@ type PageCard = {
   description: string;
   colour: string;
   sublinks?: Sublink[];
+  loadChildren?: LoadChildren;
+  newItemTo?: string;
+  newItemLabel?: string;
 };
 
 type Group = {
@@ -50,6 +57,64 @@ type Group = {
   description?: string;
   pages: PageCard[];
 };
+
+// Read the admin JWT from localStorage. Strapi v5 stores it as a JSON-encoded
+// string under 'jwtToken'. Wrap in try/catch — if absent (e.g. dev preview),
+// the loader will fail gracefully with a friendly error message.
+const getAdminToken = (): string | null => {
+  try {
+    const raw = localStorage.getItem('jwtToken');
+    if (!raw) return null;
+    // Stored as JSON string of the token, so parse it.
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+};
+
+// Fetch from the admin Content Manager API using the current admin JWT.
+// Returns the JSON body. Throws on non-2xx.
+const adminFetch = async (path: string) => {
+  const token = getAdminToken();
+  const res = await fetch(path, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    throw new Error(`${res.status} ${res.statusText}`);
+  }
+  return res.json();
+};
+
+// Factory: returns a loadChildren function that fetches articles in the
+// given section slug, mapped to ChildItem shape for the dashboard tree.
+//
+// Filter shape uses relation hop: category > section enum (slug). Same key
+// shape that SectionFilterPills writes to the URL, so behaviour matches.
+const articlesInSection = (sectionSlug: string): LoadChildren => async () => {
+  const url =
+    `/content-manager/collection-types/api::article.article` +
+    `?page=1&pageSize=50&sort=title:ASC` +
+    `&filters[category][section][$eq]=${encodeURIComponent(sectionSlug)}`;
+  const data = await adminFetch(url);
+  const results: Array<Record<string, unknown>> = data?.results || [];
+  return results.map((a): ChildItem => {
+    const documentId = (a.documentId as string) || String(a.id);
+    const title = (a.title as string) || '(untitled article)';
+    const publishedAt = a.publishedAt as string | null | undefined;
+    return {
+      id: documentId,
+      label: title,
+      to: `/content-manager/collection-types/api::article.article/${documentId}`,
+      badge: publishedAt ? undefined : 'draft',
+    };
+  });
+};
+
+// URL to create a new article. Pre-selecting the category isn't reliably
+// supported via querystring across Strapi v5 versions, so we just open the
+// blank create form and Anna picks the category from the form's dropdown.
+const NEW_ARTICLE_URL = '/content-manager/collection-types/api::article.article/create';
 
 // Editorial sub-links — Categories list (filtered to this section) and
 // Articles list (filtered through the category relation hop). The filter
@@ -62,7 +127,7 @@ const editorialSublinks = (slug: string): Sublink[] => [
     to: `/content-manager/collection-types/api::article-category.article-category?page=1&pageSize=10&sort=name:ASC&filters[section][$eq]=${slug}`,
   },
   {
-    label: 'Articles',
+    label: 'All articles',
     to: `/content-manager/collection-types/api::article.article?page=1&pageSize=10&sort=publishedAt:DESC&filters[category][section][$eq]=${slug}`,
   },
 ];
@@ -80,12 +145,52 @@ const GROUPS: Group[] = [
   },
   {
     title: 'Editorial sections',
-    description: 'Each section has a landing page, categories, and articles. Click the card to edit the landing page — use the chips to jump to that section\'s categories or articles.',
+    description: 'Each section has a landing page, categories, and articles. Click "Show contents" to see articles in that section — just like the live site dropdown menu.',
     pages: [
-      { uid: 'api::reset-stories-page.reset-stories-page', kind: 'single-types', label: 'Reset Stories', description: 'Section landing page copy', colour: '#6E3A5A', sublinks: editorialSublinks('reset-stories') },
-      { uid: 'api::life-page.life-page', kind: 'single-types', label: 'Life', description: 'Section landing page copy', colour: '#FAA21B', sublinks: editorialSublinks('life') },
-      { uid: 'api::love-and-relationships-page.love-and-relationships-page', kind: 'single-types', label: 'Love & Relationships', description: 'Section landing page copy', colour: '#F280AA', sublinks: editorialSublinks('love-and-relationships') },
-      { uid: 'api::work-and-money-page.work-and-money-page', kind: 'single-types', label: 'Work & Money', description: 'Section landing page copy', colour: '#FFD07A', sublinks: editorialSublinks('work-and-money') },
+      {
+        uid: 'api::reset-stories-page.reset-stories-page',
+        kind: 'single-types',
+        label: 'Reset Stories',
+        description: 'Section landing + sub-pages',
+        colour: '#6E3A5A',
+        sublinks: editorialSublinks('reset-stories'),
+        loadChildren: articlesInSection('reset-stories'),
+        newItemTo: NEW_ARTICLE_URL,
+        newItemLabel: 'New article (then tag it Reset Stories)',
+      },
+      {
+        uid: 'api::life-page.life-page',
+        kind: 'single-types',
+        label: 'Life',
+        description: 'Section landing + sub-pages',
+        colour: '#FAA21B',
+        sublinks: editorialSublinks('life'),
+        loadChildren: articlesInSection('life'),
+        newItemTo: NEW_ARTICLE_URL,
+        newItemLabel: 'New article (then tag it Life)',
+      },
+      {
+        uid: 'api::love-and-relationships-page.love-and-relationships-page',
+        kind: 'single-types',
+        label: 'Love & Relationships',
+        description: 'Section landing + sub-pages',
+        colour: '#F280AA',
+        sublinks: editorialSublinks('love-and-relationships'),
+        loadChildren: articlesInSection('love-and-relationships'),
+        newItemTo: NEW_ARTICLE_URL,
+        newItemLabel: 'New article (then tag it Love & Relationships)',
+      },
+      {
+        uid: 'api::work-and-money-page.work-and-money-page',
+        kind: 'single-types',
+        label: 'Work & Money',
+        description: 'Section landing + sub-pages',
+        colour: '#FFD07A',
+        sublinks: editorialSublinks('work-and-money'),
+        loadChildren: articlesInSection('work-and-money'),
+        newItemTo: NEW_ARTICLE_URL,
+        newItemLabel: 'New article (then tag it Work & Money)',
+      },
     ],
   },
   {
@@ -140,9 +245,8 @@ const QuickEditDashboard = () => {
           Quick Edit
         </h2>
         <p style={{ fontSize: 13, color: '#666687', margin: 0, lineHeight: 1.45 }}>
-          Click any card to jump straight into editing. Same as the main
-          menu on your live site — what visitors click on the site is what
-          you click on here.
+          Click any card to edit. Click "Show contents" on editorial cards to
+          see the same sub-pages your visitors see in the dropdown menu.
         </p>
       </header>
 
@@ -175,8 +279,9 @@ const QuickEditDashboard = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
               gap: 12,
+              alignItems: 'start',
             }}
           >
             {group.pages.map((p) => (
@@ -188,6 +293,9 @@ const QuickEditDashboard = () => {
                 description={p.description}
                 colour={p.colour}
                 sublinks={p.sublinks}
+                loadChildren={p.loadChildren}
+                newItemTo={p.newItemTo}
+                newItemLabel={p.newItemLabel}
               />
             ))}
           </div>

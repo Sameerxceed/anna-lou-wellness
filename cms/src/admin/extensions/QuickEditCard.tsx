@@ -7,38 +7,95 @@
  *   │ Label                            │ ← clickable main area
  *   │ Description                      │   (goes to the edit view)
  *   │ [Categories] [Articles]          │ ← optional sub-link chips
+ *   │ ▸ Show contents                  │ ← optional expand toggle
+ *   │   • Holding Everything           │   (loadChildren result —
+ *   │   • The Strong One               │    renders inline like the
+ *   │   • + Add new                    │    site's dropdown menu)
  *   └──────────────────────────────────┘
  *
- * The main area is the primary edit destination. Optional `sublinks` render
- * as small pill buttons below the description — used by editorial sections
- * to jump straight to the filtered articles or categories list for that
- * section (the "sub-menu" inside the dashboard).
+ * The main area is the primary edit destination. Two optional extensions:
  *
- * Card itself is a <div>, not a <button>, so sub-link <button> chips inside
- * don't violate the "no nested buttons" HTML rule.
+ *   1. `sublinks` — small pill buttons below the description, used for
+ *      jumping to filtered list views (Categories / Articles).
+ *
+ *   2. `loadChildren` — an async function that returns the items "under"
+ *      this card (e.g. articles in a section). When provided, the card
+ *      shows an expand toggle. Click to fetch and render the list inline,
+ *      with each child clickable to edit. This mirrors the live site's
+ *      dropdown menu pattern: click section header → see its pages.
+ *
+ * Card itself is a <div>, not a <button>, so child <button>s inside don't
+ * violate the "no nested buttons" HTML rule.
  *
  * --- Xceed pattern ---
- * Reusable card for "click to edit X page" dashboards. Supports flat use
- * (no sublinks) or tree-style use (with sublinks for sub-resources).
+ * Reusable card for "click to edit X page" dashboards. Supports flat use,
+ * sub-link use, or tree-style use with async children loading. Same
+ * vocabulary as the live site's nav, so editors don't have to mentally
+ * translate between "what visitors see" and "what I click in the CMS".
  */
 
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export type Sublink = { label: string; to: string };
 
+export type ChildItem = {
+  id: string | number;
+  label: string;
+  to: string;
+  badge?: string; // e.g. "draft", "published"
+};
+
+export type LoadChildren = () => Promise<ChildItem[]>;
+
 interface Props {
-  uid: string; // e.g. 'api::homepage.homepage'
+  uid: string;
   kind: 'single-types' | 'collection-types';
   label: string;
   description: string;
   colour: string;
   sublinks?: Sublink[];
+  loadChildren?: LoadChildren;
+  newItemTo?: string; // optional "+ Add new" target
+  newItemLabel?: string; // e.g. "+ Add new article"
 }
 
-const QuickEditCard = ({ uid, kind, label, description, colour, sublinks }: Props) => {
+const QuickEditCard = ({
+  uid,
+  kind,
+  label,
+  description,
+  colour,
+  sublinks,
+  loadChildren,
+  newItemTo,
+  newItemLabel,
+}: Props) => {
   const navigate = useNavigate();
   const mainHref = `/content-manager/${kind}/${uid}`;
   const goMain = () => navigate(mainHref);
+
+  const [expanded, setExpanded] = useState(false);
+  const [children, setChildren] = useState<ChildItem[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const toggleChildren = async () => {
+    if (!loadChildren) return;
+    const next = !expanded;
+    setExpanded(next);
+    if (!next || children !== null) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const items = await loadChildren();
+      setChildren(items);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -95,6 +152,7 @@ const QuickEditCard = ({ uid, kind, label, description, colour, sublinks }: Prop
           {description}
         </span>
       </div>
+
       {sublinks && sublinks.length > 0 && (
         <div
           style={{
@@ -133,6 +191,142 @@ const QuickEditCard = ({ uid, kind, label, description, colour, sublinks }: Prop
               {s.label}
             </button>
           ))}
+        </div>
+      )}
+
+      {loadChildren && (
+        <div style={{ marginTop: 10 }}>
+          <button
+            type="button"
+            onClick={toggleChildren}
+            style={{
+              cursor: 'pointer',
+              fontSize: 12,
+              fontWeight: 600,
+              color: colour,
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <span
+              style={{
+                display: 'inline-block',
+                transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                transition: 'transform 0.15s',
+              }}
+            >
+              ▸
+            </span>
+            {loading
+              ? 'Loading…'
+              : expanded
+              ? children
+                ? `${children.length} item${children.length === 1 ? '' : 's'}`
+                : 'Loading…'
+              : 'Show contents'}
+          </button>
+
+          {expanded && (
+            <div
+              style={{
+                marginTop: 6,
+                marginLeft: 12,
+                paddingLeft: 10,
+                borderLeft: `2px solid ${colour}33`,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+              }}
+            >
+              {error && (
+                <span style={{ fontSize: 11, color: '#d02b20' }}>
+                  Couldn't load — use the chip above instead.
+                </span>
+              )}
+              {!loading && !error && children && children.length === 0 && (
+                <span style={{ fontSize: 12, color: '#666687', fontStyle: 'italic' }}>
+                  Nothing here yet.
+                </span>
+              )}
+              {children &&
+                children.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => navigate(c.to)}
+                    style={{
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: '4px 6px',
+                      borderRadius: 4,
+                      border: 'none',
+                      background: 'transparent',
+                      color: '#32324d',
+                      fontSize: 12,
+                      fontWeight: 500,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      transition: 'background 0.1s',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = `${colour}11`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <span style={{ color: colour }}>•</span>
+                    <span style={{ flex: 1 }}>{c.label}</span>
+                    {c.badge && (
+                      <span
+                        style={{
+                          fontSize: 10,
+                          padding: '1px 6px',
+                          borderRadius: 999,
+                          background: '#eaeaef',
+                          color: '#666687',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.04em',
+                        }}
+                      >
+                        {c.badge}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              {newItemTo && !loading && (
+                <button
+                  type="button"
+                  onClick={() => navigate(newItemTo)}
+                  style={{
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    padding: '4px 6px',
+                    borderRadius: 4,
+                    border: 'none',
+                    background: 'transparent',
+                    color: colour,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    marginTop: 4,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${colour}11`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                  }}
+                >
+                  + {newItemLabel || 'Add new'}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
