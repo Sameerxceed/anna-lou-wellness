@@ -27,6 +27,25 @@
 import type { StrapiApp } from '@strapi/strapi/admin';
 import SectionFilterPills from './extensions/SectionFilterPills';
 import QuickEditDashboard from './extensions/QuickEditDashboard';
+import QuickEditDashboardPage from './extensions/QuickEditDashboardPage';
+
+// Sidebar icon for the Quick Edit menu link. Strapi expects a React
+// component for the `icon` field — inline emoji wrapped in a span works
+// without needing to import @strapi/icons.
+const QuickEditMenuIcon = () => (
+  <span
+    style={{
+      fontSize: 18,
+      lineHeight: 1,
+      display: 'inline-block',
+      width: 20,
+      textAlign: 'center',
+    }}
+    aria-hidden="true"
+  >
+    📋
+  </span>
+);
 
 const config = {
   locales: ['en'],
@@ -79,18 +98,46 @@ const bootstrap = (app: StrapiApp) => {
     console.warn('[ALW admin] SectionFilterPills injection failed:', err);
   }
 
-  // Quick-edit dashboard — register as a widget on the admin homepage if
-  // Strapi v5's widget API exposes the method. Falls back silently if not.
-  // The component is also exported separately so we can render it via a
-  // custom menu link in a follow-up if widget registration isn't available
-  // on this Strapi version.
+  // Quick Edit dashboard — register as a sidebar menu link so it's always
+  // reachable from anywhere in admin. Tried homepage widget first (Strapi
+  // v5.x widgets API) but it silently failed on this version — see Add
+  // Widget picker showed "No widgets available" with our registration in
+  // place. addMenuLink is the rock-solid documented API used by every
+  // Strapi plugin to add admin pages; ONE entry is not a sidebar tree
+  // mutation, it's the standard extension point.
+  try {
+    const appAny = app as unknown as {
+      addMenuLink?: (link: {
+        to: string;
+        icon: React.ComponentType;
+        intlLabel: { id: string; defaultMessage: string };
+        Component: () => Promise<{ default: React.ComponentType }>;
+        permissions: unknown[];
+      }) => void;
+    };
+    appAny.addMenuLink?.({
+      to: '/alw-quick-edit',
+      icon: QuickEditMenuIcon,
+      intlLabel: { id: 'alw.menu.quick-edit', defaultMessage: 'Quick Edit' },
+      Component: async () => ({ default: QuickEditDashboardPage }),
+      permissions: [],
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] Quick Edit menu link registration failed:', err);
+  }
+
+  // Keep the widget-API call too — harmless if it still fails, but if Strapi
+  // surfaces our widget on a future version, Anna gets it on her homepage
+  // for free with no extra deploy. QuickEditDashboard is the same component
+  // either way.
   try {
     const anyApp = app as unknown as { widgets?: { register?: (w: unknown) => void } };
     anyApp.widgets?.register?.({
       uid: 'alw.quick-edit-dashboard',
-      name: { id: 'alw.quick-edit', defaultMessage: 'Quick Edit' },
-      icon: undefined,
-      component: () => Promise.resolve({ default: QuickEditDashboard }),
+      icon: QuickEditMenuIcon,
+      title: { id: 'alw.quick-edit', defaultMessage: 'Quick Edit' },
+      component: async () => ({ default: QuickEditDashboard }),
       permissions: [],
     });
   } catch (err) {
