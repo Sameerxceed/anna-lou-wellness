@@ -110,6 +110,17 @@ async function seedPages(strapi) {
   // ═══ Decoder Page singleType (free lead-magnet page) ═══
   await ensureSingleType(strapi, 'api::decoder-page.decoder-page', {});
 
+  // ═══ Menu-section landing-page singletypes — 6 main menu items get their own
+  //     editable page so Anna controls every kicker/title/intro from CMS. Schema
+  //     defaults already match the current hardcoded copy so seeding with empty
+  //     objects materializes the entries with the right values. ═══
+  await ensureSingleType(strapi, 'api::reset-stories-page.reset-stories-page', {});
+  await ensureSingleType(strapi, 'api::life-page.life-page', {});
+  await ensureSingleType(strapi, 'api::love-and-relationships-page.love-and-relationships-page', {});
+  await ensureSingleType(strapi, 'api::work-and-money-page.work-and-money-page', {});
+  await ensureSingleType(strapi, 'api::work-with-anna-page.work-with-anna-page', {});
+  await ensureSingleType(strapi, 'api::shop-page.shop-page', {});
+
   // ═══ About Page — seed press logos + certifications as components ═══
   // Schema converted these from JSON to repeatable components so Anna can edit
   // through a form (with image upload per row) instead of raw JSON. Pre-populate

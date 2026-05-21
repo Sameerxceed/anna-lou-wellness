@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories } from '@/lib/cms';
+import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Love & Relationships',
@@ -12,9 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default async function LoveAndRelationshipsPage() {
-  const [articles, categories] = await Promise.all([
+  const [articles, categories, page] = await Promise.all([
     getArticles('love-and-relationships'),
     getArticleCategories('love-and-relationships'),
+    getSectionLandingPage('/love-and-relationships-page', {
+      kicker: 'Love & Relationships',
+      title: 'The people who shape us.',
+      intro: 'Dating and patterns, breakups and reset, friendship, motherhood, and the quiet work of understanding your own worth.',
+      heroImage: '',
+      kickerColour: '#F280AA',
+    }),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -35,10 +42,10 @@ export default async function LoveAndRelationshipsPage() {
 
   return (
     <EditorialFeed
-      kicker="Love & Relationships"
-      kickerColour="#F280AA"
-      title="The people who shape us."
-      intro="Dating and patterns, breakups and reset, friendship, motherhood, and the quiet work of understanding your own worth."
+      kicker={page.kicker}
+      kickerColour={page.kickerColour}
+      title={page.title}
+      intro={page.intro}
       articles={feedArticles}
       sectionHref="/love-and-relationships"
       subcategories={subcategories}

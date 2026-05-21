@@ -1,0 +1,48 @@
+{
+  "kind": "singleType",
+  "collectionName": "work_with_anna_pages",
+  "info": {
+    "singularName": "work-with-anna-page",
+    "pluralName": "work-with-anna-pages",
+    "displayName": "Work with Anna",
+    "description": "Landing page content for the Work with Anna section on the main menu."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Work with Anna",
+      "description": "Small uppercase label above the title."
+    },
+    "title": {
+      "type": "string",
+      "default": "Your inner world already knows.",
+      "description": "Big page headline."
+    },
+    "intro": {
+      "type": "richtext",
+      "description": "Intro paragraph below the title."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Optional hero image at the top of the section."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#F280AA",
+      "description": "Hex colour for the kicker label. Default is the brand colour for this section."
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

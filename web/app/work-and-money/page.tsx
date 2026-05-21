@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories } from '@/lib/cms';
+import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Work & Money',
@@ -12,9 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default async function WorkAndMoneyPage() {
-  const [articles, categories] = await Promise.all([
+  const [articles, categories, page] = await Promise.all([
     getArticles('work-and-money'),
     getArticleCategories('work-and-money'),
+    getSectionLandingPage('/work-and-money-page', {
+      kicker: 'Work & Money',
+      title: 'The work that matters.',
+      intro: 'Founder reset, burnout and the nervous system, the Signal Method, career and direction, and the relationship between money and worth.',
+      heroImage: '',
+      kickerColour: '#FFD07A',
+    }),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -35,10 +42,10 @@ export default async function WorkAndMoneyPage() {
 
   return (
     <EditorialFeed
-      kicker="Work & Money"
-      kickerColour="#FFD07A"
-      title="The work that matters."
-      intro="Founder reset, burnout and the nervous system, the Signal Method, career and direction, and the relationship between money and worth."
+      kicker={page.kicker}
+      kickerColour={page.kickerColour}
+      title={page.title}
+      intro={page.intro}
       articles={feedArticles}
       sectionHref="/work-and-money"
       subcategories={subcategories}

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories } from '@/lib/cms';
+import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Life',
@@ -12,9 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default async function LifePage() {
-  const [articles, categories] = await Promise.all([
+  const [articles, categories, page] = await Promise.all([
     getArticles('life'),
     getArticleCategories('life'),
+    getSectionLandingPage('/life-page', {
+      kicker: 'Life',
+      title: 'A life beautifully lived.',
+      intro: 'Rituals and energy, home and space, style and beauty, food and nourishment, and the things that catch my eye each week.',
+      heroImage: '',
+      kickerColour: '#FAA21B',
+    }),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -35,10 +42,10 @@ export default async function LifePage() {
 
   return (
     <EditorialFeed
-      kicker="Life"
-      kickerColour="#FAA21B"
-      title="A life beautifully lived."
-      intro="Rituals and energy, home and space, style and beauty, food and nourishment, and the things that catch my eye each week."
+      kicker={page.kicker}
+      kickerColour={page.kickerColour}
+      title={page.title}
+      intro={page.intro}
       articles={feedArticles}
       sectionHref="/life"
       subcategories={subcategories}

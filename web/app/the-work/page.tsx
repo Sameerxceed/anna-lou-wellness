@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getCoachingSessions, getFAQs } from '@/lib/cms';
+import { getCoachingSessions, getFAQs, getSectionLandingPage } from '@/lib/cms';
 import { FAQSchema, ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getGenericPageBySlug } from '@/lib/generic-page';
 
@@ -16,10 +16,16 @@ export const metadata: Metadata = {
 };
 
 export default async function TheWorkPage() {
-  const [sessions, faqs, cms] = await Promise.all([
+  const [sessions, faqs, page] = await Promise.all([
     getCoachingSessions(),
     getFAQs('coaching'),
-    getGenericPageBySlug('the-work'),
+    getSectionLandingPage('/work-with-anna-page', {
+      kicker: 'Work with Anna',
+      title: 'Your inner world already knows.',
+      intro: 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.',
+      heroImage: '',
+      kickerColour: '#F280AA',
+    }),
   ]);
   return (
     <>
@@ -31,9 +37,9 @@ export default async function TheWorkPage() {
       {/* Header */}
       <section className="work-header">
         <div className="work-header-inner reveal">
-          <p className="work-kicker">{cms?.kicker || 'Work with Anna'}</p>
-          <h1 className="work-title">{cms?.title || 'Your inner world already knows.'}</h1>
-          <p className="work-intro">{cms?.intro || 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.'}</p>
+          <p className="work-kicker" style={{ color: page.kickerColour }}>{page.kicker}</p>
+          <h1 className="work-title">{page.title}</h1>
+          <p className="work-intro">{page.intro}</p>
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getProducts, getCategories } from '@/lib/cms';
+import { getProducts, getCategories, getSectionLandingPage } from '@/lib/cms';
 import ShopGrid from './ShopGrid';
 
 export const metadata: Metadata = {
@@ -12,7 +12,17 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopPage() {
-  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
+  const [products, categories, page] = await Promise.all([
+    getProducts(),
+    getCategories(),
+    getSectionLandingPage('/shop-page', {
+      kicker: 'Anna Lou of London',
+      title: 'Jewellery with meaning.',
+      intro: 'I have been designing jewellery for over twenty-five years. The pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.',
+      heroImage: '',
+      kickerColour: '#5DCAA5',
+    }),
+  ]);
   const activeProducts = products.filter(p => p.isActive);
 
   return (
@@ -20,9 +30,9 @@ export default async function ShopPage() {
       <style dangerouslySetInnerHTML={{ __html: shopStyles }} />
       <section className="shop-header">
         <div className="shop-header-inner reveal">
-          <p className="shop-kicker">Anna Lou of London</p>
-          <h1 className="shop-title">Jewellery with meaning.</h1>
-          <p className="shop-intro">I have been designing jewellery for over twenty-five years. The pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.</p>
+          <p className="shop-kicker" style={{ color: page.kickerColour }}>{page.kicker}</p>
+          <h1 className="shop-title">{page.title}</h1>
+          <p className="shop-intro">{page.intro}</p>
         </div>
       </section>
       <section className="shop-content">

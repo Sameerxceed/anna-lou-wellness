@@ -1,0 +1,48 @@
+{
+  "kind": "singleType",
+  "collectionName": "shop_pages",
+  "info": {
+    "singularName": "shop-page",
+    "pluralName": "shop-pages",
+    "displayName": "Shop",
+    "description": "Landing page content for the Shop section on the main menu."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Anna Lou of London",
+      "description": "Small uppercase label above the title."
+    },
+    "title": {
+      "type": "string",
+      "default": "Jewellery with meaning.",
+      "description": "Big page headline."
+    },
+    "intro": {
+      "type": "richtext",
+      "description": "Intro paragraph below the title."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Optional hero image at the top of the section."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#5DCAA5",
+      "description": "Hex colour for the kicker label. Default is the brand colour for this section."
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

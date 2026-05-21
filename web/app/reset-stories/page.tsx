@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories } from '@/lib/cms';
+import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Reset Stories',
@@ -12,9 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default async function ResetStoriesPage() {
-  const [articles, categories] = await Promise.all([
+  const [articles, categories, page] = await Promise.all([
     getArticles('reset-stories'),
     getArticleCategories('reset-stories'),
+    getSectionLandingPage('/reset-stories-page', {
+      kicker: 'Reset Stories',
+      title: 'Come back to yourself.',
+      intro: 'Honest stories about what it actually feels like to live in full alignment with who you are. Not the managed version. Not the performing one. The whole one.',
+      heroImage: '',
+      kickerColour: '#6E3A5A',
+    }),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -35,10 +42,10 @@ export default async function ResetStoriesPage() {
 
   return (
     <EditorialFeed
-      kicker="Reset Stories"
-      kickerColour="#6E3A5A"
-      title="Come back to yourself."
-      intro="Honest stories about what it actually feels like to live in full alignment with who you are. Not the managed version. Not the performing one. The whole one."
+      kicker={page.kicker}
+      kickerColour={page.kickerColour}
+      title={page.title}
+      intro={page.intro}
       articles={feedArticles}
       sectionHref="/reset-stories"
       subcategories={subcategories}

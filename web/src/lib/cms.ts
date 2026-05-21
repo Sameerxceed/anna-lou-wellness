@@ -183,6 +183,39 @@ export async function getNavigation(): Promise<NavItem[]> {
   }
 }
 
+// ═══ MENU-SECTION LANDING PAGES ═══
+// One singletype per main-menu section landing — Reset Stories / Life /
+// Love & Relationships / Work & Money / Work with Anna / Shop. Each lets
+// Anna edit the kicker + title + intro + optional hero image without me.
+// Frontend pages fall back to the hardcoded copy if Strapi is unreachable
+// or hasn't been seeded yet, so the site never breaks during a deploy gap.
+export interface SectionLandingPage {
+  kicker: string;
+  title: string;
+  intro: string;
+  heroImage: string;
+  kickerColour: string;
+}
+
+export async function getSectionLandingPage(
+  endpoint: string,
+  fallback: SectionLandingPage,
+): Promise<SectionLandingPage> {
+  try {
+    const { data: d } = await fetchAPI(endpoint, { populate: '*' });
+    if (!d) return fallback;
+    return {
+      kicker: (d as any).kicker || fallback.kicker,
+      title: (d as any).title || fallback.title,
+      intro: (d as any).intro || fallback.intro,
+      heroImage: mediaUrl((d as any).hero_image, 'large') || fallback.heroImage,
+      kickerColour: (d as any).kicker_colour || fallback.kickerColour,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 // Top-strip text fetched from same `navigation` singleType (cheap, no extra request)
 export async function getTopStripText(): Promise<string> {
   try {

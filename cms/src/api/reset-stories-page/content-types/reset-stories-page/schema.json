@@ -1,0 +1,48 @@
+{
+  "kind": "singleType",
+  "collectionName": "reset_stories_pages",
+  "info": {
+    "singularName": "reset-stories-page",
+    "pluralName": "reset-stories-pages",
+    "displayName": "Reset Stories",
+    "description": "Landing page content for the Reset Stories section on the main menu."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Reset Stories",
+      "description": "Small uppercase label above the title."
+    },
+    "title": {
+      "type": "string",
+      "default": "Come back to yourself.",
+      "description": "Big page headline."
+    },
+    "intro": {
+      "type": "richtext",
+      "description": "Intro paragraph below the title."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Optional hero image at the top of the section."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#6E3A5A",
+      "description": "Hex colour for the kicker label. Default is the brand colour for this section."
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

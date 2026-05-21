@@ -1,0 +1,48 @@
+{
+  "kind": "singleType",
+  "collectionName": "life_pages",
+  "info": {
+    "singularName": "life-page",
+    "pluralName": "life-pages",
+    "displayName": "Life",
+    "description": "Landing page content for the Life section on the main menu."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Life",
+      "description": "Small uppercase label above the title."
+    },
+    "title": {
+      "type": "string",
+      "default": "A life beautifully lived.",
+      "description": "Big page headline."
+    },
+    "intro": {
+      "type": "richtext",
+      "description": "Intro paragraph below the title."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Optional hero image at the top of the section."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#FAA21B",
+      "description": "Hex colour for the kicker label. Default is the brand colour for this section."
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

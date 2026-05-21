@@ -1,0 +1,48 @@
+{
+  "kind": "singleType",
+  "collectionName": "love_and_relationships_pages",
+  "info": {
+    "singularName": "love-and-relationships-page",
+    "pluralName": "love-and-relationships-pages",
+    "displayName": "Love & Relationships",
+    "description": "Landing page content for the Love & Relationships section on the main menu."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Love & Relationships",
+      "description": "Small uppercase label above the title."
+    },
+    "title": {
+      "type": "string",
+      "default": "The people who shape us.",
+      "description": "Big page headline."
+    },
+    "intro": {
+      "type": "richtext",
+      "description": "Intro paragraph below the title."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Optional hero image at the top of the section."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#F280AA",
+      "description": "Hex colour for the kicker label. Default is the brand colour for this section."
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}
