@@ -33,6 +33,22 @@ module.exports = {
         'api::reset-letters-page.reset-letters-page',
         'api::decoder-page.decoder-page',
         'api::site-settings.site-settings',
+        // Site chrome singletons — the frontend reads these on every page;
+        // without public read access the frontend silently falls back to
+        // hardcoded data in web/src/data/site.ts (which was the root cause
+        // of "live site shows 6 sub-menu items but CMS has 3" — fallback
+        // was being used because the public role couldn't read /navigation).
+        'api::navigation.navigation',
+        'api::footer.footer',
+        // Section landing pages — one per main menu item. Without these
+        // the section pages render hardcoded copy from the *Page.tsx files
+        // and Anna's CMS edits don't appear on the live site.
+        'api::reset-stories-page.reset-stories-page',
+        'api::life-page.life-page',
+        'api::love-and-relationships-page.love-and-relationships-page',
+        'api::work-and-money-page.work-and-money-page',
+        'api::work-with-anna-page.work-with-anna-page',
+        'api::shop-page.shop-page',
         // Editorial / collection
         'api::article.article',
         'api::article-category.article-category',
