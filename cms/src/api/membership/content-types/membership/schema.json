@@ -4,22 +4,75 @@
   "info": {
     "singularName": "membership",
     "pluralName": "memberships",
-    "displayName": "Membership (Reset Room)",
-    "description": "The Reset Room monthly subscription. Price is set here in pence — Stripe is just the gateway, this is the source of truth."
+    "displayName": "Work \u00b7 Membership (Reset Room)",
+    "description": "The Reset Room monthly subscription. Price is set here in pence \u2014 Stripe is just the gateway, this is the source of truth."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "title": { "type": "string", "default": "The Reset Room", "description": "Display name shown on Stripe Checkout." },
-    "description": { "type": "richtext", "description": "Marketing description (used on the page, not on Stripe Checkout)." },
-    "pricePence": { "type": "integer", "default": 2500, "required": true, "description": "Price in pence. £25 = 2500. £19.50 = 1950. Must be a whole number of pence." },
-    "currency": { "type": "string", "default": "gbp", "description": "Three-letter ISO currency code, lowercase. Default 'gbp'." },
-    "isRecurring": { "type": "boolean", "default": true, "description": "Tick for subscription, leave unchecked for one-off." },
-    "recurringInterval": { "type": "enumeration", "enum": ["month", "year"], "default": "month", "description": "Only used when 'isRecurring' is on. month = monthly billing, year = annual." },
-    "mailchimpTag": { "type": "string", "default": "Reset Room Members", "description": "Tag attached on successful payment. Must match a Mailchimp tag name EXACTLY (case-sensitive)." },
-    "grantsResetRoomAccess": { "type": "boolean", "default": true, "description": "If ticked, a successful payment promotes the user to the 'reset-room-member' role in Strapi (unlocks /community/reset-room/* gated pages)." },
-    "features": { "type": "component", "repeatable": true, "component": "shared.feature-item", "description": "List of membership features for the marketing page." },
-    "hero_image": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
-    "seo_title": { "type": "string" },
-    "seo_description": { "type": "text" }
+    "title": {
+      "type": "string",
+      "default": "The Reset Room",
+      "description": "Display name shown on Stripe Checkout."
+    },
+    "description": {
+      "type": "richtext",
+      "description": "Marketing description (used on the page, not on Stripe Checkout)."
+    },
+    "pricePence": {
+      "type": "integer",
+      "default": 2500,
+      "required": true,
+      "description": "Price in pence. \u00a325 = 2500. \u00a319.50 = 1950. Must be a whole number of pence."
+    },
+    "currency": {
+      "type": "string",
+      "default": "gbp",
+      "description": "Three-letter ISO currency code, lowercase. Default 'gbp'."
+    },
+    "isRecurring": {
+      "type": "boolean",
+      "default": true,
+      "description": "Tick for subscription, leave unchecked for one-off."
+    },
+    "recurringInterval": {
+      "type": "enumeration",
+      "enum": [
+        "month",
+        "year"
+      ],
+      "default": "month",
+      "description": "Only used when 'isRecurring' is on. month = monthly billing, year = annual."
+    },
+    "mailchimpTag": {
+      "type": "string",
+      "default": "Reset Room Members",
+      "description": "Tag attached on successful payment. Must match a Mailchimp tag name EXACTLY (case-sensitive)."
+    },
+    "grantsResetRoomAccess": {
+      "type": "boolean",
+      "default": true,
+      "description": "If ticked, a successful payment promotes the user to the 'reset-room-member' role in Strapi (unlocks /community/reset-room/* gated pages)."
+    },
+    "features": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.feature-item",
+      "description": "List of membership features for the marketing page."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
   }
 }

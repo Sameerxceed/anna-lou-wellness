@@ -4,26 +4,64 @@
   "info": {
     "singularName": "generic-page",
     "pluralName": "generic-pages",
-    "displayName": "Page (generic)",
+    "displayName": "Page \u00b7 Sub-page",
     "description": "Catch-all CMS for one-off pages. Each entry's slug must match the URL path. Examples: 'the-work', 'mantras', 'about-press', 'contact', etc."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "title": { "type": "string", "required": true, "description": "The big heading at the top of the page." },
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "The big heading at the top of the page."
+    },
     "slug": {
       "type": "uid",
       "targetField": "title",
       "required": true,
       "description": "URL slug. Must match the route. Examples: 'the-work', 'experiences-landing', 'mantras', 'cosmic-forecast', 'contact', 'welcome', 'about-press', 'about-partnerships', 'the-work-client-stories', 'the-work-ways-to-work-with-me'."
     },
-    "kicker": { "type": "string", "description": "Small uppercase label above the title. e.g. 'About', 'The Work', 'Community'." },
-    "kickerColour": { "type": "string", "default": "#6E3A5A", "description": "Hex colour for the kicker. Pink #F280AA, blue #7BAFDD, gold #FAA21B, mint #5DCAA5, plum #6E3A5A." },
-    "tagline": { "type": "string", "description": "Italic subtitle under the main title. One sentence." },
-    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "Main image. Landscape orientation works best." },
-    "intro": { "type": "text", "description": "Main body. Separate paragraphs with a BLANK LINE between them." },
-    "ctaLabel": { "type": "string", "description": "Optional button text at the bottom." },
-    "ctaUrl": { "type": "string", "description": "Optional button link." },
-    "seoTitle": { "type": "string", "description": "Optional SEO override." },
-    "seoDescription": { "type": "text", "description": "Optional SEO description for Google. Keep under 160 characters." }
+    "kicker": {
+      "type": "string",
+      "description": "Small uppercase label above the title. e.g. 'About', 'The Work', 'Community'."
+    },
+    "kickerColour": {
+      "type": "string",
+      "default": "#6E3A5A",
+      "description": "Hex colour for the kicker. Pink #F280AA, blue #7BAFDD, gold #FAA21B, mint #5DCAA5, plum #6E3A5A."
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Italic subtitle under the main title. One sentence."
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Main image. Landscape orientation works best."
+    },
+    "intro": {
+      "type": "text",
+      "description": "Main body. Separate paragraphs with a BLANK LINE between them."
+    },
+    "ctaLabel": {
+      "type": "string",
+      "description": "Optional button text at the bottom."
+    },
+    "ctaUrl": {
+      "type": "string",
+      "description": "Optional button link."
+    },
+    "seoTitle": {
+      "type": "string",
+      "description": "Optional SEO override."
+    },
+    "seoDescription": {
+      "type": "text",
+      "description": "Optional SEO description for Google. Keep under 160 characters."
+    }
   }
 }

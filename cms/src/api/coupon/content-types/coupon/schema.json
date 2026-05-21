@@ -4,7 +4,7 @@
   "info": {
     "singularName": "coupon",
     "pluralName": "coupons",
-    "displayName": "Coupons & Discounts"
+    "displayName": "zz \u00b7 Coupon (unused)"
   },
   "options": {
     "draftAndPublish": false
@@ -17,7 +17,11 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": ["percentage", "fixed_amount", "free_shipping"],
+      "enum": [
+        "percentage",
+        "fixed_amount",
+        "free_shipping"
+      ],
       "required": true
     },
     "value": {

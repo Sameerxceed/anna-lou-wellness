@@ -4,7 +4,7 @@
   "info": {
     "singularName": "article-category",
     "pluralName": "article-categories",
-    "displayName": "Article Category",
+    "displayName": "Story \u00b7 Category",
     "description": "Categories for editorial articles: Reset Stories sub-cats, Life sub-cats, Love sub-cats, Work sub-cats"
   },
   "options": {
@@ -22,7 +22,12 @@
     },
     "section": {
       "type": "enumeration",
-      "enum": ["reset-stories", "life", "love-and-relationships", "work-and-money"],
+      "enum": [
+        "reset-stories",
+        "life",
+        "love-and-relationships",
+        "work-and-money"
+      ],
       "required": true
     },
     "colour": {

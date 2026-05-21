@@ -4,7 +4,7 @@
   "info": {
     "singularName": "shipping-method",
     "pluralName": "shipping-methods",
-    "displayName": "Shipping Methods"
+    "displayName": "zz \u00b7 Shipping Method (unused)"
   },
   "options": {
     "draftAndPublish": false
@@ -22,7 +22,11 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": ["flat_rate", "weight_based", "free_above_threshold"],
+      "enum": [
+        "flat_rate",
+        "weight_based",
+        "free_above_threshold"
+      ],
       "required": true
     },
     "rate": {

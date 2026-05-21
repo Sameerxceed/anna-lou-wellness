@@ -4,7 +4,7 @@
   "info": {
     "singularName": "about-page",
     "pluralName": "about-pages",
-    "displayName": "About Page",
+    "displayName": "Page \u00b7 About",
     "description": "About page content"
   },
   "options": {
@@ -28,7 +28,9 @@
     "portrait": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "press_logos": {
       "type": "component",

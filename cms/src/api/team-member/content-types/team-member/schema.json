@@ -4,7 +4,7 @@
   "info": {
     "singularName": "team-member",
     "pluralName": "team-members",
-    "displayName": "Team"
+    "displayName": "Team \u00b7 Member"
   },
   "options": {
     "draftAndPublish": false

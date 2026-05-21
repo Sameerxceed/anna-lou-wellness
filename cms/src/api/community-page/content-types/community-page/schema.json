@@ -4,7 +4,7 @@
   "info": {
     "singularName": "community-page",
     "pluralName": "community-pages",
-    "displayName": "Community Page",
+    "displayName": "Page \u00b7 Community",
     "description": "Community page content"
   },
   "options": {
@@ -32,7 +32,9 @@
     "circle_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "reset_room_title": {
       "type": "string",
@@ -43,7 +45,7 @@
     },
     "reset_room_price": {
       "type": "string",
-      "default": "£25 per month"
+      "default": "\u00a325 per month"
     },
     "reset_room_features": {
       "type": "component",
@@ -53,7 +55,9 @@
     "reset_room_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "events_title": {
       "type": "string",

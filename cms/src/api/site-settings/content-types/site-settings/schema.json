@@ -4,8 +4,8 @@
   "info": {
     "singularName": "site-settings",
     "pluralName": "site-settings-list",
-    "displayName": "Site Settings",
-    "description": "Global site configuration — branding, payments, commerce, social links"
+    "displayName": "3. Site Settings",
+    "description": "Global site configuration \u2014 branding, payments, commerce, social links"
   },
   "options": {
     "draftAndPublish": false
@@ -22,22 +22,30 @@
     "logo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "logo_dark": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "favicon": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "og_default_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "seo_description": {
       "type": "text"
@@ -88,7 +96,9 @@
     },
     "supported_currencies": {
       "type": "json",
-      "default": ["EUR"]
+      "default": [
+        "EUR"
+      ]
     },
     "auto_currency_conversion": {
       "type": "boolean",

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "page",
     "pluralName": "pages",
-    "displayName": "Pages"
+    "displayName": "zz \u00b7 Page-legacy (unused)"
   },
   "options": {
     "draftAndPublish": false
@@ -21,7 +21,12 @@
     },
     "template": {
       "type": "enumeration",
-      "enum": ["default", "landing", "editorial", "services"],
+      "enum": [
+        "default",
+        "landing",
+        "editorial",
+        "services"
+      ],
       "default": "default"
     },
     "sections": {
@@ -51,7 +56,9 @@
     "og_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "sort_order": {
       "type": "integer",

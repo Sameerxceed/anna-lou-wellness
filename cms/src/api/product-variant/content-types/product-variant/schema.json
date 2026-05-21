@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product-variant",
     "pluralName": "product-variants",
-    "displayName": "Product Variants"
+    "displayName": "zz \u00b7 Product Variant (unused)"
   },
   "options": {
     "draftAndPublish": false
@@ -37,7 +37,9 @@
     "image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "is_active": {
       "type": "boolean",

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "experience",
     "pluralName": "experiences",
-    "displayName": "Experience",
+    "displayName": "Work \u00b7 Experience",
     "description": "Retreats, workshops, corporate wellbeing, speaking engagements"
   },
   "options": {
@@ -22,7 +22,12 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": ["retreat", "workshop", "corporate", "speaking"],
+      "enum": [
+        "retreat",
+        "workshop",
+        "corporate",
+        "speaking"
+      ],
       "required": true
     },
     "description": {
@@ -43,7 +48,9 @@
     "hero_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "is_upcoming": {
       "type": "boolean",

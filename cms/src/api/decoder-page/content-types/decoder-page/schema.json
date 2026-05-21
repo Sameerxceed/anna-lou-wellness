@@ -4,32 +4,83 @@
   "info": {
     "singularName": "decoder-page",
     "pluralName": "decoder-pages",
-    "displayName": "Decoder Page",
+    "displayName": "Page \u00b7 Decoder (free)",
     "description": "Lead-magnet copy for /free/nervous-system-decoder"
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "heroEyebrow": { "type": "string", "default": "Free. Always free." },
-    "heroTitle": { "type": "string", "default": "The Nervous System Decoder." },
-    "heroTagline": { "type": "string", "default": "The first thing if you are new here." },
-
-    "coverLabel": { "type": "string", "default": "Free Guide" },
-    "coverTitle": { "type": "string", "default": "The Nervous System Decoder" },
-    "coverSubtitle": { "type": "string", "default": "A somatic self-audit, in seven quiet questions." },
-    "coverAuthor": { "type": "string", "default": "By Anna Lou Scaife" },
-    "coverImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
-
-    "whyTitle": { "type": "string", "default": "Why this exists" },
-    "whyBody": { "type": "text", "default": "The Nervous System Decoder is the first thing offered to anyone who finds Anna Lou Wellness. Free. Always free.\n\nIt explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state, you can use today, anywhere, without equipment.\n\nIt was made free because understanding your inner world is not a luxury. It is the foundation. Without it, nothing else on this site makes sense. With it, everything starts to make sense — the patterns, the reactions, the relationships, the exhaustion." },
-
-    "insideTitle": { "type": "string", "default": "What's inside" },
-    "insideItems": { "type": "text", "default": "A short introduction to the inner guidance system in plain language\nSeven self-audit questions with space to write\nA simple key for reading your own answers\nThree small somatic practices to start with, today\nA suggested next step, gently. No pressure." },
-
-    "formTitle": { "type": "string", "default": "Send it to me" },
-    "formButtonLabel": { "type": "string", "default": "Send me the Decoder" },
-    "formMicrocopy": { "type": "string", "default": "No spam. Unsubscribe in one click. We never share your email." },
-
-    "successTitle": { "type": "string", "default": "Your Decoder is on its way." },
-    "successBody": { "type": "text", "default": "Look for an email from Anna in the next few minutes. If it is not there, check spam or promotions.\n\nIn the meantime, if you want to go further, here is what comes next." }
+    "heroEyebrow": {
+      "type": "string",
+      "default": "Free. Always free."
+    },
+    "heroTitle": {
+      "type": "string",
+      "default": "The Nervous System Decoder."
+    },
+    "heroTagline": {
+      "type": "string",
+      "default": "The first thing if you are new here."
+    },
+    "coverLabel": {
+      "type": "string",
+      "default": "Free Guide"
+    },
+    "coverTitle": {
+      "type": "string",
+      "default": "The Nervous System Decoder"
+    },
+    "coverSubtitle": {
+      "type": "string",
+      "default": "A somatic self-audit, in seven quiet questions."
+    },
+    "coverAuthor": {
+      "type": "string",
+      "default": "By Anna Lou Scaife"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "whyTitle": {
+      "type": "string",
+      "default": "Why this exists"
+    },
+    "whyBody": {
+      "type": "text",
+      "default": "The Nervous System Decoder is the first thing offered to anyone who finds Anna Lou Wellness. Free. Always free.\n\nIt explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state, you can use today, anywhere, without equipment.\n\nIt was made free because understanding your inner world is not a luxury. It is the foundation. Without it, nothing else on this site makes sense. With it, everything starts to make sense \u2014 the patterns, the reactions, the relationships, the exhaustion."
+    },
+    "insideTitle": {
+      "type": "string",
+      "default": "What's inside"
+    },
+    "insideItems": {
+      "type": "text",
+      "default": "A short introduction to the inner guidance system in plain language\nSeven self-audit questions with space to write\nA simple key for reading your own answers\nThree small somatic practices to start with, today\nA suggested next step, gently. No pressure."
+    },
+    "formTitle": {
+      "type": "string",
+      "default": "Send it to me"
+    },
+    "formButtonLabel": {
+      "type": "string",
+      "default": "Send me the Decoder"
+    },
+    "formMicrocopy": {
+      "type": "string",
+      "default": "No spam. Unsubscribe in one click. We never share your email."
+    },
+    "successTitle": {
+      "type": "string",
+      "default": "Your Decoder is on its way."
+    },
+    "successBody": {
+      "type": "text",
+      "default": "Look for an email from Anna in the next few minutes. If it is not there, check spam or promotions.\n\nIn the meantime, if you want to go further, here is what comes next."
+    }
   }
 }

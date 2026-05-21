@@ -4,52 +4,151 @@
   "info": {
     "singularName": "reset-room-page",
     "pluralName": "reset-room-pages",
-    "displayName": "Reset Room Page",
+    "displayName": "Page \u00b7 Reset Room",
     "description": "Public landing page copy for /community/reset-room"
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "heroEyebrow": { "type": "string", "default": "Monthly somatic membership" },
-    "heroTitle": { "type": "string", "default": "The Reset Room." },
-    "heroTagline": { "type": "string", "default": "Where the work moves from podcast to practice." },
-    "heroCtaLabel": { "type": "string", "default": "Join the Reset Room · £25/month" },
-    "heroSecondaryLabel": { "type": "string", "default": "See what's inside" },
-    "heroPriceStrip": { "type": "string", "default": "£25/month · No minimum term · Cancel any time" },
-    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
-
-    "introLead": { "type": "text", "default": "The Reset Letters are the front door. The Reset Room is the room behind it." },
-    "introBody": { "type": "text", "default": "This is where the work stops being something you read and starts being something you practice. A members-only video room, a monthly live call with me, and a growing vault of guided journeys. All for £25 a month." },
-
-    "pillarsKicker": { "type": "string", "default": "What's inside" },
-    "pillarsTitle": { "type": "string", "default": "Three pillars. One quiet room." },
-
-    "pillar1Kicker": { "type": "string", "default": "Reset Room Sessions" },
-    "pillar1Name": { "type": "string", "default": "Bi-weekly intimate sessions" },
-    "pillar1Body": { "type": "text", "default": "Two new intimate video sessions a month, the conversations that do not belong on the public feed. Watch in your own time, inside the room." },
-    "pillar1Bullets": { "type": "text", "default": "2 new sessions / month\nWatch any time inside the room\nFounding sessions already inside" },
-
-    "pillar2Kicker": { "type": "string", "default": "The Reset Call" },
-    "pillar2Name": { "type": "string", "default": "Monthly live with Anna" },
-    "pillar2Body": { "type": "text", "default": "Ninety minutes with me, live on Zoom, first Thursday of every month. Bring your questions, sit with the group, leave with what you came for. Replay added to the room the next day." },
-    "pillar2Bullets": { "type": "text", "default": "1st Thursday, 7.30pm UK\n90 minutes, group format\nReplay live by Friday lunchtime" },
-
-    "pillar3Kicker": { "type": "string", "default": "The Reset Vault" },
-    "pillar3Name": { "type": "string", "default": "Signature journeys library" },
-    "pillar3Body": { "type": "text", "default": "A growing library of guided somatic journeys. Music, breath, visualisation, embodiment. New piece every month. Where insight becomes the actual life." },
-    "pillar3Bullets": { "type": "text", "default": "7 founding journeys at launch\nNew journey added monthly\nVideo + audio, watch eyes-closed" },
-
-    "alsoIncludedKicker": { "type": "string", "default": "Also included" },
-    "alsoIncludedTitle": { "type": "string", "default": "Four more things, just because." },
-    "alsoIncluded1": { "type": "text", "default": "Workshop replays — every workshop I have ever run, free for you inside." },
-    "alsoIncluded2": { "type": "text", "default": "Forty-eight-hour members-only window on every new retreat before it goes public." },
-    "alsoIncluded3": { "type": "text", "default": "Ten percent off all 1:1 Reset Sessions and One Day intensives." },
-    "alsoIncluded4": { "type": "text", "default": "Members-only events that never go on the public calendar." },
-
-    "whoTitle": { "type": "string", "default": "Who the room is for." },
-    "whoBody": { "type": "text", "default": "The Reset Room is for the woman who has been reading the Reset Letters, doing the work on her own, and is ready for something that holds her more closely. Not therapy. Not a course. A room." },
-
-    "priceTitle": { "type": "string", "default": "£25 a month. Cancel any time." },
-    "priceBody": { "type": "text", "default": "No minimum term. Everything is delivered through the member portal you can come back to whenever you want." },
-    "priceCtaLabel": { "type": "string", "default": "Join the Reset Room" }
+    "heroEyebrow": {
+      "type": "string",
+      "default": "Monthly somatic membership"
+    },
+    "heroTitle": {
+      "type": "string",
+      "default": "The Reset Room."
+    },
+    "heroTagline": {
+      "type": "string",
+      "default": "Where the work moves from podcast to practice."
+    },
+    "heroCtaLabel": {
+      "type": "string",
+      "default": "Join the Reset Room \u00b7 \u00a325/month"
+    },
+    "heroSecondaryLabel": {
+      "type": "string",
+      "default": "See what's inside"
+    },
+    "heroPriceStrip": {
+      "type": "string",
+      "default": "\u00a325/month \u00b7 No minimum term \u00b7 Cancel any time"
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "introLead": {
+      "type": "text",
+      "default": "The Reset Letters are the front door. The Reset Room is the room behind it."
+    },
+    "introBody": {
+      "type": "text",
+      "default": "This is where the work stops being something you read and starts being something you practice. A members-only video room, a monthly live call with me, and a growing vault of guided journeys. All for \u00a325 a month."
+    },
+    "pillarsKicker": {
+      "type": "string",
+      "default": "What's inside"
+    },
+    "pillarsTitle": {
+      "type": "string",
+      "default": "Three pillars. One quiet room."
+    },
+    "pillar1Kicker": {
+      "type": "string",
+      "default": "Reset Room Sessions"
+    },
+    "pillar1Name": {
+      "type": "string",
+      "default": "Bi-weekly intimate sessions"
+    },
+    "pillar1Body": {
+      "type": "text",
+      "default": "Two new intimate video sessions a month, the conversations that do not belong on the public feed. Watch in your own time, inside the room."
+    },
+    "pillar1Bullets": {
+      "type": "text",
+      "default": "2 new sessions / month\nWatch any time inside the room\nFounding sessions already inside"
+    },
+    "pillar2Kicker": {
+      "type": "string",
+      "default": "The Reset Call"
+    },
+    "pillar2Name": {
+      "type": "string",
+      "default": "Monthly live with Anna"
+    },
+    "pillar2Body": {
+      "type": "text",
+      "default": "Ninety minutes with me, live on Zoom, first Thursday of every month. Bring your questions, sit with the group, leave with what you came for. Replay added to the room the next day."
+    },
+    "pillar2Bullets": {
+      "type": "text",
+      "default": "1st Thursday, 7.30pm UK\n90 minutes, group format\nReplay live by Friday lunchtime"
+    },
+    "pillar3Kicker": {
+      "type": "string",
+      "default": "The Reset Vault"
+    },
+    "pillar3Name": {
+      "type": "string",
+      "default": "Signature journeys library"
+    },
+    "pillar3Body": {
+      "type": "text",
+      "default": "A growing library of guided somatic journeys. Music, breath, visualisation, embodiment. New piece every month. Where insight becomes the actual life."
+    },
+    "pillar3Bullets": {
+      "type": "text",
+      "default": "7 founding journeys at launch\nNew journey added monthly\nVideo + audio, watch eyes-closed"
+    },
+    "alsoIncludedKicker": {
+      "type": "string",
+      "default": "Also included"
+    },
+    "alsoIncludedTitle": {
+      "type": "string",
+      "default": "Four more things, just because."
+    },
+    "alsoIncluded1": {
+      "type": "text",
+      "default": "Workshop replays \u2014 every workshop I have ever run, free for you inside."
+    },
+    "alsoIncluded2": {
+      "type": "text",
+      "default": "Forty-eight-hour members-only window on every new retreat before it goes public."
+    },
+    "alsoIncluded3": {
+      "type": "text",
+      "default": "Ten percent off all 1:1 Reset Sessions and One Day intensives."
+    },
+    "alsoIncluded4": {
+      "type": "text",
+      "default": "Members-only events that never go on the public calendar."
+    },
+    "whoTitle": {
+      "type": "string",
+      "default": "Who the room is for."
+    },
+    "whoBody": {
+      "type": "text",
+      "default": "The Reset Room is for the woman who has been reading the Reset Letters, doing the work on her own, and is ready for something that holds her more closely. Not therapy. Not a course. A room."
+    },
+    "priceTitle": {
+      "type": "string",
+      "default": "\u00a325 a month. Cancel any time."
+    },
+    "priceBody": {
+      "type": "text",
+      "default": "No minimum term. Everything is delivered through the member portal you can come back to whenever you want."
+    },
+    "priceCtaLabel": {
+      "type": "string",
+      "default": "Join the Reset Room"
+    }
   }
 }

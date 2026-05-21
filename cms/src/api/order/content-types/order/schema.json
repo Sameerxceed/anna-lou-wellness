@@ -4,7 +4,7 @@
   "info": {
     "singularName": "order",
     "pluralName": "orders",
-    "displayName": "Orders"
+    "displayName": "Shop \u00b7 Order"
   },
   "options": {
     "draftAndPublish": false
@@ -80,12 +80,23 @@
     },
     "status": {
       "type": "enumeration",
-      "enum": ["pending", "paid", "shipped", "completed", "cancelled", "refunded"],
+      "enum": [
+        "pending",
+        "paid",
+        "shipped",
+        "completed",
+        "cancelled",
+        "refunded"
+      ],
       "default": "pending"
     },
     "payment_method": {
       "type": "enumeration",
-      "enum": ["stripe", "paypal", "bank_transfer"],
+      "enum": [
+        "stripe",
+        "paypal",
+        "bank_transfer"
+      ],
       "required": true
     },
     "stripe_payment_id": {

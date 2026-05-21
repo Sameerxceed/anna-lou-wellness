@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Shop"
+    "displayName": "Shop \u00b7 Product"
   },
   "options": {
     "draftAndPublish": false
@@ -41,7 +41,9 @@
     "images": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "stock": {
       "type": "integer",
@@ -63,7 +65,11 @@
     },
     "tax_class": {
       "type": "enumeration",
-      "enum": ["standard", "reduced", "zero"],
+      "enum": [
+        "standard",
+        "reduced",
+        "zero"
+      ],
       "default": "standard"
     },
     "tags": {

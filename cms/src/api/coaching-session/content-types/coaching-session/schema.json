@@ -4,7 +4,7 @@
   "info": {
     "singularName": "coaching-session",
     "pluralName": "coaching-sessions",
-    "displayName": "Coaching Session",
+    "displayName": "Work \u00b7 Coaching Session",
     "description": "1:1 coaching session types: Reset Sessions, Founder Reset, Dating Reset, Nervous System Reset"
   },
   "options": {
@@ -37,7 +37,9 @@
     "hero_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "is_active": {
       "type": "boolean",

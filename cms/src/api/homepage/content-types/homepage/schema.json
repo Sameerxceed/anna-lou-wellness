@@ -4,115 +4,478 @@
   "info": {
     "singularName": "homepage",
     "pluralName": "homepages",
-    "displayName": "Homepage",
+    "displayName": "1. Homepage",
     "description": "Every editable bit of the homepage. Fields are grouped top-to-bottom in the order they appear on the live site. Leave any field blank to use the default."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "issueLine": { "type": "string", "default": "Issue No. 01 · Summer 2026", "description": "The small grey line at the very top of the homepage. e.g. 'Issue No. 01 · Summer 2026'." },
-    "insideThisIssueLine": { "type": "string", "default": "Inside this issue", "description": "The italic line right below the issue number." },
-
-    "heroKicker": { "type": "string", "default": "Reset Stories", "description": "HERO SECTION — Small uppercase label above the hero title (e.g. 'Reset Stories')." },
-    "heroTitle": { "type": "string", "default": "Come back to yourself.", "description": "HERO SECTION — The big title on the left side of the homepage hero." },
-    "heroBody": { "type": "text", "default": "What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.", "description": "HERO SECTION — The 3-4 line paragraph below the hero title." },
-    "heroCtaPrimaryLabel": { "type": "string", "default": "Read the Reset Stories", "description": "HERO SECTION — First button text (plum colour)." },
-    "heroCtaPrimaryUrl": { "type": "string", "default": "/reset-stories", "description": "HERO SECTION — Where the first button links to. Use full URL or path starting with /." },
-    "heroCtaSecondaryLabel": { "type": "string", "default": "Work with Anna", "description": "HERO SECTION — Second button text (pink colour)." },
-    "heroCtaSecondaryUrl": { "type": "string", "default": "/the-work", "description": "HERO SECTION — Where the second button links to." },
-    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "HERO SECTION — Image on the right side of the hero. Portrait orientation works best." },
-
-    "featuredFallbackTitle": { "type": "string", "default": "You are not overwhelmed. You are holding everything.", "description": "FEATURED STORY FALLBACK — Only shows if there is no real featured article. The featured article (if you mark one as 'isFeatured') will override this." },
-    "featuredFallbackAuthor": { "type": "string", "default": "Anna Lou", "description": "FEATURED STORY FALLBACK — Author name when no real featured article exists." },
-    "featuredFallbackReadingTime": { "type": "string", "default": "6 min read", "description": "FEATURED STORY FALLBACK — e.g. '6 min read'." },
-    "featuredFallbackExcerpt": { "type": "text", "description": "FEATURED STORY FALLBACK — The article excerpt shown on homepage when no real article is marked featured." },
-
-    "mantra1": { "type": "text", "default": "You don't have to hold all of this. Come back to yourself.", "description": "MANTRA STRIP — A single calming line between Featured Story and Quote 1." },
-
-    "quote1Text": { "type": "text", "default": "Maybe the next level isn't about managing everything more gracefully. Maybe it's about not gripping so tightly in the first place.", "description": "QUOTE 1 — The first pull-quote on the homepage." },
-    "quote1Attribution": { "type": "string", "default": "Anna Lou", "description": "QUOTE 1 — Attribution line below the quote." },
-
-    "workKicker": { "type": "string", "default": "The Work", "description": "WORK SECTION — Small label (pink)." },
-    "workTitle": { "type": "string", "default": "Your inner world already knows.", "description": "WORK SECTION — Big heading." },
-    "workBody1": { "type": "text", "default": "Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.", "description": "WORK SECTION — First body paragraph." },
-    "workBody2": { "type": "text", "default": "The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey.", "description": "WORK SECTION — Second body paragraph." },
-    "workCtaPrimaryLabel": { "type": "string", "default": "Start with the free Nervous System Decoder", "description": "WORK SECTION — Primary button text." },
-    "workCtaPrimaryUrl": { "type": "string", "default": "/the-work", "description": "WORK SECTION — Where primary button links to." },
-    "workCtaSecondaryLabel": { "type": "string", "default": "Explore all the ways to work", "description": "WORK SECTION — Secondary button text." },
-    "workCtaSecondaryUrl": { "type": "string", "default": "/the-work/ways-to-work-with-me", "description": "WORK SECTION — Where secondary button links to." },
-    "workImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "WORK SECTION — Image on the right side. Portrait orientation works best." },
-
-    "exploreKicker": { "type": "string", "default": "Explore", "description": "EXPLORE SECTION (Life/Love/Work tiles) — Small label." },
-    "exploreTitle": { "type": "string", "default": "Life, Love, and Work", "description": "EXPLORE SECTION — Section heading." },
-    "exploreLifeBody": { "type": "text", "default": "Rituals and energy, home and space, style and beauty, food and nourishment, weekend finds.", "description": "EXPLORE SECTION — Body under the 'Life' tile (yellow)." },
-    "exploreLoveBody": { "type": "text", "default": "Dating and patterns, breakups and reset, friendship, motherhood, self worth and identity.", "description": "EXPLORE SECTION — Body under the 'Love & Relationships' tile (pink)." },
-    "exploreWorkBody": { "type": "text", "default": "Founder reset, burnout and nervous system, Signal Method™, career and direction, money and worth.", "description": "EXPLORE SECTION — Body under the 'Work & Money' tile (gold)." },
-
-    "quote2Text": { "type": "text", "default": "Your inner guidance system was never broken. It was waiting for you to stop overriding it.", "description": "QUOTE 2 — Second pull-quote (after Explore)." },
-    "quote2Attribution": { "type": "string", "default": "Anna Lou", "description": "QUOTE 2 — Attribution." },
-
-    "experiencesKicker": { "type": "string", "default": "Experiences", "description": "EXPERIENCES SECTION — Small label (blue)." },
-    "experiencesTitle": { "type": "string", "default": "Workshops, retreats, and reset days.", "description": "EXPERIENCES SECTION — Heading." },
-    "experiencesBody": { "type": "text", "default": "Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.", "description": "EXPERIENCES SECTION — Body." },
-    "experiencesCtaLabel": { "type": "string", "default": "Browse all experiences", "description": "EXPERIENCES SECTION — Button text." },
-
-    "newsletterKicker": { "type": "string", "default": "Reset Letters", "description": "NEWSLETTER SECTION — Small label (plum)." },
-    "newsletterTitle": { "type": "string", "default": "A letter, every week, that feels like coming home.", "description": "NEWSLETTER SECTION — Heading." },
-    "newsletterBody": { "type": "text", "default": "Honest, beautiful writing about your inner world, jewellery with meaning, houseboat life, and what it actually feels like to return to yourself.", "description": "NEWSLETTER SECTION — Body." },
-    "newsletterFreeTierLabel": { "type": "string", "default": "Free", "description": "NEWSLETTER SECTION — Label for the free tier card." },
-    "newsletterFreeTierBody": { "type": "text", "default": "One letter a month. The last Friday digest with a personal note from Anna.", "description": "NEWSLETTER SECTION — Description for the free tier." },
-    "newsletterPlusTierLabel": { "type": "string", "default": "Plus", "description": "NEWSLETTER SECTION — Label for the plus tier card." },
-    "newsletterPlusTierBody": { "type": "text", "default": "Everything weekly. Full Sunday Cosmic Forecast, Wednesday Signal Check, Friday ESJ Drop, monthly Reset Story, full archive, early event access.", "description": "NEWSLETTER SECTION — Description for the plus tier." },
-    "newsletterCtaLabel": { "type": "string", "default": "Join on Substack →", "description": "NEWSLETTER SECTION — Button text." },
-    "newsletterCtaUrl": { "type": "string", "default": "https://annalouwellness.substack.com", "description": "NEWSLETTER SECTION — Where button links to (usually Substack URL)." },
-    "newsletterMicrocopy": { "type": "string", "default": "No spam. Honest writing. Cancel any time.", "description": "NEWSLETTER SECTION — Small fineprint below the button." },
-
-    "shopKicker": { "type": "string", "default": "Anna Lou of London", "description": "SHOP SECTION — Small label (green)." },
-    "shopTitle": { "type": "string", "default": "Jewellery with meaning. Made to be worn.", "description": "SHOP SECTION — Heading." },
-    "shopBody": { "type": "text", "default": "I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.", "description": "SHOP SECTION — Body." },
-    "shopProduct1Hook": { "type": "text", "default": "I reach for this one when I need to remember what is underneath the noise", "description": "SHOP SECTION — Italic hook above product 1." },
-    "shopProduct1Name": { "type": "string", "default": "Moonstone Necklace", "description": "SHOP SECTION — Product 1 name." },
-    "shopProduct2Hook": { "type": "text", "default": "For the days my mind is doing too much and I need clarity not calm", "description": "SHOP SECTION — Italic hook above product 2." },
-    "shopProduct2Name": { "type": "string", "default": "Clear Quartz Necklace", "description": "SHOP SECTION — Product 2 name." },
-    "shopProduct3Hook": { "type": "text", "default": "The word you keep coming back to, worn close to your throat", "description": "SHOP SECTION — Italic hook above product 3." },
-    "shopProduct3Name": { "type": "string", "default": "Personalised Phrase Necklace", "description": "SHOP SECTION — Product 3 name." },
-    "shopCtaLabel": { "type": "string", "default": "Browse all jewellery", "description": "SHOP SECTION — Button text." },
-
-    "mediaKicker": { "type": "string", "default": "Watch · Listen · Read", "description": "MEDIA HUB SECTION — Small label." },
-    "mediaTitle": { "type": "string", "default": "The Reset with Anna.", "description": "MEDIA HUB SECTION — Heading." },
-    "mediaTile1Label": { "type": "string", "default": "YouTube", "description": "MEDIA HUB — Tile 1 platform label." },
-    "mediaTile1Title": { "type": "string", "default": "Come Back to Yourself — daily mantras and practices.", "description": "MEDIA HUB — Tile 1 title." },
-    "mediaTile1Meta": { "type": "string", "default": "Video series", "description": "MEDIA HUB — Tile 1 small meta line." },
-    "mediaTile1Url": { "type": "string", "default": "#", "description": "MEDIA HUB — Tile 1 link." },
-    "mediaTile2Label": { "type": "string", "default": "Podcast", "description": "MEDIA HUB — Tile 2 platform label." },
-    "mediaTile2Title": { "type": "string", "default": "The Reset with Anna Lou — honest conversations about the inner world.", "description": "MEDIA HUB — Tile 2 title." },
-    "mediaTile2Meta": { "type": "string", "default": "Coming soon", "description": "MEDIA HUB — Tile 2 small meta line." },
-    "mediaTile2Url": { "type": "string", "default": "#", "description": "MEDIA HUB — Tile 2 link." },
-    "mediaTile3Label": { "type": "string", "default": "Substack", "description": "MEDIA HUB — Tile 3 platform label." },
-    "mediaTile3Title": { "type": "string", "default": "Reset Letters — weekly writing that feels like coming home.", "description": "MEDIA HUB — Tile 3 title." },
-    "mediaTile3Meta": { "type": "string", "default": "Weekly newsletter", "description": "MEDIA HUB — Tile 3 small meta line." },
-    "mediaTile3Url": { "type": "string", "default": "https://annalouwellness.substack.com", "description": "MEDIA HUB — Tile 3 link." },
-
-    "quote3Text": { "type": "text", "default": "The feeling itself moves through in ninety seconds if you let it. Nine years of running from ninety seconds of feeling is an extraordinary amount of cardio.", "description": "QUOTE 3 — Third pull-quote (before Community)." },
-    "quote3Attribution": { "type": "string", "default": "Anna Lou", "description": "QUOTE 3 — Attribution." },
-
-    "communityKicker": { "type": "string", "default": "Community", "description": "COMMUNITY SECTION — Small label." },
-    "communityTitle": { "type": "string", "default": "Come and sit with us.", "description": "COMMUNITY SECTION — Heading." },
-    "communityBody1": { "type": "text", "default": "Every Tuesday I hold a circle at The Hare and the Moon, Twickenham. Donation-based. No agenda except being in the room together. Connection is not a concept. It is biological.", "description": "COMMUNITY SECTION — First body paragraph." },
-    "communityBody2": { "type": "text", "default": "The Returning Circle runs every week without exception. No waitlist needed. Come on Tuesday.", "description": "COMMUNITY SECTION — Second body paragraph." },
-    "communityBody3": { "type": "text", "default": "A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Water outside, no agenda, just space to come back to yourself.", "description": "COMMUNITY SECTION — Third body paragraph." },
-    "communityCta1Label": { "type": "string", "default": "The Returning Circle", "description": "COMMUNITY SECTION — Button 1 text." },
-    "communityCta1Url": { "type": "string", "default": "/community/the-returning-circle", "description": "COMMUNITY SECTION — Button 1 link." },
-    "communityCta2Label": { "type": "string", "default": "The Reset Room", "description": "COMMUNITY SECTION — Button 2 text." },
-    "communityCta2Url": { "type": "string", "default": "/community/reset-room", "description": "COMMUNITY SECTION — Button 2 link." },
-    "communityCta3Label": { "type": "string", "default": "Retreat days", "description": "COMMUNITY SECTION — Button 3 text." },
-    "communityCta3Url": { "type": "string", "default": "/experiences/retreats", "description": "COMMUNITY SECTION — Button 3 link." },
-    "communityImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "COMMUNITY SECTION — Image on the left side. Landscape orientation works best." },
-
-    "portraitKicker": { "type": "string", "default": "About", "description": "ABOUT STRIP — Small label." },
-    "portraitTitle": { "type": "string", "default": "Twenty-five years leaves a trail.", "description": "ABOUT STRIP — Heading." },
-    "portraitBody": { "type": "text", "default": "From the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot.", "description": "ABOUT STRIP — Body paragraph." },
-    "portraitCtaLabel": { "type": "string", "default": "Read Anna's story", "description": "ABOUT STRIP — Button text." },
-    "portraitCtaUrl": { "type": "string", "default": "/about", "description": "ABOUT STRIP — Button link." },
-    "portraitImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "ABOUT STRIP — Portrait photo of Anna. Portrait orientation works best." }
+    "issueLine": {
+      "type": "string",
+      "default": "Issue No. 01 \u00b7 Summer 2026",
+      "description": "The small grey line at the very top of the homepage. e.g. 'Issue No. 01 \u00b7 Summer 2026'."
+    },
+    "insideThisIssueLine": {
+      "type": "string",
+      "default": "Inside this issue",
+      "description": "The italic line right below the issue number."
+    },
+    "heroKicker": {
+      "type": "string",
+      "default": "Reset Stories",
+      "description": "HERO SECTION \u2014 Small uppercase label above the hero title (e.g. 'Reset Stories')."
+    },
+    "heroTitle": {
+      "type": "string",
+      "default": "Come back to yourself.",
+      "description": "HERO SECTION \u2014 The big title on the left side of the homepage hero."
+    },
+    "heroBody": {
+      "type": "text",
+      "default": "What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.",
+      "description": "HERO SECTION \u2014 The 3-4 line paragraph below the hero title."
+    },
+    "heroCtaPrimaryLabel": {
+      "type": "string",
+      "default": "Read the Reset Stories",
+      "description": "HERO SECTION \u2014 First button text (plum colour)."
+    },
+    "heroCtaPrimaryUrl": {
+      "type": "string",
+      "default": "/reset-stories",
+      "description": "HERO SECTION \u2014 Where the first button links to. Use full URL or path starting with /."
+    },
+    "heroCtaSecondaryLabel": {
+      "type": "string",
+      "default": "Work with Anna",
+      "description": "HERO SECTION \u2014 Second button text (pink colour)."
+    },
+    "heroCtaSecondaryUrl": {
+      "type": "string",
+      "default": "/the-work",
+      "description": "HERO SECTION \u2014 Where the second button links to."
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "HERO SECTION \u2014 Image on the right side of the hero. Portrait orientation works best."
+    },
+    "featuredFallbackTitle": {
+      "type": "string",
+      "default": "You are not overwhelmed. You are holding everything.",
+      "description": "FEATURED STORY FALLBACK \u2014 Only shows if there is no real featured article. The featured article (if you mark one as 'isFeatured') will override this."
+    },
+    "featuredFallbackAuthor": {
+      "type": "string",
+      "default": "Anna Lou",
+      "description": "FEATURED STORY FALLBACK \u2014 Author name when no real featured article exists."
+    },
+    "featuredFallbackReadingTime": {
+      "type": "string",
+      "default": "6 min read",
+      "description": "FEATURED STORY FALLBACK \u2014 e.g. '6 min read'."
+    },
+    "featuredFallbackExcerpt": {
+      "type": "text",
+      "description": "FEATURED STORY FALLBACK \u2014 The article excerpt shown on homepage when no real article is marked featured."
+    },
+    "mantra1": {
+      "type": "text",
+      "default": "You don't have to hold all of this. Come back to yourself.",
+      "description": "MANTRA STRIP \u2014 A single calming line between Featured Story and Quote 1."
+    },
+    "quote1Text": {
+      "type": "text",
+      "default": "Maybe the next level isn't about managing everything more gracefully. Maybe it's about not gripping so tightly in the first place.",
+      "description": "QUOTE 1 \u2014 The first pull-quote on the homepage."
+    },
+    "quote1Attribution": {
+      "type": "string",
+      "default": "Anna Lou",
+      "description": "QUOTE 1 \u2014 Attribution line below the quote."
+    },
+    "workKicker": {
+      "type": "string",
+      "default": "The Work",
+      "description": "WORK SECTION \u2014 Small label (pink)."
+    },
+    "workTitle": {
+      "type": "string",
+      "default": "Your inner world already knows.",
+      "description": "WORK SECTION \u2014 Big heading."
+    },
+    "workBody1": {
+      "type": "text",
+      "default": "Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.",
+      "description": "WORK SECTION \u2014 First body paragraph."
+    },
+    "workBody2": {
+      "type": "text",
+      "default": "The Signal Method\u2122 is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey.",
+      "description": "WORK SECTION \u2014 Second body paragraph."
+    },
+    "workCtaPrimaryLabel": {
+      "type": "string",
+      "default": "Start with the free Nervous System Decoder",
+      "description": "WORK SECTION \u2014 Primary button text."
+    },
+    "workCtaPrimaryUrl": {
+      "type": "string",
+      "default": "/the-work",
+      "description": "WORK SECTION \u2014 Where primary button links to."
+    },
+    "workCtaSecondaryLabel": {
+      "type": "string",
+      "default": "Explore all the ways to work",
+      "description": "WORK SECTION \u2014 Secondary button text."
+    },
+    "workCtaSecondaryUrl": {
+      "type": "string",
+      "default": "/the-work/ways-to-work-with-me",
+      "description": "WORK SECTION \u2014 Where secondary button links to."
+    },
+    "workImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "WORK SECTION \u2014 Image on the right side. Portrait orientation works best."
+    },
+    "exploreKicker": {
+      "type": "string",
+      "default": "Explore",
+      "description": "EXPLORE SECTION (Life/Love/Work tiles) \u2014 Small label."
+    },
+    "exploreTitle": {
+      "type": "string",
+      "default": "Life, Love, and Work",
+      "description": "EXPLORE SECTION \u2014 Section heading."
+    },
+    "exploreLifeBody": {
+      "type": "text",
+      "default": "Rituals and energy, home and space, style and beauty, food and nourishment, weekend finds.",
+      "description": "EXPLORE SECTION \u2014 Body under the 'Life' tile (yellow)."
+    },
+    "exploreLoveBody": {
+      "type": "text",
+      "default": "Dating and patterns, breakups and reset, friendship, motherhood, self worth and identity.",
+      "description": "EXPLORE SECTION \u2014 Body under the 'Love & Relationships' tile (pink)."
+    },
+    "exploreWorkBody": {
+      "type": "text",
+      "default": "Founder reset, burnout and nervous system, Signal Method\u2122, career and direction, money and worth.",
+      "description": "EXPLORE SECTION \u2014 Body under the 'Work & Money' tile (gold)."
+    },
+    "quote2Text": {
+      "type": "text",
+      "default": "Your inner guidance system was never broken. It was waiting for you to stop overriding it.",
+      "description": "QUOTE 2 \u2014 Second pull-quote (after Explore)."
+    },
+    "quote2Attribution": {
+      "type": "string",
+      "default": "Anna Lou",
+      "description": "QUOTE 2 \u2014 Attribution."
+    },
+    "experiencesKicker": {
+      "type": "string",
+      "default": "Experiences",
+      "description": "EXPERIENCES SECTION \u2014 Small label (blue)."
+    },
+    "experiencesTitle": {
+      "type": "string",
+      "default": "Workshops, retreats, and reset days.",
+      "description": "EXPERIENCES SECTION \u2014 Heading."
+    },
+    "experiencesBody": {
+      "type": "text",
+      "default": "Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.",
+      "description": "EXPERIENCES SECTION \u2014 Body."
+    },
+    "experiencesCtaLabel": {
+      "type": "string",
+      "default": "Browse all experiences",
+      "description": "EXPERIENCES SECTION \u2014 Button text."
+    },
+    "newsletterKicker": {
+      "type": "string",
+      "default": "Reset Letters",
+      "description": "NEWSLETTER SECTION \u2014 Small label (plum)."
+    },
+    "newsletterTitle": {
+      "type": "string",
+      "default": "A letter, every week, that feels like coming home.",
+      "description": "NEWSLETTER SECTION \u2014 Heading."
+    },
+    "newsletterBody": {
+      "type": "text",
+      "default": "Honest, beautiful writing about your inner world, jewellery with meaning, houseboat life, and what it actually feels like to return to yourself.",
+      "description": "NEWSLETTER SECTION \u2014 Body."
+    },
+    "newsletterFreeTierLabel": {
+      "type": "string",
+      "default": "Free",
+      "description": "NEWSLETTER SECTION \u2014 Label for the free tier card."
+    },
+    "newsletterFreeTierBody": {
+      "type": "text",
+      "default": "One letter a month. The last Friday digest with a personal note from Anna.",
+      "description": "NEWSLETTER SECTION \u2014 Description for the free tier."
+    },
+    "newsletterPlusTierLabel": {
+      "type": "string",
+      "default": "Plus",
+      "description": "NEWSLETTER SECTION \u2014 Label for the plus tier card."
+    },
+    "newsletterPlusTierBody": {
+      "type": "text",
+      "default": "Everything weekly. Full Sunday Cosmic Forecast, Wednesday Signal Check, Friday ESJ Drop, monthly Reset Story, full archive, early event access.",
+      "description": "NEWSLETTER SECTION \u2014 Description for the plus tier."
+    },
+    "newsletterCtaLabel": {
+      "type": "string",
+      "default": "Join on Substack \u2192",
+      "description": "NEWSLETTER SECTION \u2014 Button text."
+    },
+    "newsletterCtaUrl": {
+      "type": "string",
+      "default": "https://annalouwellness.substack.com",
+      "description": "NEWSLETTER SECTION \u2014 Where button links to (usually Substack URL)."
+    },
+    "newsletterMicrocopy": {
+      "type": "string",
+      "default": "No spam. Honest writing. Cancel any time.",
+      "description": "NEWSLETTER SECTION \u2014 Small fineprint below the button."
+    },
+    "shopKicker": {
+      "type": "string",
+      "default": "Anna Lou of London",
+      "description": "SHOP SECTION \u2014 Small label (green)."
+    },
+    "shopTitle": {
+      "type": "string",
+      "default": "Jewellery with meaning. Made to be worn.",
+      "description": "SHOP SECTION \u2014 Heading."
+    },
+    "shopBody": {
+      "type": "text",
+      "default": "I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.",
+      "description": "SHOP SECTION \u2014 Body."
+    },
+    "shopProduct1Hook": {
+      "type": "text",
+      "default": "I reach for this one when I need to remember what is underneath the noise",
+      "description": "SHOP SECTION \u2014 Italic hook above product 1."
+    },
+    "shopProduct1Name": {
+      "type": "string",
+      "default": "Moonstone Necklace",
+      "description": "SHOP SECTION \u2014 Product 1 name."
+    },
+    "shopProduct2Hook": {
+      "type": "text",
+      "default": "For the days my mind is doing too much and I need clarity not calm",
+      "description": "SHOP SECTION \u2014 Italic hook above product 2."
+    },
+    "shopProduct2Name": {
+      "type": "string",
+      "default": "Clear Quartz Necklace",
+      "description": "SHOP SECTION \u2014 Product 2 name."
+    },
+    "shopProduct3Hook": {
+      "type": "text",
+      "default": "The word you keep coming back to, worn close to your throat",
+      "description": "SHOP SECTION \u2014 Italic hook above product 3."
+    },
+    "shopProduct3Name": {
+      "type": "string",
+      "default": "Personalised Phrase Necklace",
+      "description": "SHOP SECTION \u2014 Product 3 name."
+    },
+    "shopCtaLabel": {
+      "type": "string",
+      "default": "Browse all jewellery",
+      "description": "SHOP SECTION \u2014 Button text."
+    },
+    "mediaKicker": {
+      "type": "string",
+      "default": "Watch \u00b7 Listen \u00b7 Read",
+      "description": "MEDIA HUB SECTION \u2014 Small label."
+    },
+    "mediaTitle": {
+      "type": "string",
+      "default": "The Reset with Anna.",
+      "description": "MEDIA HUB SECTION \u2014 Heading."
+    },
+    "mediaTile1Label": {
+      "type": "string",
+      "default": "YouTube",
+      "description": "MEDIA HUB \u2014 Tile 1 platform label."
+    },
+    "mediaTile1Title": {
+      "type": "string",
+      "default": "Come Back to Yourself \u2014 daily mantras and practices.",
+      "description": "MEDIA HUB \u2014 Tile 1 title."
+    },
+    "mediaTile1Meta": {
+      "type": "string",
+      "default": "Video series",
+      "description": "MEDIA HUB \u2014 Tile 1 small meta line."
+    },
+    "mediaTile1Url": {
+      "type": "string",
+      "default": "#",
+      "description": "MEDIA HUB \u2014 Tile 1 link."
+    },
+    "mediaTile2Label": {
+      "type": "string",
+      "default": "Podcast",
+      "description": "MEDIA HUB \u2014 Tile 2 platform label."
+    },
+    "mediaTile2Title": {
+      "type": "string",
+      "default": "The Reset with Anna Lou \u2014 honest conversations about the inner world.",
+      "description": "MEDIA HUB \u2014 Tile 2 title."
+    },
+    "mediaTile2Meta": {
+      "type": "string",
+      "default": "Coming soon",
+      "description": "MEDIA HUB \u2014 Tile 2 small meta line."
+    },
+    "mediaTile2Url": {
+      "type": "string",
+      "default": "#",
+      "description": "MEDIA HUB \u2014 Tile 2 link."
+    },
+    "mediaTile3Label": {
+      "type": "string",
+      "default": "Substack",
+      "description": "MEDIA HUB \u2014 Tile 3 platform label."
+    },
+    "mediaTile3Title": {
+      "type": "string",
+      "default": "Reset Letters \u2014 weekly writing that feels like coming home.",
+      "description": "MEDIA HUB \u2014 Tile 3 title."
+    },
+    "mediaTile3Meta": {
+      "type": "string",
+      "default": "Weekly newsletter",
+      "description": "MEDIA HUB \u2014 Tile 3 small meta line."
+    },
+    "mediaTile3Url": {
+      "type": "string",
+      "default": "https://annalouwellness.substack.com",
+      "description": "MEDIA HUB \u2014 Tile 3 link."
+    },
+    "quote3Text": {
+      "type": "text",
+      "default": "The feeling itself moves through in ninety seconds if you let it. Nine years of running from ninety seconds of feeling is an extraordinary amount of cardio.",
+      "description": "QUOTE 3 \u2014 Third pull-quote (before Community)."
+    },
+    "quote3Attribution": {
+      "type": "string",
+      "default": "Anna Lou",
+      "description": "QUOTE 3 \u2014 Attribution."
+    },
+    "communityKicker": {
+      "type": "string",
+      "default": "Community",
+      "description": "COMMUNITY SECTION \u2014 Small label."
+    },
+    "communityTitle": {
+      "type": "string",
+      "default": "Come and sit with us.",
+      "description": "COMMUNITY SECTION \u2014 Heading."
+    },
+    "communityBody1": {
+      "type": "text",
+      "default": "Every Tuesday I hold a circle at The Hare and the Moon, Twickenham. Donation-based. No agenda except being in the room together. Connection is not a concept. It is biological.",
+      "description": "COMMUNITY SECTION \u2014 First body paragraph."
+    },
+    "communityBody2": {
+      "type": "text",
+      "default": "The Returning Circle runs every week without exception. No waitlist needed. Come on Tuesday.",
+      "description": "COMMUNITY SECTION \u2014 Second body paragraph."
+    },
+    "communityBody3": {
+      "type": "text",
+      "default": "A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Water outside, no agenda, just space to come back to yourself.",
+      "description": "COMMUNITY SECTION \u2014 Third body paragraph."
+    },
+    "communityCta1Label": {
+      "type": "string",
+      "default": "The Returning Circle",
+      "description": "COMMUNITY SECTION \u2014 Button 1 text."
+    },
+    "communityCta1Url": {
+      "type": "string",
+      "default": "/community/the-returning-circle",
+      "description": "COMMUNITY SECTION \u2014 Button 1 link."
+    },
+    "communityCta2Label": {
+      "type": "string",
+      "default": "The Reset Room",
+      "description": "COMMUNITY SECTION \u2014 Button 2 text."
+    },
+    "communityCta2Url": {
+      "type": "string",
+      "default": "/community/reset-room",
+      "description": "COMMUNITY SECTION \u2014 Button 2 link."
+    },
+    "communityCta3Label": {
+      "type": "string",
+      "default": "Retreat days",
+      "description": "COMMUNITY SECTION \u2014 Button 3 text."
+    },
+    "communityCta3Url": {
+      "type": "string",
+      "default": "/experiences/retreats",
+      "description": "COMMUNITY SECTION \u2014 Button 3 link."
+    },
+    "communityImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "COMMUNITY SECTION \u2014 Image on the left side. Landscape orientation works best."
+    },
+    "portraitKicker": {
+      "type": "string",
+      "default": "About",
+      "description": "ABOUT STRIP \u2014 Small label."
+    },
+    "portraitTitle": {
+      "type": "string",
+      "default": "Twenty-five years leaves a trail.",
+      "description": "ABOUT STRIP \u2014 Heading."
+    },
+    "portraitBody": {
+      "type": "text",
+      "default": "From the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot.",
+      "description": "ABOUT STRIP \u2014 Body paragraph."
+    },
+    "portraitCtaLabel": {
+      "type": "string",
+      "default": "Read Anna's story",
+      "description": "ABOUT STRIP \u2014 Button text."
+    },
+    "portraitCtaUrl": {
+      "type": "string",
+      "default": "/about",
+      "description": "ABOUT STRIP \u2014 Button link."
+    },
+    "portraitImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "ABOUT STRIP \u2014 Portrait photo of Anna. Portrait orientation works best."
+    }
   }
 }

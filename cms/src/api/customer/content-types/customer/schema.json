@@ -4,7 +4,7 @@
   "info": {
     "singularName": "customer",
     "pluralName": "customers",
-    "displayName": "Customers"
+    "displayName": "Shop \u00b7 Customer"
   },
   "options": {
     "draftAndPublish": false

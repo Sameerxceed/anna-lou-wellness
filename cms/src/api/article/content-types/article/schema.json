@@ -4,7 +4,7 @@
   "info": {
     "singularName": "article",
     "pluralName": "articles",
-    "displayName": "Article",
+    "displayName": "Story \u00b7 Article",
     "description": "Editorial articles for Reset Stories, Life, Love & Relationships, Work & Money"
   },
   "options": {
@@ -29,7 +29,9 @@
     "hero_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "category": {
       "type": "relation",

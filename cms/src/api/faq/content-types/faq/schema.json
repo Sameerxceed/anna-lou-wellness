@@ -4,7 +4,7 @@
   "info": {
     "singularName": "faq",
     "pluralName": "faqs",
-    "displayName": "FAQ",
+    "displayName": "Work \u00b7 FAQ",
     "description": "Frequently asked questions with FAQ schema for SEO"
   },
   "options": {
@@ -21,7 +21,13 @@
     },
     "category": {
       "type": "enumeration",
-      "enum": ["coaching", "shop", "membership", "experiences", "general"]
+      "enum": [
+        "coaching",
+        "shop",
+        "membership",
+        "experiences",
+        "general"
+      ]
     },
     "sort_order": {
       "type": "integer",

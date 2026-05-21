@@ -4,31 +4,91 @@
   "info": {
     "singularName": "experience-page",
     "pluralName": "experience-pages",
-    "displayName": "Experience Page",
+    "displayName": "Page \u00b7 Experiences",
     "description": "Sub-pages under /experiences (Workshops, Retreats, Corporate Wellbeing, Speaking)."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "title": { "type": "string", "required": true, "description": "Page heading (e.g. 'Workshops', 'Retreats', 'Corporate Wellbeing.', 'Speaking.')." },
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Page heading (e.g. 'Workshops', 'Retreats', 'Corporate Wellbeing.', 'Speaking.')."
+    },
     "slug": {
       "type": "uid",
       "targetField": "title",
       "required": true,
       "description": "URL slug. Must match the route exactly: 'workshops', 'retreats', 'corporate-wellbeing', 'speaking'."
     },
-    "kicker": { "type": "string", "default": "Experiences", "description": "Small uppercase label above the title." },
-    "kickerColour": { "type": "string", "default": "#7BAFDD", "description": "Hex colour for the kicker. Default blue #7BAFDD." },
-    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"], "description": "Main image at the top of the page." },
-    "intro": { "type": "text", "description": "Main body. Separate paragraphs with a BLANK LINE between them." },
-    "ctaLabel": { "type": "string", "default": "View upcoming", "description": "Optional button text." },
-    "ctaUrl": { "type": "string", "default": "/community/events", "description": "Optional button link." },
-    "secondaryList": { "type": "text", "description": "Optional. For pages with a list of cards (Corporate 'Formats' grid, Speaking 'Talks' list, etc.). One item per line. Format: 'Title|Body description'. Example: '90-minute session|A single workshop. Online or in person.'. Leave blank if not needed." },
-    "pricePence": { "type": "integer", "default": 0, "description": "Optional. Price in pence (e.g. 1500 = £15, 20000 = £200). Leave 0 for 'enquire for price' pages (Corporate Wellbeing, Speaking)." },
-    "currency": { "type": "string", "default": "gbp", "description": "Three-letter ISO currency code, lowercase." },
-    "isRecurring": { "type": "boolean", "default": false, "description": "Always leave OFF for experience-page items — they are one-off purchases." },
-    "mailchimpTag": { "type": "string", "description": "Tag attached on successful payment. Examples: 'Workshop Buyers'. Leave blank for non-purchasable pages." },
-    "grantsResetRoomAccess": { "type": "boolean", "default": false, "description": "Leave OFF." },
-    "seoTitle": { "type": "string", "description": "Optional SEO override." },
-    "seoDescription": { "type": "text", "description": "Optional SEO description for Google." }
+    "kicker": {
+      "type": "string",
+      "default": "Experiences",
+      "description": "Small uppercase label above the title."
+    },
+    "kickerColour": {
+      "type": "string",
+      "default": "#7BAFDD",
+      "description": "Hex colour for the kicker. Default blue #7BAFDD."
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Main image at the top of the page."
+    },
+    "intro": {
+      "type": "text",
+      "description": "Main body. Separate paragraphs with a BLANK LINE between them."
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": "View upcoming",
+      "description": "Optional button text."
+    },
+    "ctaUrl": {
+      "type": "string",
+      "default": "/community/events",
+      "description": "Optional button link."
+    },
+    "secondaryList": {
+      "type": "text",
+      "description": "Optional. For pages with a list of cards (Corporate 'Formats' grid, Speaking 'Talks' list, etc.). One item per line. Format: 'Title|Body description'. Example: '90-minute session|A single workshop. Online or in person.'. Leave blank if not needed."
+    },
+    "pricePence": {
+      "type": "integer",
+      "default": 0,
+      "description": "Optional. Price in pence (e.g. 1500 = \u00a315, 20000 = \u00a3200). Leave 0 for 'enquire for price' pages (Corporate Wellbeing, Speaking)."
+    },
+    "currency": {
+      "type": "string",
+      "default": "gbp",
+      "description": "Three-letter ISO currency code, lowercase."
+    },
+    "isRecurring": {
+      "type": "boolean",
+      "default": false,
+      "description": "Always leave OFF for experience-page items \u2014 they are one-off purchases."
+    },
+    "mailchimpTag": {
+      "type": "string",
+      "description": "Tag attached on successful payment. Examples: 'Workshop Buyers'. Leave blank for non-purchasable pages."
+    },
+    "grantsResetRoomAccess": {
+      "type": "boolean",
+      "default": false,
+      "description": "Leave OFF."
+    },
+    "seoTitle": {
+      "type": "string",
+      "description": "Optional SEO override."
+    },
+    "seoDescription": {
+      "type": "text",
+      "description": "Optional SEO description for Google."
+    }
   }
 }
