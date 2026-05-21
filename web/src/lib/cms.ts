@@ -157,23 +157,79 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 // Navigation — fetched from Strapi `navigation` singleType (Anna edits in CMS),
 // falls back to the hardcoded list in `src/data/site.ts` if Strapi is unreachable
 // or hasn't been seeded yet.
+// Map of editorial top-level menu href -> the corresponding `section` value
+// used in the Article Category collection. When the top-level item matches
+// one of these, the dropdown children are AUTO-DERIVED from Article Categories
+// filtered by that section (Anna edits categories in one place; both the
+// menu dropdown and the on-page subcategory tabs stay in sync).
+//
+// Other top-level items (Experiences, Work with Anna, Shop, Community, About)
+// keep using the children defined on the Navigation singletype because their
+// sub-items aren't 1:1 with Article Categories — they point to programmes,
+// products, sub-pages etc.
+const EDITORIAL_SECTION_BY_HREF: Record<string, string> = {
+  '/reset-stories': 'reset-stories',
+  '/life': 'life',
+  '/love-and-relationships': 'love-and-relationships',
+  '/work-and-money': 'work-and-money',
+};
+
+async function fetchCategoriesBySection(): Promise<Record<string, { label: string; href: string }[]>> {
+  try {
+    const { data } = await fetchAPI('/article-categories', { 'pagination[limit]': '200', sort: 'sort_order:asc,name:asc' });
+    if (!Array.isArray(data)) return {};
+    const grouped: Record<string, { label: string; href: string }[]> = {};
+    for (const raw of data) {
+      const cat = raw as { name?: string; slug?: string; section?: string };
+      if (!cat?.section || !cat?.slug || !cat?.name) continue;
+      const sectionHref = Object.entries(EDITORIAL_SECTION_BY_HREF).find(([, s]) => s === cat.section)?.[0];
+      if (!sectionHref) continue;
+      grouped[sectionHref] ??= [];
+      grouped[sectionHref].push({ label: cat.name, href: `${sectionHref}/${cat.slug}` });
+    }
+    return grouped;
+  } catch {
+    return {};
+  }
+}
+
 export async function getNavigation(): Promise<NavItem[]> {
   try {
-    // Strapi v5 nested populate: populate items, and within each item populate everything (incl. children)
-    const { data: d } = await fetchAPI('/navigation', { 'populate[items][populate]': '*' });
-    const items = (d as { items?: unknown[] } | null)?.items;
+    const [navRes, categoriesBySection] = await Promise.all([
+      fetchAPI('/navigation', { 'populate[items][populate]': '*' }),
+      fetchCategoriesBySection(),
+    ]);
+    const items = (navRes?.data as { items?: unknown[] } | null)?.items;
     if (!Array.isArray(items) || items.length === 0) return fallbackNavigation;
+
     return items.map((raw) => {
       const item = raw as { label?: string; href?: string; colour?: string; children?: unknown[] };
-      const children = Array.isArray(item.children)
-        ? item.children.map((c) => {
-            const child = c as { label?: string; href?: string };
-            return { label: String(child.label || ''), href: String(child.href || '#') };
-          })
-        : undefined;
+      const href = String(item.href || '#');
+
+      // Editorial sections: auto-derive children from Article Categories so
+      // Anna has a single source of truth.
+      let children: { label: string; href: string }[] | undefined;
+      if (EDITORIAL_SECTION_BY_HREF[href]) {
+        const fromCategories = categoriesBySection[href];
+        if (fromCategories && fromCategories.length > 0) {
+          children = [{ label: 'All', href }, ...fromCategories];
+        }
+      }
+
+      // Fall back to the Navigation singletype's stored children if not
+      // editorial (or if no categories yet for this section).
+      if (!children) {
+        children = Array.isArray(item.children)
+          ? item.children.map((c) => {
+              const child = c as { label?: string; href?: string };
+              return { label: String(child.label || ''), href: String(child.href || '#') };
+            })
+          : undefined;
+      }
+
       return {
         label: String(item.label || ''),
-        href: String(item.href || '#'),
+        href,
         colour: item.colour || undefined,
         children,
       };
@@ -228,6 +284,52 @@ export async function getTopStripText(): Promise<string> {
 }
 
 export const getFooterLinks = (): FooterLinks => fallbackFooterLinks;
+
+// ═══ FOOTER singletype — Anna edits closing message, link columns, legal, Substack CTA ═══
+export interface FooterData {
+  closingMessage: string;
+  exploreLinks: { label: string; href: string }[];
+  connectLinks: { label: string; href: string }[];
+  legalLinks: { label: string; href: string }[];
+  substackCtaLabel: string;
+  substackCtaUrl: string;
+}
+
+export async function getFooter(): Promise<FooterData> {
+  const fallback: FooterData = {
+    closingMessage: "You don't have to hold everything.",
+    exploreLinks: fallbackFooterLinks.explore,
+    connectLinks: fallbackFooterLinks.connect,
+    legalLinks: [
+      { label: 'Press', href: '/about/press' },
+      { label: 'Privacy', href: '/privacy' },
+      { label: 'Terms', href: '/terms' },
+    ],
+    substackCtaLabel: 'Join Reset Letters on Substack →',
+    substackCtaUrl: 'https://annalouwellness.substack.com',
+  };
+  try {
+    const { data: d } = await fetchAPI('/footer', { 'populate[explore_links]': '*', 'populate[connect_links]': '*', 'populate[legal_links]': '*' } as any);
+    if (!d) return fallback;
+    const mapLinks = (arr: any): { label: string; href: string }[] =>
+      Array.isArray(arr) && arr.length > 0
+        ? arr.map((l: any) => ({ label: String(l?.label || ''), href: String(l?.href || '#') }))
+        : [];
+    const explore = mapLinks((d as any).explore_links);
+    const connect = mapLinks((d as any).connect_links);
+    const legal = mapLinks((d as any).legal_links);
+    return {
+      closingMessage: (d as any).closing_message || fallback.closingMessage,
+      exploreLinks: explore.length ? explore : fallback.exploreLinks,
+      connectLinks: connect.length ? connect : fallback.connectLinks,
+      legalLinks: legal.length ? legal : fallback.legalLinks,
+      substackCtaLabel: (d as any).substack_cta_label || fallback.substackCtaLabel,
+      substackCtaUrl: (d as any).substack_cta_url || fallback.substackCtaUrl,
+    };
+  } catch {
+    return fallback;
+  }
+}
 
 // ═══ ARTICLES ═══
 

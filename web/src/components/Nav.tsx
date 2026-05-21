@@ -106,7 +106,7 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
           {/* Center logo */}
           <div className="nav-center-logo">
             <Link href="/" className="nav-logo" aria-label={siteSettings?.siteName || 'Anna Lou Wellness'}>
-              <img src="/brand/alw-wordmark-stacked.svg" alt={siteSettings?.siteName || 'Anna Lou Wellness'} className="nav-logo-img" />
+              <img src={siteSettings?.logo || '/brand/alw-wordmark-stacked.svg'} alt={siteSettings?.siteName || 'Anna Lou Wellness'} className="nav-logo-img" />
             </Link>
           </div>
 

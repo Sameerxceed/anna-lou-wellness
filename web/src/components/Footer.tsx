@@ -1,22 +1,23 @@
 import Link from 'next/link';
+import type { FooterData } from '@/lib/cms';
 
 interface FooterProps {
   siteSettings: any;
-  footerLinks: { explore: Array<{ label: string; href: string }>; connect: Array<{ label: string; href: string }> };
+  footer: FooterData;
 }
 
-export default function Footer({ siteSettings, footerLinks }: FooterProps) {
+export default function Footer({ siteSettings, footer }: FooterProps) {
   return (
     <footer className="footer-wrap">
       {/* Closing message */}
-      <p className="footer-message">You don&rsquo;t have to hold everything.</p>
+      <p className="footer-message">{footer.closingMessage}</p>
 
       {/* Tier 1: Primary navigation */}
       <nav className="footer-tier1">
-        {footerLinks.explore.map(link => (
+        {footer.exploreLinks.map(link => (
           <Link key={link.href} href={link.href}>{link.label}</Link>
         ))}
-        {footerLinks.connect.map(link => (
+        {footer.connectLinks.map(link => (
           <Link key={link.href} href={link.href}>{link.label}</Link>
         ))}
       </nav>
@@ -31,14 +32,14 @@ export default function Footer({ siteSettings, footerLinks }: FooterProps) {
 
       {/* Tier 3: Legal */}
       <nav className="footer-tier3">
-        <Link href="/about/press">Press</Link>
-        <Link href="/privacy">Privacy</Link>
-        <Link href="/terms">Terms</Link>
+        {footer.legalLinks.map(link => (
+          <Link key={link.href} href={link.href}>{link.label}</Link>
+        ))}
       </nav>
 
       {/* Substack CTA */}
       <div className="footer-substack">
-        <a href="#">Join Reset Letters on Substack &rarr;</a>
+        <a href={footer.substackCtaUrl} target="_blank" rel="noopener noreferrer">{footer.substackCtaLabel}</a>
       </div>
 
       {/* Bottom */}

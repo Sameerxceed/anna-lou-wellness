@@ -1,0 +1,48 @@
+{
+  "kind": "singleType",
+  "collectionName": "footers",
+  "info": {
+    "singularName": "footer",
+    "pluralName": "footers",
+    "displayName": "Footer",
+    "description": "Footer at the bottom of every page — closing message, link columns, legal, Substack CTA."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "closing_message": {
+      "type": "string",
+      "default": "You don't have to hold everything.",
+      "description": "The italic line at the top of the footer."
+    },
+    "explore_links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "nav.child-link",
+      "description": "First row of footer links (editorial sections)."
+    },
+    "connect_links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "nav.child-link",
+      "description": "Second row of footer links (work / shop / community / about)."
+    },
+    "legal_links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "nav.child-link",
+      "description": "Small legal links at the bottom (Press, Privacy, Terms)."
+    },
+    "substack_cta_label": {
+      "type": "string",
+      "default": "Join Reset Letters on Substack →",
+      "description": "Label on the Substack CTA button at the bottom of the footer."
+    },
+    "substack_cta_url": {
+      "type": "string",
+      "default": "https://annalouwellness.substack.com",
+      "description": "Where the Substack CTA button links to."
+    }
+  }
+}

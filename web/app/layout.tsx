@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getSiteSettings, getNavigation, getFooterLinks, getTopStripText } from '@/lib/cms';
+import { getSiteSettings, getNavigation, getFooterLinks, getTopStripText, getFooter } from '@/lib/cms';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import Lightbox from '@/components/Lightbox';
@@ -95,12 +95,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [siteSettings, navigation, footerLinks, topStripText] = await Promise.all([
+  const [siteSettings, navigation, footerLinks, topStripText, footer] = await Promise.all([
     getSiteSettings(),
     getNavigation(),
     getFooterLinks(),
     getTopStripText(),
+    getFooter(),
   ]);
+  void footerLinks; // kept for backwards-compat with other consumers; Footer now uses `footer`
 
   return (
     <html lang="en">
@@ -117,7 +119,7 @@ export default async function RootLayout({
       <body>
         <Nav navigation={navigation} siteSettings={siteSettings} topStripText={topStripText} />
         <main>{children}</main>
-        <Footer siteSettings={siteSettings} footerLinks={footerLinks} />
+        <Footer siteSettings={siteSettings} footer={footer} />
         <Lightbox />
         <CookieBanner bannerText={siteSettings.cookieBannerText} />
         <BackToTop />
