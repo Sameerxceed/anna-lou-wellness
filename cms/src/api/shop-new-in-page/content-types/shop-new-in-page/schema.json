@@ -1,0 +1,69 @@
+{
+  "kind": "singleType",
+  "collectionName": "shop_new_in_pages",
+  "info": {
+    "singularName": "shop-new-in-page",
+    "pluralName": "shop-new-in-pages",
+    "displayName": "Shop · New In",
+    "description": "Sub-page under Shop > New In. All visible copy is editable here so Anna can change the landing without touching code."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Shop",
+      "description": "Small uppercase label above the title."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#5DCAA5",
+      "description": "Hex colour for the kicker label. Default is the brand green for the Shop section."
+    },
+    "title": {
+      "type": "string",
+      "default": "New In",
+      "description": "Big page headline."
+    },
+    "parent_label": {
+      "type": "string",
+      "default": "Shop",
+      "description": "Breadcrumb parent label (e.g. \"Shop\")."
+    },
+    "parent_href": {
+      "type": "string",
+      "default": "/shop",
+      "description": "Breadcrumb parent link."
+    },
+    "paragraph_1": {
+      "type": "text",
+      "default": "The latest arrivals. New pieces designed with intention, made to be worn every day. Every piece is handmade in Anna's Design Lab on Taggs Island, using ethically sourced materials.",
+      "description": "First body paragraph. Leave blank to skip."
+    },
+    "paragraph_2": {
+      "type": "text",
+      "default": "Anna moved all manufacturing to the UK to uphold quality and ethical production. Each piece is crafted as a cherished keepsake, vibrant, personalised designs that empower you to express your unique style.",
+      "description": "Second body paragraph. Leave blank to skip."
+    },
+    "paragraph_3": {
+      "type": "text",
+      "default": "New pieces are added regularly. Sign up to Reset Letters for first access and behind-the-scenes stories about each new collection.",
+      "description": "Third body paragraph. Leave blank to skip."
+    },
+    "paragraph_4": {
+      "type": "text",
+      "description": "Fourth body paragraph (optional). Leave blank to skip."
+    },
+    "cta_label": {
+      "type": "string",
+      "default": "Browse all jewellery",
+      "description": "Call-to-action button text at the bottom of the page."
+    },
+    "cta_url": {
+      "type": "string",
+      "default": "/shop",
+      "description": "Where the CTA button links to."
+    },
+    "seo_title": { "type": "string" },
+    "seo_description": { "type": "text" }
+  }
+}

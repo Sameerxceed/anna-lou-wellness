@@ -121,6 +121,13 @@ async function seedPages(strapi) {
   await ensureSingleType(strapi, 'api::work-with-anna-page.work-with-anna-page', {});
   await ensureSingleType(strapi, 'api::shop-page.shop-page', {});
 
+  // ═══ Shop sub-pages — three sibling singletons under /shop/* ═══
+  // Each was previously hardcoded inside its page.tsx; now CMS-editable
+  // so Anna controls every paragraph and button label from admin.
+  await ensureSingleType(strapi, 'api::shop-new-in-page.shop-new-in-page', {});
+  await ensureSingleType(strapi, 'api::shop-personalised-page.shop-personalised-page', {});
+  await ensureSingleType(strapi, 'api::shop-esj-page.shop-esj-page', {});
+
   // ═══ About Page — seed press logos + certifications as components ═══
   // Schema converted these from JSON to repeatable components so Anna can edit
   // through a form (with image upload per row) instead of raw JSON. Pre-populate

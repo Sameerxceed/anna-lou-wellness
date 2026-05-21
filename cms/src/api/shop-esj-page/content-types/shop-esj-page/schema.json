@@ -1,0 +1,59 @@
+{
+  "kind": "singleType",
+  "collectionName": "shop_esj_pages",
+  "info": {
+    "singularName": "shop-esj-page",
+    "pluralName": "shop-esj-pages",
+    "displayName": "Shop · Emotional Support Jewellery",
+    "description": "Sub-page under Shop > Emotional Support Jewellery (ESJ). All visible copy is editable here."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Shop"
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#5DCAA5"
+    },
+    "title": {
+      "type": "string",
+      "default": "Emotional Support Jewellery"
+    },
+    "parent_label": {
+      "type": "string",
+      "default": "Shop"
+    },
+    "parent_href": {
+      "type": "string",
+      "default": "/shop"
+    },
+    "paragraph_1": {
+      "type": "text",
+      "default": "Story-first pieces designed to hold you in hard moments. Each piece has a meaning and a purpose, chosen not just for beauty but for what it does."
+    },
+    "paragraph_2": {
+      "type": "text",
+      "default": "Moonstone for when you need to remember what is underneath the noise. Clear Quartz for the days your mind is doing too much. Rose Quartz for self-love. Amethyst for calm. Black Tourmaline for grounding and protection."
+    },
+    "paragraph_3": {
+      "type": "text",
+      "default": "The ESJ range began because clients kept asking: what can I wear that will remind me of the work we did together? Something I can touch when things get loud. Something that anchors me."
+    },
+    "paragraph_4": {
+      "type": "text",
+      "default": "Every crystal is hand-selected. Every piece is made in the UK. The story behind each stone is included with your order."
+    },
+    "cta_label": {
+      "type": "string",
+      "default": "Browse ESJ collection"
+    },
+    "cta_url": {
+      "type": "string",
+      "default": "/shop"
+    },
+    "seo_title": { "type": "string" },
+    "seo_description": { "type": "text" }
+  }
+}

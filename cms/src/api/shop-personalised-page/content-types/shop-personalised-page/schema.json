@@ -1,0 +1,61 @@
+{
+  "kind": "singleType",
+  "collectionName": "shop_personalised_pages",
+  "info": {
+    "singularName": "shop-personalised-page",
+    "pluralName": "shop-personalised-pages",
+    "displayName": "Shop · Personalised",
+    "description": "Sub-page under Shop > Personalised Pieces. All visible copy is editable here."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Shop",
+      "description": "Small uppercase label above the title."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#5DCAA5",
+      "description": "Hex colour for the kicker label."
+    },
+    "title": {
+      "type": "string",
+      "default": "Personalised Pieces"
+    },
+    "parent_label": {
+      "type": "string",
+      "default": "Shop"
+    },
+    "parent_href": {
+      "type": "string",
+      "default": "/shop"
+    },
+    "paragraph_1": {
+      "type": "text",
+      "default": "The word you keep coming back to, worn close to your throat. Names, dates, and words that matter, hand-engraved on pieces designed to last."
+    },
+    "paragraph_2": {
+      "type": "text",
+      "default": "Personalised jewellery has been at the heart of Anna Lou of London since the beginning. From the Portobello Road stall to Harrods, the principle has never changed: a piece of jewellery should mean something."
+    },
+    "paragraph_3": {
+      "type": "text",
+      "default": "Every personalised piece is made to order in the Design Lab on Taggs Island. Allow 5 to 7 working days for production. UK delivery is free on orders over £50."
+    },
+    "paragraph_4": {
+      "type": "text",
+      "default": "For bespoke commissions or custom designs, please get in touch directly."
+    },
+    "cta_label": {
+      "type": "string",
+      "default": "Browse personalised"
+    },
+    "cta_url": {
+      "type": "string",
+      "default": "/shop"
+    },
+    "seo_title": { "type": "string" },
+    "seo_description": { "type": "text" }
+  }
+}

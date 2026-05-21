@@ -272,6 +272,47 @@ export async function getSectionLandingPage(
   }
 }
 
+// Sub-page shape used by /shop/new-in, /shop/personalised, /shop/emotional-support-jewellery
+// (and reusable for any future SubPage-rendered sub-page).
+//
+// Fields are filtered down to non-empty paragraphs so the page can render
+// `paragraphs.map(...)` without showing blank gaps when Anna leaves a slot empty.
+export type SubPageData = {
+  kicker: string;
+  kickerColour: string;
+  title: string;
+  parentLabel: string;
+  parentHref: string;
+  paragraphs: string[];
+  ctaLabel: string;
+  ctaUrl: string;
+};
+
+export async function getSubPage(
+  endpoint: string,
+  fallback: SubPageData,
+): Promise<SubPageData> {
+  try {
+    const { data: d } = await fetchAPI(endpoint, { populate: '*' });
+    if (!d) return fallback;
+    const r = d as Record<string, unknown>;
+    const paragraphs = [r.paragraph_1, r.paragraph_2, r.paragraph_3, r.paragraph_4]
+      .filter((p): p is string => typeof p === 'string' && p.trim().length > 0);
+    return {
+      kicker: (r.kicker as string) || fallback.kicker,
+      kickerColour: (r.kicker_colour as string) || fallback.kickerColour,
+      title: (r.title as string) || fallback.title,
+      parentLabel: (r.parent_label as string) || fallback.parentLabel,
+      parentHref: (r.parent_href as string) || fallback.parentHref,
+      paragraphs: paragraphs.length > 0 ? paragraphs : fallback.paragraphs,
+      ctaLabel: (r.cta_label as string) || fallback.ctaLabel,
+      ctaUrl: (r.cta_url as string) || fallback.ctaUrl,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 // Top-strip text fetched from same `navigation` singleType (cheap, no extra request)
 export async function getTopStripText(): Promise<string> {
   try {

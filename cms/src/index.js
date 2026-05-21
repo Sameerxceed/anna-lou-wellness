@@ -49,6 +49,10 @@ module.exports = {
         'api::work-and-money-page.work-and-money-page',
         'api::work-with-anna-page.work-with-anna-page',
         'api::shop-page.shop-page',
+        // Shop sub-pages (new-in, personalised, ESJ)
+        'api::shop-new-in-page.shop-new-in-page',
+        'api::shop-personalised-page.shop-personalised-page',
+        'api::shop-esj-page.shop-esj-page',
         // Editorial / collection
         'api::article.article',
         'api::article-category.article-category',
