@@ -265,7 +265,7 @@ const navStyles = `
   line-height: 0;
 }
 .nav-logo-img {
-  height: 56px;
+  height: 72px;
   width: auto;
   display: block;
 }
