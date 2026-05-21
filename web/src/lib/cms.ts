@@ -536,7 +536,9 @@ export async function getMembership(): Promise<Membership | null> {
       description: d.description || '',
       priceMonthly: d.price_monthly ?? 25,
       stripePriceId: d.stripe_price_id || '',
-      features: Array.isArray(d.features) ? d.features : [],
+      features: Array.isArray(d.features)
+        ? d.features.map((f: any) => (typeof f === 'string' ? f : String(f?.text || ''))).filter(Boolean)
+        : [],
       heroImage: mediaUrl(d.hero_image),
     };
   } catch {
@@ -554,8 +556,8 @@ export interface AboutPage {
   storyParagraph2: string;
   additionalBio: string;
   portrait: string;
-  pressLogos: { name: string; style?: string }[];
-  certifications: { name: string; colour: string }[];
+  pressLogos: { name: string; logo?: string }[];
+  certifications: { name: string; colour: string; badge?: string }[];
 }
 
 export async function getAboutPage(): Promise<AboutPage> {
@@ -582,8 +584,16 @@ export async function getAboutPage(): Promise<AboutPage> {
       storyParagraph2: d.story_paragraph_2 || fallback.storyParagraph2,
       additionalBio: d.additional_bio || fallback.additionalBio,
       portrait: mediaUrl(d.portrait) || fallback.portrait,
-      pressLogos: Array.isArray(d.press_logos) ? d.press_logos : fallback.pressLogos,
-      certifications: Array.isArray(d.certifications) ? d.certifications : fallback.certifications,
+      pressLogos: Array.isArray(d.press_logos)
+        ? d.press_logos.map((p: any) => ({ name: String(p?.name || ''), logo: mediaUrl(p?.logo) || undefined }))
+        : fallback.pressLogos,
+      certifications: Array.isArray(d.certifications)
+        ? d.certifications.map((c: any) => ({
+            name: String(c?.name || ''),
+            colour: String(c?.colour || '#6E3A5A'),
+            badge: mediaUrl(c?.badge) || undefined,
+          }))
+        : fallback.certifications,
     };
   } catch {
     return fallback;
@@ -642,7 +652,11 @@ export async function getCommunityPage(): Promise<CommunityPage> {
       resetRoomTitle: d.reset_room_title || fallback.resetRoomTitle,
       resetRoomDescription: d.reset_room_description || fallback.resetRoomDescription,
       resetRoomPrice: d.reset_room_price || fallback.resetRoomPrice,
-      resetRoomFeatures: Array.isArray(d.reset_room_features) ? d.reset_room_features : fallback.resetRoomFeatures,
+      resetRoomFeatures: Array.isArray(d.reset_room_features)
+        ? d.reset_room_features
+            .map((f: any) => (typeof f === 'string' ? f : String(f?.text || '')))
+            .filter(Boolean)
+        : fallback.resetRoomFeatures,
       resetRoomImage: mediaUrl(d.reset_room_image) || fallback.resetRoomImage,
       eventsTitle: d.events_title || fallback.eventsTitle,
       eventsDescription: d.events_description || fallback.eventsDescription,

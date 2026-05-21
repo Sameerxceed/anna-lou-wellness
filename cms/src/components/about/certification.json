@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_about_certifications",
+  "info": {
+    "displayName": "Certification",
+    "icon": "certificate",
+    "description": "A certification badge (ICF, CPD, TRE, etc.). Upload the official badge image and the name shown as text fallback."
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Certification name. Use a line break in the field for two-line display (e.g. 'ICF\\nCertified Coach')."
+    },
+    "colour": {
+      "type": "string",
+      "default": "#6E3A5A",
+      "description": "Hex colour for the badge border and text when no image is uploaded. Default plum."
+    },
+    "badge": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Official certification badge artwork. Recommended: transparent PNG or SVG, 120px tall."
+    }
+  }
+}

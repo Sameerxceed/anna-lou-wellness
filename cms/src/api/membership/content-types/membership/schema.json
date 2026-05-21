@@ -17,7 +17,7 @@
     "recurringInterval": { "type": "enumeration", "enum": ["month", "year"], "default": "month", "description": "Only used when 'isRecurring' is on. month = monthly billing, year = annual." },
     "mailchimpTag": { "type": "string", "default": "Reset Room Members", "description": "Tag attached on successful payment. Must match a Mailchimp tag name EXACTLY (case-sensitive)." },
     "grantsResetRoomAccess": { "type": "boolean", "default": true, "description": "If ticked, a successful payment promotes the user to the 'reset-room-member' role in Strapi (unlocks /community/reset-room/* gated pages)." },
-    "features": { "type": "json", "description": "List of membership features for the marketing page." },
+    "features": { "type": "component", "repeatable": true, "component": "shared.feature-item", "description": "List of membership features for the marketing page." },
     "hero_image": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
     "seo_title": { "type": "string" },
     "seo_description": { "type": "text" }

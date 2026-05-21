@@ -31,10 +31,14 @@
       "allowedTypes": ["images"]
     },
     "press_logos": {
-      "type": "json"
+      "type": "component",
+      "repeatable": true,
+      "component": "about.press-logo"
     },
     "certifications": {
-      "type": "json"
+      "type": "component",
+      "repeatable": true,
+      "component": "about.certification"
     },
     "roles_tagline": {
       "type": "string",

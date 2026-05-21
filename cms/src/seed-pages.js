@@ -110,6 +110,52 @@ async function seedPages(strapi) {
   // ═══ Decoder Page singleType (free lead-magnet page) ═══
   await ensureSingleType(strapi, 'api::decoder-page.decoder-page', {});
 
+  // ═══ About Page — seed press logos + certifications as components ═══
+  // Schema converted these from JSON to repeatable components so Anna can edit
+  // through a form (with image upload per row) instead of raw JSON. Pre-populate
+  // with the current names so the structure is visible from day one.
+  await ensureSingleType(strapi, 'api::about-page.about-page', {
+    press_logos: [
+      { name: 'Harrods' },
+      { name: 'Selfridges' },
+      { name: 'Harvey Nichols' },
+      { name: 'Liberty' },
+      { name: 'QVC Japan' },
+      { name: 'Disney' },
+      { name: 'The Telegraph' },
+      { name: 'Stylist' },
+    ],
+    certifications: [
+      { name: 'ICF\nCertified Coach', colour: '#6E3A5A' },
+      { name: 'CPD\nAccredited', colour: '#7BAFDD' },
+      { name: 'TRE®\nProvider', colour: '#5DCAA5' },
+    ],
+  });
+
+  // ═══ Community Page — seed Reset Room features as components ═══
+  await ensureSingleType(strapi, 'api::community-page.community-page', {
+    reset_room_features: [
+      { text: 'Live monthly Reset Call with Anna (90 minutes)' },
+      { text: 'Full Resource Library — workshop replays, founder resets, paid archive' },
+      { text: 'Members-only events, seasonal resets, in-person houseboat days' },
+      { text: 'First access to new retreats (48 hours before public)' },
+      { text: '10% off all 1:1 work' },
+    ],
+  });
+
+  // ═══ Membership — seed features as components (in addition to other defaults) ═══
+  // Note: this won't overwrite the existing membership singleType seed above; ensureSingleType
+  // only backfills empty fields. Calling again just to populate the new features field.
+  await ensureSingleType(strapi, 'api::membership.membership', {
+    features: [
+      { text: 'Live monthly Reset Call with Anna' },
+      { text: 'Full Resource Library access' },
+      { text: 'Members-only events' },
+      { text: 'First access to new retreats' },
+      { text: '10% off 1:1 work' },
+    ],
+  });
+
   // ═══ Navigation singleType — Anna edits all menus + sub-menus here ═══
   // Seeded with the current site.ts fallback so the first admin page-load
   // shows the live nav rather than an empty form. The frontend reads this

@@ -87,17 +87,21 @@ export default async function AboutPage() {
         <p className="about-press-label">As seen in</p>
         <div className="about-press-row">
           {pressLogos.map((logo) => (
-            <span key={logo.name} className="about-press-logo">{logo.name}</span>
+            logo.logo
+              ? <img key={logo.name} src={logo.logo} alt={logo.name} className="about-press-logo-img" />
+              : <span key={logo.name} className="about-press-logo">{logo.name}</span>
           ))}
         </div>
         <p className="about-press-label">Certified</p>
         <div className="about-press-row">
           {certifications.map((cert) => (
-            <div key={cert.name} className="about-cert" style={{ borderColor: cert.colour, color: cert.colour }}>
-              {cert.name.split('\n').map((line, i) => (
-                <span key={i}>{i > 0 && <br />}{line}</span>
-              ))}
-            </div>
+            cert.badge
+              ? <img key={cert.name} src={cert.badge} alt={cert.name} className="about-cert-img" />
+              : <div key={cert.name} className="about-cert" style={{ borderColor: cert.colour, color: cert.colour }}>
+                  {cert.name.split('\n').map((line, i) => (
+                    <span key={i}>{i > 0 && <br />}{line}</span>
+                  ))}
+                </div>
           ))}
         </div>
       </section>
@@ -148,7 +152,10 @@ const aboutStyles = `
 .about-press-row { display:flex; align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem; }
 .about-press-logo { font-family:Georgia,serif; font-weight:400; font-size:0.95rem; letter-spacing:0.1em; text-transform:uppercase; color:#3D3D3A; opacity:0.5; transition:opacity 0.3s; }
 .about-press-logo:hover { opacity:0.8; }
+.about-press-logo-img { height:32px; width:auto; opacity:0.7; filter:grayscale(100%); transition:all 0.3s; }
+.about-press-logo-img:hover { opacity:1; filter:grayscale(0%); }
 .about-cert { width:100px; height:56px; border:2px solid; border-radius:4px; display:flex; align-items:center; justify-content:center; text-align:center; font-family:Mulish,sans-serif; font-weight:600; font-size:0.6rem; letter-spacing:0.04em; line-height:1.5; }
+.about-cert-img { height:56px; width:auto; }
 
 .about-contact { background:#fff; padding:2rem 3rem; }
 .about-contact-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }

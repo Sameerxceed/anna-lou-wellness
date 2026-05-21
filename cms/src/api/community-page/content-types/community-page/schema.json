@@ -46,7 +46,9 @@
       "default": "£25 per month"
     },
     "reset_room_features": {
-      "type": "json"
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.feature-item"
     },
     "reset_room_image": {
       "type": "media",

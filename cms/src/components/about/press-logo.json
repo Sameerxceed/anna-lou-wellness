@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_about_press_logos",
+  "info": {
+    "displayName": "Press Logo",
+    "icon": "newspaper-o",
+    "description": "A press / 'as seen in' logo. Upload the licensed logo image and the name shown as fallback if image fails to load."
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Press outlet name (e.g. Harrods, Selfridges). Used as alt text and as fallback if no logo image uploaded."
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Licensed logo artwork. Recommended: transparent PNG or SVG, 200px tall."
+    }
+  }
+}

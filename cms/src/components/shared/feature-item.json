@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_feature_items",
+  "info": {
+    "displayName": "Feature / Bullet Item",
+    "icon": "check",
+    "description": "A single bullet-point item for features lists (membership benefits, programme inclusions, etc.). Just text — the page renders the bullet styling."
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true,
+      "description": "The feature text. One short sentence per item."
+    }
+  }
+}
