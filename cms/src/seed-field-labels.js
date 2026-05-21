@@ -86,6 +86,35 @@ const SKIP_FIELDS = new Set([
   'localizations',
 ]);
 
+// Pick the best "title-like" field on a content type / component so each
+// instance in a repeatable list shows by its actual name (e.g. menu item
+// "Reset Stories") instead of "nav.menu-item #1".
+//
+// Strapi calls this the "mainField" — it's read from settings.mainField
+// in the Content Manager configuration.
+//
+// Priority order matches what real-world schemas tend to call their title:
+//   label  → menu items, buttons, sub-links
+//   title  → articles, programmes, generic content
+//   name   → products, people, categories
+//   heading → hero sections, blocks
+// Fallback: first string attribute on the schema.
+const TITLE_FIELD_PRIORITY = ['label', 'title', 'name', 'displayName', 'heading'];
+const pickMainField = (attributes) => {
+  for (const field of TITLE_FIELD_PRIORITY) {
+    const attr = attributes[field];
+    if (attr && (attr.type === 'string' || attr.type === 'uid')) {
+      return field;
+    }
+  }
+  for (const [field, attr] of Object.entries(attributes)) {
+    if (attr && (attr.type === 'string' || attr.type === 'uid')) {
+      return field;
+    }
+  }
+  return null;
+};
+
 module.exports = async (strapi) => {
   if (process.env.SKIP_FIELD_LABEL_SEED === 'true') {
     strapi.log.info('[seed-field-labels] skipped (SKIP_FIELD_LABEL_SEED=true)');
@@ -93,7 +122,8 @@ module.exports = async (strapi) => {
   }
 
   // Walk one configuration record (content type or component) and apply
-  // friendly labels to its fields. Returns true if anything changed.
+  // friendly labels to its fields + pick a sensible mainField so the entry
+  // is identifiable in repeatable lists. Returns status of what changed.
   const applyLabelsTo = async (storeKey, attributes) => {
     const store = strapi.store({
       type: 'plugin',
@@ -147,9 +177,24 @@ module.exports = async (strapi) => {
       }
     }
 
+    // Ensure each repeatable list entry shows by its actual title.
+    // For components especially — without this, "Reset Stories" / "Life"
+    // / "Love & Rels" all show as "nav.menu-item #1, #2, #3" in admin.
+    const existingSettings = existing.settings || {};
+    const desiredMainField = pickMainField(attributes);
+    const mainFieldIsRaw =
+      !existingSettings.mainField || existingSettings.mainField === 'id';
+    let nextSettings = existingSettings;
+    if (desiredMainField && mainFieldIsRaw) {
+      nextSettings = { ...existingSettings, mainField: desiredMainField };
+      changed = true;
+    }
+
     if (changed) {
-      await store.set({ value: { ...existing, metadatas } });
-      return { status: 'updated' };
+      await store.set({
+        value: { ...existing, metadatas, settings: nextSettings },
+      });
+      return { status: 'updated', mainField: nextSettings.mainField };
     }
     return { status: 'unchanged' };
   };
@@ -176,7 +221,8 @@ module.exports = async (strapi) => {
       );
       if (result.status === 'updated') {
         touched++;
-        strapi.log.info(`[seed-field-labels] friendly labels applied → ${uid}`);
+        const tail = result.mainField ? ` (mainField=${result.mainField})` : '';
+        strapi.log.info(`[seed-field-labels] applied → ${uid}${tail}`);
       } else {
         skipped++;
       }
@@ -187,8 +233,9 @@ module.exports = async (strapi) => {
   }
 
   // 2. Components (nav.menu-item, nav.child-link, about.press-logo, etc.)
-  //    Each is rendered nested inside its parent's edit form. Component
-  //    fields show with the same camelCase issue if not seeded.
+  //    Each is rendered nested inside its parent's edit form. Without a
+  //    mainField each instance in a repeatable list shows as a generic
+  //    "nav.menu-item #1" — with mainField=label it shows as "Reset Stories".
   const componentUids = Object.keys(strapi.components || {});
   for (const uid of componentUids) {
     try {
@@ -203,7 +250,8 @@ module.exports = async (strapi) => {
       );
       if (result.status === 'updated') {
         touched++;
-        strapi.log.info(`[seed-field-labels] friendly labels applied → component ${uid}`);
+        const tail = result.mainField ? ` (mainField=${result.mainField})` : '';
+        strapi.log.info(`[seed-field-labels] applied → component ${uid}${tail}`);
       } else {
         skipped++;
       }
