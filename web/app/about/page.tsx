@@ -25,7 +25,7 @@ const defaultPressLogos: { name: string; logo?: string }[] = [
   { name: 'SheerLuxe' },
 ];
 
-const defaultCertifications = [
+const defaultCertifications: { name: string; colour: string; badge?: string }[] = [
   { name: 'ICF\nAccredited', colour: '#1a5276' },
   { name: 'CPD\nCertified', colour: '#c0392b' },
   { name: 'TRE®\nProvider', colour: '#27ae60' },
