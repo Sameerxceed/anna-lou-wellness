@@ -1,25 +1,25 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getExperiences } from '@/lib/cms';
-import { getGenericPageBySlug } from '@/lib/generic-page';
+import { getExperiences, getExperiencesLandingPage } from '@/lib/cms';
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: 'Experiences',
-  description: 'Retreats, workshops, corporate wellbeing, and speaking. Group sessions on the houseboat at Taggs Island, online, and in corporate spaces.',
-  openGraph: {
-    title: 'Experiences — Anna Lou Wellness',
-    description: 'Retreats, workshops, corporate wellbeing, and speaking.',
-  },
+// Hardcoded fallback used only if the CMS singleton is unreachable.
+// Anna edits the actual content via Quick Edit > Experiences · Landing.
+const landingFallback = {
+  kicker: 'Experiences',
+  kickerColour: '#7BAFDD',
+  title: 'Workshops, retreats, and reset days.',
+  intro: 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.',
+  categories: [
+    { title: 'Retreats', href: '/experiences/retreats', description: 'A few times a year, a small group comes to Taggs Island, Hampton for a full reset day.', colour: '#7BAFDD', linkLabel: 'View retreats' },
+    { title: 'Workshops', href: '/experiences/workshops', description: 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces.', colour: '#7BAFDD', linkLabel: 'View workshops' },
+    { title: 'Corporate Wellbeing', href: '/experiences/corporate-wellbeing', description: 'Bespoke formats for teams and organisations.', colour: '#7BAFDD', linkLabel: 'Enquire' },
+    { title: 'Speaking', href: '/experiences/speaking', description: 'Anna speaks on somatic coaching, the founder journey, nervous system regulation, and building a business from the body up.', colour: '#7BAFDD', linkLabel: 'Enquire' },
+  ],
+  upcomingKicker: 'Upcoming',
+  upcomingTitle: 'Next on the calendar.',
 };
-
-const categories = [
-  { title: 'Retreats', href: '/experiences/retreats', desc: 'A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Six people maximum. No phones, no fixed agenda. We work with whatever the group needs — breathwork, somatic practice, Signal Method, honest conversation. People arrive wound tight and leave softer.', colour: '#7BAFDD' },
-  { title: 'Workshops', href: '/experiences/workshops', desc: 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. Every workshop includes full access or a recording and summary. Crystal healing, breathwork, jewellery-making, and restorative practices.', colour: '#7BAFDD' },
-  { title: 'Corporate Wellbeing', href: '/experiences/corporate-wellbeing', desc: 'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes. The Signal Method adapted for corporate environments. Available in person or online.', colour: '#7BAFDD' },
-  { title: 'Speaking', href: '/experiences/speaking', desc: 'Anna speaks on somatic coaching, the founder journey, nervous system regulation, and building a business from the body up. Available for conferences, panels, podcasts, and private events.', colour: '#7BAFDD' },
-];
 
 const fallbackUpcoming = [
   { name: 'Autumn Reset Day', date: 'September 2026', location: 'Taggs Island, Hampton', type: 'retreat' as const, href: '/experiences/retreats', sub: 'The Signal Method™' },
@@ -29,10 +29,19 @@ const fallbackUpcoming = [
   { name: 'Corporate Wellbeing', date: 'Flexible', location: 'Your workplace or online', type: 'corporate' as const, href: '/experiences/corporate-wellbeing', sub: 'Bespoke formats' },
 ];
 
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getExperiencesLandingPage(landingFallback);
+  return {
+    title: cms.title,
+    description: cms.intro,
+    openGraph: { title: `${cms.title} — Anna Lou Wellness`, description: cms.intro },
+  };
+}
+
 export default async function ExperiencesPage() {
   const [cmsExperiences, cms] = await Promise.all([
     getExperiences(),
-    getGenericPageBySlug('experiences-landing'),
+    getExperiencesLandingPage(landingFallback),
   ]);
   const upcoming = cmsExperiences.length > 0
     ? cmsExperiences.map(e => ({ name: e.name, date: e.date, location: e.location, type: e.type, href: `/experiences/${e.type === 'retreat' ? 'retreats' : e.type === 'workshop' ? 'workshops' : e.type === 'corporate' ? 'corporate-wellbeing' : 'speaking'}`, sub: e.priceLabel || undefined }))
@@ -45,20 +54,20 @@ export default async function ExperiencesPage() {
       {/* Header */}
       <section className="exp-header">
         <div className="exp-header-inner reveal">
-          <p className="exp-kicker">{cms?.kicker || 'Experiences'}</p>
-          <h1 className="exp-title">{cms?.title || 'Workshops, retreats, and reset days.'}</h1>
-          <p className="exp-intro">{cms?.intro || 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.'}</p>
+          <p className="exp-kicker" style={{ color: cms.kickerColour }}>{cms.kicker}</p>
+          <h1 className="exp-title">{cms.title}</h1>
+          <p className="exp-intro">{cms.intro}</p>
         </div>
       </section>
 
-      {/* Category cards */}
+      {/* Category cards — from CMS, fully editable */}
       <section className="exp-categories">
         <div className="exp-grid">
-          {categories.map((cat, i) => (
+          {cms.categories.map((cat, i) => (
             <Link key={cat.title} href={cat.href} className={`exp-card reveal${i > 0 ? ` rd${i}` : ''}`} style={{ borderLeft: `3px solid ${cat.colour}` }}>
               <h2 className="exp-card-title">{cat.title}</h2>
-              <p className="exp-card-desc">{cat.desc}</p>
-              <span className="exp-card-link">{cat.title === 'Corporate Wellbeing' || cat.title === 'Speaking' ? 'Enquire' : `View ${cat.title.toLowerCase()}`} <span>&rarr;</span></span>
+              <p className="exp-card-desc">{cat.description}</p>
+              <span className="exp-card-link">{cat.linkLabel} <span>&rarr;</span></span>
             </Link>
           ))}
         </div>
@@ -67,8 +76,8 @@ export default async function ExperiencesPage() {
       {/* Upcoming */}
       <section className="exp-upcoming">
         <div className="exp-upcoming-inner">
-          <p className="exp-kicker reveal">Upcoming</p>
-          <h2 className="exp-section-title reveal rd1">Next on the calendar.</h2>
+          <p className="exp-kicker reveal">{cms.upcomingKicker}</p>
+          <h2 className="exp-section-title reveal rd1">{cms.upcomingTitle}</h2>
           <div className="exp-upcoming-grid">
             {upcoming.map((event, i) => (
               <div key={event.name} className={`exp-upcoming-card reveal${i > 0 ? ` rd${i}` : ''}`}>

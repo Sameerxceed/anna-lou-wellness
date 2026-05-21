@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_experiences_category_cards",
+  "info": {
+    "displayName": "Experience Category Card",
+    "icon": "th-large",
+    "description": "One category card on the /experiences landing page (Retreats, Workshops, Corporate Wellbeing, Speaking)."
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Card title (e.g. 'Retreats')."
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "description": "Card body text. 2-3 sentences."
+    },
+    "href": {
+      "type": "string",
+      "required": true,
+      "description": "Where the card links to (e.g. '/experiences/retreats')."
+    },
+    "colour": {
+      "type": "string",
+      "default": "#7BAFDD",
+      "description": "Accent colour for the left border. Default brand blue."
+    },
+    "link_label": {
+      "type": "string",
+      "default": "View",
+      "description": "Small uppercase link text at bottom of card (e.g. 'View retreats', 'Enquire')."
+    }
+  }
+}

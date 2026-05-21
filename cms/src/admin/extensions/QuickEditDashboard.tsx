@@ -251,10 +251,10 @@ const GROUPS: Group[] = [
     description: 'Section landings for non-editorial parts of the site. "Show contents" reveals the same dropdown links your visitors see on the live menu — edit them in Navigation.',
     pages: [
       {
-        uid: 'api::experience-page.experience-page',
+        uid: 'api::experiences-landing-page.experiences-landing-page',
         kind: 'single-types',
         label: 'Experiences',
-        description: 'Retreats, workshops, corporate',
+        description: 'Landing page + 4 category cards',
         colour: '#7BAFDD',
         loadChildren: navChildrenByHref('/experiences'),
         newItemTo: NAVIGATION_EDIT_URL,
@@ -270,6 +270,7 @@ const GROUPS: Group[] = [
         newItemTo: NAVIGATION_EDIT_URL,
         newItemLabel: 'Edit sub-menu in Navigation',
       },
+      { uid: 'api::sessions-hub-page.sessions-hub-page', kind: 'single-types', label: 'Work · 1:1 Sessions hub', description: '/the-work/sessions hero copy (cards = Coaching Session collection)', colour: '#F280AA' },
       {
         uid: 'api::community-page.community-page',
         kind: 'single-types',

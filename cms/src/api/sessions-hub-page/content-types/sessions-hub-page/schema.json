@@ -1,0 +1,33 @@
+{
+  "kind": "singleType",
+  "collectionName": "sessions_hub_pages",
+  "info": {
+    "singularName": "sessions-hub-page",
+    "pluralName": "sessions-hub-pages",
+    "displayName": "Work · 1:1 Sessions hub",
+    "description": "The /the-work/sessions page hero copy. The cards below the hero come from the Coaching Session collection (one entry per session type)."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": "The Work · 1:1 Reset Sessions",
+      "description": "Small uppercase eyebrow above the title."
+    },
+    "title": {
+      "type": "string",
+      "default": "1:1 Reset Sessions."
+    },
+    "tagline": {
+      "type": "string",
+      "default": "Ninety minutes. One theme. A clear next step.",
+      "description": "Italic line below the title."
+    },
+    "intro": {
+      "type": "text",
+      "default": "Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation."
+    },
+    "seo_title": { "type": "string" },
+    "seo_description": { "type": "text" }
+  }
+}

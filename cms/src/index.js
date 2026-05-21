@@ -53,6 +53,10 @@ module.exports = {
         'api::shop-new-in-page.shop-new-in-page',
         'api::shop-personalised-page.shop-personalised-page',
         'api::shop-esj-page.shop-esj-page',
+        // Experiences landing (top-level /experiences page)
+        'api::experiences-landing-page.experiences-landing-page',
+        // /the-work/sessions hero copy (cards come from Coaching Session collection)
+        'api::sessions-hub-page.sessions-hub-page',
         // Editorial / collection
         'api::article.article',
         'api::article-category.article-category',

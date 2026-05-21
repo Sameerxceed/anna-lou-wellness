@@ -1,0 +1,45 @@
+{
+  "kind": "singleType",
+  "collectionName": "experiences_landing_pages",
+  "info": {
+    "singularName": "experiences-landing-page",
+    "pluralName": "experiences-landing-pages",
+    "displayName": "Experiences · Landing",
+    "description": "Top-level /experiences page (the index that lists Retreats / Workshops / Corporate / Speaking)."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Experiences"
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#7BAFDD"
+    },
+    "title": {
+      "type": "string",
+      "default": "Workshops, retreats, and reset days."
+    },
+    "intro": {
+      "type": "text",
+      "default": "Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself."
+    },
+    "categories": {
+      "type": "component",
+      "repeatable": true,
+      "component": "experiences.category-card",
+      "description": "Cards shown on the landing page. Each one links into a sub-page. Reorder or add new ones here."
+    },
+    "upcoming_kicker": {
+      "type": "string",
+      "default": "Upcoming"
+    },
+    "upcoming_title": {
+      "type": "string",
+      "default": "Next on the calendar."
+    },
+    "seo_title": { "type": "string" },
+    "seo_description": { "type": "text" }
+  }
+}

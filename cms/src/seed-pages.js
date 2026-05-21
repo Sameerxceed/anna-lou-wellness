@@ -128,6 +128,48 @@ async function seedPages(strapi) {
   await ensureSingleType(strapi, 'api::shop-personalised-page.shop-personalised-page', {});
   await ensureSingleType(strapi, 'api::shop-esj-page.shop-esj-page', {});
 
+  // ═══ Sessions hub — top-level /the-work/sessions page hero ═══
+  // Cards on this page come from the Coaching Session collection (extended
+  // with `tagline` + `accent_colour` fields so the card visuals are CMS-driven).
+  // This singleton only holds the page-level hero copy.
+  await ensureSingleType(strapi, 'api::sessions-hub-page.sessions-hub-page', {});
+
+  // Back-fill tagline + accent_colour on existing coaching-session entries so
+  // the /the-work/sessions card grid renders them on first paint. Idempotent —
+  // only fills empties, never overwrites Anna's edits.
+  const SESSION_DEFAULTS = [
+    { slug: 'founder-reset', tagline: 'For the founder at a sticking point in the business or in herself.', accent_colour: '#FAA21B' },
+    { slug: 'dating-reset', tagline: 'For the woman noticing the same pattern showing up again.', accent_colour: '#F280AA' },
+    { slug: 'nervous-system-reset', tagline: 'For the woman whose signal system is scrambled and needs bringing back online.', accent_colour: '#7BAFDD' },
+  ];
+  for (const def of SESSION_DEFAULTS) {
+    try {
+      const existing = await strapi.documents('api::coaching-session.coaching-session').findFirst({ filters: { slug: def.slug } });
+      if (!existing) continue;
+      const patch = {};
+      if (!existing.tagline) patch.tagline = def.tagline;
+      if (!existing.accent_colour) patch.accent_colour = def.accent_colour;
+      if (Object.keys(patch).length > 0) {
+        await strapi.documents('api::coaching-session.coaching-session').update({ documentId: existing.documentId, data: patch });
+      }
+    } catch (err) {
+      strapi.log.warn(`[seed-pages] coaching-session backfill failed for ${def.slug}: ${err.message}`);
+    }
+  }
+
+  // ═══ Experiences landing — top-level /experiences page ═══
+  // Was hardcoded with 4 category cards inline. Now editable as a singleton
+  // with a repeatable categories component so Anna can reorder, rename, or
+  // add a fifth card without touching code.
+  await ensureSingleType(strapi, 'api::experiences-landing-page.experiences-landing-page', {
+    categories: [
+      { title: 'Retreats', description: 'A few times a year, a small group comes to Taggs Island, Hampton for a full reset day. Six people maximum. No phones, no fixed agenda. We work with whatever the group needs, breathwork, somatic practice, Signal Method, honest conversation. People arrive wound tight and leave softer.', href: '/experiences/retreats', colour: '#7BAFDD', link_label: 'View retreats' },
+      { title: 'Workshops', description: 'Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. Every workshop includes full access or a recording and summary. Crystal healing, breathwork, jewellery-making, and restorative practices.', href: '/experiences/workshops', colour: '#7BAFDD', link_label: 'View workshops' },
+      { title: 'Corporate Wellbeing', description: 'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes. The Signal Method adapted for corporate environments. Available in person or online.', href: '/experiences/corporate-wellbeing', colour: '#7BAFDD', link_label: 'Enquire' },
+      { title: 'Speaking', description: 'Anna speaks on somatic coaching, the founder journey, nervous system regulation, and building a business from the body up. Available for conferences, panels, podcasts, and private events.', href: '/experiences/speaking', colour: '#7BAFDD', link_label: 'Enquire' },
+    ],
+  });
+
   // ═══ About Page — seed press logos + certifications as components ═══
   // Schema converted these from JSON to repeatable components so Anna can edit
   // through a form (with image upload per row) instead of raw JSON. Pre-populate

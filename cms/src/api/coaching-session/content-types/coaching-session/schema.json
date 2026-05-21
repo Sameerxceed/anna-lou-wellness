@@ -34,6 +34,15 @@
       "type": "string",
       "description": "e.g. Enquire, From GBP 1,500"
     },
+    "tagline": {
+      "type": "string",
+      "description": "Short one-line hook shown on the /the-work/sessions card grid. e.g. 'For the founder at a sticking point in the business or in herself.'"
+    },
+    "accent_colour": {
+      "type": "string",
+      "default": "#FAA21B",
+      "description": "Hex colour used as the accent line on the session card. Match the section: gold for Founder Reset, pink for Dating Reset, blue for Nervous System Reset."
+    },
     "hero_image": {
       "type": "media",
       "multiple": false,

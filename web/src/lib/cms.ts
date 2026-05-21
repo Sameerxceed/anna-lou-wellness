@@ -288,6 +288,58 @@ export type SubPageData = {
   ctaUrl: string;
 };
 
+// /experiences landing page — header + the 4 category cards (Retreats /
+// Workshops / Corporate / Speaking) + the "Upcoming" section kicker/title.
+// The events themselves come from the separate Experience collection.
+export type ExperienceCategoryCard = {
+  title: string;
+  description: string;
+  href: string;
+  colour: string;
+  linkLabel: string;
+};
+
+export type ExperiencesLandingData = {
+  kicker: string;
+  kickerColour: string;
+  title: string;
+  intro: string;
+  categories: ExperienceCategoryCard[];
+  upcomingKicker: string;
+  upcomingTitle: string;
+};
+
+export async function getExperiencesLandingPage(
+  fallback: ExperiencesLandingData,
+): Promise<ExperiencesLandingData> {
+  try {
+    const { data: d } = await fetchAPI('/experiences-landing-page', { populate: '*' });
+    if (!d) return fallback;
+    const r = d as Record<string, unknown>;
+    const cats = Array.isArray(r.categories) ? (r.categories as Array<Record<string, unknown>>) : [];
+    const categories: ExperienceCategoryCard[] = cats.length > 0
+      ? cats.map((c) => ({
+          title: (c.title as string) || '',
+          description: (c.description as string) || '',
+          href: (c.href as string) || '#',
+          colour: (c.colour as string) || '#7BAFDD',
+          linkLabel: (c.link_label as string) || 'View',
+        }))
+      : fallback.categories;
+    return {
+      kicker: (r.kicker as string) || fallback.kicker,
+      kickerColour: (r.kicker_colour as string) || fallback.kickerColour,
+      title: (r.title as string) || fallback.title,
+      intro: (r.intro as string) || fallback.intro,
+      categories,
+      upcomingKicker: (r.upcoming_kicker as string) || fallback.upcomingKicker,
+      upcomingTitle: (r.upcoming_title as string) || fallback.upcomingTitle,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 export async function getSubPage(
   endpoint: string,
   fallback: SubPageData,
@@ -552,6 +604,8 @@ export interface CoachingSession {
   duration: string;
   price: number | null;
   priceLabel: string;
+  tagline: string;
+  accentColour: string;
   heroImage: string;
   isActive: boolean;
   sortOrder: number;
@@ -573,12 +627,38 @@ export async function getCoachingSessions(): Promise<CoachingSession[]> {
       duration: d.duration || '',
       price: d.price ?? null,
       priceLabel: d.price_label || '',
+      tagline: d.tagline || '',
+      accentColour: d.accent_colour || '#FAA21B',
       heroImage: mediaUrl(d.hero_image),
       isActive: d.is_active !== false,
       sortOrder: d.sort_order || 0,
     }));
   } catch {
     return [];
+  }
+}
+
+// /the-work/sessions hero copy (cards below come from getCoachingSessions).
+export type SessionsHubData = {
+  eyebrow: string;
+  title: string;
+  tagline: string;
+  intro: string;
+};
+
+export async function getSessionsHubPage(fallback: SessionsHubData): Promise<SessionsHubData> {
+  try {
+    const { data: d } = await fetchAPI('/sessions-hub-page', { populate: '*' });
+    if (!d) return fallback;
+    const r = d as Record<string, unknown>;
+    return {
+      eyebrow: (r.eyebrow as string) || fallback.eyebrow,
+      title: (r.title as string) || fallback.title,
+      tagline: (r.tagline as string) || fallback.tagline,
+      intro: (r.intro as string) || fallback.intro,
+    };
+  } catch {
+    return fallback;
   }
 }
 

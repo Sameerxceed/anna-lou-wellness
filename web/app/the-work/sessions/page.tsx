@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getStockImage } from '@/data/stock-images';
+import { getCoachingSessions, getSessionsHubPage } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: '1:1 Reset Sessions | Single Somatic Coaching Sessions',
@@ -8,57 +9,58 @@ export const metadata: Metadata = {
   alternates: { canonical: '/the-work/sessions' },
 };
 
-const SESSIONS = [
-  {
-    slug: 'founder-reset',
-    name: 'Founder Reset',
-    tagline: 'For the founder at a sticking point in the business or in herself.',
-    accent: '#FAA21B',
-    image: getStockImage('work-and-money', 'founder-reset-card'),
-  },
-  {
-    slug: 'dating-reset',
-    name: 'Dating Reset',
-    tagline: 'For the woman noticing the same pattern showing up again.',
-    accent: '#F280AA',
-    image: getStockImage('love-and-relationships', 'dating-reset-card'),
-  },
-  {
-    slug: 'nervous-system-reset',
-    name: 'Nervous System Reset',
-    tagline: 'For the woman whose signal system is scrambled and needs bringing back online.',
-    accent: '#7BAFDD',
-    image: getStockImage('programmes', 'ns-reset-card'),
-  },
-];
+// Hardcoded fallback used only if the CMS singleton / collection is unreachable.
+// Anna edits the real content via Quick Edit > Work · 1:1 Sessions hub and the
+// individual Coaching Session entries.
+const heroFallback = {
+  eyebrow: 'The Work · 1:1 Reset Sessions',
+  title: '1:1 Reset Sessions.',
+  tagline: 'Ninety minutes. One theme. A clear next step.',
+  intro: 'Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation.',
+};
 
-export default function SessionsHubPage() {
+const SESSION_FALLBACK_IMAGE: Record<string, string> = {
+  'founder-reset': getStockImage('work-and-money', 'founder-reset-card'),
+  'dating-reset': getStockImage('love-and-relationships', 'dating-reset-card'),
+  'nervous-system-reset': getStockImage('programmes', 'ns-reset-card'),
+};
+
+export default async function SessionsHubPage() {
+  const [hero, sessions] = await Promise.all([
+    getSessionsHubPage(heroFallback),
+    getCoachingSessions(),
+  ]);
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: hubStyles }} />
 
       <section className="rs-hero">
         <div className="rs-hero-inner">
-          <p className="rs-eyebrow">The Work · 1:1 Reset Sessions</p>
-          <h1 className="rs-title">1:1 Reset Sessions.</h1>
-          <p className="rs-tagline"><em>Ninety minutes. One theme. A clear next step.</em></p>
-          <p className="rs-intro">Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation.</p>
+          <p className="rs-eyebrow">{hero.eyebrow}</p>
+          <h1 className="rs-title">{hero.title}</h1>
+          <p className="rs-tagline"><em>{hero.tagline}</em></p>
+          <p className="rs-intro">{hero.intro}</p>
         </div>
       </section>
 
       <section className="rs-grid-section">
         <div className="rs-grid">
-          {SESSIONS.map(s => (
-            <Link key={s.slug} href={`/the-work/sessions/${s.slug}`} className="rs-card">
-              <div className="rs-card-img" style={{ backgroundImage: `url('${s.image}')` }} />
-              <div className="rs-card-body">
-                <p className="rs-card-kicker" style={{ color: s.accent }}>1:1 Reset Session</p>
-                <h2 className="rs-card-name">{s.name}</h2>
-                <p className="rs-card-tagline">{s.tagline}</p>
-                <span className="rs-card-cta" style={{ color: s.accent }}>Book a session &rarr;</span>
-              </div>
-            </Link>
-          ))}
+          {sessions.map(s => {
+            const image = s.heroImage || SESSION_FALLBACK_IMAGE[s.slug] || '';
+            const accent = s.accentColour || '#FAA21B';
+            return (
+              <Link key={s.slug} href={`/the-work/sessions/${s.slug}`} className="rs-card">
+                <div className="rs-card-img" style={{ backgroundImage: `url('${image}')` }} />
+                <div className="rs-card-body">
+                  <p className="rs-card-kicker" style={{ color: accent }}>1:1 Reset Session</p>
+                  <h2 className="rs-card-name">{s.name}</h2>
+                  <p className="rs-card-tagline">{s.tagline}</p>
+                  <span className="rs-card-cta" style={{ color: accent }}>Book a session &rarr;</span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
