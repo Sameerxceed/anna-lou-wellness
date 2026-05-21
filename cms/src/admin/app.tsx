@@ -54,9 +54,16 @@ const config = {
       // Friendlier landing — "Hello Anna" stays useful but loses corporate tone
       'app.components.HomePage.welcome': 'Welcome back',
       'app.components.HomePage.welcome.again': 'Welcome back',
+      'app.components.HomePage.welcomeBlock.content':
+        'Manage your website content — pages, products, coaching, workshops, blog, and more.',
+      'app.components.HomePage.welcomeBlock.content.again':
+        'Manage your website content — pages, products, coaching, workshops, blog, and more.',
       'app.components.LeftMenu.navbrand.title': 'Anna Lou Wellness',
       'app.components.LeftMenu.navbrand.workplace': 'Content Studio',
       'Settings.application.title': 'Anna Lou Wellness — CMS',
+      // Login page
+      'Auth.form.welcome.title': 'Anna Lou Wellness',
+      'Auth.form.welcome.subtitle': 'Log in to manage your website',
     },
   },
   // Brand-aligned admin theme. Plum #6E3A5A as primary accent so the CMS
@@ -82,7 +89,12 @@ const bootstrap = (app: StrapiApp) => {
   // Stamp a console marker so we know our customizations loaded.
   // If admin breaks, the missing log narrows the diagnosis.
   // eslint-disable-next-line no-console
-  console.info('[ALW admin] Customizations loaded · v0.4 (pills + grouped dashboard with sub-menus)');
+  console.info('[ALW admin] Customizations loaded · v0.5 (app.tsx is now the active entry)');
+
+  // Browser tab title — replaces the default "Strapi Admin" wherever it shows.
+  if (typeof document !== 'undefined') {
+    document.title = 'Anna Lou Wellness CMS';
+  }
 
   // Inject section filter pills above the list view actions area.
   // The component itself checks the current URL and only renders when
