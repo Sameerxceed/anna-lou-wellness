@@ -7,6 +7,7 @@ import { getStockImage } from '@/data/stock-images';
 import Paywall from '@/components/Paywall';
 import { previewBody } from '@/lib/article-utils';
 import ShopTheStory from '@/components/ShopTheStory';
+import { accentForText } from '@/lib/colours';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -116,7 +117,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <span className="article-breadcrumb-sep">›</span>
             <Link href="/work-and-money">Work & Money</Link>
           </nav>
-          <p className="article-kicker" style={{ color: article.category?.colour || '#FFD07A' }}>
+          <p className="article-kicker" style={{ color: accentForText(article.category?.colour || '#FFD07A') }}>
             {article.category?.name || 'Work & Money'}
           </p>
           <h1 className="article-title">{article.title}</h1>
@@ -175,13 +176,13 @@ export default async function ArticlePage({ params }: PageProps) {
 const articleStyles = `
 .article-page { background:#fff; padding:2rem 3rem 3rem; }
 .article-inner { max-width:900px; margin:0 auto; }
-.article-breadcrumb { font-family:Mulish,sans-serif; font-size:0.7rem; color:#8C8880; letter-spacing:0.05em; margin-bottom:1.25rem; text-align:center; }
-.article-breadcrumb a { color:#8C8880; text-decoration:none; transition:color 0.2s; }
+.article-breadcrumb { font-family:Mulish,sans-serif; font-size:0.7rem; color:#5D5A52; letter-spacing:0.05em; margin-bottom:1.25rem; text-align:center; }
+.article-breadcrumb a { color:#5D5A52; text-decoration:none; transition:color 0.2s; }
 .article-breadcrumb a:hover { color:#D8A040; }
 .article-breadcrumb-sep { margin:0 0.5rem; color:#c8c4bc; }
 .article-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:0.5rem; text-align:center; }
 .article-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.8rem,4vw,2.6rem); color:#231F20; line-height:1.3; margin-bottom:0.8rem; text-align:center; }
-.article-meta { font-family:Mulish,sans-serif; font-size:0.72rem; color:#8C8880; letter-spacing:0.05em; margin-bottom:2rem; text-align:center; }
+.article-meta { font-family:Mulish,sans-serif; font-size:0.72rem; color:#5D5A52; letter-spacing:0.05em; margin-bottom:2rem; text-align:center; }
 .article-paid-badge { display:inline-block; margin-left:0.5rem; padding:0.15rem 0.6rem; border-radius:20px; background:#FFE9C4; color:#A05A00; font-weight:600; letter-spacing:0.08em; font-size:0.6rem; text-transform:uppercase; }
 .article-substack-link { color:#A87C00; text-decoration:none; border-bottom:1px solid currentColor; padding-bottom:1px; }
 .article-substack-link:hover { color:#7C5A00; }

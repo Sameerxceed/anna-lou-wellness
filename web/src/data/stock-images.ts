@@ -23,7 +23,10 @@ const SIZE_PRESETS: Record<Size, { w: number; h: number }> = {
 
 const url = (id: string, size: Size = 'card') => {
   const { w, h } = SIZE_PRESETS[size];
-  return `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&crop=faces,entropy&q=80&auto=format`;
+  // q=70 instead of 80: visually identical for soft editorial photos used as
+  // backgrounds, saves ~30% bytes. Lighthouse flagged the community image at
+  // ~58 KiB overhead at q=80. auto=format keeps WebP/AVIF where supported.
+  return `https://images.unsplash.com/${id}?w=${w}&h=${h}&fit=crop&crop=faces,entropy&q=70&auto=format`;
 };
 
 // Curated Unsplash photo IDs. To swap an image, replace the ID.

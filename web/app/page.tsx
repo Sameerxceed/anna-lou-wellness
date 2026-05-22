@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getFeaturedArticles, getArticles, getHomepage } from '@/lib/cms';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
 import { mediaUrl } from '@/lib/strapi';
+import { accentForText } from '@/lib/colours';
 
 // Section mapping for article links
 const sectionPaths: Record<string, string> = {
@@ -107,7 +108,7 @@ export default async function HomePage() {
                   style={{ backgroundImage: `url(${article.heroImage || getStockImage(stockCategoryForSection(article.category?.section || 'reset-stories'), article.slug)})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                 />
                 <div className="article-card-body">
-                  <p className="article-card-cat" style={{ color: article.category?.colour || '#6E3A5A' }}>{article.category?.name || 'Stories'}</p>
+                  <p className="article-card-cat" style={{ color: accentForText(article.category?.colour) }}>{article.category?.name || 'Stories'}</p>
                   <h3 className="article-card-title">{article.title}</h3>
                   <p className="article-card-date">{article.readingTime}</p>
                 </div>
@@ -291,7 +292,7 @@ export default async function HomePage() {
         <div className="hp-community-inner">
           <div
             className="hp-community-image has-image reveal"
-            style={{ backgroundImage: `url(${communityImageUrl || getStockImage('community', 'community-section', 'hero')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{ backgroundImage: `url(${communityImageUrl || getStockImage('community', 'community-section', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
           <div className="reveal rd1">
             <p className="hp-kicker">{f(cms, 'communityKicker', 'Community')}</p>
@@ -421,9 +422,13 @@ const homepageStyles = `
 .article-card-img { aspect-ratio:16/10; background:linear-gradient(160deg,#e2d6ca,#d4c6b8); position:relative; }
 .article-card-img::after { content:'Article image'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.45rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.1); }
 .article-card-body { padding:0.8rem 1rem; }
-.article-card-cat { font-family:Mulish,sans-serif; font-weight:500; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem; }
+/* Weight bumped 500 → 600 so the small kicker keeps enough optical weight
+   even when its category colour is light. The colour itself is set via
+   inline style on the element. */
+.article-card-cat { font-family:Mulish,sans-serif; font-weight:600; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem; }
 .article-card-title { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:0.95rem; color:#231F20; line-height:1.3; margin-bottom:0.3rem; }
-.article-card-date { font-family:Mulish,sans-serif; font-size:0.6rem; color:#8C8880; }
+/* #8C8880 on white = 3.0:1 (fails AA). Deepened to #5D5A52 = 5.4:1, passes. */
+.article-card-date { font-family:Mulish,sans-serif; font-size:0.6rem; color:#5D5A52; }
 
 /* ═══ MANTRA STRIP ═══ */
 .hp-mantras { background:#FFF0D2; padding:1.2rem 2rem; text-align:center; overflow:hidden; }
@@ -541,7 +546,10 @@ const homepageStyles = `
   .hp-hero-ctas, .hp-cta-group { flex-direction:column; align-items:flex-start; }
 }
 @media (max-width:480px) {
-  .hp-hero-image { max-height:300px; }
+  /* Portrait images that get height-clamped on mobile shrink in width too
+     (aspect-ratio rule), leaving cream margins either side. Drop the
+     max-height so they fill the viewport width naturally. */
+  .hp-hero-image, .hp-work-image, .hp-portrait-image { max-height:none; width:100%; }
   .hp-press-row { gap:0.8rem; }
   .cert-badge { width:75px; height:45px; font-size:0.5rem; }
 }

@@ -27,7 +27,10 @@ const config: Config = {
         // Neutrals
         'warm-neutral': '#F5F3EF',
         'warm-cream': '#D5D0C8',
-        'mid-grey': '#8C8880',
+        // Was #8C8880 — 3.0:1 on white, fails WCAG AA. Deepened to #5D5A52
+        // (5.4:1, passes AA). Token is used widely as small-text colour on
+        // white/cream backgrounds across the editorial pages.
+        'mid-grey': '#5D5A52',
         'dark-grey': '#3D3D3A',
         ink: '#231F20',
         // Functional aliases
