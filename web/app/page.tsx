@@ -28,12 +28,26 @@ export default async function HomePage() {
   const gridArticles = recentArticles.filter(a => !a.isFeatured).slice(0, 3);
   const cms = (homepage as Record<string, unknown> | null) ?? null;
   const heroImageUrl = mediaUrl(cms?.heroImage as { url?: string } | undefined);
+  // Resolve the actual URL the hero will use, so we can preload it with
+  // fetchpriority=high. Lighthouse flagged this as the missing piece for LCP.
+  const heroImageActualUrl = heroImageUrl || getStockImage('hero', 'home-hero', 'portrait');
   const workImageUrl = mediaUrl(cms?.workImage as { url?: string } | undefined);
   const communityImageUrl = mediaUrl(cms?.communityImage as { url?: string } | undefined);
   const portraitImageUrl = mediaUrl(cms?.portraitImage as { url?: string } | undefined);
 
   return (
     <>
+      {/* Preload the LCP hero image with fetchpriority=high so the browser
+          starts downloading it before parsing the rest of the page. Next.js
+          15 hoists <link> elements into <head> automatically. */}
+      <link
+        rel="preload"
+        as="image"
+        href={heroImageActualUrl}
+        // @ts-expect-error — fetchPriority is valid HTML but missing from older React types
+        fetchPriority="high"
+      />
+
       {/* ═══ EDITORIAL FRAMING ═══ */}
       <div className="editorial-frame reveal">
         <p className="editorial-issue">{f(cms, 'issueLine', 'Issue No. 01 · Summer 2026')}</p>
@@ -364,7 +378,7 @@ const homepageStyles = `
 /* ═══ EDITORIAL FRAME ═══ */
 .editorial-frame { background:#fff; text-align:center; padding:0.7rem 2rem 0.25rem; border-bottom:1px solid rgba(0,0,0,0.04); }
 .editorial-issue { font-family:Mulish,system-ui,sans-serif; font-weight:300; font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:#3D3D3A; margin-bottom:0.3rem; }
-.editorial-inside { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:0.75rem; color:#8C8880; }
+.editorial-inside { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:0.75rem; color:#5D5A52; }
 
 /* ═══ HERO ═══ */
 .hp-hero { background:#fff; padding:1rem 3rem 1.5rem; }
@@ -382,7 +396,9 @@ const homepageStyles = `
 .cta-link { font-family:Mulish,sans-serif; font-weight:400; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid currentColor; padding-bottom:2px; transition:all 0.3s; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; }
 .cta-link:hover { gap:0.7rem; }
 .cta-plum { color:#6E3A5A; }
-.cta-pink { color:#F280AA; }
+/* Pink CTA: #F280AA on white ~3.0:1 (fails AA). Deepened to #C44A7A
+   which keeps the warm pink feel but passes AA (4.6:1) for body text. */
+.cta-pink { color:#C44A7A; }
 .cta-blue { color:#7BAFDD; border-color:#7BAFDD; }
 .cta-muted { color:#8C8880; border-color:#8C8880; }
 

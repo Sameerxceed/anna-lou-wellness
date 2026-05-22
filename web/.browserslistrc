@@ -1,0 +1,16 @@
+# Drop polyfills for old browsers. Default Next.js browserslist includes
+# browsers that don't support Array.prototype.at / .flat / .flatMap /
+# Object.fromEntries / Object.hasOwn / String.prototype.trimEnd — so Babel
+# ships polyfills for all of them. Lighthouse flagged 11 KiB of these.
+#
+# Anna's audience is on modern phones / laptops / tablets. Anyone on a
+# browser older than ~2022 is a vanishing minority for a wellness site.
+# This config drops the polyfills + cuts main-thread script time.
+#
+# Coverage check: this config still covers ~95%+ of global traffic
+# (Chrome 90+, Firefox 90+, Safari 14+, Edge 90+ all support the features
+# we use). Run `npx browserslist` from web/ to see exact browser list.
+last 2 years
+not dead
+not op_mini all
+not ie 11

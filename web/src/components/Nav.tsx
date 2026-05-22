@@ -223,11 +223,13 @@ const navStyles = `
 }
 .top-strip-text {
   font-family: Mulish, system-ui, sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 0.58rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #8C8880;
+  /* WCAG AA contrast: #8C8880 on #F5F3EF failed (~3.0:1).
+     #5D5A52 on #F5F3EF passes AA (~7:1) and keeps the muted feel. */
+  color: #5D5A52;
 }
 
 /* ═══ NAV BAR ═══ */
