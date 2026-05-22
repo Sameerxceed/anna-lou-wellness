@@ -128,6 +128,21 @@ async function seedPages(strapi) {
   await ensureSingleType(strapi, 'api::shop-personalised-page.shop-personalised-page', {});
   await ensureSingleType(strapi, 'api::shop-esj-page.shop-esj-page', {});
 
+  // ═══ Quiz page — /the-work/quiz hero + 6 result blurbs ═══
+  // Questions stay in code (complex weighted scoring matrix that Anna won't
+  // tune by hand). Only the hero copy and the 6 result outcomes are CMS-
+  // editable. Seed with exactly 6 results — one per slug the quiz routes to.
+  await ensureSingleType(strapi, 'api::quiz-page.quiz-page', {
+    results: [
+      { slug: 'decoder', title: 'Start with the free Nervous System Decoder.', blurb: 'Before any programme, before any session, this is the foundation. Free guide. Seven self-audit questions. Three small practices to start with, today. It is the first thing offered to anyone who finds Anna Lou Wellness, because understanding your inner world is not a luxury, it is the foundation.', cta_label: 'Send me the free Decoder' },
+      { slug: 'reset-room', title: 'The Reset Room is your room.', blurb: 'Monthly somatic membership for women doing the work on their own pace. Private podcast (two new episodes a month), monthly live call with Anna, growing vault of guided journeys. £25 a month, no minimum term. The slow, steady door. Cancel any time.', cta_label: 'Step into the Reset Room' },
+      { slug: 'reset', title: 'The Reset is the right starting place.', blurb: 'A six-week 1:1 somatic coaching programme. Weekly 90-minute sessions with Anna. Nervous-system led, trauma-informed, designed to bring your signal system back online. £1,500. The door for women whose body is already telling them it is time.', cta_label: 'Read about The Reset' },
+      { slug: 'signal', title: 'Signal is the right depth.', blurb: 'Twelve weeks of 1:1 work for a complete identity rewrite. Not a starter programme. For women already deep in the work who need depth, structure, and a coach who can hold the shape of a real transformation. Application required.', cta_label: 'Apply for Signal' },
+      { slug: 'signal-build', title: 'Signal & Build is where business meets nervous system.', blurb: 'Twelve weeks of 1:1 work for the founder rebuilding her business from the body up. Strategy, somatic coaching, and a clear plan for the work that does not destroy you to maintain. Application required.', cta_label: 'Apply for Signal & Build' },
+      { slug: 'one-day', title: 'One Day is the right reset.', blurb: 'A full 1:1 day with Anna. On the houseboat at Taggs Island, or in your space if you prefer. No calendar, no interruptions. Brought together for one specific decision, one specific weight, one specific moment of clarity. Enquire for pricing.', cta_label: 'Enquire about One Day' },
+    ],
+  });
+
   // ═══ Sessions hub — top-level /the-work/sessions page hero ═══
   // Cards on this page come from the Coaching Session collection (extended
   // with `tagline` + `accent_colour` fields so the card visuals are CMS-driven).

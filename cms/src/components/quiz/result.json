@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_quiz_results",
+  "info": {
+    "displayName": "Quiz Result",
+    "icon": "trophy",
+    "description": "One quiz outcome (e.g. 'Start with the Nervous System Decoder'). The 6 slug values are wired into the quiz logic — don't change them. Title, blurb, and CTA label ARE editable."
+  },
+  "options": {},
+  "attributes": {
+    "slug": {
+      "type": "enumeration",
+      "enum": [
+        "decoder",
+        "reset-room",
+        "reset",
+        "signal",
+        "signal-build",
+        "one-day"
+      ],
+      "required": true,
+      "description": "Don't change — quiz logic looks results up by this slug."
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Big result heading shown when visitor completes the quiz."
+    },
+    "blurb": {
+      "type": "text",
+      "required": true,
+      "description": "Body paragraph explaining the recommendation. 2-3 sentences typically."
+    },
+    "cta_label": {
+      "type": "string",
+      "required": true,
+      "description": "Button text below the blurb (e.g. 'Send me the free Decoder')."
+    }
+  }
+}

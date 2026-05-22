@@ -32,6 +32,14 @@
       "default": "#7BAFDD",
       "description": "Hex colour for the kicker. Default blue #7BAFDD."
     },
+    "eyebrow": {
+      "type": "string",
+      "description": "Optional small uppercase text above the title (e.g. 'Experiences · For teams' on Corporate Wellbeing). Leave blank to skip."
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Optional italic single-line tagline under the title (e.g. 'Nervous system work that actually changes how people show up.'). Leave blank to skip."
+    },
     "heroImage": {
       "type": "media",
       "multiple": false,

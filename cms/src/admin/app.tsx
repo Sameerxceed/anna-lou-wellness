@@ -96,6 +96,30 @@ const bootstrap = (app: StrapiApp) => {
     document.title = 'Anna Lou Wellness CMS';
   }
 
+  // Auto-redirect /admin (or /admin/ trailing slash) to /admin/alw-quick-edit
+  // so Anna lands directly on her Quick Edit dashboard after login instead of
+  // the generic "Hello Anna" homepage with the empty widget area.
+  //
+  // We do it client-side (history.replaceState) because Strapi's admin uses
+  // React Router and is a SPA — server-side redirects aren't available here.
+  // Only triggers when path is EXACTLY /admin or /admin/, never when the user
+  // is somewhere else (editing a page, in settings, etc.) so it doesn't trap
+  // navigation. Window guard for SSR safety even though admin is browser-only.
+  try {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname;
+      if (p === '/admin' || p === '/admin/') {
+        window.history.replaceState({}, '', '/admin/alw-quick-edit');
+        // Strapi's React Router will pick up the new URL on next render.
+        // Use a soft event to nudge it.
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] Login redirect to Quick Edit failed:', err);
+  }
+
   // Inject section filter pills above the list view actions area.
   // The component itself checks the current URL and only renders when
   // the user is on a target list page — invisible everywhere else.

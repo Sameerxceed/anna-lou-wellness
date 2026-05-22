@@ -38,6 +38,36 @@
       "default": "#F280AA",
       "description": "Hex colour for the kicker label. Default is the brand colour for this section."
     },
+    "ways_section_title": {
+      "type": "string",
+      "default": "Ways to Work With Me",
+      "description": "WAYS TO WORK SECTION — Heading above the Signal Method paragraph."
+    },
+    "ways_section_body": {
+      "type": "text",
+      "default": "The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey. Whether you are just beginning to notice the patterns, or you are ready to rewire them completely, there is a way in.",
+      "description": "WAYS TO WORK SECTION — Body paragraph under the heading."
+    },
+    "ways_section_cta_label": {
+      "type": "string",
+      "default": "What do you need right now?",
+      "description": "WAYS TO WORK SECTION — Primary button text."
+    },
+    "ways_section_cta_url": {
+      "type": "string",
+      "default": "/the-work/quiz",
+      "description": "WAYS TO WORK SECTION — Primary button link."
+    },
+    "programmes_kicker": {
+      "type": "string",
+      "default": "Programmes",
+      "description": "PROGRAMMES SECTION — Small uppercase label above the heading."
+    },
+    "programmes_title": {
+      "type": "string",
+      "default": "Four ways to begin.",
+      "description": "PROGRAMMES SECTION — Heading above the programme cards. Cards are pulled from the Coaching Session collection."
+    },
     "seo_title": {
       "type": "string"
     },

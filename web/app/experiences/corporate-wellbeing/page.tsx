@@ -35,9 +35,9 @@ export default async function CorporatePage() {
       <section className="cw-hero">
         <div className="cw-hero-grid">
           <div className="cw-hero-text">
-            <p className="cw-eyebrow">Experiences · For teams</p>
+            <p className="cw-eyebrow">{(cms as any)?.eyebrow || 'Experiences · For teams'}</p>
             <h1 className="cw-title">{cms?.title || 'Corporate Wellbeing.'}</h1>
-            <p className="cw-tagline"><em>Nervous system work that actually changes how people show up.</em></p>
+            <p className="cw-tagline"><em>{(cms as any)?.tagline || 'Nervous system work that actually changes how people show up.'}</em></p>
           </div>
           <div className="cw-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>

@@ -271,6 +271,7 @@ const GROUPS: Group[] = [
         newItemLabel: 'Edit sub-menu in Navigation',
       },
       { uid: 'api::sessions-hub-page.sessions-hub-page', kind: 'single-types', label: 'Work · 1:1 Sessions hub', description: '/the-work/sessions hero copy (cards = Coaching Session collection)', colour: '#F280AA' },
+      { uid: 'api::quiz-page.quiz-page', kind: 'single-types', label: 'Work · Quiz', description: '/the-work/quiz hero + 6 result blurbs (questions in code)', colour: '#F280AA' },
       {
         uid: 'api::community-page.community-page',
         kind: 'single-types',

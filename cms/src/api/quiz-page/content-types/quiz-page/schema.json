@@ -1,0 +1,41 @@
+{
+  "kind": "singleType",
+  "collectionName": "quiz_pages",
+  "info": {
+    "singularName": "quiz-page",
+    "pluralName": "quiz-pages",
+    "displayName": "Work · Quiz (What do you need?)",
+    "description": "The /the-work/quiz page. Hero copy + 6 result blurbs are editable here. The 5 questions and scoring weights stay in code (technical content that doesn't change often)."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": "What do you need right now?"
+    },
+    "title": {
+      "type": "string",
+      "default": "Tell me where you are."
+    },
+    "intro": {
+      "type": "text",
+      "default": "Five short questions. No personal data, no email required. At the end you get one recommendation tuned to where you actually are right now."
+    },
+    "back_to_label": {
+      "type": "string",
+      "default": "Back to Work with Anna"
+    },
+    "back_to_url": {
+      "type": "string",
+      "default": "/the-work"
+    },
+    "results": {
+      "type": "component",
+      "repeatable": true,
+      "component": "quiz.result",
+      "description": "Six result blurbs (one per recommendation slug). Don't add or remove entries — the 6 slugs match the quiz scoring logic. Title, blurb, and CTA ARE editable."
+    },
+    "seo_title": { "type": "string" },
+    "seo_description": { "type": "text" }
+  }
+}

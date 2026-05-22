@@ -344,6 +344,45 @@ export async function getExperiencesLandingPage(
   }
 }
 
+// /the-work page (Work with Anna). Extends the basic section-landing shape
+// with the extra blocks specific to that page: "Ways to Work With Me" intro
+// + CTA, and the "Programmes" section header. Programme cards themselves
+// come from the Coaching Session collection.
+export type WorkWithAnnaData = {
+  kicker: string;
+  kickerColour: string;
+  title: string;
+  intro: string;
+  waysSectionTitle: string;
+  waysSectionBody: string;
+  waysSectionCtaLabel: string;
+  waysSectionCtaUrl: string;
+  programmesKicker: string;
+  programmesTitle: string;
+};
+
+export async function getWorkWithAnnaPage(fallback: WorkWithAnnaData): Promise<WorkWithAnnaData> {
+  try {
+    const { data: d } = await fetchAPI('/work-with-anna-page', { populate: '*' });
+    if (!d) return fallback;
+    const r = d as Record<string, unknown>;
+    return {
+      kicker: (r.kicker as string) || fallback.kicker,
+      kickerColour: (r.kicker_colour as string) || fallback.kickerColour,
+      title: (r.title as string) || fallback.title,
+      intro: (r.intro as string) || fallback.intro,
+      waysSectionTitle: (r.ways_section_title as string) || fallback.waysSectionTitle,
+      waysSectionBody: (r.ways_section_body as string) || fallback.waysSectionBody,
+      waysSectionCtaLabel: (r.ways_section_cta_label as string) || fallback.waysSectionCtaLabel,
+      waysSectionCtaUrl: (r.ways_section_cta_url as string) || fallback.waysSectionCtaUrl,
+      programmesKicker: (r.programmes_kicker as string) || fallback.programmesKicker,
+      programmesTitle: (r.programmes_title as string) || fallback.programmesTitle,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 export async function getSubPage(
   endpoint: string,
   fallback: SubPageData,

@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getCoachingSessions, getFAQs, getSectionLandingPage } from '@/lib/cms';
+import { getCoachingSessions, getFAQs, getWorkWithAnnaPage } from '@/lib/cms';
 import { FAQSchema, ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
-import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const metadata: Metadata = {
   title: 'Work with Anna',
@@ -15,17 +14,26 @@ export const metadata: Metadata = {
   },
 };
 
+// Hardcoded fallback used only if the CMS singleton is unreachable. Anna
+// edits the live content via Quick Edit > Work with Anna.
+const pageFallback = {
+  kicker: 'Work with Anna',
+  kickerColour: '#F280AA',
+  title: 'Your inner world already knows.',
+  intro: 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.',
+  waysSectionTitle: 'Ways to Work With Me',
+  waysSectionBody: 'The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey. Whether you are just beginning to notice the patterns, or you are ready to rewire them completely, there is a way in.',
+  waysSectionCtaLabel: 'What do you need right now?',
+  waysSectionCtaUrl: '/the-work/quiz',
+  programmesKicker: 'Programmes',
+  programmesTitle: 'Four ways to begin.',
+};
+
 export default async function TheWorkPage() {
   const [sessions, faqs, page] = await Promise.all([
     getCoachingSessions(),
     getFAQs('coaching'),
-    getSectionLandingPage('/work-with-anna-page', {
-      kicker: 'Work with Anna',
-      title: 'Your inner world already knows.',
-      intro: 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.',
-      heroImage: '',
-      kickerColour: '#F280AA',
-    }),
+    getWorkWithAnnaPage(pageFallback),
   ]);
   return (
     <>
@@ -43,25 +51,25 @@ export default async function TheWorkPage() {
         </div>
       </section>
 
-      {/* Ways to work */}
+      {/* Ways to work — CMS-driven */}
       <section className="work-ways">
         <div className="work-ways-inner">
           <div className="reveal">
-            <h2 className="work-section-title">Ways to Work With Me</h2>
-            <p className="work-body">The Signal Method&#8482; is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey. Whether you are just beginning to notice the patterns, or you are ready to rewire them completely, there is a way in.</p>
+            <h2 className="work-section-title">{page.waysSectionTitle}</h2>
+            <p className="work-body">{page.waysSectionBody}</p>
             <div className="work-cta-group">
-              <Link href="/the-work/quiz" className="work-cta-primary">What do you need right now? <span>&rarr;</span></Link>
+              <Link href={page.waysSectionCtaUrl} className="work-cta-primary">{page.waysSectionCtaLabel} <span>&rarr;</span></Link>
             </div>
           </div>
           <div className="work-image reveal rd1" />
         </div>
       </section>
 
-      {/* 1:1 Sessions */}
+      {/* 1:1 Sessions — kicker/title from CMS, cards from Coaching Session collection */}
       <section className="work-sessions">
         <div className="work-sessions-inner">
-          <p className="work-kicker reveal">Programmes</p>
-          <h2 className="work-section-title reveal rd1">{sessions.length > 0 ? `${sessions.length} ways to begin.` : 'Four ways to begin.'}</h2>
+          <p className="work-kicker reveal">{page.programmesKicker}</p>
+          <h2 className="work-section-title reveal rd1">{page.programmesTitle}</h2>
           <div className="work-sessions-grid">
             {sessions.length > 0 ? sessions.map((session, i) => (
               <div key={session.slug} className={`work-session-card reveal${i > 0 ? ` rd${i}` : ''}`}>
