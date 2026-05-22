@@ -78,6 +78,8 @@ export default async function ArticlePage({ params }: PageProps) {
           subcategories={subcategories}
           activeSubcategoryHref={`/reset-stories/${slug}`}
           stockCategory="reset-stories"
+          breadcrumb={{ parentLabel: 'Reset Stories', parentHref: '/reset-stories', currentLabel: category.name }}
+          hideKicker
         />
       );
     }

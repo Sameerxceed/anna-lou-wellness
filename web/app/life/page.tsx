@@ -50,6 +50,7 @@ export default async function LifePage() {
       sectionHref="/life"
       subcategories={subcategories}
       stockCategory="life"
+      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Life' }}
     />
   );
 }

@@ -73,6 +73,8 @@ export default async function ArticlePage({ params }: PageProps) {
           subcategories={subcategories}
           activeSubcategoryHref={`/love-and-relationships/${slug}`}
           stockCategory="love-and-relationships"
+          breadcrumb={{ parentLabel: 'Love & Relationships', parentHref: '/love-and-relationships', currentLabel: category.name }}
+          hideKicker
         />
       );
     }

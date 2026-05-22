@@ -73,6 +73,8 @@ export default async function ArticlePage({ params }: PageProps) {
           subcategories={subcategories}
           activeSubcategoryHref={`/work-and-money/${slug}`}
           stockCategory="work-and-money"
+          breadcrumb={{ parentLabel: 'Work & Money', parentHref: '/work-and-money', currentLabel: category.name }}
+          hideKicker
         />
       );
     }

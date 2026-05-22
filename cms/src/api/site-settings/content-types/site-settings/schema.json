@@ -68,6 +68,14 @@
     "youtube_url": {
       "type": "string"
     },
+    "linkedin_url": {
+      "type": "string",
+      "description": "Full URL to Anna's LinkedIn profile or company page. Shows as the LinkedIn icon in the footer."
+    },
+    "podcast_url": {
+      "type": "string",
+      "description": "Full URL to Anna's podcast (Apple, Spotify, podcast host page). Shows as the Podcast icon in the footer."
+    },
     "stripe_publishable_key": {
       "type": "string"
     },

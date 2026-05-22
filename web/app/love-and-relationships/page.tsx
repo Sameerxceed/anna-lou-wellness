@@ -50,6 +50,7 @@ export default async function LoveAndRelationshipsPage() {
       sectionHref="/love-and-relationships"
       subcategories={subcategories}
       stockCategory="love-and-relationships"
+      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Love & Relationships' }}
     />
   );
 }

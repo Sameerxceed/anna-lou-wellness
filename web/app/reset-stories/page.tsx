@@ -50,6 +50,7 @@ export default async function ResetStoriesPage() {
       sectionHref="/reset-stories"
       subcategories={subcategories}
       stockCategory="reset-stories"
+      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Reset Stories' }}
     />
   );
 }

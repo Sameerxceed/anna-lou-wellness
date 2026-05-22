@@ -12,6 +12,8 @@ export interface SiteSettings {
   youtubeUrl: string;
   substackUrl: string;
   tiktokUrl: string;
+  linkedinUrl: string;
+  podcastUrl: string;
   email: string;
   phone: string;
   address: string;
@@ -53,6 +55,8 @@ export const siteSettings: SiteSettings = {
   youtubeUrl: "",
   substackUrl: "",
   tiktokUrl: "",
+  linkedinUrl: "",
+  podcastUrl: "",
   email: "hello@annalouwellness.com",
   phone: "",
   address: "London, UK",

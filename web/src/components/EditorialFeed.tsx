@@ -13,6 +13,12 @@ interface Article {
   isFree?: boolean;
 }
 
+interface Breadcrumb {
+  parentLabel: string;
+  parentHref?: string;
+  currentLabel: string;
+}
+
 interface EditorialFeedProps {
   kicker: string;
   kickerColour: string;
@@ -23,7 +29,20 @@ interface EditorialFeedProps {
   subcategories?: Array<{ label: string; href: string }>;
   activeSubcategoryHref?: string; // when on a subcategory view, mark the matching tab active
   stockCategory?: StockCategory; // controls fallback image pool when articles have no heroImage
+  // Optional breadcrumb above the title (Anna's 21 May redesign spec).
+  // For section landings:  { parentLabel: 'Stories', currentLabel: section name }
+  // For category sub-page: { parentLabel: section name, parentHref: '/section', currentLabel: category name }
+  breadcrumb?: Breadcrumb;
+  // Optional: hide intro paragraph (per Anna's redesign, category sub-pages
+  // shouldn't carry an intro — the article list IS the content).
+  hideIntro?: boolean;
+  // Optional: hide the small uppercase kicker (the breadcrumb already locates the visitor).
+  hideKicker?: boolean;
 }
+
+// Anna's 21 May section page redesign: max 4 subsections visible. If a section
+// has more, the rest are dropped (Anna trims via CMS). Keeps the row "calm".
+const MAX_SUBCATEGORIES = 4;
 
 export default function EditorialFeed({
   kicker,
@@ -35,9 +54,13 @@ export default function EditorialFeed({
   subcategories,
   activeSubcategoryHref,
   stockCategory = 'reset-stories',
+  breadcrumb,
+  hideIntro = false,
+  hideKicker = false,
 }: EditorialFeedProps) {
   const imageFor = (article: Article) =>
     article.heroImage || getStockImage(stockCategory, article.slug);
+  const visibleSubcategories = (subcategories || []).slice(0, MAX_SUBCATEGORIES);
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: feedStyles }} />
@@ -45,13 +68,28 @@ export default function EditorialFeed({
       {/* Section header */}
       <section className="feed-header">
         <div className="feed-header-inner reveal">
-          <p className="feed-kicker" style={{ color: kickerColour }}>{kicker}</p>
+          {breadcrumb && (
+            <nav className="feed-breadcrumb" aria-label="Breadcrumb">
+              {breadcrumb.parentHref ? (
+                <Link href={breadcrumb.parentHref} className="feed-breadcrumb-parent">
+                  {breadcrumb.parentLabel}
+                </Link>
+              ) : (
+                <span className="feed-breadcrumb-parent">{breadcrumb.parentLabel}</span>
+              )}
+              <span className="feed-breadcrumb-sep">/</span>
+              <span className="feed-breadcrumb-current">{breadcrumb.currentLabel}</span>
+            </nav>
+          )}
+          {!hideKicker && (
+            <p className="feed-kicker" style={{ color: kickerColour }}>{kicker}</p>
+          )}
           <h1 className="feed-title">{title}</h1>
-          <p className="feed-intro">{intro}</p>
+          {!hideIntro && intro && <p className="feed-intro">{intro}</p>}
         </div>
 
-        {/* Subcategory filter */}
-        {subcategories && subcategories.length > 0 && (
+        {/* Subcategory filter — capped at MAX_SUBCATEGORIES per Anna's redesign */}
+        {visibleSubcategories.length > 0 && (
           <nav className="feed-filters reveal">
             <Link
               href={sectionHref}
@@ -59,7 +97,7 @@ export default function EditorialFeed({
             >
               All
             </Link>
-            {subcategories.map(sub => (
+            {visibleSubcategories.map(sub => (
               <Link
                 key={sub.href}
                 href={sub.href}
@@ -149,6 +187,13 @@ const feedStyles = `
 /* ═══ FEED HEADER ═══ */
 .feed-header { background:#fff; padding:2rem 3rem 1rem; }
 .feed-header-inner { max-width:800px; margin:0 auto; text-align:center; }
+/* Breadcrumb — small uppercase, parent in mid-grey, separator very light,
+   current in dark. Sits above the kicker / title. */
+.feed-breadcrumb { font-family:Mulish,sans-serif; font-weight:500; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:#8C8880; margin-bottom:0.9rem; display:inline-flex; align-items:center; gap:0.5rem; }
+.feed-breadcrumb-parent { color:#8C8880; text-decoration:none; transition:color 0.2s; }
+.feed-breadcrumb-parent:hover { color:#231F20; }
+.feed-breadcrumb-sep { color:#D0CFCB; }
+.feed-breadcrumb-current { color:#231F20; }
 .feed-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.5rem; }
 .feed-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:1rem; }
 .feed-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:800px; margin:0 auto; }

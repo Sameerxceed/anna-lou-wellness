@@ -50,6 +50,7 @@ export default async function WorkAndMoneyPage() {
       sectionHref="/work-and-money"
       subcategories={subcategories}
       stockCategory="work-and-money"
+      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Work & Money' }}
     />
   );
 }

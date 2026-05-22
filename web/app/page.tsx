@@ -406,7 +406,7 @@ const homepageStyles = `
 .article-card-date { font-family:Mulish,sans-serif; font-size:0.6rem; color:#8C8880; }
 
 /* ═══ MANTRA STRIP ═══ */
-.hp-mantras { background:#FAF6E8; padding:1.2rem 2rem; text-align:center; overflow:hidden; }
+.hp-mantras { background:#FFF0D2; padding:1.2rem 2rem; text-align:center; overflow:hidden; }
 .hp-mantra-text { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:clamp(1.3rem,2.5vw,1.8rem); color:#3D3D3A; line-height:1.6; max-width:900px; margin:0 auto; opacity:0.5; text-wrap:pretty; }
 .hp-mantra-note { font-family:Mulish,sans-serif; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:#8C8880; margin-top:0.8rem; }
 
@@ -428,7 +428,7 @@ const homepageStyles = `
 .hp-work-image::after { content:'Photo. Coaching session on the houseboat'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.1); text-align:center; }
 
 /* ═══ EDITORIAL SECTIONS ═══ */
-.hp-editorial-sections { background:#FAF6E8; padding:1.5rem 2rem; }
+.hp-editorial-sections { background:#FFF0D2; padding:1.5rem 2rem; }
 .hp-editorial-header { max-width:1200px; margin:0 auto 1rem; }
 .hp-editorial-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
 .hp-editorial-tile { background:rgba(255,255,255,0.7); backdrop-filter:blur(8px); border-radius:8px; padding:1.5rem; cursor:pointer; transition:all 0.3s; border:1px solid rgba(255,255,255,0.5); text-decoration:none; }
@@ -466,7 +466,7 @@ const homepageStyles = `
 .btn-green:hover { background:#4db895; }
 
 /* ═══ MEDIA HUB ═══ */
-.hp-media { background:#FFF8E8; padding:1.5rem 2rem; }
+.hp-media { background:#FFF0D2; padding:1.5rem 2rem; }
 .hp-media-inner { max-width:1200px; margin:0 auto; }
 .hp-media-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
 .hp-media-tile { background:#fff; border-radius:8px; padding:1.5rem; cursor:pointer; transition:all 0.3s; border:1px solid rgba(0,0,0,0.04); }
