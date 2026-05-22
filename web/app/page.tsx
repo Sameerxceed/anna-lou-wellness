@@ -44,7 +44,6 @@ export default async function HomePage() {
         rel="preload"
         as="image"
         href={heroImageActualUrl}
-        // @ts-expect-error — fetchPriority is valid HTML but missing from older React types
         fetchPriority="high"
       />
 
