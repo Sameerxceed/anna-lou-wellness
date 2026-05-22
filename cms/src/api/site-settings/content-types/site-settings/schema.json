@@ -68,6 +68,13 @@
     "youtube_url": {
       "type": "string"
     },
+    "max_subcategories_per_menu": {
+      "type": "integer",
+      "default": 4,
+      "min": 1,
+      "max": 12,
+      "description": "Maximum number of sub-menu items shown per top-level menu dropdown AND per section page tab row. Anna's design rule is 4 (editorial brevity). Lift only if absolutely necessary. Visitors can always reach hidden items via the 'All' page."
+    },
     "linkedin_url": {
       "type": "string",
       "description": "Full URL to Anna's LinkedIn profile or company page. Shows as the LinkedIn icon in the footer."

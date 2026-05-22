@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getStockImage, type StockCategory } from '@/data/stock-images';
+import { getSiteSettings } from '@/lib/cms';
 
 interface Article {
   slug: string;
@@ -40,11 +41,7 @@ interface EditorialFeedProps {
   hideKicker?: boolean;
 }
 
-// Anna's 21 May section page redesign: max 4 subsections visible. If a section
-// has more, the rest are dropped (Anna trims via CMS). Keeps the row "calm".
-const MAX_SUBCATEGORIES = 4;
-
-export default function EditorialFeed({
+export default async function EditorialFeed({
   kicker,
   kickerColour,
   title,
@@ -58,9 +55,15 @@ export default function EditorialFeed({
   hideIntro = false,
   hideKicker = false,
 }: EditorialFeedProps) {
+  // Read the max-subcategories cap from Site Settings so Anna controls a
+  // SINGLE value that drives both the menu dropdown AND these section page
+  // tabs. Next.js dedupes the fetch across renders, so the extra call here
+  // doesn't add a round-trip (layout already fetches site settings).
+  const siteSettings = await getSiteSettings();
+  const maxSubcategories = siteSettings.maxSubcategoriesPerMenu || 4;
   const imageFor = (article: Article) =>
     article.heroImage || getStockImage(stockCategory, article.slug);
-  const visibleSubcategories = (subcategories || []).slice(0, MAX_SUBCATEGORIES);
+  const visibleSubcategories = (subcategories || []).slice(0, maxSubcategories);
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: feedStyles }} />

@@ -148,6 +148,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       substackUrl: d.substack_url || fallbackSiteSettings.substackUrl,
       linkedinUrl: d.linkedin_url || fallbackSiteSettings.linkedinUrl,
       podcastUrl: d.podcast_url || fallbackSiteSettings.podcastUrl,
+      maxSubcategoriesPerMenu: (d.max_subcategories_per_menu as number) || fallbackSiteSettings.maxSubcategoriesPerMenu,
       email: d.notification_email || fallbackSiteSettings.email,
       cookieBannerText: d.cookie_banner_text || fallbackSiteSettings.cookieBannerText,
       footerCopyright: d.footer_copyright || fallbackSiteSettings.footerCopyright,
@@ -199,22 +200,21 @@ async function fetchCategoriesBySection(): Promise<Record<string, { label: strin
 
 export async function getNavigation(): Promise<NavItem[]> {
   try {
-    const [navRes, categoriesBySection] = await Promise.all([
+    // Fetch siteSettings in parallel so we get the single CMS-controlled
+    // max-subcategories cap that BOTH the dropdown AND the section page tabs
+    // respect. Anna edits one field in Site Settings → both places update.
+    const [navRes, categoriesBySection, siteSettings] = await Promise.all([
       fetchAPI('/navigation', { 'populate[items][populate]': '*' }),
       fetchCategoriesBySection(),
+      getSiteSettings(),
     ]);
     const items = (navRes?.data as { items?: unknown[] } | null)?.items;
     if (!Array.isArray(items) || items.length === 0) return fallbackNavigation;
+    const MAX_DROPDOWN_CHILDREN = siteSettings.maxSubcategoriesPerMenu || 4;
 
     return items.map((raw) => {
       const item = raw as { label?: string; href?: string; colour?: string; children?: unknown[] };
       const href = String(item.href || '#');
-
-      // Anna's 21 May redesign rule: max 4 sub-menu items per dropdown across
-      // EVERY top-level menu (editorial + non-editorial). Forces editorial
-      // brevity and keeps the dropdown visually calm — same cap the section
-      // page tabs already enforce, so dropdown + tabs stay in sync.
-      const MAX_DROPDOWN_CHILDREN = 4;
 
       // Editorial sections: auto-derive children from Article Categories so
       // Anna has a single source of truth.

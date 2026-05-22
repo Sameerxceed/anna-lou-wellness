@@ -14,6 +14,7 @@ export interface SiteSettings {
   tiktokUrl: string;
   linkedinUrl: string;
   podcastUrl: string;
+  maxSubcategoriesPerMenu: number;
   email: string;
   phone: string;
   address: string;
@@ -57,6 +58,7 @@ export const siteSettings: SiteSettings = {
   tiktokUrl: "",
   linkedinUrl: "",
   podcastUrl: "",
+  maxSubcategoriesPerMenu: 4,
   email: "hello@annalouwellness.com",
   phone: "",
   address: "London, UK",
