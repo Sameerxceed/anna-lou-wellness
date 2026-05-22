@@ -69,6 +69,12 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::product.product"
+    },
+    "shop_tags": {
+      "type": "component",
+      "repeatable": true,
+      "component": "article.shop-tag",
+      "description": "Optional 'Shop the story' photos shown below the article. Each photo can link to a product with a hover tag ('Anna is wearing the [piece]'). Use sparingly — only the photos where the product is central to the story. No inline shop links in the body."
     }
   }
 }

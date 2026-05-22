@@ -7,6 +7,7 @@ import EditorialFeed from '@/components/EditorialFeed';
 import { getStockImage } from '@/data/stock-images';
 import Paywall from '@/components/Paywall';
 import { previewBody } from '@/lib/article-utils';
+import ShopTheStory from '@/components/ShopTheStory';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -151,6 +152,8 @@ export default async function ArticlePage({ params }: PageProps) {
             ))}
           </div>
           {!article.isFree && <Paywall substackUrl={article.substackUrl} accentColour={article.category?.colour || '#6E3A5A'} />}
+
+          <ShopTheStory tags={article.shopTags} accentColour={article.category?.colour || '#6E3A5A'} />
 
           {related.length > 0 && (
             <div className="article-related">

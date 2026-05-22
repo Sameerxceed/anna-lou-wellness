@@ -477,6 +477,17 @@ export async function getFooter(): Promise<FooterData> {
 
 // ═══ ARTICLES ═══
 
+// "Shop the story" tag — one tagged photo on an article (Anna's PDF 5.2).
+// Magazine pattern: hover the photo, see a small tag "Anna is wearing the [piece]",
+// click → product page. Used sparingly only on key photos.
+export interface ArticleShopTag {
+  image: string;
+  productSlug: string | null;
+  productName: string | null;
+  captionPrefix: string;
+  altText: string;
+}
+
 export interface Article {
   id: number;
   title: string;
@@ -493,6 +504,7 @@ export interface Article {
   seoTitle: string;
   seoDescription: string;
   publishedAt: string;
+  shopTags: ArticleShopTag[];
 }
 
 export interface ArticleCategory {
@@ -529,6 +541,17 @@ function mapArticle(d: any): Article {
     seoTitle: d.seo_title || '',
     seoDescription: d.seo_description || '',
     publishedAt: d.publishedAt || '',
+    shopTags: Array.isArray(d.shop_tags)
+      ? d.shop_tags
+          .filter((t: any) => t && t.image)
+          .map((t: any): ArticleShopTag => ({
+            image: mediaUrl(t.image),
+            productSlug: t.product?.slug || null,
+            productName: t.product?.name || null,
+            captionPrefix: t.caption_prefix || 'Anna is wearing the',
+            altText: t.alt_text || t.product?.name || '',
+          }))
+      : [],
   };
 }
 
@@ -567,11 +590,15 @@ export async function getFeaturedArticles(limit = 6): Promise<Article[]> {
   }
 }
 
-/** Get a single article by slug */
+/** Get a single article by slug. Deep-populates shop_tags.image + shop_tags.product
+ *  so the "Shop the story" gallery has everything it needs in one fetch. */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
     const { data } = await fetchAPI('/articles', {
-      'populate': '*',
+      'populate[hero_image]': 'true',
+      'populate[category]': 'true',
+      'populate[shop_tags][populate][image]': 'true',
+      'populate[shop_tags][populate][product]': 'true',
       'filters[slug][$eq]': slug,
     });
     if (!data?.length) return null;

@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_article_shop_tags",
+  "info": {
+    "displayName": "Shop tag (photo + product)",
+    "icon": "tag",
+    "description": "A photo of Anna wearing or using a product. On hover, a small tag appears with the product name and links to the shop. Use sparingly — only where the product is genuinely central to the story."
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"],
+      "description": "Photo of Anna wearing or using the piece. Portrait or landscape both work."
+    },
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product",
+      "description": "Link to the product in the shop. Pick from your existing product list. Leave blank to show the photo without a shop link."
+    },
+    "caption_prefix": {
+      "type": "string",
+      "default": "Anna is wearing the",
+      "description": "Text shown before the product name on hover (e.g. 'Anna is wearing the Moonstone Necklace'). Override per-photo if you want — e.g. 'Anna is holding the' or 'Featured: the'."
+    },
+    "alt_text": {
+      "type": "string",
+      "description": "Accessibility description of the photo for screen readers. Brief — 'Anna wearing the Moonstone Necklace on the houseboat'."
+    }
+  }
+}
