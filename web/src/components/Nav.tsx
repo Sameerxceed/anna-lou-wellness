@@ -210,19 +210,24 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
 }
 
 const navStyles = `
-/* ═══ TOP STRIP ═══ */
+/* ═══ TOP STRIP ═══
+   Anna 21 May feedback: was a heavy black band, feels too dominant on
+   section pages. Switched to a light cream background with muted text +
+   thin divider — quiet presence on every page, doesn't compete with
+   either the main nav or the section page title. */
 .top-strip {
-  background: #231F20;
+  background: #F5F3EF;
   text-align: center;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 .top-strip-text {
   font-family: Mulish, system-ui, sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 0.58rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(245,243,239,0.5);
+  color: #8C8880;
 }
 
 /* ═══ NAV BAR ═══ */
