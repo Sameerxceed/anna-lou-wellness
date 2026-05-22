@@ -40,14 +40,19 @@ export default async function HomePage() {
         <p className="editorial-inside">{f(cms, 'insideThisIssueLine', 'Inside this issue')}</p>
       </div>
 
-      {/* ═══ HERO ═══ */}
+      {/* ═══ HERO ═══
+           No .reveal here. Hero is above the fold = it's the LCP element,
+           and .reveal hides content with opacity:0 until JS adds .visible
+           (5.5s render delay per Lighthouse). The hero must paint
+           immediately on first render. Below-the-fold sections keep
+           .reveal for the scroll-in effect. */}
       <section className="hp-hero">
         <div className="hp-hero-inner">
           <div
-            className="hp-hero-image has-image reveal"
+            className="hp-hero-image has-image"
             style={{ backgroundImage: `url(${heroImageUrl || getStockImage('hero', 'home-hero', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           />
-          <div className="reveal rd1">
+          <div>
             <p className="hp-hero-tag">{f(cms, 'heroKicker', 'Reset Stories')}</p>
             <h1 className="hp-hero-title">{f(cms, 'heroTitle', 'Come back to yourself.')}</h1>
             <p className="hp-hero-body">{f(cms, 'heroBody', 'What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.')}</p>
