@@ -121,6 +121,16 @@ async function seedPages(strapi) {
   await ensureSingleType(strapi, 'api::work-with-anna-page.work-with-anna-page', {});
   await ensureSingleType(strapi, 'api::shop-page.shop-page', {});
 
+  // ═══ Site Settings — backfill fields added after the singleton was first
+  //     created so Anna sees their default values rather than blank inputs.
+  //     ensureSingleType only fills null/undefined/empty fields, so this is
+  //     safe to re-run; Anna's edits are never overwritten. ═══
+  await ensureSingleType(strapi, 'api::site-settings.site-settings', {
+    max_subcategories_per_menu: 4,
+    default_currency: 'GBP',
+    supported_currencies: 'GBP, EUR, USD',
+  });
+
   // ═══ Shop sub-pages — three sibling singletons under /shop/* ═══
   // Each was previously hardcoded inside its page.tsx; now CMS-editable
   // so Anna controls every paragraph and button label from admin.

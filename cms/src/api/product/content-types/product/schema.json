@@ -73,8 +73,8 @@
       "default": "standard"
     },
     "tags": {
-      "type": "json",
-      "default": []
+      "type": "string",
+      "description": "Comma-separated tags for filtering/search (e.g. 'best-seller, gift, new-in'). Leave blank if none."
     },
     "variants": {
       "type": "relation",

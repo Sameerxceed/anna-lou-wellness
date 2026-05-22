@@ -15,8 +15,9 @@
       "required": true
     },
     "countries": {
-      "type": "json",
-      "required": true
+      "type": "string",
+      "required": true,
+      "description": "Two-letter country codes this zone covers, comma-separated. Example: 'GB, IE' for UK & Ireland; 'US, CA' for North America; 'GB' for UK only."
     },
     "shipping_methods": {
       "type": "relation",
