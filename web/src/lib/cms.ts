@@ -210,21 +210,29 @@ export async function getNavigation(): Promise<NavItem[]> {
       const item = raw as { label?: string; href?: string; colour?: string; children?: unknown[] };
       const href = String(item.href || '#');
 
+      // Anna's 21 May redesign rule: max 4 sub-menu items per dropdown across
+      // EVERY top-level menu (editorial + non-editorial). Forces editorial
+      // brevity and keeps the dropdown visually calm — same cap the section
+      // page tabs already enforce, so dropdown + tabs stay in sync.
+      const MAX_DROPDOWN_CHILDREN = 4;
+
       // Editorial sections: auto-derive children from Article Categories so
       // Anna has a single source of truth.
       let children: { label: string; href: string }[] | undefined;
       if (EDITORIAL_SECTION_BY_HREF[href]) {
         const fromCategories = categoriesBySection[href];
         if (fromCategories && fromCategories.length > 0) {
-          children = [{ label: 'All', href }, ...fromCategories];
+          // "All" link + first 4 categories (visitors can still reach the
+          // others via the All page if Anna has more than 4 categories in CMS).
+          children = [{ label: 'All', href }, ...fromCategories.slice(0, MAX_DROPDOWN_CHILDREN)];
         }
       }
 
       // Fall back to the Navigation singletype's stored children if not
-      // editorial (or if no categories yet for this section).
+      // editorial (or if no categories yet for this section). Same 4-cap.
       if (!children) {
         children = Array.isArray(item.children)
-          ? item.children.map((c) => {
+          ? item.children.slice(0, MAX_DROPDOWN_CHILDREN).map((c) => {
               const child = c as { label?: string; href?: string };
               return { label: String(child.label || ''), href: String(child.href || '#') };
             })
