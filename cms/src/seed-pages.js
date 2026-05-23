@@ -568,6 +568,42 @@ async function seedPages(strapi) {
     seo_description: 'One-day session for women entrepreneurs on the houseboat. Somatic work, breathwork, vulnerability release. £90.',
   });
 
+  // ═══ Normalize sort_order on Experience entries by date ═══
+  // Anna's admin list view sorts by sort_order. Without normalization, the
+  // numbers are arbitrary (old seeds used 10/20/30, placeholders use 1/2)
+  // and the list looks random. After every boot we recompute sort_order so
+  // it matches date ASC — soonest event at sort_order 10, next at 20, etc.
+  // Gaps of 10 leave room for Anna to manually insert in between if she ever
+  // wants to override (but next boot will renormalize).
+  try {
+    const all = await strapi.documents('api::experience.experience').findMany({
+      pagination: { pageSize: 100 },
+    });
+    const byDateAsc = [...all].sort((a, b) => {
+      const da = a.date || '9999-12-31';
+      const db = b.date || '9999-12-31';
+      return da.localeCompare(db);
+    });
+    let updates = 0;
+    for (let i = 0; i < byDateAsc.length; i++) {
+      const e = byDateAsc[i];
+      const wanted = (i + 1) * 10;
+      if (e.sort_order !== wanted) {
+        await strapi.documents('api::experience.experience').update({
+          documentId: e.documentId,
+          data: { sort_order: wanted },
+          status: 'published',
+        });
+        updates++;
+      }
+    }
+    if (updates > 0) {
+      strapi.log.info(`[seed-pages] Normalized sort_order on ${updates} Experience entries by date`);
+    }
+  } catch (err) {
+    strapi.log.warn(`[seed-pages] Skipped Experience sort_order normalization: ${err.message}`);
+  }
+
   // ═══ Community Event pages ═══
   await ensure(strapi, 'api::community-event-page.community-event-page', 'the-returning-circle', {
     title: 'The Returning Circle.',

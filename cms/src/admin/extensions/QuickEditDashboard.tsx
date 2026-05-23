@@ -253,12 +253,21 @@ const GROUPS: Group[] = [
       {
         uid: 'api::experiences-landing-page.experiences-landing-page',
         kind: 'single-types',
-        label: 'Experiences',
-        description: 'Landing page + 4 category cards',
+        label: 'Experiences · Landing',
+        description: 'Landing page header + 4 category cards',
         colour: '#7BAFDD',
         loadChildren: navChildrenByHref('/experiences'),
         newItemTo: NAVIGATION_EDIT_URL,
         newItemLabel: 'Edit sub-menu in Navigation',
+      },
+      {
+        uid: 'api::experience.experience',
+        kind: 'collection-types',
+        label: 'Experiences · Events',
+        description: 'Individual retreats, workshops, dates, prices — what shows up on /experiences/retreats and /experiences/workshops',
+        colour: '#7BAFDD',
+        newItemTo: '/content-manager/collection-types/api::experience.experience/create',
+        newItemLabel: 'Add a retreat or workshop',
       },
       {
         uid: 'api::work-with-anna-page.work-with-anna-page',
