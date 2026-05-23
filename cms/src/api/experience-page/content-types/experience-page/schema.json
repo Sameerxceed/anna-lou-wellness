@@ -4,7 +4,7 @@
   "info": {
     "singularName": "experience-page",
     "pluralName": "experience-pages",
-    "displayName": "Experiences",
+    "displayName": "Experiences · Sub-page",
     "description": "Sub-pages under /experiences (Workshops, Retreats, Corporate Wellbeing, Speaking)."
   },
   "options": {

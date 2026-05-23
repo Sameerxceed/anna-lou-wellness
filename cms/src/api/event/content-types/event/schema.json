@@ -4,7 +4,7 @@
   "info": {
     "singularName": "event",
     "pluralName": "events",
-    "displayName": "Event \u00b7 Event"
+    "displayName": "zz \u00b7 Event (unused)"
   },
   "options": {
     "draftAndPublish": false

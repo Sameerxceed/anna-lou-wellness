@@ -44,6 +44,10 @@ export type ChildItem = {
   label: string;
   to: string;
   badge?: string; // e.g. "draft", "published"
+  // When true, renders as a small uppercase group divider (non-clickable),
+  // so `loadChildren` can return multiple semantic groups in one list —
+  // e.g. sub-pages, then upcoming events, then past events.
+  groupHeader?: boolean;
 };
 
 export type LoadChildren = () => Promise<ChildItem[]>;
@@ -253,52 +257,71 @@ const QuickEditCard = ({
                 </span>
               )}
               {children &&
-                children.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => navigate(c.to)}
-                    style={{
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      padding: '4px 6px',
-                      borderRadius: 4,
-                      border: 'none',
-                      background: 'transparent',
-                      color: '#32324d',
-                      fontSize: 12,
-                      fontWeight: 500,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      transition: 'background 0.1s',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = `${colour}11`;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                    }}
-                  >
-                    <span style={{ color: colour }}>•</span>
-                    <span style={{ flex: 1 }}>{c.label}</span>
-                    {c.badge && (
-                      <span
+                children.map((c) => {
+                  if (c.groupHeader) {
+                    return (
+                      <div
+                        key={c.id}
                         style={{
                           fontSize: 10,
-                          padding: '1px 6px',
-                          borderRadius: 999,
-                          background: '#eaeaef',
-                          color: '#666687',
+                          fontWeight: 700,
+                          color: colour,
                           textTransform: 'uppercase',
-                          letterSpacing: '0.04em',
+                          letterSpacing: '0.1em',
+                          padding: '8px 6px 2px',
                         }}
                       >
-                        {c.badge}
-                      </span>
-                    )}
-                  </button>
-                ))}
+                        {c.label}
+                      </div>
+                    );
+                  }
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => navigate(c.to)}
+                      style={{
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        padding: '4px 6px',
+                        borderRadius: 4,
+                        border: 'none',
+                        background: 'transparent',
+                        color: '#32324d',
+                        fontSize: 12,
+                        fontWeight: 500,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        transition: 'background 0.1s',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = `${colour}11`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      <span style={{ color: colour }}>•</span>
+                      <span style={{ flex: 1 }}>{c.label}</span>
+                      {c.badge && (
+                        <span
+                          style={{
+                            fontSize: 10,
+                            padding: '1px 6px',
+                            borderRadius: 999,
+                            background: '#eaeaef',
+                            color: '#666687',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.04em',
+                          }}
+                        >
+                          {c.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               {newItemTo && !loading && (
                 <button
                   type="button"

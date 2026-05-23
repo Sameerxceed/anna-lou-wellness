@@ -568,6 +568,33 @@ async function seedPages(strapi) {
     seo_description: 'One-day session for women entrepreneurs on the houseboat. Somatic work, breathwork, vulnerability release. £90.',
   });
 
+  // ═══ One-shot cleanup: delete known placeholder Experience entries ═══
+  // These were demo data seeded before Anna's real WooCommerce migration.
+  // They confuse the admin list and don't represent real bookable events.
+  // Delete is by exact slug — if Anna later creates an event with the same
+  // slug intentionally, she will need to use a different name (unlikely).
+  const PLACEHOLDER_EXPERIENCE_SLUGS = [
+    'autumn-reset-day',
+    'surrendering-vibration',
+    'surrendering-and-raising-your-vibration',
+  ];
+  for (const slug of PLACEHOLDER_EXPERIENCE_SLUGS) {
+    try {
+      const found = await strapi.documents('api::experience.experience').findMany({
+        filters: { slug },
+        limit: 1,
+      });
+      if (found && found.length > 0) {
+        await strapi.documents('api::experience.experience').delete({
+          documentId: found[0].documentId,
+        });
+        strapi.log.info(`[seed-pages] Deleted placeholder Experience: ${slug}`);
+      }
+    } catch (err) {
+      strapi.log.warn(`[seed-pages] Skipped placeholder delete (${slug}): ${err.message}`);
+    }
+  }
+
   // ═══ Normalize sort_order on Experience entries by date ═══
   // Anna's admin list view sorts by sort_order. Without normalization, the
   // numbers are arbitrary (old seeds used 10/20/30, placeholders use 1/2)
