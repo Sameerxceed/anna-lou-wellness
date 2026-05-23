@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import SubPage from '@/components/SubPage';
+import UpcomingExperiences from '@/components/UpcomingExperiences';
 import { getExperienceBySlug, experienceProps } from '@/lib/experience-page';
+import { getExperiences } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Workshops',
@@ -8,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function WorkshopsPage() {
-  const cms = await getExperienceBySlug('workshops');
+  const [cms, upcoming] = await Promise.all([
+    getExperienceBySlug('workshops'),
+    getExperiences('workshop'),
+  ]);
   const props = experienceProps(cms, {
     title: 'Workshops',
     kicker: 'Experiences',
@@ -23,5 +28,10 @@ export default async function WorkshopsPage() {
     ],
     cta: { label: 'View upcoming workshops', href: '/community/events' },
   });
-  return <SubPage {...props} />;
+  return (
+    <>
+      <SubPage {...props} />
+      <UpcomingExperiences items={upcoming} accentColour="#7BAFDD" emptyLabel="Next workshop dates are announced to the mailing list first." />
+    </>
+  );
 }

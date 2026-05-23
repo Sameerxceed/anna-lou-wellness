@@ -432,6 +432,142 @@ async function seedPages(strapi) {
     ].join('\n'),
   });
 
+  // ═══ Individual Experience entries (Anna's currently-selling products) ═══
+  // Migrated from the legacy WooCommerce shop on annalouwellness.com.
+  // Anna can edit these in Strapi → Work · Experience. Dates and prices match
+  // what she was actively selling as of 22 May 2026; she will roll new dates
+  // here as she announces them. Hero images intentionally not seeded — Anna
+  // uploads via the CMS so they land in Cloudinary with correct EXIF rotation.
+  const houseboatResetDescription = [
+    'A one-day somatic experience on the water. Step out of the noise, reconnect to your body, and return to a steadier, clearer way of being.',
+    'The day includes conscious connected breathwork and sacral activation, surrender and release rituals with flash EMDR and tapping, body-based work with pendulum guidance, and a somatic closing ceremony.',
+    'You receive chai on arrival, ceremonial cacao, an alkaline lunch in the island garden, and all materials needed for the sessions. A pendulum is provided if you don\'t have one.',
+    'You leave with a genuine nervous system reset, subconscious loops named and released, clarity on the next aligned move, and body trust restored. Six places maximum.',
+    'Arrive from 9.00am for tea on the deck. Day runs 10.00am to 4.00pm.',
+  ].join('\n\n');
+
+  await ensure(strapi, 'api::experience.experience', 'houseboat-reset-2026-06-13', {
+    name: 'Houseboat Nervous System Reset · 13 June',
+    type: 'retreat',
+    description: houseboatResetDescription,
+    date: '2026-06-13',
+    location: 'Taggs Island, Half Mile, Hampton, TW12 2HA',
+    price: 115.00,
+    price_label: '£115 · Day immersion',
+    is_upcoming: true,
+    is_active: true,
+    sort_order: 10,
+    seo_title: 'Houseboat Nervous System Reset — 13 June',
+    seo_description: 'One-day somatic retreat on the Thames at Taggs Island. Breathwork, EMDR, somatic release. £115. Six places.',
+  });
+
+  await ensure(strapi, 'api::experience.experience', 'houseboat-reset-2026-06-27', {
+    name: 'Houseboat Nervous System Reset · 27 June',
+    type: 'retreat',
+    description: houseboatResetDescription,
+    date: '2026-06-27',
+    location: 'Taggs Island, Half Mile, Hampton, TW12 2HA',
+    price: 115.00,
+    price_label: '£115 · Day immersion',
+    is_upcoming: true,
+    is_active: true,
+    sort_order: 20,
+    seo_title: 'Houseboat Nervous System Reset — 27 June',
+    seo_description: 'One-day somatic retreat on the Thames at Taggs Island. Breathwork, EMDR, somatic release. £115. Six places.',
+  });
+
+  await ensure(strapi, 'api::experience.experience', 'houseboat-reset-2026-07-18', {
+    name: 'Houseboat Nervous System Reset · 18 July',
+    type: 'retreat',
+    description: houseboatResetDescription,
+    date: '2026-07-18',
+    location: 'Taggs Island, Half Mile, Hampton, TW12 2HA',
+    price: 115.00,
+    price_label: '£115 · Day immersion',
+    is_upcoming: true,
+    is_active: true,
+    sort_order: 30,
+    seo_title: 'Houseboat Nervous System Reset — 18 July',
+    seo_description: 'One-day somatic retreat on the Thames at Taggs Island. Breathwork, EMDR, somatic release. £115. Six places.',
+  });
+
+  await ensure(strapi, 'api::experience.experience', 'houseboat-reset-2026-07-25', {
+    name: 'Houseboat Nervous System Reset · 25 July',
+    type: 'retreat',
+    description: houseboatResetDescription,
+    date: '2026-07-25',
+    location: 'Taggs Island, Half Mile, Hampton, TW12 2HA',
+    price: 115.00,
+    price_label: '£115 · Day immersion',
+    is_upcoming: true,
+    is_active: true,
+    sort_order: 40,
+    seo_title: 'Houseboat Nervous System Reset — 25 July',
+    seo_description: 'One-day somatic retreat on the Thames at Taggs Island. Breathwork, EMDR, somatic release. £115. Six places.',
+  });
+
+  await ensure(strapi, 'api::experience.experience', 'align-and-amplify', {
+    name: 'Align & Amplify · A One-Day Immersion in THE CODES',
+    type: 'workshop',
+    description: [
+      'An exclusive one-day immersion anchored in THE CODES — Anna\'s signature framework for decoding subconscious blocks and aligning with your unique essence.',
+      'Led personally by Anna Lou, drawing from 25 years scaling a 7-figure jewellery brand. Hosted on a private houseboat on the Thames at Taggs Island. Seven places maximum.',
+      'The day includes a ceremonial cacao opening, somatic nervous system regulation, conscious connected breathwork, pendulum guidance, TRE tension release, and subconscious pattern work.',
+      'You leave with a nervous system reset, subconscious loops released, and one clear next direction your system trusts.',
+      'Day runs 10.00am to 4.00pm. Next available date confirmed on enquiry.',
+    ].join('\n\n'),
+    date: '2026-06-20',
+    location: 'Taggs Island, Hampton (private houseboat on the Thames)',
+    price: 90.00,
+    price_label: '£90 · Day immersion',
+    is_upcoming: true,
+    is_active: true,
+    sort_order: 50,
+    seo_title: 'Align & Amplify — One-Day Immersion in THE CODES',
+    seo_description: 'One-day immersion in Anna\'s CODES framework. Breathwork, somatic regulation, pattern work. £90. Seven places.',
+  });
+
+  await ensure(strapi, 'api::experience.experience', 'returning-circle-class', {
+    name: 'The Returning Circle · Learn the Language of Your Nervous System',
+    type: 'workshop',
+    description: [
+      'An intimate 60-minute session designed to help you understand your nervous system and develop practical self-regulation tools. Pay what you can afford.',
+      'The class combines TRE (Trauma Release Experience) with gentle tremor work, conscious connected breathwork, chakra opening meditation, and nervous system education.',
+      'You learn to recognise the signals your body is sending you and respond to them with compassion instead of override. Suitable if you feel disconnected from your body, want to understand your patterns, or just want practical tools for self-regulation.',
+      'No prior experience required. Runs weekly, Tuesdays 2.00pm to 3.00pm.',
+    ].join('\n\n'),
+    date: '2026-05-26',
+    location: 'Online (Zoom)',
+    price: 5.55,
+    price_label: '£5.55 · Pay what you can',
+    is_upcoming: true,
+    is_active: true,
+    sort_order: 60,
+    seo_title: 'The Returning Circle — Weekly Nervous System Class',
+    seo_description: 'Weekly 60-min online class. TRE, breathwork, chakra meditation. Pay what you can afford, from £5.55.',
+  });
+
+  await ensure(strapi, 'api::experience.experience', 'rise-and-shine-7-figures', {
+    name: 'Rise and Shine · To Get to 7 Figures',
+    type: 'workshop',
+    description: [
+      'A powerful day session on the houseboat for leaders and entrepreneurs ready to elevate their business.',
+      'The day challenges the societal narratives about success and emphasises that seven-figure achievement is within reach when you are willing to embrace your full potential.',
+      'You engage in somatic practices, breathwork journeys, crystal energy work, and vulnerability release exercises. The focus is on becoming a powerful entrepreneur who honours her own needs, reduces stress, and pursues ambitious goals without sacrifice.',
+      'For driven women who refuse to settle and are committed to rewriting the rules of leadership and entrepreneurship.',
+      'Day runs 10.00am to 4.00pm.',
+    ].join('\n\n'),
+    date: '2026-07-04',
+    location: 'Taggs Island, Half Mile, Hampton, TW12 2HA',
+    price: 90.00,
+    price_label: '£90 · Day session',
+    is_upcoming: true,
+    is_active: true,
+    sort_order: 70,
+    seo_title: 'Rise and Shine — Get to 7 Figures (Houseboat Day Session)',
+    seo_description: 'One-day session for women entrepreneurs on the houseboat. Somatic work, breathwork, vulnerability release. £90.',
+  });
+
   // ═══ Community Event pages ═══
   await ensure(strapi, 'api::community-event-page.community-event-page', 'the-returning-circle', {
     title: 'The Returning Circle.',
