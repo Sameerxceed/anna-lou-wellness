@@ -486,6 +486,9 @@ export interface ArticleShopTag {
   productName: string | null;
   captionPrefix: string;
   altText: string;
+  /** How the photo fills the gallery frame: 'cover' crops to fill, 'contain'
+   * shows whole image with subtle padding. Anna picks per photo in CMS. */
+  fitMode: 'cover' | 'contain';
 }
 
 export interface Article {
@@ -550,6 +553,7 @@ function mapArticle(d: any): Article {
             productName: t.product?.name || null,
             captionPrefix: t.caption_prefix || 'Anna is wearing the',
             altText: t.alt_text || t.product?.name || '',
+            fitMode: t.fit_mode === 'contain' ? 'contain' : 'cover',
           }))
       : [],
   };

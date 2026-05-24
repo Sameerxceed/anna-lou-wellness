@@ -42,8 +42,12 @@ export default function ShopTheStory({ tags, accentColour = '#6E3A5A', label = '
         {tags.map((tag, i) => {
           const href = tag.productSlug ? `/shop/${tag.productSlug}` : null;
           const hoverLabel = tag.productName ? `${tag.captionPrefix} ${tag.productName}` : null;
+          // Per-tile fit mode: 'cover' (default) crops to fill the 4:5 frame;
+          // 'contain' fits the whole image inside with padding. Anna picks
+          // in CMS so landscape / square / odd-ratio photos don't get cropped.
+          const figureClass = `sts-figure sts-fit-${tag.fitMode || 'cover'}`;
           const figure = (
-            <figure className="sts-figure">
+            <figure className={figureClass}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={tag.image}
@@ -114,9 +118,15 @@ const stsStyles = (accent: string) => `
 }
 .sts-image {
   width: 100%; height: 100%;
-  object-fit: cover; display: block;
+  display: block;
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
+/* Cover (default): crop to fill frame edge-to-edge. Best for portrait photos. */
+.sts-fit-cover .sts-image { object-fit: cover; }
+/* Contain: fit whole image inside, pad with subtle cream background.
+   Use for landscape, square, or odd-ratio photos that shouldn't crop. */
+.sts-fit-contain { background: #F5F3EF; }
+.sts-fit-contain .sts-image { object-fit: contain; }
 .sts-tile-link:hover .sts-image { transform: scale(1.04); }
 
 .sts-caption {

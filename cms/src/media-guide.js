@@ -3,88 +3,110 @@
 /**
  * Media Upload Guide — field descriptions shown in the admin panel.
  *
- * Sets help text under each media field so editors know the
- * recommended dimensions, aspect ratio, format, and file size.
+ * Sets the small help text under each media field on the edit form so
+ * Anna sees the recommended dimensions / aspect ratio / file size right
+ * where she'd otherwise have to guess.
  *
- * Strapi auto-generates responsive breakpoints (thumbnail 245px,
- * small 500px, medium 750px, large 1200px, xlarge 1920px), but
- * uploading at the recommended size ensures the best quality.
+ * Strapi auto-generates responsive breakpoints (thumbnail / small /
+ * medium / large / xlarge) on every upload, AND every consuming component
+ * uses `object-fit: cover` or `object-fit: contain` so oversized or
+ * wrong-aspect uploads still render — but uploading at the recommended
+ * size gives the best visual result and the fastest load.
+ *
+ * Format: "[purpose]. Best size: [W]×[H] ([ratio]). Max 2 MB. [notes]"
+ *
+ * Standard sizes used across the site:
+ *   Portrait 4:5 (1200×1500) — most hero / portrait blocks
+ *   Landscape 16:9 (1600×900) — article heroes, wide banners, retreats
+ *   Square 1:1 (1200×1200) — product photos, headshots, social cards
+ *   Portrait 3:4 (1200×1600) — Anna's portrait blocks, tall hero
  */
 
-// ── Descriptions for every media field ──────────────────────────
-// Keyed by content-type UID → field name → description text.
-
+// ── Singletons ────────────────────────────────────────────────────
 const singleTypes = {
   'api::homepage.homepage': {
-    hero_video:
-      'MP4 video, 1920×1080px (16:9 landscape). Max 25 MB. Plays as full-screen background on the homepage. Keep under 15 seconds for fast loading.',
-    hero_poster:
-      'JPEG, 1920×1080px (16:9 landscape). Max 2 MB. Shows while the video loads and on mobile devices where video is skipped.',
-    intro_image:
-      'JPEG or PNG, 800×1067px (3:4 portrait). Max 2 MB. Appears beside the intro text on the homepage.',
+    heroImage:
+      'Hero photo on the right of the homepage opening section. Best size: 1200×1500 (portrait 4:5), JPEG or PNG, max 2 MB. Atmospheric, golden hour, Anna on Taggs Island works well.',
+    workImage:
+      'Photo on the right of the Work with Anna section. Best size: 1200×1500 (portrait 4:5), max 2 MB. Coaching session vibe — houseboat, soft light.',
+    communityImage:
+      'Photo on the left of the Community section. Best size: 1600×1200 (landscape 4:3), max 2 MB. Circle gathering, warm, real.',
+    portraitImage:
+      'Portrait photo on the left of the Anna intro section. Best size: 1200×1500 (portrait 4:5), max 2 MB. Head-and-shoulders or three-quarter shot of Anna.',
   },
-
-  'api::cottage.cottage': {
-    gallery:
-      'JPEG, 1200×900px each (4:3 landscape). Max 2 MB each. Shown in a 3-column grid with lightbox. Upload 6–12 images.',
-  },
-
-  'api::contact-page.contact-page': {
-    // No media fields
-  },
-
   'api::site-settings.site-settings': {
     logo:
-      'PNG with transparent background, ~200px wide. Max 500 KB. Used in the header navigation.',
-    logo_dark:
-      'PNG with transparent background, ~200px wide. Max 500 KB. Used on dark backgrounds (footer).',
+      'Site logo (light background). PNG with transparent background, ~600px wide. Max 500 KB. Shows in the top nav.',
     favicon:
-      'PNG, 512×512px (square). Max 200 KB. Browser tab icon — will be auto-resized.',
+      'Browser tab icon. PNG, 512×512 (square). Max 200 KB. Auto-resized for all tab sizes.',
     og_default_image:
-      'JPEG, 1200×630px (roughly 2:1). Max 1 MB. Default image for social media link previews (Facebook, Twitter, WhatsApp).',
+      'Default social-media preview image (Facebook, WhatsApp, Twitter, LinkedIn). JPEG, 1200×630 (roughly 2:1). Max 1 MB. Used when a specific page doesn\'t have its own.',
+  },
+  'api::about-page.about-page': {
+    portrait:
+      'Anna\'s portrait photo on the About page. Best size: 1200×1500 (portrait 4:5), max 2 MB. The hero image of the section.',
+  },
+  'api::community-page.community-page': {
+    circle_image:
+      'Photo for The Returning Circle section. Best size: 1200×1500 (portrait 4:5), max 2 MB. Circle gathering, candles, warm.',
+    reset_room_image:
+      'Photo for The Reset Room section. Best size: 1200×1500 (portrait 4:5), max 2 MB. Intimate, somatic-practice setting.',
+  },
+  'api::work-with-anna-page.work-with-anna-page': {
+    hero_image:
+      'Hero photo on the /the-work page. Best size: 1200×1500 (portrait 4:5), max 2 MB. Coaching or somatic-work setting.',
+  },
+  'api::shop-page.shop-page': {
+    hero_image:
+      'Hero photo on the /shop page. Best size: 1600×900 (landscape 16:9), max 2 MB. Wide banner across the top.',
+  },
+  'api::reset-stories-page.reset-stories-page': {
+    hero_image:
+      'Optional hero photo at the top of the Reset Stories section page. Best size: 1600×900 (landscape 16:9), max 2 MB. Leave blank to use the default editorial layout.',
+  },
+  'api::life-page.life-page': {
+    hero_image:
+      'Optional hero photo at the top of the Life section page. Best size: 1600×900 (landscape 16:9), max 2 MB.',
+  },
+  'api::love-and-relationships-page.love-and-relationships-page': {
+    hero_image:
+      'Optional hero photo at the top of the Love & Relationships section page. Best size: 1600×900 (landscape 16:9), max 2 MB.',
+  },
+  'api::work-and-money-page.work-and-money-page': {
+    hero_image:
+      'Optional hero photo at the top of the Work & Money section page. Best size: 1600×900 (landscape 16:9), max 2 MB.',
   },
 };
 
+// ── Collections ───────────────────────────────────────────────────
 const collectionTypes = {
-  'api::garden.garden': {
-    card_image:
-      'JPEG, 600×750px (4:5 portrait). Max 2 MB. Main image shown on the Gardens listing page.',
-    gallery:
-      'JPEG, 800×800px or larger (1:1 square). Max 2 MB each. Shown in a 2-column grid with lightbox. Upload 4–10 images per garden.',
-  },
-
   'api::product.product': {
     images:
-      'JPEG or PNG, 1200×1200px (1:1 square). Max 2 MB each. First image is the main shop thumbnail. Upload 1–5 images.',
+      'Product photos. Best size: 1200×1200 (square 1:1), JPEG or PNG, max 2 MB each. Upload 1–5. First image is the main shop thumbnail. Other shapes work too — the product page fits any image inside a square frame without cropping.',
   },
-
-  'api::bloom-month.bloom-month': {
-    photos:
-      'JPEG, 1200×900px (4:3 landscape). Max 2 MB each. Seasonal photos for this month. Upload 1–4 images.',
+  'api::article.article': {
+    hero_image:
+      'Hero photo at the top of the article. Best size: 1600×900 (landscape 16:9), max 2 MB. Wide, editorial — sets the tone for the piece.',
   },
-
-  'api::event.event': {
-    image:
-      'JPEG, 1600×900px (16:9 landscape). Max 2 MB. Used as the event banner/hero image.',
+  'api::experience.experience': {
+    hero_image:
+      'Hero photo for the retreat / workshop. Best size: 1600×900 (landscape 16:9), max 2 MB. Used on the listing card AND the detail page. Houseboat, river, golden hour all work.',
   },
-
-  'api::wedding-venue.wedding-venue': {
-    image:
-      'JPEG, 1600×900px (16:9 landscape). Max 2 MB. Showcases this ceremony location.',
+  'api::coaching-session.coaching-session': {
+    hero_image:
+      'Hero photo for the session card and detail page. Best size: 1200×1500 (portrait 4:5), max 2 MB. Coaching, somatic, body-based imagery.',
   },
-
+  'api::programme.programme': {
+    heroImage:
+      'Hero photo for the programme card and detail page. Best size: 1200×1500 (portrait 4:5), max 2 MB.',
+  },
   'api::team-member.team-member': {
     portrait:
-      'JPEG, 400×533px (3:4 portrait). Max 1 MB. Head-and-shoulders photo works best.',
-  },
-
-  'api::visit-option.visit-option': {
-    image:
-      'JPEG, 1600×900px (16:9 landscape). Max 2 MB. Represents this visit experience.',
+      'Team member portrait. Best size: 800×1000 (portrait 4:5), max 1 MB. Head-and-shoulders, soft natural light.',
   },
 };
 
-// ── Apply descriptions to content-manager configuration ─────────
+// ── Apply descriptions to content-manager configuration ───────────
 
 async function setMediaDescriptions(strapi) {
   const allConfigs = [
@@ -141,7 +163,7 @@ async function setMediaDescriptions(strapi) {
   }
 
   if (updated > 0) {
-    strapi.log.info(`Media upload descriptions set for ${updated} content types`);
+    strapi.log.info(`[media-guide] Media upload descriptions set for ${updated} content types`);
   }
 }
 

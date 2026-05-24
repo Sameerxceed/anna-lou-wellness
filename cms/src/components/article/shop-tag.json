@@ -12,7 +12,13 @@
       "multiple": false,
       "required": true,
       "allowedTypes": ["images"],
-      "description": "Photo of Anna wearing or using the piece. Portrait or landscape both work."
+      "description": "Photo for the article gallery. Best size: portrait 800×1000 (4:5), max 2 MB. Other sizes work — see the fit_mode option below to control how the photo fills the frame."
+    },
+    "fit_mode": {
+      "type": "enumeration",
+      "enum": ["cover", "contain"],
+      "default": "cover",
+      "description": "How the photo fills the gallery frame. 'cover' (recommended for portrait photos) crops the photo to fill the frame edge-to-edge. 'contain' shows the whole photo with subtle padding — use this for landscape, square, or odd-shaped photos that shouldn't be cropped."
     },
     "product": {
       "type": "relation",

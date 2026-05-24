@@ -56,15 +56,19 @@ export default async function ProductDetailPage({ params }: Props) {
           </nav>
 
           <div className="grid grid-cols-2 gap-12 max-md:grid-cols-1">
-            <div className="aspect-square overflow-hidden bg-cream reveal" data-lightbox-group>
+            {/* Main product image: square frame, but image uses object-contain
+                so non-square photos (landscape product shots, portrait
+                lifestyle shots, oddly-shaped uploads) fit cleanly inside
+                instead of being cropped. Cream background fills any padding. */}
+            <div className="aspect-square overflow-hidden bg-warm-neutral reveal flex items-center justify-center" data-lightbox-group>
               {(() => {
                 const img = product.images[0] || getStockImage('product', slug);
                 return (
-                  <div className="cursor-pointer w-full h-full" data-lightbox={img}>
+                  <div className="cursor-pointer w-full h-full flex items-center justify-center" data-lightbox={img}>
                     <img
                       src={img}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="max-w-full max-h-full object-contain"
                     />
                   </div>
                 );
