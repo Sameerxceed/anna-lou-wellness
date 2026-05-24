@@ -28,6 +28,7 @@ import type { StrapiApp } from '@strapi/strapi/admin';
 import SectionFilterPills from './extensions/SectionFilterPills';
 import QuickEditDashboard from './extensions/QuickEditDashboard';
 import QuickEditDashboardPage from './extensions/QuickEditDashboardPage';
+import RelatedItemsPanel from './extensions/RelatedItemsPanel';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -132,6 +133,26 @@ const bootstrap = (app: StrapiApp) => {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('[ALW admin] SectionFilterPills injection failed:', err);
+  }
+
+  // Inject "Everything on this page" panel into the right sidebar of edit
+  // views. The panel reads the current URL, looks up the UID in its
+  // PAGE_GROUPS map, and renders a clickable tree of every related item
+  // editable on the same public page (sub-menu items, sub-pages, articles,
+  // events, products). On edit pages with no related-items config, the
+  // component returns null and nothing renders — invisible everywhere else.
+  //
+  // This replaces the "Show contents" expandable on Quick Edit dashboard
+  // cards as the primary discovery mechanism: cards stay compact, the full
+  // tree lives where you actually edit.
+  try {
+    app.getPlugin('content-manager')?.injectComponent('editView', 'right-links', {
+      name: 'RelatedItemsPanel',
+      Component: RelatedItemsPanel,
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] RelatedItemsPanel injection failed:', err);
   }
 
   // Quick Edit dashboard — register as a sidebar menu link so it's always
