@@ -27,17 +27,56 @@ type ChildItem = {
 type LoadChildren = () => Promise<ChildItem[]>;
 
 // ─── Auth + fetch ─────────────────────────────────────────────────────────
+// Read the admin JWT from storage. Strapi versions disagree on:
+//   1. Which key it lives under (jwtToken, strapi-jwt-token, jwt, ...)
+//   2. Whether it's JSON-encoded ("eyJ...") or stored raw (eyJ...)
+// We try every common key in both storages, and handle both encodings.
+// One log line on first lookup so DevTools tells us what we found.
+let loggedAuthDiscovery = false;
 const getAdminToken = (): string | null => {
-  try {
-    if (typeof sessionStorage !== 'undefined') {
-      const raw = sessionStorage.getItem('jwtToken');
-      if (raw) return JSON.parse(raw);
+  const candidateKeys = ['jwtToken', 'strapi-jwt-token', 'jwt'];
+  const readKey = (storage: Storage | undefined, key: string): string | null => {
+    if (!storage) return null;
+    const raw = storage.getItem(key);
+    if (!raw) return null;
+    // Some versions store JSON-wrapped ('"eyJ..."'), others raw ('eyJ...').
+    // Try JSON.parse; if it gives a string, use that. Otherwise use raw.
+    try {
+      const parsed = JSON.parse(raw);
+      if (typeof parsed === 'string') return parsed;
+    } catch { /* not JSON-encoded, fall through to raw */ }
+    return raw;
+  };
+  const session = typeof sessionStorage !== 'undefined' ? sessionStorage : undefined;
+  const local = typeof localStorage !== 'undefined' ? localStorage : undefined;
+  for (const key of candidateKeys) {
+    const fromSession = readKey(session, key);
+    if (fromSession) {
+      if (!loggedAuthDiscovery) {
+        loggedAuthDiscovery = true;
+        // eslint-disable-next-line no-console
+        console.info(`[RelatedItems] admin token found in sessionStorage["${key}"]`);
+      }
+      return fromSession;
     }
-    if (typeof localStorage !== 'undefined') {
-      const raw = localStorage.getItem('jwtToken');
-      if (raw) return JSON.parse(raw);
+    const fromLocal = readKey(local, key);
+    if (fromLocal) {
+      if (!loggedAuthDiscovery) {
+        loggedAuthDiscovery = true;
+        // eslint-disable-next-line no-console
+        console.info(`[RelatedItems] admin token found in localStorage["${key}"]`);
+      }
+      return fromLocal;
     }
-  } catch { /* ignore */ }
+  }
+  if (!loggedAuthDiscovery) {
+    loggedAuthDiscovery = true;
+    // eslint-disable-next-line no-console
+    console.warn('[RelatedItems] no admin token found in storage — relying on credentials cookie', {
+      sessionKeys: session ? Object.keys(session) : [],
+      localKeys: local ? Object.keys(local) : [],
+    });
+  }
   return null;
 };
 
@@ -47,8 +86,27 @@ const adminFetch = async (path: string) => {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     credentials: 'include',
   });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) {
+    // eslint-disable-next-line no-console
+    console.error(`[RelatedItems] fetch ${path} → ${res.status} ${res.statusText}`);
+    throw new Error(`${res.status} ${res.statusText} (${path})`);
+  }
   return res.json();
+};
+
+// Normalise the response shape across Strapi versions. The Content Manager
+// admin API has been seen returning either { results, pagination } directly
+// or { data: { results, pagination } } depending on version/plugin config.
+// This helper tries both shapes so loaders don't silently return empty when
+// the shape moves around.
+const extractResults = (data: unknown): Array<Record<string, unknown>> => {
+  const root = data as { results?: unknown[]; data?: { results?: unknown[] } } | null;
+  if (Array.isArray(root?.results)) return root!.results as Array<Record<string, unknown>>;
+  if (Array.isArray(root?.data?.results)) return root!.data!.results as Array<Record<string, unknown>>;
+  if (Array.isArray(data)) return data as Array<Record<string, unknown>>;
+  // eslint-disable-next-line no-console
+  console.warn('[RelatedItems] unexpected response shape:', data);
+  return [];
 };
 
 // ─── Loader factories ──────────────────────────────────────────────────────
@@ -64,7 +122,11 @@ const getNavItems = () => {
     navCache = (async () => {
       try {
         const data = await adminFetch(NAVIGATION_EDIT_URL);
-        return (data?.items as Array<{ href?: string; children?: Array<{ label?: string; href?: string }> }>) || [];
+        // Try both Strapi shapes: { items } directly on the document, or
+        // { data: { items } } when wrapped.
+        const root = data as { items?: unknown[]; data?: { items?: unknown[] } } | null;
+        const items = (root?.items as unknown[]) || (root?.data?.items as unknown[]) || [];
+        return items as Array<{ href?: string; children?: Array<{ label?: string; href?: string }> }>;
       } catch (err) {
         navCache = null;
         throw err;
@@ -93,7 +155,7 @@ const collectionItems = (
   let url = `/content-manager/collection-types/${uid}?page=1&pageSize=${pageSize}`;
   if (sort) url += `&sort=${sort}`;
   const data = await adminFetch(url);
-  const results = (data?.results as Array<Record<string, unknown>>) || [];
+  const results = extractResults(data);
   return results.map((r): ChildItem => {
     const documentId = (r.documentId as string) || (r.id as string | number);
     const baseLabel = (r[nameField] as string) || (r.title as string) || (r.name as string) || (r.slug as string) || '(untitled)';
@@ -116,7 +178,7 @@ const collectionItems = (
 const categoriesInSection = (sectionSlug: string): LoadChildren => async () => {
   const url = `/content-manager/collection-types/api::article-category.article-category?page=1&pageSize=50&sort=sort_order:ASC,name:ASC&filters[section][$eq]=${encodeURIComponent(sectionSlug)}`;
   const data = await adminFetch(url);
-  const results: Array<Record<string, unknown>> = data?.results || [];
+  const results = extractResults(data);
   return results.map((c): ChildItem => ({
     id: (c.documentId as string) || String(c.id),
     label: (c.name as string) || '(untitled)',
@@ -127,7 +189,7 @@ const categoriesInSection = (sectionSlug: string): LoadChildren => async () => {
 const articlesInSection = (sectionSlug: string, limit = 10): LoadChildren => async () => {
   const url = `/content-manager/collection-types/api::article.article?page=1&pageSize=${limit}&sort=publishedAt:DESC&filters[category][section][$eq]=${encodeURIComponent(sectionSlug)}`;
   const data = await adminFetch(url);
-  const results: Array<Record<string, unknown>> = data?.results || [];
+  const results = extractResults(data);
   return results.map((a): ChildItem => ({
     id: (a.documentId as string) || String(a.id),
     label: (a.title as string) || '(untitled article)',
@@ -138,7 +200,7 @@ const articlesInSection = (sectionSlug: string, limit = 10): LoadChildren => asy
 const productsWithTag = (tag: string): LoadChildren => async () => {
   const url = `/content-manager/collection-types/api::product.product?page=1&pageSize=50&sort=sort_order:ASC,name:ASC&filters[tags][$contains]=${encodeURIComponent(tag)}`;
   const data = await adminFetch(url);
-  const results: Array<Record<string, unknown>> = data?.results || [];
+  const results = extractResults(data);
   return results.map((p): ChildItem => ({
     id: (p.documentId as string) || String(p.id),
     label: (p.name as string) || '(untitled)',
@@ -149,7 +211,7 @@ const productsWithTag = (tag: string): LoadChildren => async () => {
 const genericPagesWithPrefix = (prefix: string): LoadChildren => async () => {
   const url = `/content-manager/collection-types/api::generic-page.generic-page?page=1&pageSize=50&sort=slug:ASC&filters[slug][$startsWith]=${encodeURIComponent(prefix)}`;
   const data = await adminFetch(url);
-  const results: Array<Record<string, unknown>> = data?.results || [];
+  const results = extractResults(data);
   return results.map((p): ChildItem => ({
     id: (p.documentId as string) || String(p.id),
     label: (p.title as string) || (p.slug as string) || '(untitled)',
