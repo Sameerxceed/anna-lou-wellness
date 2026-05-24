@@ -33,29 +33,7 @@ const SECTION_PATHS = {
   'work-and-money': '/work-and-money',
 };
 
-async function notifyRevalidate(strapi, paths) {
-  const baseUrl = process.env.PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL;
-  const secret = process.env.REVALIDATE_SECRET;
-  if (!baseUrl || !secret) {
-    strapi.log.warn('[article-lifecycles] PUBLIC_SITE_URL or REVALIDATE_SECRET not set — skipping revalidation');
-    return;
-  }
-  try {
-    const res = await fetch(`${baseUrl}/api/revalidate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paths, secret }),
-    });
-    if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      strapi.log.warn(`[article-lifecycles] revalidate ${res.status}: ${text}`);
-    } else {
-      strapi.log.info(`[article-lifecycles] revalidated ${paths.length} paths`);
-    }
-  } catch (err) {
-    strapi.log.warn(`[article-lifecycles] revalidate error: ${err.message}`);
-  }
-}
+const { notifyRevalidate } = require('../../../../utils/revalidate');
 
 // Given an Article event, compute every public path that should refresh.
 // Always includes homepage and section landing. Includes article detail

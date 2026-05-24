@@ -41,11 +41,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid secret' }, { status: 401 });
   }
 
-  const paths = Array.isArray(body.paths)
-    ? body.paths.filter((p): p is string => typeof p === 'string' && p.startsWith('/'))
-    : [];
+  // Accept either real paths starting with "/" OR the special sentinel "*"
+  // which means "revalidate the entire site at the layout level" (used for
+  // navigation / footer / site-settings changes that affect every page).
+  const rawPaths = Array.isArray(body.paths) ? body.paths : [];
+  const paths: string[] = [];
+  let revalidateLayout = false;
+  for (const p of rawPaths) {
+    if (p === '*') {
+      revalidateLayout = true;
+    } else if (typeof p === 'string' && p.startsWith('/')) {
+      paths.push(p);
+    }
+  }
 
-  if (paths.length === 0) {
+  if (paths.length === 0 && !revalidateLayout) {
     return NextResponse.json({ error: 'No valid paths provided' }, { status: 400 });
   }
 
@@ -58,9 +68,21 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  if (revalidateLayout) {
+    try {
+      // Revalidate every page in the App Router at the layout level —
+      // used for nav / footer / site-settings changes.
+      revalidatePath('/', 'layout');
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[revalidate] layout-level failed:', err);
+    }
+  }
+
   return NextResponse.json({
     revalidated: true,
     paths,
+    layout: revalidateLayout,
     now: Date.now(),
   });
 }
