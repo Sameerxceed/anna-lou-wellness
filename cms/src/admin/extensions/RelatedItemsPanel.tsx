@@ -222,101 +222,115 @@ const genericPagesWithPrefix = (prefix: string): LoadChildren => async () => {
 // ─── Per-UID groups map ────────────────────────────────────────────────────
 // Keyed by the UID that appears in the edit-page URL. The panel only renders
 // for UIDs in this map — every other edit page is unaffected.
-type Group = { header: string; load: LoadChildren };
+//
+// Each group has a clickable `headerTo` URL — Anna can click the section
+// header itself to land on the full list view, even if the per-item fetch
+// returns nothing (so headers are useful as navigation regardless of whether
+// the items load successfully beneath).
+type Group = { header: string; headerTo: string; load: LoadChildren };
+
+// Helper URLs
+const collectionListUrl = (uid: string, filterQs = '') =>
+  `/content-manager/collection-types/${uid}${filterQs ? `?${filterQs}` : ''}`;
+const singletonUrl = (uid: string) => `/content-manager/single-types/${uid}`;
+
+const ARTICLE_CAT = 'api::article-category.article-category';
+const ARTICLE = 'api::article.article';
+
 const PAGE_GROUPS: Record<string, { accent: string; groups: Group[] }> = {
   'api::experiences-landing-page.experiences-landing-page': {
     accent: '#7BAFDD',
     groups: [
-      { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/experiences') },
-      { header: 'Sub-pages (own copy)', load: collectionItems('api::experience-page.experience-page', { sort: 'title:ASC', nameField: 'title' }) },
-      { header: 'Upcoming events', load: collectionItems('api::experience.experience', { sort: 'date:ASC', nameField: 'name', prefixDate: true }) },
+      { header: 'Sub-menu items (edit in Navigation)', headerTo: NAVIGATION_EDIT_URL, load: navChildrenByHref('/experiences') },
+      { header: 'Sub-pages (own copy)', headerTo: collectionListUrl('api::experience-page.experience-page'), load: collectionItems('api::experience-page.experience-page', { sort: 'title:ASC', nameField: 'title' }) },
+      { header: 'Upcoming events', headerTo: collectionListUrl('api::experience.experience'), load: collectionItems('api::experience.experience', { sort: 'date:ASC', nameField: 'name', prefixDate: true }) },
     ],
   },
   'api::work-with-anna-page.work-with-anna-page': {
     accent: '#F280AA',
     groups: [
-      { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/the-work') },
-      { header: '1:1 sessions', load: collectionItems('api::coaching-session.coaching-session', { sort: 'sort_order:ASC', nameField: 'title' }) },
-      { header: 'Programmes', load: collectionItems('api::programme.programme', { sort: 'sort_order:ASC', nameField: 'title' }) },
-      { header: 'FAQs', load: collectionItems('api::faq.faq', { sort: 'sort_order:ASC', nameField: 'question' }) },
+      { header: 'Sub-menu items (edit in Navigation)', headerTo: NAVIGATION_EDIT_URL, load: navChildrenByHref('/the-work') },
+      { header: '1:1 sessions', headerTo: collectionListUrl('api::coaching-session.coaching-session'), load: collectionItems('api::coaching-session.coaching-session', { sort: 'sort_order:ASC', nameField: 'title' }) },
+      { header: 'Programmes', headerTo: collectionListUrl('api::programme.programme'), load: collectionItems('api::programme.programme', { sort: 'sort_order:ASC', nameField: 'title' }) },
+      { header: 'FAQs', headerTo: collectionListUrl('api::faq.faq'), load: collectionItems('api::faq.faq', { sort: 'sort_order:ASC', nameField: 'question' }) },
     ],
   },
   'api::sessions-hub-page.sessions-hub-page': {
     accent: '#F280AA',
     groups: [
-      { header: 'Session cards on this page', load: collectionItems('api::coaching-session.coaching-session', { sort: 'sort_order:ASC', nameField: 'title' }) },
+      { header: 'Session cards on this page', headerTo: collectionListUrl('api::coaching-session.coaching-session'), load: collectionItems('api::coaching-session.coaching-session', { sort: 'sort_order:ASC', nameField: 'title' }) },
     ],
   },
   'api::shop-page.shop-page': {
     accent: '#5DCAA5',
     groups: [
-      { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/shop') },
-      { header: 'Sub-pages (own copy)', load: async () => [
-        { id: 'shop-new-in', label: 'New In', to: '/content-manager/single-types/api::shop-new-in-page.shop-new-in-page' },
-        { id: 'shop-personalised', label: 'Personalised', to: '/content-manager/single-types/api::shop-personalised-page.shop-personalised-page' },
-        { id: 'shop-esj', label: 'Emotional Support Jewellery', to: '/content-manager/single-types/api::shop-esj-page.shop-esj-page' },
+      { header: 'Sub-menu items (edit in Navigation)', headerTo: NAVIGATION_EDIT_URL, load: navChildrenByHref('/shop') },
+      { header: 'Sub-pages (own copy)', headerTo: collectionListUrl('api::generic-page.generic-page'), load: async () => [
+        { id: 'shop-new-in', label: 'New In', to: singletonUrl('api::shop-new-in-page.shop-new-in-page') },
+        { id: 'shop-personalised', label: 'Personalised', to: singletonUrl('api::shop-personalised-page.shop-personalised-page') },
+        { id: 'shop-esj', label: 'Emotional Support Jewellery', to: singletonUrl('api::shop-esj-page.shop-esj-page') },
       ] },
-      { header: 'Product categories', load: collectionItems('api::product-category.product-category', { sort: 'sort_order:ASC', nameField: 'name' }) },
-      { header: 'Products', load: collectionItems('api::product.product', { sort: 'sort_order:ASC', nameField: 'name', pageSize: 100 }) },
+      { header: 'Product categories', headerTo: collectionListUrl('api::product-category.product-category'), load: collectionItems('api::product-category.product-category', { sort: 'sort_order:ASC', nameField: 'name' }) },
+      { header: 'Products', headerTo: collectionListUrl('api::product.product'), load: collectionItems('api::product.product', { sort: 'sort_order:ASC', nameField: 'name', pageSize: 100 }) },
     ],
   },
   'api::shop-new-in-page.shop-new-in-page': {
     accent: '#5DCAA5',
-    groups: [{ header: 'Products tagged new-in', load: productsWithTag('new-in') }],
+    groups: [{ header: 'Products tagged new-in', headerTo: collectionListUrl('api::product.product'), load: productsWithTag('new-in') }],
   },
   'api::shop-personalised-page.shop-personalised-page': {
     accent: '#5DCAA5',
-    groups: [{ header: 'Products tagged personalised', load: productsWithTag('personalised') }],
+    groups: [{ header: 'Products tagged personalised', headerTo: collectionListUrl('api::product.product'), load: productsWithTag('personalised') }],
   },
   'api::shop-esj-page.shop-esj-page': {
     accent: '#5DCAA5',
-    groups: [{ header: 'Products tagged esj', load: productsWithTag('esj') }],
+    groups: [{ header: 'Products tagged esj', headerTo: collectionListUrl('api::product.product'), load: productsWithTag('esj') }],
   },
   'api::community-page.community-page': {
     accent: '#231F20',
     groups: [
-      { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/community') },
-      { header: 'Sub-pages (own copy)', load: async () => [
-        { id: 'community-returning-circle', label: 'The Returning Circle', to: '/content-manager/collection-types/api::community-event-page.community-event-page' },
-        { id: 'community-reset-room', label: 'The Reset Room (membership)', to: '/content-manager/single-types/api::reset-room-page.reset-room-page' },
-        { id: 'community-membership', label: 'Reset Room — pricing & details', to: '/content-manager/single-types/api::membership.membership' },
+      { header: 'Sub-menu items (edit in Navigation)', headerTo: NAVIGATION_EDIT_URL, load: navChildrenByHref('/community') },
+      { header: 'Sub-pages (own copy)', headerTo: collectionListUrl('api::generic-page.generic-page'), load: async () => [
+        { id: 'community-returning-circle', label: 'The Returning Circle', to: collectionListUrl('api::community-event-page.community-event-page') },
+        { id: 'community-reset-room', label: 'The Reset Room (membership)', to: singletonUrl('api::reset-room-page.reset-room-page') },
+        { id: 'community-membership', label: 'Reset Room — pricing & details', to: singletonUrl('api::membership.membership') },
       ] },
     ],
   },
   'api::about-page.about-page': {
     accent: '#231F20',
     groups: [
-      { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/about') },
-      { header: 'Sub-pages (own copy)', load: genericPagesWithPrefix('about-') },
-      { header: 'Team members', load: collectionItems('api::team-member.team-member', { sort: 'sort_order:ASC', nameField: 'name' }) },
+      { header: 'Sub-menu items (edit in Navigation)', headerTo: NAVIGATION_EDIT_URL, load: navChildrenByHref('/about') },
+      { header: 'Sub-pages (own copy)', headerTo: collectionListUrl('api::generic-page.generic-page'), load: genericPagesWithPrefix('about-') },
+      { header: 'Team members', headerTo: collectionListUrl('api::team-member.team-member'), load: collectionItems('api::team-member.team-member', { sort: 'sort_order:ASC', nameField: 'name' }) },
     ],
   },
   'api::reset-stories-page.reset-stories-page': {
     accent: '#6E3A5A',
     groups: [
-      { header: 'Sub-menu items', load: categoriesInSection('reset-stories') },
-      { header: 'Recent articles', load: articlesInSection('reset-stories') },
+      { header: 'Sub-menu items (Article Categories)', headerTo: collectionListUrl(ARTICLE_CAT, 'filters[section][$eq]=reset-stories'), load: categoriesInSection('reset-stories') },
+      { header: 'All articles in this section', headerTo: collectionListUrl(ARTICLE, 'filters[category][section][$eq]=reset-stories'), load: articlesInSection('reset-stories') },
     ],
   },
   'api::life-page.life-page': {
     accent: '#FAA21B',
     groups: [
-      { header: 'Sub-menu items', load: categoriesInSection('life') },
-      { header: 'Recent articles', load: articlesInSection('life') },
+      { header: 'Sub-menu items (Article Categories)', headerTo: collectionListUrl(ARTICLE_CAT, 'filters[section][$eq]=life'), load: categoriesInSection('life') },
+      { header: 'All articles in this section', headerTo: collectionListUrl(ARTICLE, 'filters[category][section][$eq]=life'), load: articlesInSection('life') },
     ],
   },
   'api::love-and-relationships-page.love-and-relationships-page': {
     accent: '#F280AA',
     groups: [
-      { header: 'Sub-menu items', load: categoriesInSection('love-and-relationships') },
-      { header: 'Recent articles', load: articlesInSection('love-and-relationships') },
+      { header: 'Sub-menu items (Article Categories)', headerTo: collectionListUrl(ARTICLE_CAT, 'filters[section][$eq]=love-and-relationships'), load: categoriesInSection('love-and-relationships') },
+      { header: 'All articles in this section', headerTo: collectionListUrl(ARTICLE, 'filters[category][section][$eq]=love-and-relationships'), load: articlesInSection('love-and-relationships') },
     ],
   },
   'api::work-and-money-page.work-and-money-page': {
     accent: '#FFD07A',
     groups: [
-      { header: 'Sub-menu items', load: categoriesInSection('work-and-money') },
-      { header: 'Recent articles', load: articlesInSection('work-and-money') },
+      { header: 'Sub-menu items (Article Categories)', headerTo: collectionListUrl(ARTICLE_CAT, 'filters[section][$eq]=work-and-money'), load: categoriesInSection('work-and-money') },
+      { header: 'All articles in this section', headerTo: collectionListUrl(ARTICLE, 'filters[category][section][$eq]=work-and-money'), load: articlesInSection('work-and-money') },
     ],
   },
 };
@@ -360,7 +374,11 @@ const RelatedItemsPanel = () => {
           // eslint-disable-next-line no-console
           console.error(`[RelatedItems] loader failed for "${g.header}":`, err);
         }
-        out.push({ id: `hdr-${i}`, label: g.header, to: '', groupHeader: true });
+        // Header is now clickable — `to` is the collection list URL so Anna
+        // can land on the full list view even if per-item loaders return
+        // empty, AND when items DO load she can still click the header to
+        // see them all (instead of just the first 50).
+        out.push({ id: `hdr-${i}`, label: g.header, to: g.headerTo, groupHeader: true });
         out.push(...groupItems);
       }
       if (!cancelled) {
@@ -398,20 +416,39 @@ const RelatedItemsPanel = () => {
 
       {items && items.map((c) => {
         if (c.groupHeader) {
+          // Headers are now clickable — render as a button so Anna can jump
+          // to the full collection list view for this section. Arrow icon
+          // signals interactivity.
           return (
-            <div
+            <button
               key={c.id}
+              type="button"
+              onClick={() => c.to && navigate(c.to)}
+              disabled={!c.to}
               style={{
+                cursor: c.to ? 'pointer' : 'default',
+                background: 'transparent',
+                border: 'none',
+                width: '100%',
+                textAlign: 'left',
+                padding: '10px 6px 4px',
                 fontSize: 10,
                 fontWeight: 700,
                 color: accent,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
-                padding: '10px 0 4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                borderRadius: 4,
+                transition: 'background 0.1s',
               }}
+              onMouseEnter={(e) => { if (c.to) e.currentTarget.style.background = `${accent}11`; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
             >
-              {c.label}
-            </div>
+              <span style={{ flex: 1 }}>{c.label}</span>
+              {c.to && <span style={{ fontSize: 11 }}>→</span>}
+            </button>
           );
         }
         return (
@@ -422,7 +459,7 @@ const RelatedItemsPanel = () => {
             style={{
               cursor: 'pointer',
               textAlign: 'left',
-              padding: '5px 6px',
+              padding: '5px 6px 5px 14px',
               borderRadius: 4,
               border: 'none',
               background: 'transparent',
