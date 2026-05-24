@@ -275,6 +275,10 @@ const collectionItems = (
 // optional section headers between groups. Used by Quick Edit cards that
 // represent a public page made up of multiple content types (e.g. the
 // Experiences landing page = sub-menu links + Experience collection items).
+//
+// Logs sub-loader failures to the console so we can see WHY a group came
+// back empty (previously silent-catch masked the cause). One failed loader
+// still degrades gracefully — its group becomes a header with no items.
 const combineChildren = (
   groups: Array<{ header?: string; load: LoadChildren }>,
 ): LoadChildren => async () => {
@@ -284,7 +288,9 @@ const combineChildren = (
     let items: ChildItem[] = [];
     try {
       items = await g.load();
-    } catch {
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(`[QuickEdit] sub-loader failed for "${g.header || 'group ' + i}":`, err);
       items = [];
     }
     if (items.length === 0 && !g.header) continue;
@@ -331,13 +337,10 @@ const GROUPS: Group[] = [
         uid: 'api::reset-stories-page.reset-stories-page',
         kind: 'single-types',
         label: 'Reset Stories',
-        description: 'Section landing + sub-menu items + recent articles',
+        description: 'Section landing + sub-menu items (use chips above for articles)',
         colour: '#6E3A5A',
         sublinks: editorialSublinks('reset-stories'),
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items', load: categoriesInSection('reset-stories') },
-          { header: 'Recent articles', load: articlesInSection('reset-stories') },
-        ]),
+        loadChildren: categoriesInSection('reset-stories'),
         newItemTo: NEW_CATEGORY_URL,
         newItemLabel: 'New sub-menu item (set section = Reset Stories)',
       },
@@ -345,13 +348,10 @@ const GROUPS: Group[] = [
         uid: 'api::life-page.life-page',
         kind: 'single-types',
         label: 'Life',
-        description: 'Section landing + sub-menu items + recent articles',
+        description: 'Section landing + sub-menu items (use chips above for articles)',
         colour: '#FAA21B',
         sublinks: editorialSublinks('life'),
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items', load: categoriesInSection('life') },
-          { header: 'Recent articles', load: articlesInSection('life') },
-        ]),
+        loadChildren: categoriesInSection('life'),
         newItemTo: NEW_CATEGORY_URL,
         newItemLabel: 'New sub-menu item (set section = Life)',
       },
@@ -359,13 +359,10 @@ const GROUPS: Group[] = [
         uid: 'api::love-and-relationships-page.love-and-relationships-page',
         kind: 'single-types',
         label: 'Love & Relationships',
-        description: 'Section landing + sub-menu items + recent articles',
+        description: 'Section landing + sub-menu items (use chips above for articles)',
         colour: '#F280AA',
         sublinks: editorialSublinks('love-and-relationships'),
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items', load: categoriesInSection('love-and-relationships') },
-          { header: 'Recent articles', load: articlesInSection('love-and-relationships') },
-        ]),
+        loadChildren: categoriesInSection('love-and-relationships'),
         newItemTo: NEW_CATEGORY_URL,
         newItemLabel: 'New sub-menu item (set section = Love & Relationships)',
       },
@@ -373,13 +370,10 @@ const GROUPS: Group[] = [
         uid: 'api::work-and-money-page.work-and-money-page',
         kind: 'single-types',
         label: 'Work & Money',
-        description: 'Section landing + sub-menu items + recent articles',
+        description: 'Section landing + sub-menu items (use chips above for articles)',
         colour: '#FFD07A',
         sublinks: editorialSublinks('work-and-money'),
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items', load: categoriesInSection('work-and-money') },
-          { header: 'Recent articles', load: articlesInSection('work-and-money') },
-        ]),
+        loadChildren: categoriesInSection('work-and-money'),
         newItemTo: NEW_CATEGORY_URL,
         newItemLabel: 'New sub-menu item (set section = Work & Money)',
       },
@@ -393,17 +387,9 @@ const GROUPS: Group[] = [
         uid: 'api::experiences-landing-page.experiences-landing-page',
         kind: 'single-types',
         label: 'Experiences · Landing',
-        description: 'Edit the /experiences page — header, sub-pages, and every upcoming event in one place',
+        description: 'Click main card for header. Show contents → upcoming events. Sidebar → "Experiences · Sub-page" for the 4 sub-pages.',
         colour: '#7BAFDD',
-        // Combined loader: shows sub-menu items (4 categories) + sub-page
-        // singletons (Retreats / Workshops / Corporate / Speaking) + every
-        // upcoming Experience event. Anna sees everything editable on the
-        // /experiences page in a single expandable tree.
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/experiences') },
-          { header: 'Sub-pages (own copy)', load: collectionItems('api::experience-page.experience-page', { sort: 'title:ASC', nameField: 'title' }) },
-          { header: 'Upcoming events', load: collectionItems('api::experience.experience', { sort: 'date:ASC', nameField: 'name', prefixDate: true }) },
-        ]),
+        loadChildren: collectionItems('api::experience.experience', { sort: 'date:ASC', nameField: 'name', prefixDate: true }),
         newItemTo: '/content-manager/collection-types/api::experience.experience/create',
         newItemLabel: 'Add a retreat or workshop',
       },
@@ -411,14 +397,9 @@ const GROUPS: Group[] = [
         uid: 'api::work-with-anna-page.work-with-anna-page',
         kind: 'single-types',
         label: 'Work with Anna · Landing',
-        description: 'Edit the /the-work page — sub-menu, sessions, programmes, FAQs, all in one place',
+        description: 'Edit /the-work header. Sidebar → "Work · Coaching Session" / "Work · Programme" / "Work · FAQ" for the cards.',
         colour: '#F280AA',
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/the-work') },
-          { header: '1:1 sessions', load: collectionItems('api::coaching-session.coaching-session', { sort: 'sort_order:ASC', nameField: 'title' }) },
-          { header: 'Programmes', load: collectionItems('api::programme.programme', { sort: 'sort_order:ASC', nameField: 'title' }) },
-          { header: 'FAQs', load: collectionItems('api::faq.faq', { sort: 'sort_order:ASC', nameField: 'question' }) },
-        ]),
+        loadChildren: navChildrenByHref('/the-work'),
         newItemTo: NAVIGATION_EDIT_URL,
         newItemLabel: 'Edit sub-menu in Navigation',
       },
@@ -426,11 +407,9 @@ const GROUPS: Group[] = [
         uid: 'api::sessions-hub-page.sessions-hub-page',
         kind: 'single-types',
         label: 'Work · 1:1 Sessions hub',
-        description: 'Edit /the-work/sessions — hero copy + every 1:1 session card',
+        description: 'Hub hero copy. Show contents → every session card.',
         colour: '#F280AA',
-        loadChildren: combineChildren([
-          { header: 'Session cards on this page', load: collectionItems('api::coaching-session.coaching-session', { sort: 'sort_order:ASC', nameField: 'title' }) },
-        ]),
+        loadChildren: collectionItems('api::coaching-session.coaching-session', { sort: 'sort_order:ASC', nameField: 'title' }),
         newItemTo: '/content-manager/collection-types/api::coaching-session.coaching-session/create',
         newItemLabel: 'Add a session',
       },
@@ -439,16 +418,9 @@ const GROUPS: Group[] = [
         uid: 'api::community-page.community-page',
         kind: 'single-types',
         label: 'Community',
-        description: 'Edit /community — sub-menu + Returning Circle + Reset Room + events page',
+        description: 'Edit /community header. Sidebar → Reset Room / Membership for the sub-pages.',
         colour: '#231F20',
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/community') },
-          { header: 'Sub-pages (own copy)', load: async () => [
-            { id: 'community-returning-circle', label: 'The Returning Circle', to: '/content-manager/collection-types/api::community-event-page.community-event-page' },
-            { id: 'community-reset-room', label: 'The Reset Room (membership)', to: '/content-manager/single-types/api::reset-room-page.reset-room-page' },
-            { id: 'community-membership', label: 'Reset Room — pricing & details', to: '/content-manager/single-types/api::membership.membership' },
-          ] },
-        ]),
+        loadChildren: navChildrenByHref('/community'),
         newItemTo: NAVIGATION_EDIT_URL,
         newItemLabel: 'Edit sub-menu in Navigation',
       },
@@ -456,13 +428,9 @@ const GROUPS: Group[] = [
         uid: 'api::about-page.about-page',
         kind: 'single-types',
         label: 'About',
-        description: "Edit /about — sub-menu + Press, Partnerships, Team",
+        description: "Edit /about header. Sidebar → Sub-pages for Press/Partnerships, Team · Member for the team.",
         colour: '#231F20',
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/about') },
-          { header: 'Sub-pages (own copy)', load: genericPagesWithPrefix('about-') },
-          { header: 'Team members', load: collectionItems('api::team-member.team-member', { sort: 'sort_order:ASC', nameField: 'name' }) },
-        ]),
+        loadChildren: navChildrenByHref('/about'),
         newItemTo: NAVIGATION_EDIT_URL,
         newItemLabel: 'Edit sub-menu in Navigation',
       },
@@ -476,32 +444,19 @@ const GROUPS: Group[] = [
         uid: 'api::shop-page.shop-page',
         kind: 'single-types',
         label: '🛒 Shop landing',
-        description: 'Edit the /shop page — sub-menu + 3 sub-pages + every product in one place',
+        description: 'Edit /shop header. Sidebar → Shop · Product for products, Shop · Category for categories.',
         colour: '#5DCAA5',
-        loadChildren: combineChildren([
-          { header: 'Sub-menu items (live nav dropdown)', load: navChildrenByHref('/shop') },
-          { header: 'Sub-pages (own copy)', load: combineChildren([
-            { load: async () => [
-              { id: 'shop-new-in', label: 'New In', to: '/content-manager/single-types/api::shop-new-in-page.shop-new-in-page' },
-              { id: 'shop-personalised', label: 'Personalised', to: '/content-manager/single-types/api::shop-personalised-page.shop-personalised-page' },
-              { id: 'shop-esj', label: 'Emotional Support Jewellery', to: '/content-manager/single-types/api::shop-esj-page.shop-esj-page' },
-            ] },
-          ]) },
-          { header: 'Product categories', load: collectionItems('api::product-category.product-category', { sort: 'sort_order:ASC', nameField: 'name' }) },
-          { header: 'Products', load: collectionItems('api::product.product', { sort: 'sort_order:ASC', nameField: 'name', pageSize: 100 }) },
-        ]),
-        newItemTo: '/content-manager/collection-types/api::product.product/create',
-        newItemLabel: 'Add a product',
+        loadChildren: navChildrenByHref('/shop'),
+        newItemTo: NAVIGATION_EDIT_URL,
+        newItemLabel: 'Edit sub-menu in Navigation',
       },
       {
         uid: 'api::shop-new-in-page.shop-new-in-page',
         kind: 'single-types',
         label: 'Shop · New In',
-        description: 'Sub-page copy + every product tagged "new-in"',
+        description: 'Sub-page copy. Show contents → products tagged "new-in".',
         colour: '#5DCAA5',
-        loadChildren: combineChildren([
-          { header: 'Products tagged new-in', load: productsWithTag('new-in') },
-        ]),
+        loadChildren: productsWithTag('new-in'),
         newItemTo: '/content-manager/collection-types/api::product.product/create',
         newItemLabel: 'Add a product (remember to tag it "new-in")',
       },
@@ -509,11 +464,9 @@ const GROUPS: Group[] = [
         uid: 'api::shop-personalised-page.shop-personalised-page',
         kind: 'single-types',
         label: 'Shop · Personalised',
-        description: 'Sub-page copy + every product tagged "personalised"',
+        description: 'Sub-page copy. Show contents → products tagged "personalised".',
         colour: '#5DCAA5',
-        loadChildren: combineChildren([
-          { header: 'Products tagged personalised', load: productsWithTag('personalised') },
-        ]),
+        loadChildren: productsWithTag('personalised'),
         newItemTo: '/content-manager/collection-types/api::product.product/create',
         newItemLabel: 'Add a product (remember to tag it "personalised")',
       },
@@ -521,11 +474,9 @@ const GROUPS: Group[] = [
         uid: 'api::shop-esj-page.shop-esj-page',
         kind: 'single-types',
         label: 'Shop · ESJ',
-        description: 'Sub-page copy + every product tagged "esj"',
+        description: 'Sub-page copy. Show contents → products tagged "esj".',
         colour: '#5DCAA5',
-        loadChildren: combineChildren([
-          { header: 'Products tagged esj (Emotional Support Jewellery)', load: productsWithTag('esj') },
-        ]),
+        loadChildren: productsWithTag('esj'),
         newItemTo: '/content-manager/collection-types/api::product.product/create',
         newItemLabel: 'Add a product (remember to tag it "esj")',
       },
@@ -567,10 +518,10 @@ const QuickEditDashboard = () => {
         </h2>
         <p style={{ fontSize: 13, color: '#666687', margin: 0, lineHeight: 1.45 }}>
           Click any card to edit its landing page. Click "Show contents" to
-          see <strong>everything</strong> that appears on that public page —
-          sub-menu items, sub-pages, articles, events, products. Click any
-          row to edit that item directly. Adding a new article or event?
-          Use the "+ Add new" link at the bottom of each expanded card.
+          see what lives under that page — sub-menu items, sub-pages, or
+          collection items (events, products, articles). Click any row to
+          edit that item directly. Use the chips like "Categories" or "All
+          articles" to jump to the filtered list view.
         </p>
       </header>
 
