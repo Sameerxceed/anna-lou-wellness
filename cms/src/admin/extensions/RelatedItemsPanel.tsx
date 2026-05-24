@@ -360,33 +360,19 @@ const RelatedItemsPanel = () => {
       setItems(null);
       return;
     }
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError(null);
-      const out: ChildItem[] = [];
-      for (let i = 0; i < config.groups.length; i++) {
-        const g = config.groups[i];
-        let groupItems: ChildItem[] = [];
-        try {
-          groupItems = await g.load();
-        } catch (err) {
-          // eslint-disable-next-line no-console
-          console.error(`[RelatedItems] loader failed for "${g.header}":`, err);
-        }
-        // Header is now clickable — `to` is the collection list URL so Anna
-        // can land on the full list view even if per-item loaders return
-        // empty, AND when items DO load she can still click the header to
-        // see them all (instead of just the first 50).
-        out.push({ id: `hdr-${i}`, label: g.header, to: g.headerTo, groupHeader: true });
-        out.push(...groupItems);
-      }
-      if (!cancelled) {
-        setItems(out);
-        setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
+    // No fetching — just render clickable section headers. Each header
+    // links to its collection's list view in Content Manager, where Anna
+    // gets native search, sort, pagination, and create-new affordances.
+    // Strapi's built-in list view is better at this than our inline tree
+    // ever was — let it do its job.
+    setError(null);
+    setLoading(false);
+    setItems(config.groups.map((g, i) => ({
+      id: `hdr-${i}`,
+      label: g.header,
+      to: g.headerTo,
+      groupHeader: true,
+    })));
   }, [config]);
 
   if (!config) return null;
@@ -408,7 +394,7 @@ const RelatedItemsPanel = () => {
         Everything on this page
       </div>
       <div style={{ fontSize: 11, color: '#666687', marginBottom: 10, lineHeight: 1.45 }}>
-        Click any item to jump straight to its edit form.
+        Click any section to open its full list — edit, add, remove items there.
       </div>
 
       {loading && <div style={{ fontSize: 12, color: '#666687' }}>Loading…</div>}
