@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 export default function LoginForm({ nextUrl }: { nextUrl: string }) {
   const router = useRouter();
@@ -10,6 +11,9 @@ export default function LoginForm({ nextUrl }: { nextUrl: string }) {
   const [mode, setMode] = useState<'login' | 'forgot'>('login');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  // CAPTCHA only required for forgot-password (prevents bot email-bombing).
+  // Login uses rate-limiting (not CAPTCHA) so legit users aren't friction'd.
+  const [captchaToken, setCaptchaToken] = useState('');
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -30,10 +34,13 @@ export default function LoginForm({ nextUrl }: { nextUrl: string }) {
         router.push(nextUrl);
         router.refresh();
       } else {
+        if (!captchaToken) {
+          throw new Error('Please complete the verification below before requesting a reset.');
+        }
         const res = await fetch('/api/auth/forgot-password', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, turnstileToken: captchaToken }),
         });
         if (!res.ok) {
           const j = await res.json().catch(() => ({}));
@@ -92,9 +99,15 @@ export default function LoginForm({ nextUrl }: { nextUrl: string }) {
           </div>
         )}
 
+        {mode === 'forgot' && (
+          <div>
+            <TurnstileWidget onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+          </div>
+        )}
+
         {error && <div className="lf-error">{error}</div>}
 
-        <button type="submit" className="lf-submit" disabled={loading}>
+        <button type="submit" className="lf-submit" disabled={loading || (mode === 'forgot' && !captchaToken)}>
           {loading
             ? mode === 'login' ? 'Signing in…' : 'Sending…'
             : mode === 'login' ? 'Sign in' : 'Send reset link'}

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'node:crypto';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 /**
  * Reset Letters dual-push subscribe endpoint.
@@ -120,6 +121,16 @@ export async function POST(req: NextRequest) {
 
   if (!email || !email.includes('@')) {
     return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
+  }
+
+  // Cloudflare Turnstile CAPTCHA — blocks bots from flooding the list.
+  // Token comes from the <TurnstileWidget /> on the signup form.
+  const captcha = await verifyTurnstile(
+    body?.turnstileToken,
+    req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip'),
+  );
+  if (!captcha.ok) {
+    return NextResponse.json({ error: captcha.error }, { status: 400 });
   }
 
   const founding = isFoundingWindow();
