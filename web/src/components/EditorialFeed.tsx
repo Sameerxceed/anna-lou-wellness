@@ -181,7 +181,7 @@ export default async function EditorialFeed({
         <p className="feed-newsletter-kicker" style={{ color: accentForText(kickerColour) }}>Reset Letters</p>
         <h3 className="feed-newsletter-title">Stories like this, delivered weekly.</h3>
         <p className="feed-newsletter-body">Honest writing about your inner world, jewellery with meaning, and what it actually feels like to return to yourself.</p>
-        <a href="#" className="feed-newsletter-btn">Join on Substack &rarr;</a>
+        <Link href="/reset-letters" className="feed-newsletter-btn">Join Reset Letters &rarr;</Link>
       </section>
     </>
   );

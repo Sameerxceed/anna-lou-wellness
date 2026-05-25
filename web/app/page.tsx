@@ -204,7 +204,7 @@ export default async function HomePage() {
             {f(cms, 'newsletterPlusTierBody', 'Everything weekly. Full Sunday Cosmic Forecast, Wednesday Signal Check, Friday ESJ Drop, monthly Reset Story, full archive, early event access.')}
           </div>
         </div>
-        <a href={f(cms, 'newsletterCtaUrl', 'https://annalouwellness.substack.com')} className="hp-btn-substack">{f(cms, 'newsletterCtaLabel', 'Join on Substack →')}</a>
+        <Link href={f(cms, 'newsletterCtaUrl', '/reset-letters')} className="hp-btn-substack">{f(cms, 'newsletterCtaLabel', 'Join Reset Letters →')}</Link>
         <p className="hp-newsletter-small" style={{ marginTop: '0.6rem' }}>
           <Link href="/cosmic-forecast" className="cta-link cta-plum" style={{ fontSize: '0.7rem' }}>Read this week&rsquo;s Cosmic Forecast summary &rarr;</Link>
         </p>
@@ -271,7 +271,7 @@ export default async function HomePage() {
               <p className="hp-media-meta">{f(cms, 'mediaTile2Meta', 'Coming soon')}</p>
               <span className="hp-media-link">Listen <span>&rarr;</span></span>
             </a>
-            <a href={f(cms, 'mediaTile3Url', 'https://annalouwellness.substack.com')} className="hp-media-tile reveal rd2">
+            <a href={f(cms, 'mediaTile3Url', '/reset-letters')} className="hp-media-tile reveal rd2">
               <p className="hp-media-label">{f(cms, 'mediaTile3Label', 'Substack')}</p>
               <h3 className="hp-media-tile-title">{f(cms, 'mediaTile3Title', 'Reset Letters — weekly writing that feels like coming home.')}</h3>
               <p className="hp-media-meta">{f(cms, 'mediaTile3Meta', 'Weekly newsletter')}</p>

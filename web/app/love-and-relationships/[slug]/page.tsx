@@ -165,7 +165,7 @@ export default async function ArticlePage({ params }: PageProps) {
           <div className="article-newsletter">
             <p className="article-newsletter-kicker" style={{ color: '#F280AA' }}>Reset Letters</p>
             <p className="article-newsletter-text">Stories like this, delivered weekly.</p>
-            <a href="#" className="article-newsletter-btn">Join on Substack &rarr;</a>
+            <Link href="/reset-letters" className="article-newsletter-btn">Join Reset Letters &rarr;</Link>
           </div>
         </div>
       </article>

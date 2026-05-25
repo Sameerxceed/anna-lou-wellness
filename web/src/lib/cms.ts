@@ -449,8 +449,11 @@ export async function getFooter(): Promise<FooterData> {
       { label: 'Privacy', href: '/privacy' },
       { label: 'Terms', href: '/terms' },
     ],
-    substackCtaLabel: 'Join Reset Letters on Substack →',
-    substackCtaUrl: 'https://annalouwellness.substack.com',
+    substackCtaLabel: 'Join Reset Letters →',
+    // Default to /reset-letters — Anna's own signup form with Turnstile +
+    // dual-push to Mailchimp + Substack. Routes via /api/subscribe-reset-letters.
+    // Anna can override in Footer singleton if she ever wants to link out direct.
+    substackCtaUrl: '/reset-letters',
   };
   try {
     const { data: d } = await fetchAPI('/footer', { 'populate[explore_links]': '*', 'populate[connect_links]': '*', 'populate[legal_links]': '*' } as any);

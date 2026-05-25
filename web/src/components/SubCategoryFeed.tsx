@@ -62,7 +62,7 @@ export default function SubCategoryFeed({ kicker, kickerColour, title, intro, pa
       <section className="scf-newsletter">
         <p className="scf-newsletter-kicker" style={{ color: kickerColour }}>Reset Letters</p>
         <h3 className="scf-newsletter-title">Stories like this, delivered weekly.</h3>
-        <a href="#" className="scf-newsletter-btn">Join on Substack &rarr;</a>
+        <Link href="/reset-letters" className="scf-newsletter-btn">Join Reset Letters &rarr;</Link>
       </section>
     </>
   );
