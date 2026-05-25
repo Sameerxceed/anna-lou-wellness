@@ -32,12 +32,10 @@ export default async function ResetLettersPage() {
       <style dangerouslySetInnerHTML={{ __html: holdingStyles }} />
 
       <div className="rl-page">
-        {/* Brand lockup */}
-        <header className="rl-header">
-          <img src="/alw-logo.png" alt="Anna Lou Wellness" className="rl-alw-logo" />
-          <p className="rl-tagline">BEAUTIFULLY WHOLE</p>
-        </header>
-
+        {/* Page now inherits the site-wide nav (with the Anna Lou Wellness
+            wordmark + main menu) from the root layout — no custom brand
+            lockup needed here. Page opens straight into the Reset Letters
+            wordmark below the standard nav. */}
         <p className="rl-coming-soon">{f(cms, 'comingSoonLabel', 'COMING SOON')}</p>
 
         {/* Reset Letters wordmark — RESET plum, LETTERS blue (per Anna 20 May) */}
@@ -140,7 +138,10 @@ export default async function ResetLettersPage() {
 const holdingStyles = `
 * { margin:0; padding:0; box-sizing:border-box; }
 
-.rl-page { background: #F1EAE0; color: #231F20; font-family: 'Poppins', sans-serif; min-height: 100vh; max-width: 720px; margin: 0 auto; padding: 3rem 2rem; }
+/* Page sits inside the main site layout now — no standalone cream
+   background or full-viewport height needed. Content stays centered at
+   720px, vertical padding scales with the standard site header / footer. */
+.rl-page { color: #231F20; font-family: 'Poppins', sans-serif; max-width: 720px; margin: 0 auto; padding: 3rem 2rem; }
 
 .rl-header { text-align:center; margin-bottom:2.5rem; }
 .rl-alw-logo { height:40px; width:auto; margin-bottom:0.4rem; display:inline-block; }
