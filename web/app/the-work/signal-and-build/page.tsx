@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
+import ReviewsSection from '@/components/ReviewsSection';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
+import { getTestimonials } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Signal & Build | 12-Week 1:1 Coaching for Founders',
@@ -10,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SignalAndBuildPage() {
-  const cms = await getProgrammeBySlug('signal-and-build');
+  const [cms, reviews] = await Promise.all([
+    getProgrammeBySlug('signal-and-build'),
+    getTestimonials({ tag: 'signal-and-build' }),
+  ]);
   const props = programmeProps(cms, {
     title: 'Signal & Build.',
     tagline: 'Twelve weeks. The inner work and the business, held together.',
@@ -29,5 +34,10 @@ export default async function SignalAndBuildPage() {
     ctaLabel: 'Book a discovery call',
     ctaUrl: '/contact',
   });
-  return <ProgrammePage {...props} />;
+  return (
+    <>
+      <ProgrammePage {...props} />
+      <ReviewsSection reviews={reviews} title="From founder clients" kicker="Reviews" kickerColour="#FAA21B" />
+    </>
+  );
 }

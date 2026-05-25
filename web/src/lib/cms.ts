@@ -828,6 +828,71 @@ export async function getExperiences(type?: string): Promise<Experience[]> {
   }
 }
 
+// ═══ TESTIMONIALS / REVIEWS ═══
+
+export interface Testimonial {
+  id: number;
+  reviewerName: string;
+  reviewerLocation: string;
+  quote: string;
+  rating: number | null;
+  videoUrl: string;
+  videoThumbnail: string;
+  date: string;
+  tag: string;
+  experienceSlugs: string[];
+  isFeatured: boolean;
+  sortOrder: number;
+}
+
+/**
+ * Fetch testimonials. Filter by:
+ *   - tag: section/programme tag (e.g. "retreats", "the-reset")
+ *   - experienceSlug: a specific experience slug (uses the many-to-many)
+ *   - featured: only is_featured = true (for homepage strip)
+ *
+ * Without filters, returns every active testimonial (rare — use a filter).
+ */
+export async function getTestimonials(opts: {
+  tag?: string;
+  experienceSlug?: string;
+  featured?: boolean;
+  limit?: number;
+} = {}): Promise<Testimonial[]> {
+  try {
+    const params: Record<string, string> = {
+      'populate': '*',
+      'sort': 'sort_order:asc,date:desc',
+      'filters[is_active][$eq]': 'true',
+      'pagination[limit]': String(opts.limit ?? 50),
+    };
+    if (opts.tag) params['filters[tags][$eq]'] = opts.tag;
+    if (opts.experienceSlug) params['filters[experiences][slug][$eq]'] = opts.experienceSlug;
+    if (opts.featured) params['filters[is_featured][$eq]'] = 'true';
+
+    const { data } = await fetchAPI('/testimonials', params);
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      reviewerName: d.reviewer_name || '',
+      reviewerLocation: d.reviewer_location || '',
+      quote: d.quote || '',
+      rating: typeof d.rating === 'number' ? d.rating : null,
+      videoUrl: mediaUrl(d.video),
+      videoThumbnail: mediaUrl(d.video_thumbnail),
+      date: d.date || '',
+      tag: d.tags || '',
+      experienceSlugs: Array.isArray(d.experiences)
+        ? d.experiences.map((e: any) => e.slug).filter(Boolean)
+        : [],
+      isFeatured: d.is_featured === true,
+      sortOrder: d.sort_order ?? 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 // ═══ MANTRAS ═══
 
 export interface Mantra {

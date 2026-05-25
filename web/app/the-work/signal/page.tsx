@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
+import ReviewsSection from '@/components/ReviewsSection';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
+import { getTestimonials } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Signal | 12-Week 1:1 Somatic Coaching | Trauma-Informed',
@@ -10,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SignalPage() {
-  const cms = await getProgrammeBySlug('signal');
+  const [cms, reviews] = await Promise.all([
+    getProgrammeBySlug('signal'),
+    getTestimonials({ tag: 'signal' }),
+  ]);
   const props = programmeProps(cms, {
     title: 'Signal.',
     tagline: 'Twelve weeks. One-to-one. The deeper container.',
@@ -31,5 +36,10 @@ export default async function SignalPage() {
     ctaLabel: 'Book a discovery call',
     ctaUrl: '/contact',
   });
-  return <ProgrammePage {...props} />;
+  return (
+    <>
+      <ProgrammePage {...props} />
+      <ReviewsSection reviews={reviews} title="From Signal alumnae" kicker="Reviews" kickerColour="#6E3A5A" />
+    </>
+  );
 }

@@ -1153,7 +1153,89 @@ async function seedPages(strapi) {
     kickerColour: '#8C8880',
   });
 
+  await seedTestimonials(strapi);
+
   strapi.log.info('[seed-pages] Page content seed run complete');
+}
+
+/**
+ * Testimonials don't have a slug — gate on reviewer_name + tags so re-runs
+ * don't create duplicates and Anna's edits stay safe.
+ */
+async function seedTestimonials(strapi) {
+  const samples = [
+    {
+      reviewer_name: 'Charlotte H.',
+      reviewer_location: 'London — Reset alumna',
+      quote: 'I came in wound tight and left lighter than I had felt in years. Anna sees what is underneath the surface story and works there. The change has held.',
+      rating: 5,
+      tags: 'the-reset',
+      sort_order: 1,
+      is_featured: true,
+    },
+    {
+      reviewer_name: 'Priya M.',
+      reviewer_location: 'Founder, F&B startup',
+      quote: 'Signal & Build did what no business coach has ever done — it sorted the inner stuff and the company strategy at the same time. The decisions I have made since feel solid in my body.',
+      rating: 5,
+      tags: 'signal-and-build',
+      sort_order: 1,
+      is_featured: true,
+    },
+    {
+      reviewer_name: 'Emma R.',
+      reviewer_location: 'Houseboat retreat, March 2026',
+      quote: 'Six hours on the river with five other women. No phones. Real conversation, real breath work, real food. I left with a clarity I had been chasing for two years.',
+      rating: 5,
+      tags: 'retreats',
+      sort_order: 1,
+      is_featured: false,
+    },
+    {
+      reviewer_name: 'Sofia T.',
+      reviewer_location: 'Signal cohort, autumn 2025',
+      quote: 'Twelve weeks is exactly the right amount of time. By week six things were shifting. By week twelve I was a different person — recognisable to myself, finally.',
+      rating: 5,
+      tags: 'signal',
+      sort_order: 1,
+    },
+    {
+      reviewer_name: 'Rachel B.',
+      reviewer_location: 'One Day on the houseboat',
+      quote: 'A full day with Anna unpicked things I have been carrying since my twenties. I have done years of therapy. This was different — the body knew first.',
+      rating: 5,
+      tags: 'one-day',
+      sort_order: 1,
+    },
+    {
+      reviewer_name: 'James K.',
+      reviewer_location: 'Head of People, B-Corp tech',
+      quote: 'Anna ran a half-day for our leadership team on the houseboat. Six months later people are still referencing the framework she taught. Genuine cultural impact.',
+      rating: 5,
+      tags: 'corporate',
+      sort_order: 1,
+    },
+  ];
+
+  for (const sample of samples) {
+    try {
+      const existing = await strapi.documents('api::testimonial.testimonial').findMany({
+        filters: {
+          reviewer_name: sample.reviewer_name,
+          tags: sample.tags,
+        },
+        limit: 1,
+      });
+      if (existing && existing.length > 0) continue;
+      await strapi.documents('api::testimonial.testimonial').create({
+        data: { ...sample, is_active: true },
+        status: 'published',
+      });
+      strapi.log.info(`[seed-pages] Created testimonial: ${sample.reviewer_name} (${sample.tags})`);
+    } catch (err) {
+      strapi.log.warn(`[seed-pages] Testimonial seed skipped: ${err.message}`);
+    }
+  }
 }
 
 module.exports = seedPages;

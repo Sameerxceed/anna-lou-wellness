@@ -1,0 +1,87 @@
+{
+  "kind": "collectionType",
+  "collectionName": "testimonials",
+  "info": {
+    "singularName": "testimonial",
+    "pluralName": "testimonials",
+    "displayName": "Testimonial / Review",
+    "description": "Client reviews shown on retreat, workshop, coaching and programme pages. Mix of text quotes and short videos."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "reviewer_name": {
+      "type": "string",
+      "required": true
+    },
+    "reviewer_location": {
+      "type": "string",
+      "description": "Optional. e.g. 'London, UK' or 'Programme alumna 2025'"
+    },
+    "quote": {
+      "type": "text",
+      "description": "The review text. Required if no video. Keep tight — 1-3 sentences reads best."
+    },
+    "rating": {
+      "type": "integer",
+      "min": 1,
+      "max": 5,
+      "description": "Optional 1-5 star rating. Leave blank to hide stars."
+    },
+    "video": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["videos"],
+      "description": "Optional short video testimonial (under 90 seconds recommended)."
+    },
+    "video_thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Optional poster image shown before the video plays."
+    },
+    "date": {
+      "type": "date",
+      "description": "When the review was given (sort by recency)."
+    },
+    "tags": {
+      "type": "enumeration",
+      "enum": [
+        "retreats",
+        "workshops",
+        "corporate",
+        "speaking",
+        "coaching",
+        "the-reset",
+        "signal",
+        "signal-and-build",
+        "reset-room",
+        "one-day",
+        "collective",
+        "reset-session"
+      ],
+      "description": "Page tag — used when a review applies to a section page rather than a specific experience."
+    },
+    "experiences": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::experience.experience",
+      "description": "Specific retreats/workshops this review belongs to. Leave blank if it's a general coaching review (use the tag instead)."
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show on the homepage testimonial strip."
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Lower numbers appear first. Use to surface strongest reviews."
+    }
+  }
+}

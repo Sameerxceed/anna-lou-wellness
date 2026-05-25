@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import EnquiryForm from '@/components/EnquiryForm';
+import ReviewsSection from '@/components/ReviewsSection';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
+import { getTestimonials } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'One Day | Private Somatic Coaching Intensive',
@@ -13,7 +15,10 @@ export const metadata: Metadata = {
 const ACCENT = '#5DCAA5';
 
 export default async function OneDayPage() {
-  const cms = await getProgrammeBySlug('one-day');
+  const [cms, reviews] = await Promise.all([
+    getProgrammeBySlug('one-day'),
+    getTestimonials({ tag: 'one-day' }),
+  ]);
   const props = programmeProps(cms, {
     title: 'One Day.',
     tagline: 'A full day. Held, focused, finished.',
@@ -38,6 +43,7 @@ export default async function OneDayPage() {
   return (
     <>
       <ProgrammePage {...props} />
+      <ReviewsSection reviews={reviews} title="From past One Days" kicker="Reviews" kickerColour={ACCENT} />
 
       <style dangerouslySetInnerHTML={{ __html: `
         .od-form-section { background: #fff; padding: 3rem 2rem 4rem; }

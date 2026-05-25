@@ -146,10 +146,11 @@ interface ProductSchemaProps {
   price: number;
   image?: string;
   inStock?: boolean;
+  reviews?: ReviewInput[];
 }
 
-export function ProductSchema({ name, description, slug, price, image, inStock = true }: ProductSchemaProps) {
-  const schema = {
+export function ProductSchema({ name, description, slug, price, image, inStock = true, reviews }: ProductSchemaProps) {
+  const schema: any = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name,
@@ -166,6 +167,8 @@ export function ProductSchema({ name, description, slug, price, image, inStock =
       url: `${SITE_URL}/shop/${slug}`,
     },
   };
+  const reviewBits = buildReviewSchema(reviews);
+  if (reviewBits) Object.assign(schema, reviewBits);
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
 
@@ -218,9 +221,10 @@ interface ServiceSchemaProps {
   url: string;
   price?: string;
   provider?: string;
+  reviews?: ReviewInput[];
 }
 
-export function ServiceSchema({ name, description, url, price, provider }: ServiceSchemaProps) {
+export function ServiceSchema({ name, description, url, price, provider, reviews }: ServiceSchemaProps) {
   const schema: any = {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -242,5 +246,53 @@ export function ServiceSchema({ name, description, url, price, provider }: Servi
       price,
     };
   }
+  const reviewBits = buildReviewSchema(reviews);
+  if (reviewBits) Object.assign(schema, reviewBits);
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+}
+
+// ═══ Reviews — shared helper used by Product/Service schema ═══
+export interface ReviewInput {
+  reviewerName: string;
+  quote: string;
+  rating: number | null;
+  date?: string;
+}
+
+function buildReviewSchema(reviews?: ReviewInput[]) {
+  if (!reviews || reviews.length === 0) return null;
+  const rated = reviews.filter((r) => typeof r.rating === 'number' && r.quote);
+  const out: any = {};
+  if (rated.length > 0) {
+    const avg = rated.reduce((sum, r) => sum + (r.rating as number), 0) / rated.length;
+    out.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: avg.toFixed(1),
+      reviewCount: rated.length,
+      bestRating: '5',
+      worstRating: '1',
+    };
+  }
+  const reviewItems = reviews
+    .filter((r) => r.quote)
+    .slice(0, 20)
+    .map((r) => {
+      const reviewObj: any = {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: r.reviewerName },
+        reviewBody: r.quote,
+      };
+      if (r.rating) {
+        reviewObj.reviewRating = {
+          '@type': 'Rating',
+          ratingValue: String(r.rating),
+          bestRating: '5',
+          worstRating: '1',
+        };
+      }
+      if (r.date) reviewObj.datePublished = r.date;
+      return reviewObj;
+    });
+  if (reviewItems.length > 0) out.review = reviewItems;
+  return Object.keys(out).length > 0 ? out : null;
 }

@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
+import ReviewsSection from '@/components/ReviewsSection';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
+import { getTestimonials } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'The Reset | 6-Week 1:1 Somatic Coaching Programme',
@@ -10,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function TheResetPage() {
-  const cms = await getProgrammeBySlug('the-reset');
+  const [cms, reviews] = await Promise.all([
+    getProgrammeBySlug('the-reset'),
+    getTestimonials({ tag: 'the-reset' }),
+  ]);
   const props = programmeProps(cms, {
     title: 'The Reset.',
     tagline: 'Six weeks. One-to-one. Signal back online.',
@@ -34,5 +39,10 @@ export default async function TheResetPage() {
     ctaLabel: 'Book a discovery call',
     ctaUrl: '/contact',
   });
-  return <ProgrammePage {...props} />;
+  return (
+    <>
+      <ProgrammePage {...props} />
+      <ReviewsSection reviews={reviews} title="From Reset alumnae" kicker="Reviews" kickerColour="#F280AA" />
+    </>
+  );
 }

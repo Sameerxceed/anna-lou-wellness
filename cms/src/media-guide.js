@@ -104,6 +104,12 @@ const collectionTypes = {
     portrait:
       'Team member portrait. Best size: 800×1000 (portrait 4:5), max 1 MB. Head-and-shoulders, soft natural light.',
   },
+  'api::testimonial.testimonial': {
+    video:
+      'Optional short video testimonial. MP4 or MOV, under 90 seconds, max 25 MB. Vertical (9:16) or square (1:1) both work. Leave blank for a text-only review.',
+    video_thumbnail:
+      'Poster image shown before the video plays. Best size: 800×800 (square 1:1) or 720×1280 (vertical 9:16), JPEG, max 500 KB. Use a still from the video.',
+  },
 };
 
 // ── Apply descriptions to content-manager configuration ───────────

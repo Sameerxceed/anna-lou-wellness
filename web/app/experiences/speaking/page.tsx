@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
+import ReviewsSection from '@/components/ReviewsSection';
 import { getStockImage } from '@/data/stock-images';
 import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
+import { getTestimonials } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
@@ -13,7 +15,10 @@ export const metadata: Metadata = {
 const ACCENT = '#FAA21B';
 
 export default async function SpeakingPage() {
-  const cms = await getExperienceBySlug('speaking');
+  const [cms, reviews] = await Promise.all([
+    getExperienceBySlug('speaking'),
+    getTestimonials({ tag: 'speaking' }),
+  ]);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'speaking-hero');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const introParas = cms?.intro ? splitParas(cms.intro) : [
@@ -59,6 +64,8 @@ export default async function SpeakingPage() {
           </ol>
         </div>
       </section>
+
+      <ReviewsSection reviews={reviews} title="From event organisers" kicker="Reviews" kickerColour={ACCENT} />
 
       <section className="sp-form-section" id="enquire">
         <div className="sp-form-grid">
