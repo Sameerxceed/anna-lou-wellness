@@ -1,5 +1,13 @@
 import Link from 'next/link';
-import { getFeaturedArticles, getArticles, getHomepage } from '@/lib/cms';
+import {
+  getFeaturedArticles,
+  getArticles,
+  getHomepage,
+  getHomepageFeaturedProducts,
+  getTestimonials,
+  getPressMentions,
+  getCertifications,
+} from '@/lib/cms';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
 import { mediaUrl } from '@/lib/strapi';
 import { accentForText } from '@/lib/colours';
@@ -19,10 +27,22 @@ const f = (cms: Record<string, unknown> | null, key: string, fallback: string): 
 };
 
 export default async function HomePage() {
-  const [featuredArticles, recentArticles, homepage] = await Promise.all([
+  const [
+    featuredArticles,
+    recentArticles,
+    homepage,
+    featuredProducts,
+    featuredTestimonials,
+    pressMentions,
+    certifications,
+  ] = await Promise.all([
     getFeaturedArticles(1),
     getArticles(),
     getHomepage(),
+    getHomepageFeaturedProducts(3),
+    getTestimonials({ featured: true, limit: 3 }),
+    getPressMentions(),
+    getCertifications(),
   ]);
 
   const featured = featuredArticles[0] || null;
@@ -218,36 +238,22 @@ export default async function HomePage() {
           <h2 className="hp-section-title reveal rd1">{f(cms, 'shopTitle', 'Jewellery with meaning. Made to be worn.')}</h2>
           <p className="hp-body reveal rd2">{f(cms, 'shopBody', 'I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.')}</p>
           <div className="hp-shop-grid">
-            <div className="product-card reveal">
-              <div
-                className="product-img has-image"
-                style={{ backgroundImage: `url(${getStockImage('product', 'product-1', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-              />
-              <div className="product-info">
-                <p className="product-hook">{f(cms, 'shopProduct1Hook', 'I reach for this one when I need to remember what is underneath the noise')}</p>
-                <p className="product-name">{f(cms, 'shopProduct1Name', 'Moonstone Necklace')}</p>
-              </div>
-            </div>
-            <div className="product-card reveal rd1">
-              <div
-                className="product-img has-image"
-                style={{ backgroundImage: `url(${getStockImage('product', 'product-2', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-              />
-              <div className="product-info">
-                <p className="product-hook">{f(cms, 'shopProduct2Hook', 'For the days my mind is doing too much and I need clarity not calm')}</p>
-                <p className="product-name">{f(cms, 'shopProduct2Name', 'Clear Quartz Necklace')}</p>
-              </div>
-            </div>
-            <div className="product-card reveal rd2">
-              <div
-                className="product-img has-image"
-                style={{ backgroundImage: `url(${getStockImage('product', 'product-3', 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-              />
-              <div className="product-info">
-                <p className="product-hook">{f(cms, 'shopProduct3Hook', 'The word you keep coming back to, worn close to your throat')}</p>
-                <p className="product-name">{f(cms, 'shopProduct3Name', 'Personalised Phrase Necklace')}</p>
-              </div>
-            </div>
+            {(featuredProducts.length > 0 ? featuredProducts : [
+              { id: 'p1', slug: 'moonstone-necklace', name: 'Moonstone Necklace', hook: 'I reach for this one when I need to remember what is underneath the noise', image: getStockImage('product', 'product-1', 'card'), price: 0 },
+              { id: 'p2', slug: 'clear-quartz-necklace', name: 'Clear Quartz Necklace', hook: 'For the days my mind is doing too much and I need clarity not calm', image: getStockImage('product', 'product-2', 'card'), price: 0 },
+              { id: 'p3', slug: 'personalised-phrase-necklace', name: 'Personalised Phrase Necklace', hook: 'The word you keep coming back to, worn close to your throat', image: getStockImage('product', 'product-3', 'card'), price: 0 },
+            ]).map((p, i) => (
+              <Link key={p.id} href={`/shop/${p.slug}`} className={`product-card reveal${i > 0 ? ` rd${i}` : ''}`}>
+                <div
+                  className="product-img has-image"
+                  style={{ backgroundImage: `url(${p.image || getStockImage('product', `product-${i+1}`, 'card')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                />
+                <div className="product-info">
+                  {p.hook && <p className="product-hook">{p.hook}</p>}
+                  <p className="product-name">{p.name}</p>
+                </div>
+              </Link>
+            ))}
           </div>
           <Link href="/shop" className="btn btn-green reveal">{f(cms, 'shopCtaLabel', 'Browse all jewellery')} &rarr;</Link>
         </div>
@@ -325,47 +331,88 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ═══ TESTIMONIALS ═══ */}
-      <section className="hp-testimonials">
-        <div className="hp-testimonials-inner">
-          <p className="hp-kicker reveal" style={{ color: '#3D3D3A' }}>Client Stories</p>
-          <h2 className="hp-section-title reveal rd1">What happens when you come home to yourself.</h2>
-          <div className="hp-testi-grid">
-            <div className="hp-testi-card reveal" style={{ background: '#FCE8EF' }}>
-              <p className="hp-testi-quote">&ldquo;I came to Anna feeling like I had done all the work and still was not quite arriving. Within three sessions something shifted I had been trying to reach for years.&rdquo;</p>
-              <p className="hp-testi-author">Claudine, Founder</p>
+      {/* ═══ TESTIMONIALS ═══
+           Pulls from the `testimonial` collection in Strapi. Anna ticks
+           `is_featured` on a review to surface it here. Top 3 shown.
+           Falls back to the 3 founding quotes when no testimonials exist
+           so the section doesn't go blank between deploy and content. */}
+      {(() => {
+        const tCards = featuredTestimonials.length > 0
+          ? featuredTestimonials.slice(0, 3).map((t) => ({
+              quote: t.quote,
+              author: [t.reviewerName, t.reviewerLocation].filter(Boolean).join(', '),
+            }))
+          : [
+              { quote: 'I came to Anna feeling like I had done all the work and still was not quite arriving. Within three sessions something shifted I had been trying to reach for years.', author: 'Claudine, Founder' },
+              { quote: 'The Returning Circle changed something in me I did not know needed changing. Being in a room with people who are actually honest. I had forgotten what that felt like.', author: 'Susan, Coach' },
+              { quote: 'I have worked with therapists, coaches, healers. Anna does something different. She meets you in the body, not the story. That is where the change actually lives.', author: 'Nicky, Creative Director' },
+            ];
+        const cardColours = ['#FCE8EF', '#E1F5EE', '#E9EBF6'];
+        return (
+          <section className="hp-testimonials">
+            <div className="hp-testimonials-inner">
+              <p className="hp-kicker reveal" style={{ color: '#3D3D3A' }}>{f(cms, 'testimonialsKicker', 'Client Stories')}</p>
+              <h2 className="hp-section-title reveal rd1">{f(cms, 'testimonialsTitle', 'What happens when you come home to yourself.')}</h2>
+              <div className="hp-testi-grid">
+                {tCards.map((t, i) => (
+                  <div key={i} className={`hp-testi-card reveal${i > 0 ? ` rd${i}` : ''}`} style={{ background: cardColours[i % cardColours.length] }}>
+                    <p className="hp-testi-quote">&ldquo;{t.quote}&rdquo;</p>
+                    <p className="hp-testi-author">{t.author}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="hp-testi-card reveal rd1" style={{ background: '#E1F5EE' }}>
-              <p className="hp-testi-quote">&ldquo;The Returning Circle changed something in me I did not know needed changing. Being in a room with people who are actually honest. I had forgotten what that felt like.&rdquo;</p>
-              <p className="hp-testi-author">Susan, Coach</p>
-            </div>
-            <div className="hp-testi-card reveal rd2" style={{ background: '#E9EBF6' }}>
-              <p className="hp-testi-quote">&ldquo;I have worked with therapists, coaches, healers. Anna does something different. She meets you in the body, not the story. That is where the change actually lives.&rdquo;</p>
-              <p className="hp-testi-author">Nicky, Creative Director</p>
-            </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        );
+      })()}
 
-      {/* ═══ PRESS & CREDENTIALS ═══ */}
+      {/* ═══ PRESS & CREDENTIALS ═══
+           Both rows pulled from CMS. Anna ticks `is_homepage_featured` on
+           each press-mention / certification entry to surface it here.
+           Logos render as real images when uploaded, fall back to styled
+           text (matching the original look) if no logo file is attached. */}
       <section className="hp-press">
         <div className="hp-press-inner">
-          <p className="hp-press-label">As seen in</p>
-          <div className="hp-press-row">
-            <span className="press-logo" style={{ fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: '1.1rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const }}>Harrods</span>
-            <span className="press-logo" style={{ fontFamily: "'Times New Roman',serif", fontWeight: 700, fontSize: '1rem', letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Selfridges</span>
-            <span className="press-logo" style={{ fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: '0.85rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Harvey Nichols</span>
-            <span className="press-logo" style={{ fontFamily: "'Arial Narrow',sans-serif", fontWeight: 700, fontSize: '0.95rem', letterSpacing: '0.1em', textTransform: 'uppercase' as const }}>QVC Japan</span>
-            <span className="press-logo" style={{ fontFamily: 'Georgia,serif', fontWeight: 400, fontStyle: 'italic', fontSize: '1.15rem', letterSpacing: '0.02em' }}>The Telegraph</span>
-            <span className="press-logo" style={{ fontFamily: "'Helvetica Neue',sans-serif", fontWeight: 300, fontSize: '1rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const }}>Stylist</span>
-            <span className="press-logo" style={{ fontFamily: "'Helvetica Neue',sans-serif", fontWeight: 300, fontSize: '0.9rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const }}>SheerLuxe</span>
-          </div>
-          <p className="hp-press-label">Certified</p>
-          <div className="hp-press-row">
-            <div className="cert-badge" style={{ borderColor: '#1a5276', color: '#1a5276' }}>ICF<br />Accredited</div>
-            <div className="cert-badge" style={{ borderColor: '#c0392b', color: '#c0392b' }}>CPD<br />Certified</div>
-            <div className="cert-badge" style={{ borderColor: '#27ae60', color: '#27ae60' }}>TRE&reg;<br />Provider</div>
-          </div>
+          {pressMentions.length > 0 && (
+            <>
+              <p className="hp-press-label">{f(cms, 'pressLabel', 'As seen in')}</p>
+              <div className="hp-press-row">
+                {pressMentions.map((p) => {
+                  const inner = p.logo ? (
+                    <img src={p.logo} alt={p.name} style={{ height: 40, width: 'auto' }} />
+                  ) : (
+                    <span style={{ fontFamily: "'Helvetica Neue', Arial, sans-serif", fontWeight: 400, fontSize: '1rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const }}>{p.name}</span>
+                  );
+                  return p.url ? (
+                    <a key={p.id} href={p.url} target="_blank" rel="noreferrer" className="press-logo">{inner}</a>
+                  ) : (
+                    <span key={p.id} className="press-logo">{inner}</span>
+                  );
+                })}
+              </div>
+            </>
+          )}
+          {certifications.length > 0 && (
+            <>
+              <p className="hp-press-label">{f(cms, 'certifiedLabel', 'Certified')}</p>
+              <div className="hp-press-row">
+                {certifications.map((c) => {
+                  const inner = c.logo ? (
+                    <img src={c.logo} alt={`${c.name} ${c.label}`} style={{ height: 56, width: 'auto' }} />
+                  ) : (
+                    <div className="cert-badge" style={{ borderColor: c.colour, color: c.colour }}>
+                      {c.name}<br />{c.label}
+                    </div>
+                  );
+                  return c.url ? (
+                    <a key={c.id} href={c.url} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>{inner}</a>
+                  ) : (
+                    <span key={c.id}>{inner}</span>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       </section>
 

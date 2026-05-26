@@ -51,7 +51,17 @@
     },
     "is_featured": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Generic featured flag (in-shop featured product carousel etc.)."
+    },
+    "is_homepage_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show this product on the homepage 'Jewellery with meaning' preview row. Top 3 by sort_order are displayed."
+    },
+    "homepage_hook": {
+      "type": "text",
+      "description": "Italic message shown above the product name on the homepage card, e.g. 'I reach for this one when I need to remember what is underneath the noise.' Keep short, 1 sentence."
     },
     "is_active": {
       "type": "boolean",

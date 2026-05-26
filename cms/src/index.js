@@ -73,6 +73,8 @@ module.exports = {
         'api::cosmic-forecast.cosmic-forecast',
         'api::experience.experience',
         'api::testimonial.testimonial',
+        'api::press-mention.press-mention',
+        'api::certification.certification',
         'api::event.event',
         'api::faq.faq',
         // Commerce (legacy from templates)

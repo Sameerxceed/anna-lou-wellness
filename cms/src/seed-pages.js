@@ -1154,8 +1154,71 @@ async function seedPages(strapi) {
   });
 
   await seedTestimonials(strapi);
+  await seedPressMentions(strapi);
+  await seedCertifications(strapi);
 
   strapi.log.info('[seed-pages] Page content seed run complete');
+}
+
+/**
+ * Press mentions for the homepage 'As seen in' strip. Idempotent — gated
+ * on name + the homepage flag so re-runs don't duplicate. Anna can replace
+ * the styled text with real logo uploads via the Strapi admin; the name
+ * + sort_order persist.
+ */
+async function seedPressMentions(strapi) {
+  const samples = [
+    { name: 'Harrods', sort_order: 1 },
+    { name: 'Selfridges', sort_order: 2 },
+    { name: 'Harvey Nichols', sort_order: 3 },
+    { name: 'QVC Japan', sort_order: 4 },
+    { name: 'The Telegraph', sort_order: 5 },
+    { name: 'Stylist', sort_order: 6 },
+    { name: 'SheerLuxe', sort_order: 7 },
+  ];
+  for (const s of samples) {
+    try {
+      const existing = await strapi.documents('api::press-mention.press-mention').findMany({
+        filters: { name: s.name },
+        limit: 1,
+      });
+      if (existing && existing.length > 0) continue;
+      await strapi.documents('api::press-mention.press-mention').create({
+        data: { ...s, is_homepage_featured: true, is_active: true },
+        status: 'published',
+      });
+      strapi.log.info(`[seed-pages] Created press-mention: ${s.name}`);
+    } catch (err) {
+      strapi.log.warn(`[seed-pages] press-mention seed skipped (${s.name}): ${err.message}`);
+    }
+  }
+}
+
+/**
+ * Certification badges for the homepage 'Certified' strip. Same pattern.
+ */
+async function seedCertifications(strapi) {
+  const samples = [
+    { name: 'ICF', label: 'Accredited', colour: '#1a5276', sort_order: 1 },
+    { name: 'CPD', label: 'Certified', colour: '#c0392b', sort_order: 2 },
+    { name: 'TRE®', label: 'Provider', colour: '#27ae60', sort_order: 3 },
+  ];
+  for (const s of samples) {
+    try {
+      const existing = await strapi.documents('api::certification.certification').findMany({
+        filters: { name: s.name, label: s.label },
+        limit: 1,
+      });
+      if (existing && existing.length > 0) continue;
+      await strapi.documents('api::certification.certification').create({
+        data: { ...s, is_homepage_featured: true, is_active: true },
+        status: 'published',
+      });
+      strapi.log.info(`[seed-pages] Created certification: ${s.name} ${s.label}`);
+    } catch (err) {
+      strapi.log.warn(`[seed-pages] certification seed skipped (${s.name}): ${err.message}`);
+    }
+  }
 }
 
 /**
@@ -1189,7 +1252,7 @@ async function seedTestimonials(strapi) {
       rating: 5,
       tags: 'retreats',
       sort_order: 1,
-      is_featured: false,
+      is_featured: true,
     },
     {
       reviewer_name: 'Sofia T.',

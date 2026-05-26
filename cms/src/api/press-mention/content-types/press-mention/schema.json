@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "press_mentions",
+  "info": {
+    "singularName": "press-mention",
+    "pluralName": "press-mentions",
+    "displayName": "Trust · Press Mention",
+    "description": "Press logos shown in the 'As seen in' strip on the homepage. Add one entry per publication or retailer (Harrods, Selfridges, The Telegraph, etc.)."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Publication / retailer name, e.g. 'The Telegraph', 'Harrods'."
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Logo image. SVG preferred (scales cleanly), PNG with transparent background also works. Best size around 200x80 (landscape) for consistency."
+    },
+    "url": {
+      "type": "string",
+      "description": "Optional link — e.g. URL to the article or retailer page. Leave blank for a non-clickable logo."
+    },
+    "is_homepage_featured": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show in the 'As seen in' strip on the homepage."
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Lower numbers appear first."
+    }
+  }
+}

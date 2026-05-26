@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "certifications",
+  "info": {
+    "singularName": "certification",
+    "pluralName": "certifications",
+    "displayName": "Trust · Certification Badge",
+    "description": "Professional accreditation badges shown in the 'Certified' strip on the homepage (ICF, CPD, TRE, etc.)."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Short name shown on the badge — e.g. 'ICF', 'CPD', 'TRE®'."
+    },
+    "label": {
+      "type": "string",
+      "required": true,
+      "description": "Sub-label under the name — e.g. 'Accredited', 'Certified', 'Provider'."
+    },
+    "colour": {
+      "type": "string",
+      "default": "#231F20",
+      "description": "Badge border + text colour as a hex value (e.g. #1a5276 navy, #c0392b red, #27ae60 green). Defaults to ink black."
+    },
+    "url": {
+      "type": "string",
+      "description": "Optional link to the certifying body's verification page."
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Optional image badge. If uploaded, replaces the styled text badge."
+    },
+    "is_homepage_featured": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show in the 'Certified' strip on the homepage."
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

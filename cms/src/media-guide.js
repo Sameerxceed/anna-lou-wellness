@@ -118,6 +118,14 @@ const collectionTypes = {
     companion_pdf:
       'Optional companion PDF — workbook, reflection prompts, notes. PDF only, max 10 MB. Members can download from the journey page.',
   },
+  'api::press-mention.press-mention': {
+    logo:
+      'Publication or retailer logo for the homepage "As seen in" strip. SVG strongly preferred (crisp at any size). PNG with transparent background also works. Best around 200×80 (landscape), max 100 KB. Render height locked to 40px on the homepage.',
+  },
+  'api::certification.certification': {
+    logo:
+      'Optional certification badge image (e.g. ICF Accredited logo). PNG with transparent background, around 200×112 (rectangular badge), max 100 KB. If left blank, a styled text badge using the colour field is rendered instead.',
+  },
 };
 
 // ── Apply descriptions to content-manager configuration ───────────

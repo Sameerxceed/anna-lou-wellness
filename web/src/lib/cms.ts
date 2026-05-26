@@ -75,6 +75,43 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
+/**
+ * Products flagged for the homepage 'Jewellery with meaning' preview.
+ * Anna ticks `is_homepage_featured` in Strapi to surface a product here.
+ * Returns the top `limit` by sort_order (falls back to creation order).
+ */
+export interface HomepageProduct {
+  id: number;
+  slug: string;
+  name: string;
+  hook: string;
+  image: string;
+  price: number;
+}
+
+export async function getHomepageFeaturedProducts(limit: number = 3): Promise<HomepageProduct[]> {
+  try {
+    const { data } = await fetchAPI('/products', {
+      'populate': '*',
+      'filters[is_homepage_featured][$eq]': 'true',
+      'filters[is_active][$eq]': 'true',
+      'sort': 'createdAt:desc',
+      'pagination[limit]': String(limit),
+    });
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      slug: d.slug,
+      name: d.name || '',
+      hook: d.homepage_hook || '',
+      image: mediaUrl(Array.isArray(d.images) ? d.images[0] : d.images),
+      price: typeof d.price === 'number' ? d.price : Number(d.price ?? 0),
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function getCategories(): Promise<Category[]> {
   try {
     const { data } = await fetchAPI('/product-categories', {
@@ -986,6 +1023,74 @@ export async function getVaultJourneyBySlug(slug: string): Promise<VaultJourney 
     return mapVaultJourney(data[0]);
   } catch {
     return null;
+  }
+}
+
+// ═══ PRESS MENTIONS ('As seen in' strip) ═══
+
+export interface PressMention {
+  id: number;
+  name: string;
+  logo: string;
+  url: string;
+  sortOrder: number;
+}
+
+export async function getPressMentions(): Promise<PressMention[]> {
+  try {
+    const { data } = await fetchAPI('/press-mentions', {
+      'populate': '*',
+      'sort': 'sort_order:asc,createdAt:asc',
+      'filters[is_active][$eq]': 'true',
+      'filters[is_homepage_featured][$eq]': 'true',
+      'pagination[limit]': '20',
+    });
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      name: d.name || '',
+      logo: mediaUrl(d.logo),
+      url: d.url || '',
+      sortOrder: d.sort_order ?? 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ═══ CERTIFICATIONS (badges shown under press logos) ═══
+
+export interface Certification {
+  id: number;
+  name: string;
+  label: string;
+  colour: string;
+  url: string;
+  logo: string;
+  sortOrder: number;
+}
+
+export async function getCertifications(): Promise<Certification[]> {
+  try {
+    const { data } = await fetchAPI('/certifications', {
+      'populate': '*',
+      'sort': 'sort_order:asc,createdAt:asc',
+      'filters[is_active][$eq]': 'true',
+      'filters[is_homepage_featured][$eq]': 'true',
+      'pagination[limit]': '10',
+    });
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      name: d.name || '',
+      label: d.label || '',
+      colour: d.colour || '#231F20',
+      url: d.url || '',
+      logo: mediaUrl(d.logo),
+      sortOrder: d.sort_order ?? 0,
+    }));
+  } catch {
+    return [];
   }
 }
 
