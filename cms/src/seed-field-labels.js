@@ -73,6 +73,70 @@ const friendlyLabel = (fieldName) => {
     .join(' ');
 };
 
+/**
+ * Per-page explicit label overrides.
+ *
+ * Auto-generated labels (heroImage → "Hero image", workImage → "Work image")
+ * are fine when there's one of each. But singletons with several image
+ * fields confuse editors: on the Homepage, "Hero image" and "Work image"
+ * and "Community image" don't tell Anna which is FIRST on the page vs
+ * which is LAST. She has to scroll, find the photo, swap, repeat.
+ *
+ * This map gives the most-edited content types per-field labels that
+ * include the page position + section name. Editors see:
+ *   "Image 1 — Hero (top of page, right side)"
+ *   "Image 2 — Work with Anna section"
+ * instead of:
+ *   "Hero image"
+ *   "Work image"
+ *
+ * Add a content type here only if its auto-label feels ambiguous to
+ * editors. For singletons with one image it isn't worth the maintenance.
+ *
+ * Key = content type UID, value = { fieldName: 'Explicit label' }.
+ */
+const EXPLICIT_LABELS = {
+  'api::homepage.homepage': {
+    heroImage: 'Image 1 — Hero (top of page, right side)',
+    workImage: 'Image 2 — Work with Anna section',
+    communityImage: 'Image 3 — Community section (left side)',
+    portraitImage: 'Image 4 — About Anna portrait',
+  },
+  'api::reset-room-page.reset-room-page': {
+    heroImage: 'Image 1 — Reset Room hero (top of page)',
+  },
+  'api::about-page.about-page': {
+    portrait: 'Image 1 — Anna portrait (hero of About page)',
+  },
+  'api::community-page.community-page': {
+    circle_image: 'Image 1 — Returning Circle section',
+    reset_room_image: 'Image 2 — Reset Room section',
+  },
+  'api::work-with-anna-page.work-with-anna-page': {
+    hero_image: 'Image 1 — Hero (top of /the-work page)',
+  },
+  'api::shop-page.shop-page': {
+    hero_image: 'Image 1 — Hero (top of /shop page, wide banner)',
+  },
+  'api::reset-stories-page.reset-stories-page': {
+    hero_image: 'Image 1 — Hero (top of Reset Stories section page, optional)',
+  },
+  'api::life-page.life-page': {
+    hero_image: 'Image 1 — Hero (top of Life section page, optional)',
+  },
+  'api::love-and-relationships-page.love-and-relationships-page': {
+    hero_image: 'Image 1 — Hero (top of Love & Relationships section, optional)',
+  },
+  'api::work-and-money-page.work-and-money-page': {
+    hero_image: 'Image 1 — Hero (top of Work & Money section, optional)',
+  },
+  'api::site-settings.site-settings': {
+    logo: 'Image 1 — Site logo (appears in top nav)',
+    favicon: 'Image 2 — Browser tab icon (favicon)',
+    og_default_image: 'Image 3 — Default social-share image (Facebook/WhatsApp/Twitter)',
+  },
+};
+
 // Internal Strapi fields we never relabel.
 const SKIP_FIELDS = new Set([
   'id',
@@ -124,7 +188,8 @@ module.exports = async (strapi) => {
   // Walk one configuration record (content type or component) and apply
   // friendly labels to its fields + pick a sensible mainField so the entry
   // is identifiable in repeatable lists. Returns status of what changed.
-  const applyLabelsTo = async (storeKey, attributes) => {
+  // `uid` is the content type identifier — used to look up explicit labels.
+  const applyLabelsTo = async (storeKey, attributes, uid = null) => {
     const store = strapi.store({
       type: 'plugin',
       name: 'content_manager',
@@ -138,20 +203,35 @@ module.exports = async (strapi) => {
 
     const metadatas = { ...(existing.metadatas || {}) };
     let changed = false;
+    const explicit = (uid && EXPLICIT_LABELS[uid]) || {};
 
     for (const [field, attr] of Object.entries(attributes)) {
       if (SKIP_FIELDS.has(field)) continue;
 
-      const friendly = friendlyLabel(field);
+      // Prefer an explicit override; fall back to the auto-derived label.
+      const friendly = explicit[field] || friendlyLabel(field);
       const schemaDescription = (attr && attr.description) || '';
       const current = metadatas[field] || {};
       const currentEdit = current.edit || {};
       const currentList = current.list || {};
 
-      // Only overwrite if the label is missing or still the raw field name —
-      // anything Anna customised via "Configure the view" is preserved.
-      const editLabelIsRaw = !currentEdit.label || currentEdit.label === field;
-      const listLabelIsRaw = !currentList.label || currentList.label === field;
+      // Overwrite if:
+      //   - label is missing
+      //   - label is still the raw field name (auto-generated default)
+      //   - label is the prior auto-derived friendly label AND an explicit
+      //     override now exists (lets us upgrade old labels to explicit ones
+      //     without trashing labels Anna manually customised via Configure
+      //     the view).
+      const autoFriendly = friendlyLabel(field);
+      const hasExplicit = Boolean(explicit[field]);
+      const editLabelIsRaw =
+        !currentEdit.label ||
+        currentEdit.label === field ||
+        (hasExplicit && currentEdit.label === autoFriendly);
+      const listLabelIsRaw =
+        !currentList.label ||
+        currentList.label === field ||
+        (hasExplicit && currentList.label === autoFriendly);
       // Ensure schema description shows up as helper text under the field.
       const descNeedsCopy =
         schemaDescription && currentEdit.description !== schemaDescription;
@@ -218,6 +298,7 @@ module.exports = async (strapi) => {
       const result = await applyLabelsTo(
         `configuration_content_types::${uid}`,
         ct.attributes,
+        uid,
       );
       if (result.status === 'updated') {
         touched++;
