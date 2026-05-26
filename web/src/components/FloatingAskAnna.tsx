@@ -206,7 +206,12 @@ export default function FloatingAskAnna() {
             <div ref={bottomRef} />
           </div>
 
-          {!verifiedFirstMessage && (
+          {/* Turnstile: render only until we have a token. The widget keeps
+              showing a "Success!" badge after verification which eats half
+              the chat panel for no reason — once we have the token, unmount.
+              Cloudflare verification usually completes in <1s and is mostly
+              invisible at the "compact" size. */}
+          {!turnstileToken && !verifiedFirstMessage && (
             <div className="faa-turnstile">
               <TurnstileWidget onVerify={setTurnstileToken} size="compact" />
             </div>
@@ -323,8 +328,12 @@ const widgetStyles = `
 }
 
 .faa-turnstile {
-  padding:8px 16px 0; background:#F9F6F1;
+  padding:6px 12px 0; background:#F9F6F1;
   display:flex; justify-content:center;
+  /* Compact Turnstile is 130x65; cap height so even if Cloudflare
+     elects to show a larger "Success!" or "Checking…" panel the chat
+     stays usable. Overflow hidden trims any extra chrome. */
+  max-height:80px; overflow:hidden;
 }
 
 .faa-form {
