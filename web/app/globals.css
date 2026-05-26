@@ -2,11 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ═══ Google Fonts — Anna Lou Wellness Typography (Final) ═══ */
-/* Work Sans: replaces Nobel (headings) */
-/* EB Garamond: editorial body, product names (unchanged) */
-/* Mulish: replaces Proxima Nova (UI, navigation, prices, CTAs) */
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;600&display=swap');
+/* ═══ Fonts — Anna Lou Wellness Typography (Final) ═══
+   Loaded via <link rel="preload" as="style"> + <link rel="stylesheet">
+   in app/layout.tsx head. Previously this was an @import here, which
+   blocked the CSS parser and caused the fonts to arrive AFTER first
+   paint — the nav menu visibly reflowed when fonts swapped in.
+   Preloading the stylesheet from <head> kicks the request off in
+   parallel with CSS parsing, so fonts are usually ready by paint time. */
 
 @layer base {
   html {

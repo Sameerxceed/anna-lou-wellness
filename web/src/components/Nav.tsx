@@ -103,10 +103,19 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
             ))}
           </div>
 
-          {/* Center logo */}
+          {/* Center logo — explicit width/height reserves space BEFORE the
+              image loads so the menu doesn't shift on first paint (was the
+              CLS culprit). SVG viewBox is 500x180 ≈ 2.78:1. */}
           <div className="nav-center-logo">
             <Link href="/" className="nav-logo" aria-label={siteSettings?.siteName || 'Anna Lou Wellness'}>
-              <img src={siteSettings?.logo || '/brand/alw-wordmark-stacked.svg'} alt={siteSettings?.siteName || 'Anna Lou Wellness'} className="nav-logo-img" />
+              <img
+                src={siteSettings?.logo || '/brand/alw-wordmark-stacked.svg'}
+                alt={siteSettings?.siteName || 'Anna Lou Wellness'}
+                className="nav-logo-img"
+                width={200}
+                height={72}
+                fetchPriority="high"
+              />
             </Link>
           </div>
 
@@ -163,7 +172,13 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
         <div className="mobile-menu">
           <div className="mobile-menu-header">
             <Link href="/" className="mobile-logo" onClick={() => setMobileOpen(false)} aria-label={siteSettings?.siteName || 'Anna Lou Wellness'}>
-              <img src="/brand/alw-wordmark-stacked.svg" alt={siteSettings?.siteName || 'Anna Lou Wellness'} style={{ height: 56, width: 'auto', display: 'block' }} />
+              <img
+                src="/brand/alw-wordmark-stacked.svg"
+                alt={siteSettings?.siteName || 'Anna Lou Wellness'}
+                width={156}
+                height={56}
+                style={{ display: 'block' }}
+              />
             </Link>
             <button
               className="mobile-close"

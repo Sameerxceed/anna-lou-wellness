@@ -108,8 +108,24 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Font loading — order matters for performance.
+            1. preconnect to Google's static + CSS hosts (parallel DNS + TLS warmup)
+            2. preload the CSS itself with high priority so the parser sees it ASAP
+            3. fallback <link rel="stylesheet"> for browsers ignoring preload
+            Previously this was an @import inside globals.css, which blocked the
+            stylesheet parser until the @import URL resolved — fonts arrived AFTER
+            first paint and caused the menu to reflow when they swapped in. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;600&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;600&display=swap"
+        />
         <link rel="manifest" href="/manifest.json" />
         {/* Canonical URLs are set per-page via generateMetadata */}
         <OrganizationSchema settings={siteSettings} />
