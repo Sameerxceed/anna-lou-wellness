@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { RenderedMessage } from '@/lib/render-message';
 
 /**
  * AskAnna — AI assessment + follow-up chat.
@@ -291,11 +292,11 @@ export default function AskAnnaClient() {
                   {msg.role === 'user' && (
                     <p className="aa-q-counter" style={{ marginBottom: 6 }}>You asked</p>
                   )}
-                  {msg.content.split('\n').filter((p) => p.trim()).map((para, j) => (
-                    <p key={j} className={msg.role === 'user' ? 'aa-msg-user-text' : 'aa-msg-anna-text'}>
-                      {para}
-                    </p>
-                  ))}
+                  <RenderedMessage
+                    content={msg.content}
+                    paragraphClassName={msg.role === 'user' ? 'aa-msg-user-text' : 'aa-msg-anna-text'}
+                    linkColour={msg.role === 'user' ? undefined : KICKER}
+                  />
                 </div>
               ))}
               {chatLoading && (

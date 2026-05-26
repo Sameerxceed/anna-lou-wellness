@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import TurnstileWidget from './TurnstileWidget';
+import { RenderedMessage } from '@/lib/render-message';
 
 /**
  * FloatingAskAnna — site-wide floating chat widget that talks to Claude.
@@ -175,7 +176,9 @@ export default function FloatingAskAnna() {
           <div className="faa-body">
             {chat.map((msg, i) => (
               <div key={i} className={msg.role === 'user' ? 'faa-msg-user' : 'faa-msg-anna'}>
-                {msg.content || (loading && i === chat.length - 1 ? <span className="faa-thinking">Anna is thinking…</span> : null)}
+                {msg.content
+                  ? <RenderedMessage content={msg.content} linkColour="#6E3A5A" />
+                  : (loading && i === chat.length - 1 ? <span className="faa-thinking">Anna is thinking…</span> : null)}
                 {/* Inline CTA after the canned welcome message only */}
                 {i === 0 && msg === WELCOME && (
                   <Link href="/ask-anna" className="faa-assessment-cta" onClick={() => setOpen(false)}>
