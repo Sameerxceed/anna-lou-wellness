@@ -310,10 +310,11 @@ export async function getNavigation(): Promise<NavItem[]> {
     // Fetch siteSettings in parallel so we get the single CMS-controlled
     // max-subcategories cap that BOTH the dropdown AND the section page tabs
     // respect. Anna edits one field in Site Settings → both places update.
-    const [navRes, categoriesBySection, siteSettings] = await Promise.all([
+    const [navRes, categoriesBySection, siteSettings, shopCategories] = await Promise.all([
       fetchAPI('/navigation', { 'populate[items][populate]': '*' }),
       fetchCategoriesBySection(),
       getSiteSettings(),
+      getShopCategoryTree(),
     ]);
     const items = (navRes?.data as { items?: unknown[] } | null)?.items;
     if (!Array.isArray(items) || items.length === 0) return fallbackNavigation;
@@ -329,14 +330,23 @@ export async function getNavigation(): Promise<NavItem[]> {
       if (EDITORIAL_SECTION_BY_HREF[href]) {
         const fromCategories = categoriesBySection[href];
         if (fromCategories && fromCategories.length > 0) {
-          // "All" link + first 4 categories (visitors can still reach the
-          // others via the All page if Anna has more than 4 categories in CMS).
           children = [{ label: 'All', href }, ...fromCategories.slice(0, MAX_DROPDOWN_CHILDREN)];
         }
       }
 
+      // Shop: auto-derive children from product-category top-level entries
+      // (Jewellery / Crystals / Sage & Palo Santo / Gifts). Anna edits one
+      // collection (Shop · Category) and the menu reflects it automatically.
+      // Bypasses anything stored in the Navigation singleton's shop children
+      // so the menu can't drift from the actual categories.
+      if (href === '/shop' && shopCategories.length > 0) {
+        children = shopCategories
+          .slice(0, MAX_DROPDOWN_CHILDREN)
+          .map((c) => ({ label: c.name, href: `/shop?category=${c.slug}` }));
+      }
+
       // Fall back to the Navigation singletype's stored children if not
-      // editorial (or if no categories yet for this section). Same 4-cap.
+      // editorial / shop (or if no categories yet for this section). Same 4-cap.
       if (!children) {
         children = Array.isArray(item.children)
           ? item.children.slice(0, MAX_DROPDOWN_CHILDREN).map((c) => {
