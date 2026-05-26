@@ -1,0 +1,47 @@
+{
+  "kind": "singleType",
+  "collectionName": "membership_pages",
+  "info": {
+    "singularName": "membership-page",
+    "pluralName": "membership-pages",
+    "displayName": "Pages · /community/membership",
+    "description": "Copy for the /community/membership page (the secondary Reset Room sales page). The main sales page is /community/reset-room; this is the simpler 'subpage' version linked from Community."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Community"
+    },
+    "title": {
+      "type": "string",
+      "default": "The Reset Room"
+    },
+    "paragraphs": {
+      "type": "richtext",
+      "description": "One paragraph per blank line. Renders as flowing prose on the page."
+    },
+    "price_label": {
+      "type": "string",
+      "default": "£25 per month"
+    },
+    "includes_label": {
+      "type": "string",
+      "default": "Live group session, replay library, workbook, community"
+    },
+    "commitment_label": {
+      "type": "string",
+      "default": "Cancel any time"
+    },
+    "trial_label": {
+      "type": "string",
+      "default": "First month free after paid workshop"
+    },
+    "cta_label": {
+      "type": "string",
+      "default": "Join the Reset Room"
+    }
+  }
+}

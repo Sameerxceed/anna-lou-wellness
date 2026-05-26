@@ -922,6 +922,156 @@ export async function getMantras(): Promise<Mantra[]> {
   }
 }
 
+// ═══ VAULT JOURNEYS (Reset Room member content) ═══
+
+export interface VaultJourney {
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  kind: string;
+  toneColour: string;
+  duration: string;
+  audioUrl: string;
+  videoUrl: string;
+  videoThumbnail: string;
+  companionPdfUrl: string;
+  body: string;
+  recordedDate: string;
+  sortOrder: number;
+}
+
+function mapVaultJourney(d: any): VaultJourney {
+  return {
+    id: d.id,
+    slug: d.slug,
+    name: d.name || '',
+    description: d.description || '',
+    kind: d.kind || 'Foundational journey',
+    toneColour: d.tone_colour || '#F280AA',
+    duration: d.duration || '',
+    audioUrl: mediaUrl(d.audio_file),
+    videoUrl: d.video_url || '',
+    videoThumbnail: mediaUrl(d.video_thumbnail),
+    companionPdfUrl: mediaUrl(d.companion_pdf),
+    body: d.body || '',
+    recordedDate: d.recorded_date || '',
+    sortOrder: d.sort_order ?? 0,
+  };
+}
+
+export async function getVaultJourneys(): Promise<VaultJourney[]> {
+  try {
+    const { data } = await fetchAPI('/vault-journeys', {
+      'populate': '*',
+      'sort': 'sort_order:asc,createdAt:asc',
+      'filters[is_active][$eq]': 'true',
+      'pagination[limit]': '100',
+    });
+    if (!data?.length) return [];
+    return data.map(mapVaultJourney);
+  } catch {
+    return [];
+  }
+}
+
+export async function getVaultJourneyBySlug(slug: string): Promise<VaultJourney | null> {
+  try {
+    const { data } = await fetchAPI('/vault-journeys', {
+      'populate': '*',
+      'filters[slug][$eq]': slug,
+      'pagination[limit]': '1',
+    });
+    if (!data?.length) return null;
+    return mapVaultJourney(data[0]);
+  } catch {
+    return null;
+  }
+}
+
+// ═══ WORKSHOP REPLAYS (Reset Room member content) ═══
+
+export interface WorkshopReplay {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  kind: string;
+  recordedDate: string;
+  duration: string;
+  videoUrl: string;
+  videoThumbnail: string;
+  audioUrl: string;
+  body: string;
+}
+
+function mapReplay(d: any): WorkshopReplay {
+  return {
+    id: d.id,
+    slug: d.slug,
+    title: d.title || '',
+    description: d.description || '',
+    kind: d.kind || 'Workshop',
+    recordedDate: d.recorded_date || '',
+    duration: d.duration || '',
+    videoUrl: d.video_url || '',
+    videoThumbnail: mediaUrl(d.video_thumbnail),
+    audioUrl: mediaUrl(d.audio_file),
+    body: d.body || '',
+  };
+}
+
+export async function getWorkshopReplays(): Promise<WorkshopReplay[]> {
+  try {
+    const { data } = await fetchAPI('/workshop-replays', {
+      'populate': '*',
+      'sort': 'recorded_date:desc',
+      'filters[is_active][$eq]': 'true',
+      'pagination[limit]': '100',
+    });
+    if (!data?.length) return [];
+    return data.map(mapReplay);
+  } catch {
+    return [];
+  }
+}
+
+// ═══ MEMBERSHIP PAGE (/community/membership singleton) ═══
+
+export interface MembershipPageCopy {
+  kicker: string;
+  title: string;
+  paragraphs: string[];
+  priceLabel: string;
+  includesLabel: string;
+  commitmentLabel: string;
+  trialLabel: string;
+  ctaLabel: string;
+}
+
+export async function getMembershipPage(fallback: MembershipPageCopy): Promise<MembershipPageCopy> {
+  try {
+    const { data: d } = await fetchAPI('/membership-page');
+    if (!d) return fallback;
+    const rawParas = typeof d.paragraphs === 'string' ? d.paragraphs : '';
+    const paragraphs = rawParas
+      ? rawParas.split(/\n\s*\n/).map((p: string) => p.trim()).filter(Boolean)
+      : fallback.paragraphs;
+    return {
+      kicker: d.kicker || fallback.kicker,
+      title: d.title || fallback.title,
+      paragraphs,
+      priceLabel: d.price_label || fallback.priceLabel,
+      includesLabel: d.includes_label || fallback.includesLabel,
+      commitmentLabel: d.commitment_label || fallback.commitmentLabel,
+      trialLabel: d.trial_label || fallback.trialLabel,
+      ctaLabel: d.cta_label || fallback.ctaLabel,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 // ═══ MEMBERSHIP (Reset Room) ═══
 
 export interface Membership {

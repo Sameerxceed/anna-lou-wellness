@@ -110,6 +110,14 @@ const collectionTypes = {
     video_thumbnail:
       'Poster image shown before the video plays. Best size: 800×800 (square 1:1) or 720×1280 (vertical 9:16), JPEG, max 500 KB. Use a still from the video.',
   },
+  'api::vault-journey.vault-journey': {
+    audio_file:
+      'The journey audio. MP3 preferred, M4A also works. Aim for 64-128 kbps mono (smaller file, fine for spoken-word + soft music). Most journeys are 8-20 minutes; expect 10-30 MB per file. Members can stream or download.',
+    video_thumbnail:
+      'Video poster image. Best size: 1280×720 (16:9 landscape), JPEG, max 500 KB. Shows on the journey card and before the video plays.',
+    companion_pdf:
+      'Optional companion PDF — workbook, reflection prompts, notes. PDF only, max 10 MB. Members can download from the journey page.',
+  },
 };
 
 // ── Apply descriptions to content-manager configuration ───────────

@@ -1,40 +1,53 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import JoinResetRoomButton from '@/components/JoinResetRoomButton';
+import { getMembershipPage } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'The Reset Room',
   description: 'Monthly membership: live group calls, workshop replays, Signal Method workbook, community. £25/month.',
 };
 
-const PARAGRAPHS = [
-  'The Reset Room is the monthly membership for people who want ongoing access to the work without the commitment of a full programme.',
-  'For £25 per month you get: one live group session per month (90 minutes, hosted on Zoom, recorded for those who cannot attend live), full access to the resource library including the Signal Method™ workbook and all past workshop recordings, a monthly Signal Check delivered to your inbox, and the Reset Room community.',
-  'It is for people who have done some work and want to keep going. For people who are not ready for 1:1 but know they need more than occasional workshops. For people who want community as part of their practice.',
-  'It is also the most natural next step after a workshop. You came to Signal Reset Day. Something shifted. You want to keep that aliveness going. This is where you come.',
-  'Cancel any time. First month free for anyone who has attended a paid workshop in the last three months.',
-];
+// Hardcoded fallback used only if CMS singleton is missing/unreachable. Anna
+// edits the live copy via Quick Edit > Pages > /community/membership.
+const fallback = {
+  kicker: 'Community',
+  title: 'The Reset Room',
+  paragraphs: [
+    'The Reset Room is the monthly membership for people who want ongoing access to the work without the commitment of a full programme.',
+    'For £25 per month you get: one live group session per month (90 minutes, hosted on Zoom, recorded for those who cannot attend live), full access to the resource library including the Signal Method™ workbook and all past workshop recordings, a monthly Signal Check delivered to your inbox, and the Reset Room community.',
+    'It is for people who have done some work and want to keep going. For people who are not ready for 1:1 but know they need more than occasional workshops. For people who want community as part of their practice.',
+    'It is also the most natural next step after a workshop. You came to Signal Reset Day. Something shifted. You want to keep that aliveness going. This is where you come.',
+    'Cancel any time. First month free for anyone who has attended a paid workshop in the last three months.',
+  ],
+  priceLabel: '£25 per month',
+  includesLabel: 'Live group session, replay library, workbook, community',
+  commitmentLabel: 'Cancel any time',
+  trialLabel: 'First month free after paid workshop',
+  ctaLabel: 'Join the Reset Room',
+};
 
-const DETAILS = [
-  { label: 'Price', value: '£25 per month' },
-  { label: 'Includes', value: 'Live group session, replay library, workbook, community' },
-  { label: 'Commitment', value: 'Cancel any time' },
-  { label: 'Trial', value: 'First month free after paid workshop' },
-];
+export default async function MembershipPage() {
+  const page = await getMembershipPage(fallback);
+  const details = [
+    { label: 'Price', value: page.priceLabel },
+    { label: 'Includes', value: page.includesLabel },
+    { label: 'Commitment', value: page.commitmentLabel },
+    { label: 'Trial', value: page.trialLabel },
+  ];
 
-export default function MembershipPage() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
       <article className="mem-page">
         <div className="mem-inner">
-          <p className="mem-kicker">Community</p>
-          <h1 className="mem-title">The Reset Room</h1>
+          <p className="mem-kicker">{page.kicker}</p>
+          <h1 className="mem-title">{page.title}</h1>
           <div className="mem-content">
-            {PARAGRAPHS.map((p, i) => <p key={i}>{p}</p>)}
+            {page.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <div className="mem-details">
-            {DETAILS.map((d, i) => (
+            {details.map((d, i) => (
               <div key={i} className="mem-detail-row">
                 <span className="mem-detail-label">{d.label}</span>
                 <span className="mem-detail-value">{d.value}</span>
@@ -42,7 +55,7 @@ export default function MembershipPage() {
             ))}
           </div>
           <div className="mem-cta">
-            <JoinResetRoomButton label="Join the Reset Room" className="mem-cta-btn" />
+            <JoinResetRoomButton label={page.ctaLabel} className="mem-cta-btn" />
           </div>
           <Link href="/community" className="mem-back">&larr; Back to Community</Link>
         </div>

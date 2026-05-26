@@ -30,6 +30,7 @@ module.exports = {
         'api::community-page.community-page',
         'api::contact-page.contact-page',
         'api::reset-room-page.reset-room-page',
+        'api::membership-page.membership-page',
         'api::reset-letters-page.reset-letters-page',
         'api::decoder-page.decoder-page',
         'api::site-settings.site-settings',
@@ -160,6 +161,7 @@ module.exports = {
       const memberAPIs = [
         { api: 'api::customer.customer', actions: ['find', 'findOne', 'update'] },
         { api: 'api::vault-journey.vault-journey', actions: ['find', 'findOne'] },
+        { api: 'api::workshop-replay.workshop-replay', actions: ['find', 'findOne'] },
       ];
       for (const { api, actions } of memberAPIs) {
         for (const action of actions) {
