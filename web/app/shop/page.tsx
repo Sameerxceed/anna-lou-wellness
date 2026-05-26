@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getProducts, getCategories, getSectionLandingPage } from '@/lib/cms';
+import { getProducts, getShopCategoryTree, getSectionLandingPage } from '@/lib/cms';
 import ShopGrid from './ShopGrid';
 
 export const metadata: Metadata = {
@@ -11,10 +11,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ShopPage() {
-  const [products, categories, page] = await Promise.all([
+interface ShopPageProps {
+  searchParams: Promise<{ category?: string; sub?: string }>;
+}
+
+export default async function ShopPage({ searchParams }: ShopPageProps) {
+  const params = await searchParams;
+  const [products, categoryTree, page] = await Promise.all([
     getProducts(),
-    getCategories(),
+    getShopCategoryTree(),
     getSectionLandingPage('/shop-page', {
       kicker: 'Anna Lou of London',
       title: 'Jewellery with meaning.',
@@ -24,6 +29,8 @@ export default async function ShopPage() {
     }),
   ]);
   const activeProducts = products.filter(p => p.isActive);
+  const initialParent = params?.category || 'all';
+  const initialChild = params?.sub || 'all';
 
   return (
     <>
@@ -37,7 +44,12 @@ export default async function ShopPage() {
       </section>
       <section className="shop-content">
         <div className="max-w-[1200px] mx-auto">
-          <ShopGrid products={activeProducts} categories={categories} />
+          <ShopGrid
+            products={activeProducts}
+            categoryTree={categoryTree}
+            initialParent={initialParent}
+            initialChild={initialChild}
+          />
         </div>
       </section>
     </>

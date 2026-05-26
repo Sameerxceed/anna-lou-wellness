@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product-category",
     "pluralName": "product-categories",
-    "displayName": "Shop \u00b7 Category"
+    "displayName": "Shop \u00b7 Category",
+    "description": "Categories for items sold in the shop (jewellery, crystals, sage, gifts). Top-level categories appear as the shop nav. Use 'parent' to create sub-categories like Bracelets under Jewellery."
   },
   "options": {
     "draftAndPublish": false
@@ -12,16 +13,42 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true
+      "required": true,
+      "description": "Display name, e.g. 'Bracelets', 'Crystals', 'Sage & Palo Santo'."
     },
     "slug": {
       "type": "uid",
       "targetField": "name",
-      "required": true
+      "required": true,
+      "description": "URL-safe identifier, auto-derived from the name."
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product-category.product-category",
+      "inversedBy": "children",
+      "description": "Optional parent category. Leave blank for top-level categories (Jewellery, Crystals, etc.). Set to 'Jewellery' for sub-categories like Bracelets / Earrings / Necklaces / Charms."
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product-category.product-category",
+      "mappedBy": "parent",
+      "description": "Auto-populated by Strapi when other categories set this as their parent. No need to edit directly."
+    },
+    "description": {
+      "type": "text",
+      "description": "Optional short description shown on the category page above the product grid."
+    },
+    "is_visible_in_nav": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show this category in the shop dropdown menu. Untick to keep the category for internal organisation but hide from the nav."
     },
     "sort_order": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "description": "Lower numbers appear first in nav menus and on the shop page."
     },
     "products": {
       "type": "relation",

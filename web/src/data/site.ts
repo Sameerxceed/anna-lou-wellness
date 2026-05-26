@@ -140,10 +140,10 @@ export const navigation: NavItem[] = [
   {
     label: "Shop", href: "/shop", colour: "#5DCAA5",
     children: [
-      { label: "All Jewellery", href: "/shop" },
-      { label: "Emotional Support Jewellery", href: "/shop/emotional-support-jewellery" },
-      { label: "Personalised Pieces", href: "/shop/personalised" },
-      { label: "New In", href: "/shop/new-in" },
+      { label: "Jewellery", href: "/shop?category=jewellery" },
+      { label: "Crystals", href: "/shop?category=crystals" },
+      { label: "Sage & Palo Santo", href: "/shop?category=sage-and-palo-santo" },
+      { label: "Gifts", href: "/shop?category=gifts" },
     ],
   },
   {

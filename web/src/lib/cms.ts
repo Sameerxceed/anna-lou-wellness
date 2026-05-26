@@ -127,6 +127,76 @@ export async function getCategories(): Promise<Category[]> {
   }
 }
 
+/**
+ * Shop categories as a nested tree: each top-level category may have
+ * `children` (sub-categories). Filters out is_visible_in_nav=false.
+ *
+ * Used by:
+ *   - the shop page UI (parent pills + sub-pills on selection)
+ *   - the navigation builder so the Shop dropdown reflects Anna's
+ *     category hierarchy without a code change
+ */
+export interface ShopCategoryNode {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  sortOrder: number;
+  children: ShopCategoryNode[];
+}
+
+export async function getShopCategoryTree(): Promise<ShopCategoryNode[]> {
+  try {
+    const { data } = await fetchAPI('/product-categories', {
+      'populate': '*',
+      'sort': 'sort_order:asc',
+      'filters[is_visible_in_nav][$ne]': 'false',
+      'pagination[limit]': '100',
+    });
+    if (!data?.length) return [];
+
+    const all: Array<{
+      id: number;
+      name: string;
+      slug: string;
+      description: string;
+      sortOrder: number;
+      parentId: number | null;
+    }> = data.map((d: any) => ({
+      id: d.id,
+      name: d.name || '',
+      slug: d.slug || '',
+      description: d.description || '',
+      sortOrder: d.sort_order ?? 0,
+      parentId: d.parent?.id ?? null,
+    }));
+
+    const byId = new Map<number, ShopCategoryNode>();
+    all.forEach((c) => byId.set(c.id, { ...c, children: [] }));
+
+    const roots: ShopCategoryNode[] = [];
+    all.forEach((c) => {
+      const node = byId.get(c.id)!;
+      if (c.parentId && byId.has(c.parentId)) {
+        byId.get(c.parentId)!.children.push(node);
+      } else {
+        roots.push(node);
+      }
+    });
+
+    // Ensure each level is sorted (Strapi sort works on flat result; nested
+    // re-sort is cheap and guarantees consistent ordering).
+    const sortRecursive = (nodes: ShopCategoryNode[]) => {
+      nodes.sort((a, b) => a.sortOrder - b.sortOrder);
+      nodes.forEach((n) => sortRecursive(n.children));
+    };
+    sortRecursive(roots);
+    return roots;
+  } catch {
+    return [];
+  }
+}
+
 // ═══ EVENTS ═══
 export async function getEvents(): Promise<Event[]> {
   try {

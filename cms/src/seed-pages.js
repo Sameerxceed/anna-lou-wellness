@@ -1156,8 +1156,67 @@ async function seedPages(strapi) {
   await seedTestimonials(strapi);
   await seedPressMentions(strapi);
   await seedCertifications(strapi);
+  await seedShopCategories(strapi);
 
   strapi.log.info('[seed-pages] Page content seed run complete');
+}
+
+/**
+ * Seed the shop category hierarchy Anna asked for:
+ *   - Jewellery (parent)
+ *     - Bracelets
+ *     - Earrings
+ *     - Necklaces
+ *     - Charms
+ *   - Crystals
+ *   - Sage & Palo Santo
+ *   - Gifts
+ *
+ * Idempotent: gates on slug. Creates parents first so children can
+ * reference them. Anna can rename / add / hide categories in the
+ * admin without losing data.
+ */
+async function seedShopCategories(strapi) {
+  const findBySlug = async (slug) => {
+    const found = await strapi.documents('api::product-category.product-category').findMany({
+      filters: { slug },
+      limit: 1,
+    });
+    return found && found.length > 0 ? found[0] : null;
+  };
+  const ensureCategory = async ({ slug, name, sort_order, parentSlug = null, description = null }) => {
+    const existing = await findBySlug(slug);
+    if (existing) return existing;
+    const data = { slug, name, sort_order, is_visible_in_nav: true };
+    if (description) data.description = description;
+    if (parentSlug) {
+      const parent = await findBySlug(parentSlug);
+      if (parent) data.parent = parent.id;
+    }
+    try {
+      const created = await strapi.documents('api::product-category.product-category').create({
+        data,
+        status: 'published',
+      });
+      strapi.log.info(`[seed-pages] Created product-category: ${name}${parentSlug ? ` (under ${parentSlug})` : ''}`);
+      return created;
+    } catch (err) {
+      strapi.log.warn(`[seed-pages] product-category seed skipped (${slug}): ${err.message}`);
+      return null;
+    }
+  };
+
+  // Parents first (sort_order spaced so Anna can slot new ones between).
+  await ensureCategory({ slug: 'jewellery', name: 'Jewellery', sort_order: 10 });
+  await ensureCategory({ slug: 'crystals', name: 'Crystals', sort_order: 20 });
+  await ensureCategory({ slug: 'sage-and-palo-santo', name: 'Sage & Palo Santo', sort_order: 30 });
+  await ensureCategory({ slug: 'gifts', name: 'Gifts', sort_order: 40 });
+
+  // Jewellery sub-categories.
+  await ensureCategory({ slug: 'bracelets', name: 'Bracelets', sort_order: 1, parentSlug: 'jewellery' });
+  await ensureCategory({ slug: 'earrings', name: 'Earrings', sort_order: 2, parentSlug: 'jewellery' });
+  await ensureCategory({ slug: 'necklaces', name: 'Necklaces', sort_order: 3, parentSlug: 'jewellery' });
+  await ensureCategory({ slug: 'charms', name: 'Charms', sort_order: 4, parentSlug: 'jewellery' });
 }
 
 /**

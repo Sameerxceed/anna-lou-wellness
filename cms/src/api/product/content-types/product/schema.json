@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Shop \u00b7 Product"
+    "displayName": "Shop \u00b7 Product",
+    "description": "PHYSICAL items sold via the shop (jewellery, crystals, sage, gifts). For workshops, retreats, or programmes use the 'Experience' or 'Programme' collections instead \u2014 those are services with bookings, not items shipped to a customer."
   },
   "options": {
     "draftAndPublish": false
