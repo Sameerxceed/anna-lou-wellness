@@ -59,6 +59,7 @@ export default async function TheWorkPage() {
             <p className="work-body">{page.waysSectionBody}</p>
             <div className="work-cta-group">
               <Link href={page.waysSectionCtaUrl} className="work-cta-primary">{page.waysSectionCtaLabel} <span>&rarr;</span></Link>
+              <Link href="/ask-anna" className="work-cta-primary">Ask Anna for a recommendation <span>&rarr;</span></Link>
             </div>
           </div>
           <div className="work-image reveal rd1" />
