@@ -6,19 +6,20 @@ import { Fragment } from 'react';
  *
  * AskAnna's system prompt instructs Claude to use markdown link syntax
  * (`[text](url)`) when quoting URLs returned by the search_* tools.
- * The chat surfaces (AskAnnaClient + FloatingAskAnna) used to split on
- * \n and emit plain <p> tags, which left the [text](url) raw on screen.
+ * Without this helper the chat surfaces would emit `[label](url)` as
+ * raw text — the brackets and parens would be visible.
  *
- * This helper splits paragraphs on blank lines, then within each
- * paragraph walks the text and replaces `[text](url)` with proper
- * anchors. External URLs get target="_blank" + rel="noreferrer".
+ * Robust to:
+ *   - whitespace between `]` and `(` (Claude occasionally inserts a
+ *     line break when the link is long — happens mid-stream)
+ *   - leading/trailing whitespace inside the URL parens
+ *   - the regex's `lastIndex` state — fresh regex per call instead of
+ *     a module-level const, so concurrent React renders don't collide
+ *   - non-link content (just emits paragraphs of text)
  *
- * It's deliberately small — no markdown library, no risk of executing
- * untrusted HTML. Only links are linkified; bold/italic/lists pass
- * through as plain text (Claude rarely uses them in this context).
+ * Deliberately small — no markdown library, no HTML evaluation. Only
+ * links are linkified; bold/italic/lists pass through as plain text.
  */
-
-const LINK_RE = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]*)\)/g;
 
 interface Props {
   content: string;
@@ -44,13 +45,20 @@ export function RenderedMessage({ content, paragraphClassName, linkColour }: Pro
   );
 }
 
-function renderInline(text: string, linkColour?: string) {
+function renderInline(text: string, linkColour?: string): React.ReactNode[] {
+  // Fresh regex per call — `lastIndex` state on a shared global regex
+  // can get out-of-sync under React concurrent rendering and silently
+  // skip matches. New instance = clean slate.
+  //
+  // Tolerates whitespace (incl. newline) between `]` and `(`, and
+  // around the URL itself. Matches absolute http(s) URLs and root-
+  // relative paths starting with `/`.
+  const linkRe = /\[([^\]]+?)\]\s*\(\s*(https?:\/\/[^\s)]+|\/[^\s)]*)\s*\)/g;
   const out: React.ReactNode[] = [];
   let lastIdx = 0;
   let match: RegExpExecArray | null;
-  // Reset regex state per call.
-  LINK_RE.lastIndex = 0;
-  while ((match = LINK_RE.exec(text)) !== null) {
+
+  while ((match = linkRe.exec(text)) !== null) {
     const [whole, label, href] = match;
     const start = match.index;
     if (start > lastIdx) {
@@ -63,7 +71,11 @@ function renderInline(text: string, linkColour?: string) {
         href={href}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noreferrer' : undefined}
-        style={linkColour ? { color: linkColour, textDecoration: 'underline' } : { textDecoration: 'underline' }}
+        style={{
+          color: linkColour || 'inherit',
+          textDecoration: 'underline',
+          fontWeight: 500,
+        }}
       >
         {label}
       </a>,
@@ -73,5 +85,7 @@ function renderInline(text: string, linkColour?: string) {
   if (lastIdx < text.length) {
     out.push(<Fragment key={`t-${lastIdx}`}>{text.slice(lastIdx)}</Fragment>);
   }
-  return out;
+  // If no links matched, return the original text as a single node so
+  // React doesn't render an empty array (which would look like nothing).
+  return out.length > 0 ? out : [<Fragment key="raw">{text}</Fragment>];
 }

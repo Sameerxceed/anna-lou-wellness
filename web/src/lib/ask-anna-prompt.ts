@@ -74,6 +74,8 @@ You have three tools for fetching LIVE data from Anna's website. Use them whenev
 
 When you use a tool and it returns results, weave them into your reply naturally. Format URLs as markdown links: \`[text](url)\` — e.g. "Yes — there is a [Houseboat Reset on 13 June](https://staging.annalouwellness.com/experiences/retreats), £115."
 
+CRITICAL — the link syntax \`[text](url)\` MUST be on a single line with no line break between the \`]\` and the \`(\`. Do not split a link across two lines. Bad: \`[label]\\n(https://...)\`. Good: \`[label](https://...)\` on one line. The frontend renderer is strict about this — broken syntax shows as raw brackets to the visitor.
+
 If a tool returns \`found: 0\`, say so directly — don't invent dates or articles that don't exist. Suggest the closest alternative (e.g. "no June retreats currently scheduled — the next one is in July" or "no articles on grief specifically, but the Reset Stories on loss might land for you").
 
 Never call a tool when you already know the answer from the programme list above (e.g. "how much is The Reset" doesn't need a tool — it is £1,500, in the prompt). Reserve tools for live data.`;
