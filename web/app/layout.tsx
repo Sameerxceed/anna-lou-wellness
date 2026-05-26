@@ -7,6 +7,7 @@ import CookieBanner from '@/components/CookieBanner';
 import BackToTop from '@/components/BackToTop';
 import ScrollReveal from '@/components/ScrollReveal';
 import Toast from '@/components/Toast';
+import FloatingAskAnna from '@/components/FloatingAskAnna';
 import { WebSiteSchema, PersonSchema, LocalBusinessSchema } from '@/components/StructuredData';
 import './globals.css';
 
@@ -125,6 +126,7 @@ export default async function RootLayout({
         <BackToTop />
         <ScrollReveal />
         <Toast />
+        <FloatingAskAnna />
       </body>
     </html>
   );

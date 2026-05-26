@@ -170,12 +170,30 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Mode 2: follow-up chat ──────────────────────────────────────────
+  // Two entry points:
+  //   - /ask-anna page: the first follow_up always has history (the streamed
+  //     recommendation is in there), so Turnstile is skipped — the user
+  //     already passed CAPTCHA in mode=recommend.
+  //   - Floating widget: the FIRST follow_up has empty history (no prior
+  //     assessment). Require Turnstile here to gate abuse, then skip it on
+  //     subsequent turns once the chat is established.
   const history: ChatMessage[] = Array.isArray(body?.history) ? body.history : [];
   const question: string = typeof body?.question === 'string' ? body.question.trim() : '';
 
   if (!question) {
     return NextResponse.json({ error: 'No question provided.' }, { status: 400 });
   }
+
+  if (history.length === 0) {
+    const captcha = await verifyTurnstile(
+      body?.turnstileToken,
+      req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip'),
+    );
+    if (!captcha.ok) {
+      return NextResponse.json({ error: captcha.error }, { status: 400 });
+    }
+  }
+
   // Sanity-cap the history Claude sees — 16 turns is plenty for a coaching chat
   // and keeps us well under any cost surprise from a runaway loop.
   const cleanHistory = history
