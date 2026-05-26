@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getStockImage, STOCK } from '@/data/stock-images';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
+import JoinResetRoomButton from '@/components/JoinResetRoomButton';
 
 export const metadata: Metadata = {
   title: 'The Reset Room | Monthly Somatic Membership',
@@ -174,7 +175,7 @@ export default async function ResetRoomPage() {
           <p className="rr-section-label rr-on-plum">Join</p>
           <h2 className="rr-final-title">{f(cms, 'priceTitle', 'Step inside the room.')}</h2>
           <p className="rr-final-body">{f(cms, 'priceBody', '£25 a month. No minimum term. Cancel any time. Everything is delivered through the member portal you can come back to whenever you want.')}</p>
-          <a href="#" className="rr-btn-large">{f(cms, 'priceCtaLabel', 'Join the Reset Room')} &middot; £25/month &rarr;</a>
+          <JoinResetRoomButton label={`${f(cms, 'priceCtaLabel', 'Join the Reset Room')} · £25/month`} className="rr-btn-large" />
           <p className="rr-final-fineprint">Secured by Stripe. Instant access. Unsubscribe in one click from your member portal.</p>
         </div>
       </section>
