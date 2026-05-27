@@ -111,7 +111,7 @@ const pageStyles = `
 .cw-tagline { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: #3D3D3A; }
 
 .cw-body { background: #fff; padding: 3rem 2rem; }
-.cw-body-inner { max-width: 760px; margin: 0 auto; }
+.cw-body-inner { max-width: 900px; margin: 0 auto; }
 .cw-body-text { font-family: 'EB Garamond', Georgia, serif; font-size: 1.05rem; line-height: 1.85; color: #3D3D3A; margin-bottom: 1.2rem; }
 
 .cw-formats { background: #F5F3EF; padding: 2.5rem 2rem; }

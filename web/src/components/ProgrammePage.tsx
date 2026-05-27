@@ -121,7 +121,7 @@ const styles = `
 }
 
 .prog-intro { background: #fff; padding: 3rem 2rem; }
-.prog-intro-inner { max-width: 760px; margin: 0 auto; }
+.prog-intro-inner { max-width: 900px; margin: 0 auto; }
 .prog-body-text {
   font-family: 'EB Garamond', Georgia, serif;
   font-size: 1.05rem; line-height: 1.85; color: #3D3D3A;
@@ -129,7 +129,7 @@ const styles = `
 }
 
 .prog-section { background: #fff; padding: 2.5rem 2rem; }
-.prog-section-inner { max-width: 760px; margin: 0 auto; }
+.prog-section-inner { max-width: 900px; margin: 0 auto; }
 .prog-section-label {
   font-family: Mulish, sans-serif; font-weight: 500;
   font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;

@@ -94,11 +94,11 @@ const pageStyles = `
 .rc-tagline { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: #3D3D3A; }
 
 .rc-body { background: #fff; padding: 3rem 2rem; }
-.rc-body-inner { max-width: 760px; margin: 0 auto; }
+.rc-body-inner { max-width: 900px; margin: 0 auto; }
 .rc-body-text { font-family: 'EB Garamond', Georgia, serif; font-size: 1.05rem; line-height: 1.85; color: #3D3D3A; margin-bottom: 1.2rem; }
 
 .rc-details { background: #F5F3EF; padding: 2.5rem 2rem; }
-.rc-details-inner { max-width: 760px; margin: 0 auto; }
+.rc-details-inner { max-width: 900px; margin: 0 auto; }
 .rc-section-label { font-family: Mulish, sans-serif; font-weight: 500; font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #6E3A5A; margin-bottom: 0.8rem; }
 .rc-details ul { list-style: none; padding: 0; margin: 0; }
 .rc-details li { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.7; color: #3D3D3A; padding: 0.5rem 0 0.5rem 1.5rem; position: relative; border-bottom: 1px solid rgba(0,0,0,0.06); }

@@ -118,7 +118,7 @@ const pageStyles = `
 }
 
 .sc-body { background: #fff; padding: 3rem 2rem; }
-.sc-body-inner { max-width: 760px; margin: 0 auto; }
+.sc-body-inner { max-width: 900px; margin: 0 auto; }
 .sc-body-text {
   font-family: 'EB Garamond', Georgia, serif;
   font-size: 1.05rem; line-height: 1.85; color: #3D3D3A;
@@ -126,7 +126,7 @@ const pageStyles = `
 }
 
 .sc-includes { background: #F5F3EF; padding: 2.5rem 2rem; }
-.sc-includes-inner { max-width: 760px; margin: 0 auto; }
+.sc-includes-inner { max-width: 900px; margin: 0 auto; }
 .sc-section-label {
   font-family: Mulish, sans-serif; font-weight: 500;
   font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;

@@ -135,7 +135,7 @@ const pageStyles = `
 .rec-tagline { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: #3D3D3A; }
 
 .rec-body { background: #fff; padding: 3rem 2rem; }
-.rec-body-inner { max-width: 760px; margin: 0 auto; }
+.rec-body-inner { max-width: 900px; margin: 0 auto; }
 .rec-body-text { font-family: 'EB Garamond', Georgia, serif; font-size: 1.05rem; line-height: 1.85; color: #3D3D3A; margin-bottom: 1.2rem; }
 
 .rec-stages { background: #F5F3EF; padding: 3rem 2rem; }
@@ -147,7 +147,7 @@ const pageStyles = `
 .rec-stage p { font-family: 'EB Garamond', Georgia, serif; font-size: 0.95rem; line-height: 1.7; color: #3D3D3A; }
 
 .rec-includes { background: #fff; padding: 2.5rem 2rem; }
-.rec-includes-inner { max-width: 760px; margin: 0 auto; }
+.rec-includes-inner { max-width: 900px; margin: 0 auto; }
 .rec-section-label { font-family: Mulish, sans-serif; font-weight: 500; font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #6E3A5A; margin-bottom: 0.8rem; }
 .rec-includes ul { list-style: none; padding: 0; margin: 0 0 1.5rem; }
 .rec-includes li { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.7; color: #3D3D3A; padding: 0.5rem 0 0.5rem 1.5rem; position: relative; border-bottom: 1px solid rgba(0,0,0,0.06); }
@@ -156,7 +156,7 @@ const pageStyles = `
 .rec-pricing { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.7; color: #3D3D3A; padding-top: 0.8rem; border-top: 1px solid rgba(0,0,0,0.08); }
 
 .rec-credentials { background: #F5F3EF; padding: 2rem; }
-.rec-credentials-inner { max-width: 760px; margin: 0 auto; }
+.rec-credentials-inner { max-width: 900px; margin: 0 auto; }
 .rec-credentials ul { list-style: none; padding: 0; margin: 0; }
 .rec-credentials li { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.7; color: #3D3D3A; padding: 0.4rem 0 0.4rem 1.5rem; position: relative; }
 .rec-credentials li::before { content: '·'; position: absolute; left: 0; color: #6E3A5A; font-weight: 700; font-size: 1.3rem; line-height: 1; }

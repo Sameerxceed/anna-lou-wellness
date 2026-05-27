@@ -251,7 +251,7 @@ const pageStyles = `
 .gp-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.2; margin-bottom:0.8rem; text-wrap:balance; }
 .gp-tagline { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#5D5A52; line-height:1.7; }
 .gp-body { background:#fff; padding:2.5rem 2rem 3.5rem; }
-.gp-body-inner { max-width:760px; margin:0 auto; }
+.gp-body-inner { max-width:900px; margin:0 auto; }
 .gp-prose .gp-paragraph { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.9; margin-bottom:1.2rem; }
 .gp-prose .gp-paragraph:last-child { margin-bottom:0; }
 .gp-prose .gp-h1 { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:clamp(1.6rem,3vw,2rem); color:#231F20; line-height:1.3; margin:2rem 0 0.8rem; }

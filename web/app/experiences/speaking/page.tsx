@@ -110,11 +110,11 @@ const pageStyles = `
 .sp-tagline { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: #3D3D3A; }
 
 .sp-body { background: #fff; padding: 3rem 2rem; }
-.sp-body-inner { max-width: 760px; margin: 0 auto; }
+.sp-body-inner { max-width: 900px; margin: 0 auto; }
 .sp-body-text { font-family: 'EB Garamond', Georgia, serif; font-size: 1.05rem; line-height: 1.85; color: #3D3D3A; margin-bottom: 1.2rem; }
 
 .sp-talks { background: #F5F3EF; padding: 2.5rem 2rem; }
-.sp-talks-inner { max-width: 760px; margin: 0 auto; }
+.sp-talks-inner { max-width: 900px; margin: 0 auto; }
 .sp-section-label { font-family: Mulish, sans-serif; font-weight: 500; font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #6E3A5A; margin-bottom: 0.8rem; }
 .sp-talks-list { padding-left: 1.5rem; margin: 0; }
 .sp-talks-list li { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.8; color: #3D3D3A; padding: 0.5rem 0; }
