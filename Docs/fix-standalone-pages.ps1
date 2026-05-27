@@ -11,7 +11,7 @@
 #   2. Renames the Mission slug from 'mission' to 'our-mission'
 #   3. Fixes the footer Privacy link to have a leading slash
 #
-# Idempotent — safe to re-run. Checks before each action.
+# Idempotent -- safe to re-run. Checks before each action.
 #
 # After this completes, run upload-pages.ps1 to push the .md content
 # from Docs/page-content/ into the surviving entries.
@@ -57,7 +57,7 @@ function Get-GenericPageDocId {
 # 1. Delete duplicate short-slug entries (privacy, terms)
 # ──────────────────────────────────────────────────────────────────────
 Write-Output ""
-Write-Output "Step 1 — deleting duplicate entries..."
+Write-Output "Step 1 -- deleting duplicate entries..."
 
 foreach ($dupSlug in @('privacy', 'terms')) {
   $entry = Get-GenericPageDocId -Slug $dupSlug
@@ -67,7 +67,7 @@ foreach ($dupSlug in @('privacy', 'terms')) {
   }
   $hasContent = $entry.intro -and ($entry.intro.ToString().Length -gt 50)
   if ($hasContent) {
-    Write-Output ("  WARN: '{0}' has content ({1} chars) — NOT deleting. Manual review required." -f $dupSlug, $entry.intro.ToString().Length)
+    Write-Output ("  WARN: '{0}' has content ({1} chars) -- NOT deleting. Manual review required." -f $dupSlug, $entry.intro.ToString().Length)
     continue
   }
   try {
@@ -82,7 +82,7 @@ foreach ($dupSlug in @('privacy', 'terms')) {
 # 2. Rename Mission slug: mission -> our-mission
 # ──────────────────────────────────────────────────────────────────────
 Write-Output ""
-Write-Output "Step 2 — renaming Mission slug..."
+Write-Output "Step 2 -- renaming Mission slug..."
 
 $missionOld = Get-GenericPageDocId -Slug 'mission'
 $missionNew = Get-GenericPageDocId -Slug 'our-mission'
@@ -111,7 +111,7 @@ if ($missionNew) {
 # 3. Fix the footer's Privacy link to have a leading slash
 # ──────────────────────────────────────────────────────────────────────
 Write-Output ""
-Write-Output "Step 3 — fixing footer Privacy link..."
+Write-Output "Step 3 -- fixing footer Privacy link..."
 
 try {
   $footer = Invoke-RestMethod -Uri ('{0}/api/footer?populate=*' -f $baseUrl) -Headers $headers -Method Get
