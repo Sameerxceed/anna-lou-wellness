@@ -44,8 +44,8 @@
       "description": "Main image. Landscape orientation works best."
     },
     "intro": {
-      "type": "text",
-      "description": "Main body. Separate paragraphs with a BLANK LINE between them."
+      "type": "richtext",
+      "description": "Main body. Use the toolbar for headings, bold, italic, bullet/numbered lists, links, and quotes. Separate paragraphs with a BLANK LINE between them. Works for short blurbs or long multi-section pages."
     },
     "ctaLabel": {
       "type": "string",

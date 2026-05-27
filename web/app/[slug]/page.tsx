@@ -81,10 +81,7 @@ export default async function StandalonePage({ params }: PageProps) {
   const page = await getGenericPage(slug);
   if (!page) notFound();
 
-  const paragraphs = page.intro
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  const bodyHtml = renderMarkdown(page.intro);
 
   return (
     <>
@@ -101,21 +98,78 @@ export default async function StandalonePage({ params }: PageProps) {
       </section>
 
       <section className="gp-body">
-        <div className="gp-body-inner">
-          {paragraphs.map((p, i) => (
-            <p key={i} className="gp-paragraph">{p}</p>
-          ))}
-          {page.ctaLabel && page.ctaUrl && (
-            <div className="gp-cta">
-              <Link href={page.ctaUrl} className="gp-cta-btn" style={{ background: page.kickerColour, borderColor: page.kickerColour }}>
-                {page.ctaLabel} <span>&rarr;</span>
-              </Link>
-            </div>
-          )}
-        </div>
+        <div className="gp-body-inner gp-prose" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+        {page.ctaLabel && page.ctaUrl && (
+          <div className="gp-body-inner gp-cta">
+            <Link href={page.ctaUrl} className="gp-cta-btn" style={{ background: page.kickerColour, borderColor: page.kickerColour }}>
+              {page.ctaLabel} <span>&rarr;</span>
+            </Link>
+          </div>
+        )}
       </section>
     </>
   );
+}
+
+/**
+ * Small markdown renderer for `intro` content edited in Strapi's richtext
+ * editor. Handles headings (# ## ###), bold (**text**), italic (*text*),
+ * links [text](url), unordered + ordered lists, blockquotes, and paragraphs.
+ *
+ * Anna writes via the toolbar; this turns the stored markdown into clean HTML.
+ * Anything not supported here just renders as a plain paragraph.
+ */
+function renderMarkdown(raw: string): string {
+  if (!raw) return '';
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Inline transforms: applied per line. Order matters — links first, then bold, then italic.
+  const inline = (s: string): string =>
+    esc(s)
+      .replace(/\[([^\]]+)\]\s*\(([^)]+)\)/g, '<a href="$2">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,!?:;]|$)/g, '$1<em>$2</em>');
+
+  const blocks = raw.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+  const html: string[] = [];
+
+  for (const block of blocks) {
+    const lines = block.split('\n');
+
+    // Headings — single line block starting with 1-3 # plus space
+    const h = lines[0].match(/^(#{1,3})\s+(.*)$/);
+    if (h && lines.length === 1) {
+      const level = h[1].length;
+      html.push(`<h${level} class="gp-h${level}">${inline(h[2])}</h${level}>`);
+      continue;
+    }
+
+    // Blockquote — every line starts with >
+    if (lines.every((l) => /^>\s?/.test(l))) {
+      const inner = lines.map((l) => inline(l.replace(/^>\s?/, ''))).join('<br />');
+      html.push(`<blockquote class="gp-quote">${inner}</blockquote>`);
+      continue;
+    }
+
+    // Unordered list — every line starts with - or *
+    if (lines.every((l) => /^[-*]\s+/.test(l))) {
+      const items = lines.map((l) => `<li>${inline(l.replace(/^[-*]\s+/, ''))}</li>`).join('');
+      html.push(`<ul class="gp-list">${items}</ul>`);
+      continue;
+    }
+
+    // Ordered list — every line starts with N.
+    if (lines.every((l) => /^\d+\.\s+/.test(l))) {
+      const items = lines.map((l) => `<li>${inline(l.replace(/^\d+\.\s+/, ''))}</li>`).join('');
+      html.push(`<ol class="gp-list">${items}</ol>`);
+      continue;
+    }
+
+    // Otherwise — paragraph. Hard line breaks within the block become <br />.
+    html.push(`<p class="gp-paragraph">${lines.map(inline).join('<br />')}</p>`);
+  }
+
+  return html.join('\n');
 }
 
 const pageStyles = `
@@ -128,7 +182,19 @@ const pageStyles = `
 .gp-tagline { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#5D5A52; line-height:1.7; }
 .gp-body { background:#fff; padding:2.5rem 2rem 3.5rem; }
 .gp-body-inner { max-width:760px; margin:0 auto; }
-.gp-paragraph { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.9; margin-bottom:1.2rem; }
+.gp-prose .gp-paragraph { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.9; margin-bottom:1.2rem; }
+.gp-prose .gp-paragraph:last-child { margin-bottom:0; }
+.gp-prose .gp-h1 { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:clamp(1.6rem,3vw,2rem); color:#231F20; line-height:1.3; margin:2rem 0 0.8rem; }
+.gp-prose .gp-h2 { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:clamp(1.35rem,2.4vw,1.6rem); color:#231F20; line-height:1.3; margin:1.8rem 0 0.7rem; }
+.gp-prose .gp-h3 { font-family:Mulish,sans-serif; font-weight:500; font-size:0.75rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin:1.5rem 0 0.6rem; }
+.gp-prose .gp-h1:first-child, .gp-prose .gp-h2:first-child, .gp-prose .gp-h3:first-child { margin-top:0; }
+.gp-prose .gp-list { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; margin:0 0 1.2rem 1.4rem; padding:0; }
+.gp-prose .gp-list li { margin-bottom:0.4rem; }
+.gp-prose .gp-quote { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#3D3D3A; line-height:1.7; border-left:3px solid #6E3A5A; padding:0.6rem 0 0.6rem 1.2rem; margin:1.5rem 0; }
+.gp-prose a { color:#6E3A5A; border-bottom:1px solid currentColor; text-decoration:none; }
+.gp-prose a:hover { opacity:0.75; }
+.gp-prose strong { font-weight:600; color:#231F20; }
+.gp-prose em { font-style:italic; }
 .gp-cta { text-align:center; margin-top:2rem; }
 .gp-cta-btn { color:#fff; font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; padding:0.85rem 2rem; border-radius:3px; border:1px solid; transition:opacity 0.25s; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; }
 .gp-cta-btn:hover { opacity:0.88; }
