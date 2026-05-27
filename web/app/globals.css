@@ -54,8 +54,25 @@
   .cosmic-cta-text,
   .mantras-intro,
   .mantra-desc,
-  .article-content {
+  .article-content,
+  /* Catch-all standalone pages (Mission, Privacy, Terms, future one-offs) */
+  .gp-prose .gp-paragraph,
+  .gp-prose .gp-list li,
+  /* Programme pages (The Reset, Signal, Signal & Build, One Day, etc.) */
+  .prog-body-text,
+  /* Recovery, Decoder, Signal Collective, Corporate, Speaking, Returning Circle */
+  .rec-body-text,
+  .dec-body-text,
+  .sc-body-text,
+  .cw-body-text,
+  .sp-body-text,
+  .rc-body-text,
+  /* Membership / Reset Room */
+  .mem-content p,
+  /* FAQ accordion answer body */
+  .faq-acc-a p {
     text-align: justify;
+    hyphens: auto;
   }
 }
 
