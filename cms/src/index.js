@@ -200,6 +200,17 @@ module.exports = {
       strapi.log.warn('[seed-faqs] failed:', err.message);
     }
 
+    // ═══ Seed editorial sub-category entries (idempotent — skips existing slugs) ═══
+    // Without these, the sub-category URLs in the main nav (e.g.
+    // /love-and-relationships/motherhood) fall through to a 404 placeholder
+    // because no article-category record exists with the slug from the nav.
+    try {
+      const seedArticleCategories = require('./seed-article-categories');
+      await seedArticleCategories(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-article-categories] failed:', err.message);
+    }
+
     // ═══ Set media upload descriptions ═══
     try {
       const setMediaDescriptions = require('./media-guide');
