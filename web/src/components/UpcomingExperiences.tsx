@@ -53,11 +53,13 @@ export default function UpcomingExperiences({ items, accentColour, emptyLabel }:
                     <p className="upcoming-desc">{e.description.split('\n\n')[0]}</p>
                   )}
                   <a
-                    href={`mailto:hello@annalouwellness.com?subject=Booking enquiry — ${encodeURIComponent(e.name)}`}
+                    href={e.bookingUrl || `/contact?subject=${encodeURIComponent('Booking enquiry — ' + e.name)}`}
+                    target={e.bookingUrl ? '_blank' : undefined}
+                    rel={e.bookingUrl ? 'noopener noreferrer' : undefined}
                     className="upcoming-cta"
                     style={{ color: accentColour, borderColor: accentColour }}
                   >
-                    Book this place &rarr;
+                    {e.bookingUrl ? 'Book this place' : 'Enquire'} &rarr;
                   </a>
                 </article>
               ))}

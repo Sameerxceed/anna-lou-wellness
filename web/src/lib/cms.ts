@@ -913,6 +913,7 @@ export interface Experience {
   priceLabel: string;
   heroImage: string;
   isUpcoming: boolean;
+  bookingUrl: string;
 }
 
 export async function getExperiences(type?: string): Promise<Experience[]> {
@@ -939,6 +940,7 @@ export async function getExperiences(type?: string): Promise<Experience[]> {
       priceLabel: d.price_label || '',
       heroImage: mediaUrl(d.hero_image),
       isUpcoming: d.is_upcoming !== false,
+      bookingUrl: d.booking_url || '',
     }));
   } catch {
     return [];
