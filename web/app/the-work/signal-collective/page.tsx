@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug } from '@/lib/programme';
+import { getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
@@ -13,7 +15,10 @@ export const metadata: Metadata = {
 const ACCENT = '#6E3A5A';
 
 export default async function SignalCollectivePage() {
-  const cms = await getProgrammeBySlug('signal-collective');
+  const [cms, faqs] = await Promise.all([
+    getProgrammeBySlug('signal-collective'),
+    getFAQs({ page: 'signal-collective' }),
+  ]);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'signal-collective');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const introParas = cms?.intro ? splitParas(cms.intro) : [
@@ -80,6 +85,8 @@ export default async function SignalCollectivePage() {
           />
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
     </>
   );
 }

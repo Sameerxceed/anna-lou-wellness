@@ -1453,16 +1453,20 @@ export interface FAQ {
   question: string;
   answer: string;
   category: string;
+  page: string;
 }
 
-export async function getFAQs(category?: string): Promise<FAQ[]> {
+export async function getFAQs(filter?: string | { page?: string; category?: string }): Promise<FAQ[]> {
   try {
     const params: Record<string, string> = {
       'sort': 'sort_order:asc',
       'filters[is_active][$eq]': 'true',
     };
-    if (category) {
-      params['filters[category][$eq]'] = category;
+    if (typeof filter === 'string' && filter) {
+      params['filters[category][$eq]'] = filter;
+    } else if (filter && typeof filter === 'object') {
+      if (filter.page) params['filters[page][$eq]'] = filter.page;
+      if (filter.category) params['filters[category][$eq]'] = filter.category;
     }
     const { data } = await fetchAPI('/faqs', params);
     if (!data?.length) return [];
@@ -1471,6 +1475,7 @@ export async function getFAQs(category?: string): Promise<FAQ[]> {
       question: d.question,
       answer: d.answer,
       category: d.category || 'general',
+      page: d.page || 'general',
     }));
   } catch {
     return [];

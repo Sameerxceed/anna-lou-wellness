@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import PageHero from '@/components/PageHero';
-import { getContactInfo } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
+import { getContactInfo, getFAQs } from '@/lib/cms';
 import { getGenericPageBySlug } from '@/lib/generic-page';
 
 export const metadata: Metadata = {
@@ -9,9 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const [siteConfig, cms] = await Promise.all([
+  const [siteConfig, cms, faqs] = await Promise.all([
     getContactInfo(),
     getGenericPageBySlug('contact'),
+    getFAQs({ page: 'contact' }),
   ]);
 
   return (
@@ -66,6 +68,8 @@ export default async function ContactPage() {
           </div>
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
     </>
   );
 }

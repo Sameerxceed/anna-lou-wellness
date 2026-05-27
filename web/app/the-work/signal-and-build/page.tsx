@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
-import { getTestimonials } from '@/lib/cms';
+import { getTestimonials, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Signal & Build | 12-Week 1:1 Coaching for Founders',
@@ -12,9 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SignalAndBuildPage() {
-  const [cms, reviews] = await Promise.all([
+  const [cms, reviews, faqs] = await Promise.all([
     getProgrammeBySlug('signal-and-build'),
     getTestimonials({ tag: 'signal-and-build' }),
+    getFAQs({ page: 'signal-and-build' }),
   ]);
   const props = programmeProps(cms, {
     title: 'Signal & Build.',
@@ -38,6 +40,7 @@ export default async function SignalAndBuildPage() {
     <>
       <ProgrammePage {...props} />
       <ReviewsSection reviews={reviews} title="From founder clients" kicker="Reviews" kickerColour="#FAA21B" />
+      <FAQAccordion faqs={faqs} accentColour="#FAA21B" background="#F5F3EF" />
     </>
   );
 }

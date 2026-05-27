@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
-import { getProducts, getShopCategoryTree, getSectionLandingPage } from '@/lib/cms';
+import { getProducts, getShopCategoryTree, getSectionLandingPage, getFAQs } from '@/lib/cms';
 import ShopGrid from './ShopGrid';
+import FAQAccordion from '@/components/FAQAccordion';
 
 export const metadata: Metadata = {
   title: 'Shop',
@@ -17,7 +18,7 @@ interface ShopPageProps {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const params = await searchParams;
-  const [products, categoryTree, page] = await Promise.all([
+  const [products, categoryTree, page, faqs] = await Promise.all([
     getProducts(),
     getShopCategoryTree(),
     getSectionLandingPage('/shop-page', {
@@ -27,6 +28,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       heroImage: '',
       kickerColour: '#5DCAA5',
     }),
+    getFAQs({ page: 'shop' }),
   ]);
   const activeProducts = products.filter(p => p.isActive);
   const initialParent = params?.category || 'all';
@@ -52,6 +54,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           />
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour="#5DCAA5" background="#F5F3EF" />
     </>
   );
 }

@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
-import { getCoachingSessions, getSessionsHubPage } from '@/lib/cms';
+import { getCoachingSessions, getSessionsHubPage, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: '1:1 Reset Sessions | Single Somatic Coaching Sessions',
@@ -26,9 +27,10 @@ const SESSION_FALLBACK_IMAGE: Record<string, string> = {
 };
 
 export default async function SessionsHubPage() {
-  const [hero, sessions] = await Promise.all([
+  const [hero, sessions, faqs] = await Promise.all([
     getSessionsHubPage(heroFallback),
     getCoachingSessions(),
+    getFAQs({ page: 'sessions' }),
   ]);
 
   return (
@@ -76,6 +78,8 @@ export default async function SessionsHubPage() {
           <p className="rs-pricing"><strong>£200 per session.</strong> Paid at booking.</p>
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#fff" />
     </>
   );
 }

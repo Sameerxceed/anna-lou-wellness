@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import EnquiryForm from '@/components/EnquiryForm';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, parseStages } from '@/lib/programme';
+import { getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 
 const STAGE_COLOURS = ['#EE312F', '#FAA21B', '#5DCAA5', '#7BAFDD', '#F280AA'];
@@ -16,7 +18,10 @@ export const metadata: Metadata = {
 const ACCENT = '#6E3A5A';
 
 export default async function RecoveryPage() {
-  const cms = await getProgrammeBySlug('recovery');
+  const [cms, faqs] = await Promise.all([
+    getProgrammeBySlug('recovery'),
+    getFAQs({ page: 'recovery' }),
+  ]);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('reset-stories', 'recovery-hero');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const introParas = cms?.intro ? splitParas(cms.intro) : [
@@ -115,6 +120,8 @@ export default async function RecoveryPage() {
           />
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
     </>
   );
 }

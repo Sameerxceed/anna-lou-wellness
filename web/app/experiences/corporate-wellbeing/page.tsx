@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import ReviewsSection from '@/components/ReviewsSection';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
-import { getTestimonials } from '@/lib/cms';
+import { getTestimonials, getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
@@ -15,9 +16,10 @@ export const metadata: Metadata = {
 const ACCENT = '#7BAFDD';
 
 export default async function CorporatePage() {
-  const [cms, reviews] = await Promise.all([
+  const [cms, reviews, faqs] = await Promise.all([
     getExperienceBySlug('corporate-wellbeing'),
     getTestimonials({ tag: 'corporate' }),
+    getFAQs({ page: 'corporate-wellbeing' }),
   ]);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'corporate-hero');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
@@ -94,6 +96,8 @@ export default async function CorporatePage() {
           />
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
     </>
   );
 }

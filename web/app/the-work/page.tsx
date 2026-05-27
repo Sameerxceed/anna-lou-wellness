@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getCoachingSessions, getFAQs, getWorkWithAnnaPage } from '@/lib/cms';
-import { FAQSchema, ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
+import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
+import FAQAccordion from '@/components/FAQAccordion';
 
 export const metadata: Metadata = {
   title: 'Work with Anna',
@@ -30,16 +31,17 @@ const pageFallback = {
 };
 
 export default async function TheWorkPage() {
-  const [sessions, faqs, page] = await Promise.all([
+  const [sessions, hubFaqs, legacyFaqs, page] = await Promise.all([
     getCoachingSessions(),
+    getFAQs({ page: 'the-work' }),
     getFAQs('coaching'),
     getWorkWithAnnaPage(pageFallback),
   ]);
+  const faqs = hubFaqs.length > 0 ? hubFaqs : legacyFaqs;
   return (
     <>
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }]} />
       <ServiceSchema name="Somatic Coaching with Anna Lou" description="1:1 coaching sessions using The Signal Method. Nervous system regulation, emotional healing, and personal transformation." url="/the-work" />
-      {faqs.length > 0 && <FAQSchema faqs={faqs} />}
       <style dangerouslySetInnerHTML={{ __html: workStyles }} />
 
       {/* Header */}
@@ -129,23 +131,7 @@ export default async function TheWorkPage() {
         </div>
       </section>
 
-      {/* FAQs */}
-      {faqs.length > 0 && (
-        <section className="work-faqs">
-          <div className="work-faqs-inner">
-            <p className="work-kicker">Questions</p>
-            <h2 className="work-section-title">Frequently Asked</h2>
-            <div className="work-faq-list">
-              {faqs.map(faq => (
-                <details key={faq.id} className="work-faq-item">
-                  <summary className="work-faq-q">{faq.question}</summary>
-                  <p className="work-faq-a">{faq.answer}</p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#fff" />
 
       {/* Free download CTA */}
       <section className="work-free reveal">

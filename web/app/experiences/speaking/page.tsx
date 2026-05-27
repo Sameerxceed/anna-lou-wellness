@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import ReviewsSection from '@/components/ReviewsSection';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
-import { getTestimonials } from '@/lib/cms';
+import { getTestimonials, getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
@@ -15,9 +16,10 @@ export const metadata: Metadata = {
 const ACCENT = '#FAA21B';
 
 export default async function SpeakingPage() {
-  const [cms, reviews] = await Promise.all([
+  const [cms, reviews, faqs] = await Promise.all([
     getExperienceBySlug('speaking'),
     getTestimonials({ tag: 'speaking' }),
+    getFAQs({ page: 'speaking' }),
   ]);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'speaking-hero');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
@@ -93,6 +95,8 @@ export default async function SpeakingPage() {
           />
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
     </>
   );
 }

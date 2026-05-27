@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getAboutPage } from '@/lib/cms';
+import { getAboutPage, getFAQs } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
 
 export const revalidate = 3600;
 
@@ -38,7 +39,10 @@ const defaultStory2 = `Anna Lou is a multifaceted entrepreneur, designer, and we
 const defaultAdditionalBio = `Anna Lou Wellness grew from her personal journey of overcoming significant challenges — narcissistic abuse, anxiety, and depression — while balancing single parenthood and business. Through her experiences, Anna became a somatic trauma-informed coach, offering support to women recovering from similar traumas. She provides one-on-one and group workshops that focus on holistic healing for mind, body, and spirit.\n\nBeyond coaching, Anna is a podcaster, author, and the creative force behind "Kirra Kirra" — an animated children's show promoting mental health, resilience, and empathy. She is also creating Narc Abuse Aid, a charity focused on providing resources and community for victims of narcissistic abuse.\n\nAcross all her ventures, Anna inspires others to embrace their unique identities, heal from past traumas, and pursue lives filled with purpose and creativity.`;
 
 export default async function AboutPage() {
-  const page = await getAboutPage();
+  const [page, faqs] = await Promise.all([
+    getAboutPage(),
+    getFAQs({ page: 'about' }),
+  ]);
 
   const story1 = page.storyParagraph1 || defaultStory1;
   const story2 = page.storyParagraph2 || defaultStory2;
@@ -126,6 +130,8 @@ export default async function AboutPage() {
           </div>
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
     </>
   );
 }

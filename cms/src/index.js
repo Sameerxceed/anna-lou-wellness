@@ -192,6 +192,14 @@ module.exports = {
       strapi.log.warn('[seed-pages] failed:', err.message);
     }
 
+    // ═══ Seed per-page FAQs (idempotent — skips any page Anna has already populated) ═══
+    try {
+      const seedFAQs = require('./seed-faqs');
+      await seedFAQs(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-faqs] failed:', err.message);
+    }
+
     // ═══ Set media upload descriptions ═══
     try {
       const setMediaDescriptions = require('./media-guide');

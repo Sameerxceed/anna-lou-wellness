@@ -4,8 +4,8 @@
   "info": {
     "singularName": "faq",
     "pluralName": "faqs",
-    "displayName": "Work \u00b7 FAQ",
-    "description": "Frequently asked questions with FAQ schema for SEO"
+    "displayName": "FAQ · Per Page",
+    "description": "Frequently asked questions. Each entry binds to one page (e.g. The Reset, Retreats, Reset Room). Auto-renders as accordion on the page + JSON-LD schema for AI/Google rich snippets."
   },
   "options": {
     "draftAndPublish": false
@@ -18,6 +18,36 @@
     "answer": {
       "type": "richtext",
       "required": true
+    },
+    "page": {
+      "type": "enumeration",
+      "enum": [
+        "the-reset",
+        "signal",
+        "signal-and-build",
+        "one-day",
+        "signal-collective",
+        "sessions",
+        "recovery",
+        "quiz",
+        "the-work",
+        "retreats",
+        "workshops",
+        "corporate-wellbeing",
+        "speaking",
+        "reset-room",
+        "the-returning-circle",
+        "membership",
+        "events",
+        "resources",
+        "shop",
+        "about",
+        "contact",
+        "testimonials",
+        "ask-anna",
+        "general"
+      ],
+      "default": "general"
     },
     "category": {
       "type": "enumeration",

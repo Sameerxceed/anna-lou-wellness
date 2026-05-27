@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
-import { getTestimonials } from '@/lib/cms';
+import { getTestimonials, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Signal | 12-Week 1:1 Somatic Coaching | Trauma-Informed',
@@ -12,9 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SignalPage() {
-  const [cms, reviews] = await Promise.all([
+  const [cms, reviews, faqs] = await Promise.all([
     getProgrammeBySlug('signal'),
     getTestimonials({ tag: 'signal' }),
+    getFAQs({ page: 'signal' }),
   ]);
   const props = programmeProps(cms, {
     title: 'Signal.',
@@ -40,6 +42,7 @@ export default async function SignalPage() {
     <>
       <ProgrammePage {...props} />
       <ReviewsSection reviews={reviews} title="From Signal alumnae" kicker="Reviews" kickerColour="#6E3A5A" />
+      <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
     </>
   );
 }

@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getCommunityEventBySlug } from '@/lib/generic-page';
+import { getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 
 export const metadata: Metadata = {
@@ -13,7 +15,10 @@ export const metadata: Metadata = {
 const ACCENT = '#5DCAA5';
 
 export default async function CirclePage() {
-  const cms = await getCommunityEventBySlug('the-returning-circle');
+  const [cms, faqs] = await Promise.all([
+    getCommunityEventBySlug('the-returning-circle'),
+    getFAQs({ page: 'the-returning-circle' }),
+  ]);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'returning-circle');
 
   return (
@@ -74,6 +79,8 @@ export default async function CirclePage() {
           />
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
     </>
   );
 }

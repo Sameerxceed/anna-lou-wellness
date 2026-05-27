@@ -2,7 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getStockImage, STOCK } from '@/data/stock-images';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
+import { getFAQs } from '@/lib/cms';
 import JoinResetRoomButton from '@/components/JoinResetRoomButton';
+import FAQAccordion from '@/components/FAQAccordion';
 
 export const metadata: Metadata = {
   title: 'The Reset Room | Monthly Somatic Membership',
@@ -30,6 +32,7 @@ export default async function ResetRoomPage() {
     const { data: d } = await fetchAPI('/reset-room-page', { populate: '*' });
     cms = (d as Record<string, unknown>) || null;
   } catch { cms = null; }
+  const faqs = await getFAQs({ page: 'reset-room' });
 
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined);
 
@@ -180,32 +183,7 @@ export default async function ResetRoomPage() {
         </div>
       </section>
 
-      {/* FAQ teaser */}
-      <section className="rr-faq">
-        <div className="rr-faq-inner">
-          <p className="rr-section-label">Quick answers</p>
-          <details className="rr-faq-item">
-            <summary>What if I cancel?</summary>
-            <p>Your access continues until the end of your current billing month. No questions, no hard sell. You can rejoin any time.</p>
-          </details>
-          <details className="rr-faq-item">
-            <summary>Do I need to use a podcast app?</summary>
-            <p>No. Episodes also play directly inside the member dashboard. The podcast player option is there if you prefer it.</p>
-          </details>
-          <details className="rr-faq-item">
-            <summary>Can I join just for one month?</summary>
-            <p>Yes. There is no minimum term. Many members do exactly that — come in for a month, do the founding journeys, and decide whether to stay.</p>
-          </details>
-          <details className="rr-faq-item">
-            <summary>Is this a course?</summary>
-            <p>No. It is a room. There is no curriculum, no progression path, no feeling behind. You come in when you need it, you take what you need, you stay as long as it serves you.</p>
-          </details>
-          <details className="rr-faq-item">
-            <summary>Is the live call recorded?</summary>
-            <p>Yes — the replay lands in the Vault by Friday lunchtime. Live attendance not required. Most members watch the replay.</p>
-          </details>
-        </div>
-      </section>
+      <FAQAccordion faqs={faqs} kicker="Quick answers" title="Frequently Asked" accentColour="#F280AA" background="#fff" />
     </>
   );
 }

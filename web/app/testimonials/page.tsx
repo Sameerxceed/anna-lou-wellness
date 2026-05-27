@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getTestimonials, getTestimonialsPage, type Testimonial } from '@/lib/cms';
+import { getTestimonials, getTestimonialsPage, getFAQs, type Testimonial } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getTestimonialsPage();
@@ -33,9 +34,10 @@ export async function generateMetadata(): Promise<Metadata> {
  * photo (or large pull-quote) — use sparingly for the strongest stories.
  */
 export default async function TestimonialsPage() {
-  const [page, all] = await Promise.all([
+  const [page, all, faqs] = await Promise.all([
     getTestimonialsPage(),
     getTestimonials({ limit: 60 }),
+    getFAQs({ page: 'testimonials' }),
   ]);
 
   // Split into cards vs banners; preserve sort_order across both.
@@ -83,6 +85,8 @@ export default async function TestimonialsPage() {
           ))}
         </section>
       )}
+
+      <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#fff" />
     </>
   );
 }

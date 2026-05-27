@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import JoinResetRoomButton from '@/components/JoinResetRoomButton';
-import { getMembershipPage } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
+import { getMembershipPage, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'The Reset Room',
@@ -28,7 +29,10 @@ const fallback = {
 };
 
 export default async function MembershipPage() {
-  const page = await getMembershipPage(fallback);
+  const [page, faqs] = await Promise.all([
+    getMembershipPage(fallback),
+    getFAQs({ page: 'membership' }),
+  ]);
   const details = [
     { label: 'Price', value: page.priceLabel },
     { label: 'Includes', value: page.includesLabel },
@@ -60,6 +64,7 @@ export default async function MembershipPage() {
           <Link href="/community" className="mem-back">&larr; Back to Community</Link>
         </div>
       </article>
+      <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
     </>
   );
 }
