@@ -233,10 +233,9 @@ $failures = @()
 foreach ($file in $files) {
   $slug = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
   $body = [System.IO.File]::ReadAllText($file.FullName, [System.Text.Encoding]::UTF8).TrimEnd()
-  $blocks = ConvertTo-StrapiBlocks -Markdown $body
 
   Write-Output ""
-  Write-Output ("PAGE: {0} ({1} blocks from {2} bytes of markdown)" -f $slug, $blocks.Count, $body.Length)
+  Write-Output ("PAGE: {0} ({1} bytes of markdown)" -f $slug, $body.Length)
 
   # Step 1 -- fetch the existing entry to get its documentId
   $listUrl = ('{0}/api/generic-pages?filters[slug][$eq]={1}&pagination[pageSize]=1' -f $baseUrl, $slug)
@@ -259,10 +258,13 @@ foreach ($file in $files) {
   $docId = $entry.documentId
   if (-not $docId) { $docId = $entry.id }
 
-  # Step 2 -- PUT the entry, updating only the intro field
+  # Step 2 -- PUT the entry, updating only the intro field.
+  # Field is currently richtext (markdown string) — push the raw markdown.
+  # The blocks-JSON path (ConvertTo-StrapiBlocks) above is kept for when
+  # we eventually migrate the field type properly.
   $payloadObj = New-Object 'System.Collections.Generic.Dictionary[String,Object]'
   $dataObj = New-Object 'System.Collections.Generic.Dictionary[String,Object]'
-  $dataObj.Add('intro', $blocks)
+  $dataObj.Add('intro', [string]$body)
   $payloadObj.Add('data', $dataObj)
   $payload = $jsonSerializer.Serialize($payloadObj)
   $payloadBytes = [System.Text.Encoding]::UTF8.GetBytes($payload)
