@@ -44,8 +44,8 @@
       "description": "Main image. Landscape orientation works best."
     },
     "intro": {
-      "type": "blocks",
-      "description": "Main body. Block-based editor — paste straight from Word or Google Docs and headings/bold/italic/lists/paragraphs all carry through. Use the toolbar buttons to format anything else. No paragraph-break tricks needed."
+      "type": "richtext",
+      "description": "Main body. Use the toolbar for headings, bold, italic, bullet/numbered lists, links, and quotes. Separate paragraphs with a BLANK LINE between them. Works for short blurbs or long multi-section pages."
     },
     "ctaLabel": {
       "type": "string",
