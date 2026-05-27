@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: 'Guides, tools, workshop replays, free nervous system recalibration, and member-only content.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function ResourcesPage() {
   const [cms, faqs] = await Promise.all([
     getGenericPageBySlug('community-resources'),

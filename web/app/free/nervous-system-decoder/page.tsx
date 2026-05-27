@@ -4,6 +4,8 @@ import { getFAQs } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
 import DecoderForm from './DecoderForm';
 
+export const dynamic = 'force-dynamic';
+
 const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
   const v = cms?.[key];
   return typeof v === 'string' && v.trim() ? v : fallback;

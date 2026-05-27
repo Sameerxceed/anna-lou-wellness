@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   alternates: { canonical: '/the-work/quiz' },
 };
 
+export const dynamic = 'force-dynamic';
+
 // Hardcoded fallback used only if the CMS singleton is unreachable. Anna
 // edits the live content via Quick Edit > Work · Quiz.
 const heroFallback: QuizHeroData = {

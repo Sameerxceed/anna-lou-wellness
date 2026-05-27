@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Upcoming retreats, workshops, live dates, and member-only events.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function EventsPage() {
   const [cms, upcoming, faqs] = await Promise.all([
     getCommunityEventBySlug('events'),
