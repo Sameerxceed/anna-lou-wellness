@@ -29,17 +29,33 @@
       "max": 5,
       "description": "Optional 1-5 star rating. Leave blank to hide stars."
     },
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Optional portrait photo of the client. Shown as a circular/octagonal frame next to the quote on the /testimonials page. Best size 800×800 (square), JPEG, max 500 KB."
+    },
     "video": {
       "type": "media",
       "multiple": false,
       "allowedTypes": ["videos"],
-      "description": "Optional short video testimonial (under 90 seconds recommended)."
+      "description": "Optional uploaded video testimonial (MP4, under 90 seconds recommended)."
     },
     "video_thumbnail": {
       "type": "media",
       "multiple": false,
       "allowedTypes": ["images"],
       "description": "Optional poster image shown before the video plays."
+    },
+    "youtube_url": {
+      "type": "string",
+      "description": "Optional — paste a YouTube video URL to embed instead of uploading. Either this or 'video' (not both). Accepts standard youtube.com/watch?v=... or youtu.be/... links."
+    },
+    "display_style": {
+      "type": "enumeration",
+      "enum": ["card", "banner"],
+      "default": "card",
+      "description": "How this testimonial renders on the dedicated /testimonials page. 'card' = standard 3-column grid item. 'banner' = full-width prominent block between rows (use for your strongest testimonials, 1 in every 6-10 entries)."
     },
     "date": {
       "type": "date",

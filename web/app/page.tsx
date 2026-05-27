@@ -361,6 +361,9 @@ export default async function HomePage() {
                   </div>
                 ))}
               </div>
+              <div className="reveal" style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                <Link href="/testimonials" className="cta-link cta-plum">Read all client stories <span>&rarr;</span></Link>
+              </div>
             </div>
           </section>
         );

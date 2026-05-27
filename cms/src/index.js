@@ -31,6 +31,7 @@ module.exports = {
         'api::contact-page.contact-page',
         'api::reset-room-page.reset-room-page',
         'api::membership-page.membership-page',
+        'api::testimonials-page.testimonials-page',
         'api::reset-letters-page.reset-letters-page',
         'api::decoder-page.decoder-page',
         'api::site-settings.site-settings',

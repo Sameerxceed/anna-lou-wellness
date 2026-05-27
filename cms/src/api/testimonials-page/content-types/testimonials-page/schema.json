@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "testimonials_pages",
+  "info": {
+    "singularName": "testimonials-page",
+    "pluralName": "testimonials-pages",
+    "displayName": "Pages · /testimonials",
+    "description": "Hero copy + intro paragraph for the dedicated /testimonials page. The actual testimonial cards on the page come from the Testimonial / Review collection — flag is_active and set display_style there."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Client Stories"
+    },
+    "title": {
+      "type": "string",
+      "default": "Hear it from our clients"
+    },
+    "tagline": {
+      "type": "text",
+      "default": "Honest stories from women who have done the work. Read, watch, and see what shifts when you come home to yourself."
+    },
+    "kicker_colour": {
+      "type": "string",
+      "default": "#6E3A5A"
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    }
+  }
+}

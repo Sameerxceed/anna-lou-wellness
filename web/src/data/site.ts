@@ -159,6 +159,7 @@ export const navigation: NavItem[] = [
     label: "About", href: "/about", colour: "#231F20",
     children: [
       { label: "Anna's Story", href: "/about" },
+      { label: "Client Stories", href: "/testimonials" },
       { label: "Press", href: "/about/press" },
       { label: "Work With Me", href: "/about/partnerships" },
       { label: "Contact", href: "/contact" },

@@ -1157,8 +1157,207 @@ async function seedPages(strapi) {
   await seedPressMentions(strapi);
   await seedCertifications(strapi);
   await seedShopCategories(strapi);
+  await seedStandalonePages(strapi);
 
   strapi.log.info('[seed-pages] Page content seed run complete');
+}
+
+/**
+ * Seed core standalone pages (Privacy, Terms, Mission placeholder) in the
+ * generic-page collection so Anna can edit them in CMS instead of asking
+ * dev to update hardcoded JSX. Idempotent — gated on slug.
+ *
+ * Each entry sets the kicker/title and a starter body. The frontend
+ * resolves these via the /[slug] catch-all route at web/app/[slug]/page.tsx.
+ */
+async function seedStandalonePages(strapi) {
+  const samples = [
+    {
+      slug: 'privacy',
+      title: 'Privacy Policy',
+      kicker: 'Legal',
+      kickerColour: '#6E3A5A',
+      tagline: 'How we collect, use, and protect your personal information.',
+      intro: [
+        'Last updated: May 2026',
+        '',
+        '1. Who We Are',
+        'Anna Lou Wellness is a sole trader based in London, United Kingdom, operated by Anna Lou Scaife. When we refer to "we", "us", or "our" in this policy, we mean Anna Lou Wellness. Our website is annalouwellness.com. For data protection enquiries, contact: hello@annalouwellness.com.',
+        '',
+        '2. Information We Collect',
+        'We may collect the following personal data: Identity data (name, email address, phone number), Contact data (postal address for product orders), Transaction data (purchase history, payment method — card details are processed by Stripe and never stored on our servers), Coaching data (notes from coaching sessions, stored securely and confidentially), Subscription data (email address when you subscribe to our Substack newsletter), Technical data (IP address, browser type, device information, pages visited via analytics), and Quiz/form data (responses to wellness quizzes or enquiry forms).',
+        '',
+        '3. How We Use Your Information',
+        'We use your data to process orders, payments, and shipping; deliver coaching sessions and programme materials; manage your Reset Room membership; respond to enquiries and provide customer support; send order confirmations and shipping updates; deliver newsletter content (via Substack, only if you subscribe); and improve our website and services through anonymous analytics. We do not sell, rent, or share your personal data with third parties for marketing purposes.',
+        '',
+        '4. Legal Basis for Processing (GDPR)',
+        'We process your data under the following legal bases: Contract (to fulfil orders, deliver services, and manage memberships), Consent (for newsletter subscriptions and non-essential cookies), Legitimate interest (to improve our services and website experience), and Legal obligation (to comply with tax and accounting requirements).',
+        '',
+        '5. Third-Party Services',
+        'We use Stripe for secure payment processing (PCI DSS compliant), Substack for newsletter delivery, YouTube for embedded video content, Cloudinary for image hosting, Vercel/Coolify for website hosting, and Instagram/Facebook/YouTube for social media links (no tracking until you click). Each service operates under its own privacy policy.',
+        '',
+        '6. Cookies',
+        'Our website uses essential cookies (session management, cart storage, cookie consent preference) required for the site to function, and optional analytics cookies (anonymous usage data, consent-based). You can decline non-essential cookies via the banner shown on your first visit or manage cookies through your browser settings.',
+        '',
+        '7. Your Rights (GDPR)',
+        'Under the UK GDPR, you have the right to: Access (request a copy of your data), Rectification (correct inaccurate data), Erasure (request deletion — "right to be forgotten"), Restriction (limit how we use your data), Portability (machine-readable format), Objection (object to legitimate-interests processing), and Withdraw consent (unsubscribe or withdraw cookie consent any time). To exercise these rights email hello@annalouwellness.com. We respond within 30 days.',
+        '',
+        '8. Data Retention',
+        'Order data is retained for 6 years (UK tax law). Coaching session notes are retained for 12 months after the last session, then securely deleted. Enquiry form data is retained for 12 months. Newsletter subscribers stay until they unsubscribe. Analytics data is anonymised and retained for 26 months. You may request deletion at any time, subject to our legal obligations.',
+        '',
+        '9. Data Security',
+        'We use SSL/HTTPS encryption across our entire website. Payment data is handled by Stripe (PCI DSS Level 1 certified) and is never stored on our servers. Access to personal data is restricted to authorised individuals only. In the unlikely event of a data breach, we will notify affected individuals and the ICO within 72 hours as required by GDPR.',
+        '',
+        '10. Children’s Privacy',
+        'Our services are not directed at children under 16. We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, please contact us and we will delete it promptly.',
+        '',
+        '11. Changes to This Policy',
+        'We may update this policy from time to time. Changes will be posted on this page with an updated date. We encourage you to review this policy periodically.',
+        '',
+        '12. Contact & Complaints',
+        'For questions about this privacy policy or to exercise your data rights: hello@annalouwellness.com. If you are unsatisfied with how we handle your data, you have the right to lodge a complaint with the Information Commissioner’s Office (ICO): ico.org.uk.',
+        '',
+        'This is a template privacy policy. Please have it reviewed by a legal professional before publishing.',
+      ].join('\n'),
+      seoDescription: 'How Anna Lou Wellness collects, uses, stores, and protects your personal information. GDPR compliant, UK-based.',
+    },
+    {
+      slug: 'terms',
+      title: 'Terms & Conditions',
+      kicker: 'Legal',
+      kickerColour: '#6E3A5A',
+      tagline: 'The terms that govern purchases, bookings, and use of our services.',
+      intro: [
+        'Last updated: May 2026',
+        '',
+        '1. General',
+        'These terms and conditions ("Terms") govern all purchases, bookings, and use of services provided through annalouwellness.com, operated by Anna Lou Wellness, a sole trader based in London, United Kingdom. By placing an order, booking a session, or subscribing to a membership, you agree to these Terms in full. If you do not agree, please do not use this website.',
+        '',
+        '2. Services',
+        'Anna Lou Wellness provides one-to-one coaching and therapy sessions (in-person and online), group workshops, retreats, and day experiences, corporate wellbeing programmes and speaking engagements, the Reset Room monthly digital membership, online courses and digital downloads, and handmade jewellery and physical products. Wellness coaching is not a substitute for medical or psychological treatment. If you are experiencing a mental health crisis, please contact your GP or the Samaritans (116 123). Anna Lou Wellness does not diagnose, treat, or claim to cure any medical condition.',
+        '',
+        '3. Orders & Payment',
+        'All prices are in GBP (£) and include VAT where applicable. Payment is accepted by credit/debit card via Stripe. Orders are confirmed by email once payment is received. We reserve the right to cancel orders if products are out of stock, in which case a full refund will be issued within 5 working days.',
+        '',
+        '4. Coaching & Sessions',
+        'Bookings for one-to-one coaching sessions are confirmed upon full payment. Cancellation: 48+ hours notice — full reschedule or refund. 24-48 hours notice — one reschedule offered, no refund. Less than 24 hours or no-show — no refund or reschedule. Sessions are confidential. Any information shared remains private unless there is a safeguarding concern, in which case we may be legally required to share information with the appropriate authorities.',
+        '',
+        '5. Retreats, Workshops & Events',
+        'Places on retreats and workshops are secured by a non-refundable deposit unless otherwise stated. Cancellation: 30+ days before — full refund minus deposit. 14-30 days before — 50% refund. Less than 14 days — no refund (transfer to another person permitted). We reserve the right to cancel or reschedule events due to low attendance or unforeseen circumstances. In such cases, a full refund including deposit will be issued.',
+        '',
+        '6. The Reset Room Membership',
+        'The Reset Room is a recurring monthly subscription. You may cancel at any time; access continues until the end of the current billing period. No partial refunds are given for the current month. Membership content is for personal use only and may not be shared, reproduced, or distributed.',
+        '',
+        '7. Digital Downloads',
+        'Digital products (guides, workbooks, audios) are delivered electronically. Due to their nature, digital downloads are non-refundable once accessed or downloaded. You receive a personal, non-transferable licence to use the content for your own purposes.',
+        '',
+        '8. Physical Products & Shipping',
+        'We ship to the United Kingdom and internationally. Orders are typically dispatched within 2-3 working days. UK delivery: 3-5 working days (Royal Mail). International delivery: 7-14 working days. Shipping costs are calculated at checkout. We are not responsible for delays caused by postal services or customs. Risk passes to you upon delivery.',
+        '',
+        '9. Returns & Refunds',
+        'If you are not satisfied with a physical product, you may return unused items in their original packaging within 14 days of delivery for a full refund. To initiate a return, email hello@annalouwellness.com with your order number. As many of our products are handmade or contain natural crystals, slight variations in colour, size, and appearance are normal and not considered defects. Personalised items are non-returnable unless faulty.',
+        '',
+        '10. Corporate Bookings',
+        'Corporate wellbeing sessions, speaking engagements, and bespoke programmes are quoted individually. A signed agreement and 50% deposit are required to confirm the booking. The balance is due 7 days before the event. Cancellation by the client within 14 days of the event forfeits the deposit.',
+        '',
+        '11. Intellectual Property',
+        'All content on this website (text, photographs, illustrations, video, audio, branding, and design) is the intellectual property of Anna Lou Wellness and protected by UK copyright law. Reproduction, distribution, or commercial use without written permission is prohibited.',
+        '',
+        '12. Limitation of Liability',
+        'Anna Lou Wellness provides coaching, education, and wellness support. Participation in any programme, session, or event is at your own risk. We accept no liability for any loss, injury, or damage arising from your use of our services, products, or content, to the fullest extent permitted by law.',
+        '',
+        '13. Governing Law',
+        'These Terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the English courts.',
+        '',
+        '14. Contact',
+        'For questions about these Terms, please contact: hello@annalouwellness.com',
+        '',
+        'This is a template document. Please have it reviewed by a legal professional before publishing.',
+      ].join('\n'),
+      seoDescription: 'Terms and conditions for Anna Lou Wellness services, products, coaching, retreats, digital downloads, and the Reset Room membership.',
+    },
+    {
+      slug: 'mission',
+      title: 'Our Mission',
+      kicker: 'About',
+      kickerColour: '#6E3A5A',
+      tagline: 'What we believe, why this work matters.',
+      intro: 'Edit this page in Strapi under "Pages · Standalone" to write the mission statement. This placeholder exists so the URL /mission resolves and you can link to it from the footer.',
+    },
+    // Note: the remaining hardcoded SubPage pages (/about/press,
+    // /about/partnerships, /community/resources,
+    // /the-work/ways-to-work-with-me) historically used the
+    // generic-page collection but with hyphen-prefixed legacy slugs.
+    // We seed entries with both legacy AND clean slugs so editors can
+    // discover them either way.
+    {
+      slug: 'about-press',
+      title: 'Press & Features',
+      kicker: 'About',
+      kickerColour: '#6E3A5A',
+      tagline: 'Anna in the press.',
+      intro: 'For press enquiries, interview requests, or partnership coverage, email hello@annalouwellness.com.\n\nAnna has been featured across British print and broadcast for over twenty years — across the early Anna Lou of London years at Harrods, Selfridges, Harvey Nichols, and Liberty, and more recently the coaching, the houseboat, and the pivot.\n\nFull press kit and high-resolution photography available on request.',
+      ctaLabel: 'Press enquiries',
+      ctaUrl: '/contact',
+    },
+    {
+      slug: 'about-partnerships',
+      title: 'Work With Me',
+      kicker: 'About',
+      kickerColour: '#6E3A5A',
+      tagline: 'Brand collaborations, speaking, corporate wellbeing.',
+      intro: 'I work with a small number of brands each year on partnerships that align with the values of Anna Lou Wellness — somatic, honest, body-led, allergic to gloss.\n\nI also speak at events, run corporate wellbeing days, and host houseboat retreats for teams. For all enquiries, please use the form on the contact page or email hello@annalouwellness.com.\n\nI reply to every enquiry personally within 48 hours.',
+      ctaLabel: 'Send an enquiry',
+      ctaUrl: '/contact',
+    },
+    {
+      slug: 'community-resources',
+      title: 'Resource Library',
+      kicker: 'Community',
+      kickerColour: '#7BAFDD',
+      tagline: 'Free guides, downloads, and reading lists.',
+      intro: 'The Nervous System Decoder is the free starter guide — seven self-audit questions and three small practices. Download it from the Decoder page.\n\nFor deeper resources, the Reset Room membership opens the full vault of guided journeys, monthly live calls, and the Signal Method workbook.\n\nReading list, podcast recommendations, and additional free downloads will appear here as Anna releases them.',
+      ctaLabel: 'Get the free Decoder',
+      ctaUrl: '/free/nervous-system-decoder',
+    },
+    {
+      slug: 'the-work-ways-to-work-with-me',
+      title: 'Ways to Work with Me',
+      kicker: 'Work with Anna',
+      kickerColour: '#F280AA',
+      tagline: 'A clear map of every door in.',
+      intro: 'There are several ways to begin, each designed for a different stage of the work.\n\nStart free with the Nervous System Decoder — a guide and seven-question self-audit that opens the door.\n\nFor ongoing support without 1:1 commitment, the Reset Room is £25/month — monthly live call, vault of guided journeys, private podcast.\n\nFor a specific moment or decision, a single Reset Session is the most direct entry. Ninety minutes, one knot, one clear shift.\n\nFor deeper work, The Reset is the six-week 1:1 programme. Signal is the twelve-week deeper container. Signal & Build is twelve weeks for founders rebuilding their business from the body up.\n\nFor one concentrated day, One Day on the houseboat is bookable by enquiry.\n\nNot sure which fits? Take the two-minute Ask Anna assessment for a personal recommendation.',
+      ctaLabel: 'Take the 2-minute assessment',
+      ctaUrl: '/ask-anna',
+    },
+    {
+      slug: 'the-returning-circle',
+      title: 'The Returning Circle',
+      kicker: 'Community',
+      kickerColour: '#231F20',
+      tagline: 'Tuesday evenings at The Hare and the Moon, Twickenham.',
+      intro: 'Every Tuesday I hold a circle at The Hare and the Moon in Twickenham. Donation-based. No agenda except being in the room together.\n\nConnection is not a concept. It is biological. The nervous system regulates in proximity to other regulated nervous systems. The Returning Circle is built around that.\n\nThe Circle runs every week without exception. No waitlist needed. Come on Tuesday. Doors from 6.30pm, circle starts at 7pm sharp.\n\nAddress: The Hare and the Moon, Twickenham. £donation, no minimum.',
+      ctaLabel: 'Find the address',
+      ctaUrl: '/contact',
+    },
+  ];
+
+  for (const sample of samples) {
+    try {
+      const existing = await strapi.documents('api::generic-page.generic-page').findMany({
+        filters: { slug: sample.slug },
+        limit: 1,
+      });
+      if (existing && existing.length > 0) continue;
+      await strapi.documents('api::generic-page.generic-page').create({
+        data: sample,
+        status: 'published',
+      });
+      strapi.log.info(`[seed-pages] Created standalone page: /${sample.slug}`);
+    } catch (err) {
+      strapi.log.warn(`[seed-pages] standalone page seed skipped (${sample.slug}): ${err.message}`);
+    }
+  }
 }
 
 /**

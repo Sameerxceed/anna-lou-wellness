@@ -953,8 +953,11 @@ export interface Testimonial {
   reviewerLocation: string;
   quote: string;
   rating: number | null;
+  photoUrl: string;
   videoUrl: string;
   videoThumbnail: string;
+  youtubeUrl: string;
+  displayStyle: 'card' | 'banner';
   date: string;
   tag: string;
   experienceSlugs: string[];
@@ -995,8 +998,11 @@ export async function getTestimonials(opts: {
       reviewerLocation: d.reviewer_location || '',
       quote: d.quote || '',
       rating: typeof d.rating === 'number' ? d.rating : null,
+      photoUrl: mediaUrl(d.photo),
       videoUrl: mediaUrl(d.video),
       videoThumbnail: mediaUrl(d.video_thumbnail),
+      youtubeUrl: d.youtube_url || '',
+      displayStyle: d.display_style === 'banner' ? 'banner' : 'card',
       date: d.date || '',
       tag: d.tags || '',
       experienceSlugs: Array.isArray(d.experiences)
@@ -1007,6 +1013,37 @@ export async function getTestimonials(opts: {
     }));
   } catch {
     return [];
+  }
+}
+
+// ═══ TESTIMONIALS PAGE (singleton — hero copy for /testimonials) ═══
+
+export interface TestimonialsPage {
+  kicker: string;
+  title: string;
+  tagline: string;
+  kickerColour: string;
+}
+
+const TESTIMONIALS_PAGE_FALLBACK: TestimonialsPage = {
+  kicker: 'Client Stories',
+  title: 'Hear it from our clients',
+  tagline: 'Honest stories from women who have done the work. Read, watch, and see what shifts when you come home to yourself.',
+  kickerColour: '#6E3A5A',
+};
+
+export async function getTestimonialsPage(): Promise<TestimonialsPage> {
+  try {
+    const { data: d } = await fetchAPI('/testimonials-page');
+    if (!d) return TESTIMONIALS_PAGE_FALLBACK;
+    return {
+      kicker: d.kicker || TESTIMONIALS_PAGE_FALLBACK.kicker,
+      title: d.title || TESTIMONIALS_PAGE_FALLBACK.title,
+      tagline: d.tagline || TESTIMONIALS_PAGE_FALLBACK.tagline,
+      kickerColour: d.kicker_colour || TESTIMONIALS_PAGE_FALLBACK.kickerColour,
+    };
+  } catch {
+    return TESTIMONIALS_PAGE_FALLBACK;
   }
 }
 
