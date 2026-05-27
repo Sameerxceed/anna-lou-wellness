@@ -91,11 +91,10 @@ export default async function HomePage() {
            .reveal for the scroll-in effect. */}
       <section className="hp-hero">
         <div className="hp-hero-inner">
-          <div
-            className="hp-hero-image has-image"
-            style={{ backgroundImage: `url(${heroImageUrl || getStockImage('hero', 'home-hero', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-          />
-          <div>
+          {/* LEFT — text. DOM order matters for mobile: we use CSS order to
+              put the image first on small screens (hook first), then text,
+              then the Substack box. */}
+          <div className="hp-hero-text">
             <p className="hp-hero-tag">{f(cms, 'heroKicker', 'Reset Stories')}</p>
             <h1 className="hp-hero-title">{f(cms, 'heroTitle', 'Come back to yourself.')}</h1>
             <p className="hp-hero-body">{f(cms, 'heroBody', 'What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.')}</p>
@@ -103,6 +102,19 @@ export default async function HomePage() {
               <Link href={f(cms, 'heroCtaPrimaryUrl', '/reset-stories')} className="cta-link cta-plum">{f(cms, 'heroCtaPrimaryLabel', 'Read the Reset Stories')} <span>&rarr;</span></Link>
               <Link href={f(cms, 'heroCtaSecondaryUrl', '/the-work')} className="cta-link cta-pink">{f(cms, 'heroCtaSecondaryLabel', 'Work with Anna')} <span>&rarr;</span></Link>
             </div>
+          </div>
+
+          {/* RIGHT — image + Substack box stacked */}
+          <div className="hp-hero-right">
+            <div
+              className="hp-hero-image has-image"
+              style={{ backgroundImage: `url(${heroImageUrl || getStockImage('hero', 'home-hero', 'portrait')})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            />
+            <Link href={f(cms, 'heroSubstackCtaUrl', '/reset-letters')} className="hp-hero-substack">
+              <p className="hp-hero-substack-kicker">{f(cms, 'heroSubstackKicker', 'Reset Letters')}</p>
+              <p className="hp-hero-substack-title">{f(cms, 'heroSubstackTitle', 'A quiet correspondence, delivered each week.')}</p>
+              <span className="hp-hero-substack-cta">{f(cms, 'heroSubstackCtaLabel', 'Join Reset Letters')} &rarr;</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -441,8 +453,15 @@ const homepageStyles = `
 
 /* ═══ HERO ═══ */
 .hp-hero { background:#fff; padding:1rem 3rem 1.5rem; }
-.hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.1fr 1fr; gap:2rem; align-items:center; }
-.hp-hero-image { aspect-ratio:4/5; border-radius:6px; overflow:hidden; max-height:560px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; }
+.hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr; gap:2.5rem; align-items:start; }
+.hp-hero-text { padding-top:0.5rem; }
+.hp-hero-right { display:flex; flex-direction:column; gap:1rem; }
+.hp-hero-image { aspect-ratio:4/5; border-radius:6px; overflow:hidden; max-height:520px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; }
+.hp-hero-substack { display:block; background:#6E3A5A; color:#F1EAE0; padding:1.5rem 1.4rem; border-radius:6px; text-decoration:none; transition:transform 0.25s, box-shadow 0.25s; }
+.hp-hero-substack:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(110,58,90,0.25); }
+.hp-hero-substack-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.6rem; letter-spacing:0.28em; text-transform:uppercase; color:#FFD07A; margin-bottom:0.6rem; }
+.hp-hero-substack-title { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.05rem; line-height:1.5; color:#F1EAE0; margin-bottom:0.9rem; }
+.hp-hero-substack-cta { font-family:Mulish,sans-serif; font-weight:500; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:#FFD07A; display:inline-flex; align-items:center; gap:0.4rem; border-bottom:1px solid #FFD07A; padding-bottom:2px; }
 .hp-hero-image::after { content:'Atmospheric photo. Taggs Island, golden hour, Anna'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.12); text-align:center; max-width:80%; }
 .hp-hero-image.has-image::after, .hp-featured-image.has-image::after, .article-card-img.has-image::after, .hp-work-image.has-image::after, .hp-community-image.has-image::after, .hp-portrait-image.has-image::after, .product-img.has-image::after { display:none; }
 .hp-hero-tag { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.8rem; }
@@ -598,6 +617,11 @@ const homepageStyles = `
 /* ═══ RESPONSIVE ═══ */
 @media (max-width:900px) {
   .hp-hero-inner, .hp-featured-inner, .hp-work-inner, .hp-community-inner, .hp-portrait-inner { grid-template-columns:1fr; gap:1.5rem; }
+  /* Mobile stack order for hero: image first, then text, then Substack box */
+  .hp-hero-right { order:1; }
+  .hp-hero-text { order:2; }
+  .hp-hero-substack { order:3; }
+  .hp-hero-right { gap:1.5rem; }
   .hp-articles-grid, .hp-editorial-grid, .hp-shop-grid, .hp-media-grid, .hp-testi-grid { grid-template-columns:1fr; }
   .hp-hero, .hp-featured, .hp-work, .hp-community, .hp-portrait { padding-left:1.2rem !important; padding-right:1.2rem !important; }
   .hp-articles, .hp-editorial-sections, .hp-experiences, .hp-newsletter, .hp-shop, .hp-media, .hp-testimonials, .hp-press { padding-left:1rem !important; padding-right:1rem !important; }

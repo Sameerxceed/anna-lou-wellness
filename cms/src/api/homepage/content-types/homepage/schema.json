@@ -64,6 +64,26 @@
       ],
       "description": "HERO SECTION \u2014 Image on the right side of the hero. Portrait orientation works best."
     },
+    "heroSubstackKicker": {
+      "type": "string",
+      "default": "Reset Letters",
+      "description": "HERO SUBSTACK BOX (below the hero image) \u2014 Small uppercase label at the top of the plum box."
+    },
+    "heroSubstackTitle": {
+      "type": "string",
+      "default": "A quiet correspondence, delivered each week.",
+      "description": "HERO SUBSTACK BOX \u2014 Main line inside the box. Keep it short \u2014 2 lines max."
+    },
+    "heroSubstackCtaLabel": {
+      "type": "string",
+      "default": "Join Reset Letters",
+      "description": "HERO SUBSTACK BOX \u2014 Button label inside the box."
+    },
+    "heroSubstackCtaUrl": {
+      "type": "string",
+      "default": "/reset-letters",
+      "description": "HERO SUBSTACK BOX \u2014 Where the button links to. Default is the on-site signup page; can be swapped to a direct Substack URL."
+    },
     "featuredFallbackTitle": {
       "type": "string",
       "default": "You are not overwhelmed. You are holding everything.",
