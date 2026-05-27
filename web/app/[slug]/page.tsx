@@ -24,6 +24,20 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Strapi 5 "blocks" editor stores content as an array of block nodes.
+// Each block has a `type` ('paragraph' | 'heading' | 'list' | 'quote' | 'code' | 'image')
+// and `children`. Text leaves carry inline marks (bold, italic, underline, etc.).
+type BlocksLeaf = { type: 'text'; text: string; bold?: boolean; italic?: boolean; underline?: boolean; strikethrough?: boolean; code?: boolean };
+type BlocksLink = { type: 'link'; url: string; children: BlocksLeaf[] };
+type BlocksChild = BlocksLeaf | BlocksLink;
+type BlocksNode =
+  | { type: 'paragraph'; children: BlocksChild[] }
+  | { type: 'heading'; level: 1 | 2 | 3 | 4 | 5 | 6; children: BlocksChild[] }
+  | { type: 'list'; format: 'ordered' | 'unordered'; children: { type: 'list-item'; children: BlocksChild[] }[] }
+  | { type: 'quote'; children: BlocksChild[] }
+  | { type: 'code'; children: BlocksLeaf[] }
+  | { type: 'image'; image: { url: string; alternativeText?: string } };
+
 interface GenericPageData {
   title: string;
   slug: string;
@@ -31,7 +45,7 @@ interface GenericPageData {
   kickerColour: string;
   tagline: string;
   heroImage: string;
-  intro: string;
+  intro: BlocksNode[] | string;
   ctaLabel: string;
   ctaUrl: string;
   seoTitle: string;
@@ -54,7 +68,7 @@ async function getGenericPage(slug: string): Promise<GenericPageData | null> {
       kickerColour: d.kickerColour || '#6E3A5A',
       tagline: d.tagline || '',
       heroImage: mediaUrl(d.heroImage),
-      intro: d.intro || '',
+      intro: d.intro ?? '',
       ctaLabel: d.ctaLabel || '',
       ctaUrl: d.ctaUrl || '',
       seoTitle: d.seoTitle || '',
@@ -81,7 +95,11 @@ export default async function StandalonePage({ params }: PageProps) {
   const page = await getGenericPage(slug);
   if (!page) notFound();
 
-  const bodyHtml = renderMarkdown(page.intro);
+  // `intro` is blocks JSON for new entries, plain markdown string for legacy
+  // entries created before the schema switch. Render either correctly.
+  const bodyHtml = Array.isArray(page.intro)
+    ? renderBlocks(page.intro)
+    : renderMarkdown(page.intro);
 
   return (
     <>
@@ -112,12 +130,64 @@ export default async function StandalonePage({ params }: PageProps) {
 }
 
 /**
- * Small markdown renderer for `intro` content edited in Strapi's richtext
- * editor. Handles headings (# ## ###), bold (**text**), italic (*text*),
- * links [text](url), unordered + ordered lists, blockquotes, and paragraphs.
- *
- * Anna writes via the toolbar; this turns the stored markdown into clean HTML.
- * Anything not supported here just renders as a plain paragraph.
+ * Render Strapi 5 "blocks" JSON to HTML. The blocks editor produces this
+ * structure when Anna pastes from Word / Google Docs / formats via toolbar.
+ * Handles paragraphs, headings (h1–h6), bullet + numbered lists, blockquotes,
+ * links, and inline marks (bold, italic, underline, strikethrough, code).
+ */
+function renderBlocks(blocks: BlocksNode[]): string {
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const renderLeaf = (leaf: BlocksLeaf): string => {
+    let out = esc(leaf.text || '');
+    if (leaf.code) out = `<code>${out}</code>`;
+    if (leaf.bold) out = `<strong>${out}</strong>`;
+    if (leaf.italic) out = `<em>${out}</em>`;
+    if (leaf.underline) out = `<u>${out}</u>`;
+    if (leaf.strikethrough) out = `<s>${out}</s>`;
+    return out;
+  };
+  const renderChildren = (children: BlocksChild[]): string =>
+    (children || []).map((c) => {
+      if ((c as BlocksLink).type === 'link') {
+        const link = c as BlocksLink;
+        const inner = (link.children || []).map(renderLeaf).join('');
+        return `<a href="${esc(link.url)}">${inner}</a>`;
+      }
+      return renderLeaf(c as BlocksLeaf);
+    }).join('');
+
+  return blocks.map((block): string => {
+    switch (block.type) {
+      case 'heading': {
+        const lvl = Math.min(Math.max(block.level || 2, 1), 6);
+        const cls = lvl <= 3 ? `gp-h${lvl}` : 'gp-h3';
+        return `<h${lvl} class="${cls}">${renderChildren(block.children)}</h${lvl}>`;
+      }
+      case 'list': {
+        const tag = block.format === 'ordered' ? 'ol' : 'ul';
+        const items = (block.children || []).map((li) => `<li>${renderChildren(li.children)}</li>`).join('');
+        return `<${tag} class="gp-list">${items}</${tag}>`;
+      }
+      case 'quote':
+        return `<blockquote class="gp-quote">${renderChildren(block.children)}</blockquote>`;
+      case 'code': {
+        const txt = (block.children || []).map((c) => esc(c.text || '')).join('');
+        return `<pre class="gp-code"><code>${txt}</code></pre>`;
+      }
+      case 'image':
+        if (!block.image?.url) return '';
+        return `<img class="gp-img" src="${esc(block.image.url)}" alt="${esc(block.image.alternativeText || '')}" />`;
+      case 'paragraph':
+      default:
+        return `<p class="gp-paragraph">${renderChildren((block as any).children)}</p>`;
+    }
+  }).join('\n');
+}
+
+/**
+ * Legacy markdown renderer for `intro` entries that were saved before the
+ * schema switched from richtext to blocks. Kept as a fallback so old data
+ * still displays correctly. New entries use renderBlocks above.
  */
 function renderMarkdown(raw: string): string {
   if (!raw) return '';
@@ -191,6 +261,11 @@ const pageStyles = `
 .gp-prose .gp-list { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; margin:0 0 1.2rem 1.4rem; padding:0; }
 .gp-prose .gp-list li { margin-bottom:0.4rem; }
 .gp-prose .gp-quote { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.1rem; color:#3D3D3A; line-height:1.7; border-left:3px solid #6E3A5A; padding:0.6rem 0 0.6rem 1.2rem; margin:1.5rem 0; }
+.gp-prose .gp-img { max-width:100%; height:auto; display:block; margin:1.5rem auto; border-radius:6px; }
+.gp-prose .gp-code { background:#F5F3EF; padding:1rem; border-radius:6px; overflow-x:auto; font-family:Menlo,Consolas,monospace; font-size:0.9rem; margin:1rem 0; }
+.gp-prose u { text-decoration:underline; }
+.gp-prose s { text-decoration:line-through; }
+.gp-prose code { background:rgba(110,58,90,0.08); padding:0.1rem 0.35rem; border-radius:3px; font-family:Menlo,Consolas,monospace; font-size:0.92em; }
 .gp-prose a { color:#6E3A5A; border-bottom:1px solid currentColor; text-decoration:none; }
 .gp-prose a:hover { opacity:0.75; }
 .gp-prose strong { font-weight:600; color:#231F20; }
