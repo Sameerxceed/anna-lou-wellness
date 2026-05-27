@@ -31,7 +31,8 @@ const TAG_PATHS = {
 };
 
 function pathsForTestimonial(entry) {
-  const paths = new Set(['/', '/experiences']);
+  // Always refresh the dedicated testimonials wall + homepage + experiences hub
+  const paths = new Set(['/', '/testimonials', '/experiences']);
   if (!entry) return Array.from(paths);
   const tagPath = TAG_PATHS[entry.tags];
   if (tagPath) paths.add(tagPath);
