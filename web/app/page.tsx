@@ -453,15 +453,17 @@ const homepageStyles = `
 
 /* ═══ HERO ═══ */
 .hp-hero { background:#fff; padding:1rem 3rem 1.5rem; }
-.hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr; gap:2.5rem; align-items:start; }
-.hp-hero-text { padding-top:0.5rem; }
-.hp-hero-right { display:flex; flex-direction:column; gap:1rem; }
-.hp-hero-image { aspect-ratio:4/5; border-radius:6px; overflow:hidden; max-height:520px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; }
-.hp-hero-substack { display:block; background:#6E3A5A; color:#F1EAE0; padding:1.5rem 1.4rem; border-radius:6px; text-decoration:none; transition:transform 0.25s, box-shadow 0.25s; }
-.hp-hero-substack:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(110,58,90,0.25); }
-.hp-hero-substack-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.6rem; letter-spacing:0.28em; text-transform:uppercase; color:#FFD07A; margin-bottom:0.6rem; }
-.hp-hero-substack-title { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.05rem; line-height:1.5; color:#F1EAE0; margin-bottom:0.9rem; }
-.hp-hero-substack-cta { font-family:Mulish,sans-serif; font-weight:500; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:#FFD07A; display:inline-flex; align-items:center; gap:0.4rem; border-bottom:1px solid #FFD07A; padding-bottom:2px; }
+.hp-hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.5fr 1fr; gap:2.5rem; align-items:center; }
+.hp-hero-text { padding-top:0; }
+.hp-hero-right { display:flex; flex-direction:column; gap:1.2rem; }
+.hp-hero-image { aspect-ratio:1/1; border-radius:8px; overflow:hidden; max-height:360px; background:linear-gradient(160deg,#e8ddd0,#d4c5b3); position:relative; box-shadow:0 12px 32px rgba(0,0,0,0.06); }
+.hp-hero-substack { display:block; background:#6E3A5A; color:#F1EAE0; padding:1.8rem 1.6rem 1.6rem; border-radius:8px; text-decoration:none; transition:transform 0.25s, box-shadow 0.25s; position:relative; overflow:hidden; }
+.hp-hero-substack::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:#FFD07A; }
+.hp-hero-substack:hover { transform:translateY(-2px); box-shadow:0 14px 36px rgba(110,58,90,0.3); }
+.hp-hero-substack-kicker { font-family:Mulish,sans-serif; font-weight:600; font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; color:#FFD07A; margin-bottom:0.7rem; }
+.hp-hero-substack-title { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.25rem; line-height:1.4; color:#F1EAE0; margin-bottom:1.1rem; }
+.hp-hero-substack-cta { font-family:Mulish,sans-serif; font-weight:600; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#231F20; background:#FFD07A; display:inline-flex; align-items:center; gap:0.45rem; padding:0.7rem 1.2rem; border-radius:3px; transition:background 0.2s; }
+.hp-hero-substack:hover .hp-hero-substack-cta { background:#FFC15C; }
 .hp-hero-image::after { content:'Atmospheric photo. Taggs Island, golden hour, Anna'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.12); text-align:center; max-width:80%; }
 .hp-hero-image.has-image::after, .hp-featured-image.has-image::after, .article-card-img.has-image::after, .hp-work-image.has-image::after, .hp-community-image.has-image::after, .hp-portrait-image.has-image::after, .product-img.has-image::after { display:none; }
 .hp-hero-tag { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.8rem; }
