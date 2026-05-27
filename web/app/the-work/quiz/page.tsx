@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import { fetchAPI } from '@/lib/strapi';
+import { getFAQs } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
 import QuizClient, { type QuizHeroData, type QuizResultData, type Recommendation } from './QuizClient';
 
 export const metadata: Metadata = {
@@ -55,6 +57,14 @@ async function loadQuizPage(): Promise<{ hero: QuizHeroData; results: QuizResult
 }
 
 export default async function QuizPage() {
-  const { hero, results } = await loadQuizPage();
-  return <QuizClient hero={hero} results={results} />;
+  const [{ hero, results }, faqs] = await Promise.all([
+    loadQuizPage(),
+    getFAQs({ page: 'quiz' }),
+  ]);
+  return (
+    <>
+      <QuizClient hero={hero} results={results} />
+      <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#fff" />
+    </>
+  );
 }

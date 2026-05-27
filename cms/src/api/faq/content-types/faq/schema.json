@@ -45,6 +45,7 @@
         "contact",
         "testimonials",
         "ask-anna",
+        "decoder",
         "general"
       ],
       "default": "general"

@@ -145,6 +145,20 @@ const PAGE_SEEDS = {
     { q: 'Can I be anonymous?', a: 'Absolutely. Many reviewers share a first name only or a profession only. Tell us what you are comfortable with.' },
     { q: 'How do you choose which stories to feature as banners?', a: 'The banner format is reserved for stories where the reviewer is happy for their full story to be told at length. Most reviews live in the standard card layout.' },
   ],
+  'quiz': [
+    { q: 'How long does the quiz take?', a: 'About two minutes. Five short questions, no email required.' },
+    { q: 'Will I be added to a mailing list?', a: 'No. The quiz is anonymous and gives you a recommendation without any signup. You can choose to subscribe afterwards if you want.' },
+    { q: 'What if more than one option feels right?', a: 'Pick the one that feels closest. The recommendation is a starting point, not a verdict — Anna is happy to talk through alternatives on a discovery call.' },
+    { q: 'Can I retake the quiz?', a: 'Yes. Many people retake it after a few months as their needs shift. There is no record kept, so each go is fresh.' },
+    { q: 'Is the recommendation a sales pitch?', a: 'No. About one in three quiz takers is pointed toward the free Decoder rather than a paid programme. The aim is the right next step, not the biggest sale.' },
+  ],
+  'decoder': [
+    { q: 'What is the Nervous System Decoder?', a: 'A free seven-question self-audit guide written by Anna. It helps you read your own nervous-system signals — tension, freeze, fawn, hypervigilance — so you can start working with them instead of against them.' },
+    { q: 'How long does it take to work through?', a: 'About 20-30 minutes for the questions themselves. The practices at the back can be done in 5-10 minutes a day for as long as you want.' },
+    { q: 'Do I have to give my email?', a: 'Yes — Anna sends the PDF directly to your inbox so it stays in your records. You can unsubscribe in one click any time.' },
+    { q: 'What happens after I download it?', a: 'You will get the Decoder PDF immediately, then a short note from Anna a few days later asking what landed. That is it — no daily emails, no sales sequence.' },
+    { q: 'Is this a substitute for coaching or therapy?', a: 'No. It is a useful starting point for anyone curious about somatic work. If something significant comes up while you read it, please reach out to a coach or therapist.' },
+  ],
 };
 
 async function seedFAQs(strapi) {

@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
 import SubPage from '@/components/SubPage';
+import UpcomingExperiences from '@/components/UpcomingExperiences';
+import FAQAccordion from '@/components/FAQAccordion';
 import { getCommunityEventBySlug, genericPageProps } from '@/lib/generic-page';
+import { getExperiences, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Events Calendar',
@@ -8,7 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default async function EventsPage() {
-  const cms = await getCommunityEventBySlug('events');
+  const [cms, upcoming, faqs] = await Promise.all([
+    getCommunityEventBySlug('events'),
+    getExperiences(),
+    getFAQs({ page: 'events' }),
+  ]);
   const props = genericPageProps(cms, {
     title: 'Events Calendar',
     kicker: 'Community',
@@ -23,5 +30,11 @@ export default async function EventsPage() {
     ],
     cta: { label: 'Enquire about events', href: '/contact' },
   });
-  return <SubPage {...props} />;
+  return (
+    <>
+      <SubPage {...props} />
+      <UpcomingExperiences items={upcoming} accentColour="#231F20" emptyLabel="No public events on the calendar right now. New dates land monthly — sign up to Reset Letters for the first heads-up." />
+      <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
+    </>
+  );
 }

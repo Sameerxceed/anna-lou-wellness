@@ -25,6 +25,7 @@ const pageToPath = {
   'contact': '/contact',
   'testimonials': '/testimonials',
   'ask-anna': '/ask-anna',
+  'decoder': '/free/nervous-system-decoder',
 };
 
 function pathFor(entry) {

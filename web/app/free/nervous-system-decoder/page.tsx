@@ -1,5 +1,7 @@
 import { getStockImage } from '@/data/stock-images';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
+import { getFAQs } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
 import DecoderForm from './DecoderForm';
 
 const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
@@ -15,6 +17,7 @@ export default async function DecoderPage() {
     const { data: d } = await fetchAPI('/decoder-page', { populate: '*' });
     cms = (d as Record<string, unknown>) || null;
   } catch { cms = null; }
+  const faqs = await getFAQs({ page: 'decoder' });
 
   const coverImageUrl = mediaUrl(cms?.coverImage as { url?: string } | undefined) || getStockImage('decoder', 'decoder-cover');
   const whyParas = splitParas(f(cms, 'whyBody', ''));
@@ -67,6 +70,8 @@ export default async function DecoderPage() {
           </div>
         </div>
       </section>
+
+      <FAQAccordion faqs={faqs} accentColour="#FFD07A" background="#F5F3EF" />
     </>
   );
 }
