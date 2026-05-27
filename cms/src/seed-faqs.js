@@ -159,6 +159,20 @@ const PAGE_SEEDS = {
     { q: 'What happens after I download it?', a: 'You will get the Decoder PDF immediately, then a short note from Anna a few days later asking what landed. That is it — no daily emails, no sales sequence.' },
     { q: 'Is this a substitute for coaching or therapy?', a: 'No. It is a useful starting point for anyone curious about somatic work. If something significant comes up while you read it, please reach out to a coach or therapist.' },
   ],
+  'resources': [
+    { q: 'What is free vs paid?', a: 'The Nervous System Recalibration guide, the eBook on healing from narcissistic abuse, and the Subconscious Clarity Reset Quiz are all free. The Signal Method™ workbook, workshop recordings, founder reset audio, and guided journeys live inside the Reset Room membership (£25/month).' },
+    { q: 'Do I have to sign up to access free resources?', a: 'Just an email so we know where to send the PDF. No spam, unsubscribe in one click.' },
+    { q: 'I attended a paid workshop — where is the recording?', a: 'Workshop recordings appear in the Reset Room library within 48 hours of the live session. If you attended but are not a Reset Room member, contact hello@annalouwellness.com — your access is included.' },
+    { q: 'How often are new resources added?', a: 'A new resource lands roughly once a month, plus every workshop recording.' },
+    { q: 'Can I download resources to keep?', a: 'PDFs yes. Workshop recordings stream-only inside the Reset Room (so the library stays sustainable for everyone).' },
+  ],
+  'events': [
+    { q: 'How do I book a place?', a: 'Click "Book this place" on any upcoming event card — it opens an email to Anna for the moment. Once Stripe live mode is active, bookings will move to direct checkout.' },
+    { q: 'Are events refundable?', a: 'Full refund up to 7 days before the event. Within 7 days, you can transfer your place to a friend or to the next event in the same series.' },
+    { q: 'Will event dates be added regularly?', a: 'Yes — new retreat and workshop dates are usually added every 4-6 weeks. Sign up to Reset Letters for first announcement.' },
+    { q: 'Do you offer private bookings?', a: 'Yes — for retreats with a group of 4+, or corporate wellbeing sessions. Use the Enquire button to start a conversation.' },
+    { q: 'Where do most events take place?', a: 'Either on the houseboat at Taggs Island, Hampton, or live on Zoom. Each event card says which one.' },
+  ],
 };
 
 async function seedFAQs(strapi) {
