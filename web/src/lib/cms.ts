@@ -622,6 +622,8 @@ export interface Article {
   author: string;
   readingTime: string;
   isFeatured: boolean;
+  isHomepagePinned: boolean;
+  homepagePinOrder: number;
   isFree: boolean;
   substackUrl: string;
   seoTitle: string;
@@ -659,6 +661,8 @@ function mapArticle(d: any): Article {
     author: d.author || 'Anna Lou',
     readingTime: d.reading_time || '',
     isFeatured: d.is_featured || false,
+    isHomepagePinned: d.is_homepage_pinned || false,
+    homepagePinOrder: d.homepage_pin_order ?? 0,
     isFree: d.is_free !== false,
     substackUrl: d.substack_canonical_url || '',
     seoTitle: d.seo_title || '',

@@ -48,7 +48,18 @@
     },
     "is_featured": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Big banner article at the top of the homepage editorial section. Only one article should have this ticked at a time — most recent wins if multiple."
+    },
+    "is_homepage_pinned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Pin this article to the 3-card grid on the homepage. Up to 3 pinned articles show. If fewer than 3 are pinned, the rest fill with most-recent unpinned articles. Use 'homepage_pin_order' to control which pinned ones come first."
+    },
+    "homepage_pin_order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Order among pinned articles (lower number = appears first). Only used when 'is_homepage_pinned' is ticked. Leave at 0 if order does not matter."
     },
     "is_free": {
       "type": "boolean",

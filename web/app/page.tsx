@@ -46,7 +46,16 @@ export default async function HomePage() {
   ]);
 
   const featured = featuredArticles[0] || null;
-  const gridArticles = recentArticles.filter(a => !a.isFeatured).slice(0, 3);
+  // 3-card grid: pinned articles first (sorted by homepagePinOrder, then most
+  // recent), then fill remaining slots with most-recent non-pinned, non-featured.
+  const pinned = recentArticles
+    .filter(a => a.isHomepagePinned && !a.isFeatured)
+    .sort((a, b) => (a.homepagePinOrder - b.homepagePinOrder) || b.publishedAt.localeCompare(a.publishedAt))
+    .slice(0, 3);
+  const fill = recentArticles
+    .filter(a => !a.isFeatured && !a.isHomepagePinned)
+    .slice(0, 3 - pinned.length);
+  const gridArticles = [...pinned, ...fill];
   const cms = (homepage as Record<string, unknown> | null) ?? null;
   const heroImageUrl = mediaUrl(cms?.heroImage as { url?: string } | undefined);
   // Resolve the actual URL the hero will use, so we can preload it with
