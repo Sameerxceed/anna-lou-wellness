@@ -113,6 +113,15 @@ export type StripeEvent = {
   created: number;
 };
 
+export type StripeCoupon = {
+  id: string;
+  amount_off: number | null;
+  percent_off: number | null;
+  currency: string | null;
+  duration: 'once' | 'forever' | 'repeating';
+  name: string | null;
+};
+
 export const stripe = {
   checkout: {
     sessions: {
@@ -136,6 +145,10 @@ export const stripe = {
   customers: {
     retrieve: (id: string) =>
       stripeRequest<StripeCustomer>('GET', `/customers/${encodeURIComponent(id)}`),
+  },
+  coupons: {
+    create: (payload: Record<string, any>) =>
+      stripeRequest<StripeCoupon>('POST', '/coupons', payload),
   },
   webhooks: {
     /**
