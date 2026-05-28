@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';

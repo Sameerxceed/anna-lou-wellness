@@ -63,6 +63,12 @@ $templates = [ordered]@{
   'email_11_2.html' = 'ALW - 11.2 - Collective meet the room (7 days)'
   'email_12_1.html' = 'ALW - 12.1 - Reset Session booked (90-min single)'
   'email_12_2.html' = 'ALW - 12.2 - Reset Session - after the session'
+  'email_13_1.html' = 'ALW - 13.1 - Decoder results ready (immediate)'
+  'email_13_2.html' = 'ALW - 13.2 - Decoder upsell to REGULATED (2 days)'
+  'email_13_3.html' = 'ALW - 13.3 - Decoder upsell final (4 days)'
+  'email_14_1.html' = 'ALW - 14.1 - REGULATED welcome (on access)'
+  'email_14_2.html' = 'ALW - 14.2 - REGULATED nudge to Reset Room'
+  'email_14_3.html' = 'ALW - 14.3 - REGULATED final + Reset Room (1 week)'
 }
 
 # Path to the HTML files (relative to this script's location)
