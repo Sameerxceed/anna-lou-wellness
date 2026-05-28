@@ -3,6 +3,7 @@ import ProgrammePage from '@/components/ProgrammePage';
 import EnquiryForm from '@/components/EnquiryForm';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';
@@ -44,6 +45,8 @@ export default async function OneDayPage() {
   });
   return (
     <>
+      <ServiceSchema name="One Day" description="A full day of private 1:1 somatic coaching with Anna Lou. Houseboat at Hampton or virtual." url="/the-work/one-day" reviews={reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 } as ReviewInput))} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'One Day', href: '/the-work/one-day' }]} />
       <ProgrammePage {...props} />
       <ReviewsSection reviews={reviews} title="From past One Days" kicker="Reviews" kickerColour={ACCENT} />
       <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />

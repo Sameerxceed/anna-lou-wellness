@@ -61,6 +61,8 @@ module.exports = {
         'api::sessions-hub-page.sessions-hub-page',
         // /the-work/quiz hero copy + 6 result blurbs (questions stay in code)
         'api::quiz-page.quiz-page',
+        // /free/nervous-system-decoder/quiz hero + 3 nervous-system state results
+        'api::decoder-quiz-page.decoder-quiz-page',
         // Editorial / collection
         'api::article.article',
         'api::article-category.article-category',

@@ -3,6 +3,7 @@ import SubPage from '@/components/SubPage';
 import UpcomingExperiences from '@/components/UpcomingExperiences';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getExperienceBySlug, experienceProps } from '@/lib/experience-page';
 import { getExperiences, getTestimonials, getFAQs } from '@/lib/cms';
 
@@ -35,6 +36,8 @@ export default async function RetreatPage() {
   });
   return (
     <>
+      <ServiceSchema name="Retreats" description="Reset days at Taggs Island, Hampton. Six people maximum. Somatic practice, breathwork, Signal Method on the water." url="/experiences/retreats" reviews={reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 } as ReviewInput))} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Experiences', href: '/experiences' }, { name: 'Retreats', href: '/experiences/retreats' }]} />
       <SubPage {...props} />
       <UpcomingExperiences items={upcoming} accentColour="#7BAFDD" emptyLabel="Next retreat dates are announced to the mailing list first." />
       <ReviewsSection reviews={reviews} title="From past retreats" kicker="Reviews" kickerColour="#7BAFDD" />

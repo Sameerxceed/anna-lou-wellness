@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';
@@ -40,6 +41,8 @@ export default async function SignalPage() {
   });
   return (
     <>
+      <ServiceSchema name="Signal" description="Twelve weeks of 1:1 somatic coaching for women rebuilding the relationship with their own inner guidance system." url="/the-work/signal" price="3000" reviews={reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 } as ReviewInput))} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'Signal', href: '/the-work/signal' }]} />
       <ProgrammePage {...props} />
       <ReviewsSection reviews={reviews} title="From Signal alumnae" kicker="Reviews" kickerColour="#6E3A5A" />
       <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />

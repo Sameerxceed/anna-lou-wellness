@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';
@@ -38,6 +39,8 @@ export default async function SignalAndBuildPage() {
   });
   return (
     <>
+      <ServiceSchema name="Signal & Build" description="Twelve weeks of 1:1 coaching for founders. Inner work and business strategy held together." url="/the-work/signal-and-build" price="3000" reviews={reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 } as ReviewInput))} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'Signal & Build', href: '/the-work/signal-and-build' }]} />
       <ProgrammePage {...props} />
       <ReviewsSection reviews={reviews} title="From founder clients" kicker="Reviews" kickerColour="#FAA21B" />
       <FAQAccordion faqs={faqs} accentColour="#FAA21B" background="#F5F3EF" />

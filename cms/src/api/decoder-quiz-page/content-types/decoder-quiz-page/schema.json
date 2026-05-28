@@ -1,0 +1,41 @@
+{
+  "kind": "singleType",
+  "collectionName": "decoder_quiz_pages",
+  "info": {
+    "singularName": "decoder-quiz-page",
+    "pluralName": "decoder-quiz-pages",
+    "displayName": "Decoder Quiz (Free)",
+    "description": "The interactive Nervous System Decoder quiz at /free/nervous-system-decoder/quiz. Hero copy + the 3 state result blurbs are editable here. The questions and scoring weights stay in code (technical content that doesn't change often)."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": "Free. Always free."
+    },
+    "title": {
+      "type": "string",
+      "default": "Which state is your nervous system in?"
+    },
+    "intro": {
+      "type": "text",
+      "default": "A few short questions, no email required to see your result. At the end you get one of three readings (Ventral, Sympathetic, Dorsal) and a practice you can use today."
+    },
+    "back_to_label": {
+      "type": "string",
+      "default": "Back to the Decoder"
+    },
+    "back_to_url": {
+      "type": "string",
+      "default": "/free/nervous-system-decoder"
+    },
+    "results": {
+      "type": "component",
+      "repeatable": true,
+      "component": "quiz.state-result",
+      "description": "Three result blurbs (one per state: ventral, sympathetic, dorsal). Don't add or remove entries — the 3 states match the quiz scoring logic. Title, blurb, practice, meditation URL, and CTA ARE editable."
+    },
+    "seo_title": { "type": "string" },
+    "seo_description": { "type": "text" }
+  }
+}

@@ -1,0 +1,105 @@
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import ProgrammePage from '@/components/ProgrammePage';
+import ReviewsSection from '@/components/ReviewsSection';
+import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
+import { getStockImage } from '@/data/stock-images';
+import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
+import { getTestimonials, getFAQs } from '@/lib/cms';
+
+/**
+ * Catch-all dynamic route for /the-work/{slug}.
+ *
+ * Each established programme (the-reset, signal, signal-and-build, one-day,
+ * signal-collective, recovery, sessions, quiz, etc.) has its own static
+ * page.tsx in this folder. Next routes those first — static beats dynamic.
+ *
+ * This dynamic route picks up any NEW programme Anna creates in Strapi
+ * (Content Manager → Work · Programme → +Create with slug `xyz`). The
+ * page lives at /the-work/xyz with no code change. If the slug doesn't
+ * match a programme entry, 404.
+ *
+ * Renders using the same ProgrammePage + Reviews + FAQ pattern as the
+ * established programme pages, so the new entry inherits the full layout
+ * and the FAQ accordion + Reviews section auto-attach.
+ */
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const cms = await getProgrammeBySlug(slug);
+  if (!cms) return { title: 'Programme not found' };
+  return {
+    title: cms.seoTitle || `${cms.title} | Anna Lou Wellness`,
+    description: cms.seoDescription || cms.tagline || '',
+    alternates: { canonical: `/the-work/${slug}` },
+    openGraph: {
+      title: cms.title,
+      description: cms.tagline || '',
+      url: `/the-work/${slug}`,
+    },
+  };
+}
+
+export default async function DynamicProgrammePage({ params }: PageProps) {
+  const { slug } = await params;
+  const [cms, reviews, faqs] = await Promise.all([
+    getProgrammeBySlug(slug),
+    getTestimonials({ tag: slug }),
+    getFAQs({ page: slug }),
+  ]);
+
+  if (!cms) notFound();
+
+  // CMS-only fallback path — no hardcoded copy for new programmes. The
+  // mapper below uses cms.* values directly with sensible defaults from the
+  // schema, so as long as Anna fills the entry the page renders cleanly.
+  const props = programmeProps(cms, {
+    title: cms.title,
+    tagline: cms.tagline || '',
+    accentColour: cms.accentColour || '#F280AA',
+    image: getStockImage('programmes', slug),
+    intro: cms.intro ? cms.intro.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean) : [],
+    whatsIncludedItems: cms.whatsIncludedItems ? cms.whatsIncludedItems.split('\n').map((p) => p.trim()).filter(Boolean) : [],
+    pricingBody: cms.pricingBody || '',
+    ctaLabel: cms.ctaLabel,
+    ctaUrl: cms.ctaUrl,
+  });
+
+  const reviewInputs: ReviewInput[] = reviews.map((r) => ({
+    reviewerName: r.reviewerName || 'Anonymous',
+    quote: r.quote,
+    rating: 5,
+  }));
+  const cleanTitle = cms.title.replace(/\.$/, '');
+
+  return (
+    <>
+      <ServiceSchema
+        name={cleanTitle}
+        description={cms.tagline || cms.seoDescription || ''}
+        url={`/the-work/${slug}`}
+        reviews={reviewInputs}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Home', href: '/' },
+          { name: 'Work with Anna', href: '/the-work' },
+          { name: cleanTitle, href: `/the-work/${slug}` },
+        ]}
+      />
+      <ProgrammePage {...props} />
+      <ReviewsSection
+        reviews={reviews}
+        title={`From ${cleanTitle} alumnae`}
+        kicker="Reviews"
+        kickerColour={cms.accentColour || '#F280AA'}
+      />
+      <FAQAccordion faqs={faqs} accentColour={cms.accentColour || '#F280AA'} background="#F5F3EF" />
+    </>
+  );
+}

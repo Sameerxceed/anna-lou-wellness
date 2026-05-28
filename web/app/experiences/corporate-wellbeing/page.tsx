@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
 import { getTestimonials, getFAQs } from '@/lib/cms';
@@ -37,6 +38,8 @@ export default async function CorporatePage() {
 
   return (
     <>
+      <ServiceSchema name="Corporate Wellbeing" description="Bespoke wellbeing formats for teams and organisations. The Signal Method adapted for the workplace." url="/experiences/corporate-wellbeing" />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Experiences', href: '/experiences' }, { name: 'Corporate Wellbeing', href: '/experiences/corporate-wellbeing' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
       <section className="cw-hero">

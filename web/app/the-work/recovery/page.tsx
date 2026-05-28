@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import EnquiryForm from '@/components/EnquiryForm';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, parseStages } from '@/lib/programme';
 import { getFAQs } from '@/lib/cms';
@@ -38,6 +39,8 @@ export default async function RecoveryPage() {
 
   return (
     <>
+      <ServiceSchema name="Recovery — Untangle, Unbind, Unbound" description="Three-stage recovery coaching for women rebuilding after narcissistic and domestic abuse. Trauma-informed, somatic." url="/the-work/recovery" />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'Recovery Coaching', href: '/the-work/recovery' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
       <section className="rec-hero">

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug } from '@/lib/programme';
 import { getFAQs } from '@/lib/cms';
@@ -28,6 +29,8 @@ export default async function SignalCollectivePage() {
 
   return (
     <>
+      <ServiceSchema name="The Signal Collective" description="Six-month mastermind for women doing inner work alongside building real lives and businesses. Group plus 1:1." url="/the-work/signal-collective" />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'Signal Collective', href: '/the-work/signal-collective' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
       <section className="sc-hero">

@@ -3,6 +3,7 @@ import SubPage from '@/components/SubPage';
 import UpcomingExperiences from '@/components/UpcomingExperiences';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getExperienceBySlug, experienceProps } from '@/lib/experience-page';
 import { getExperiences, getTestimonials, getFAQs } from '@/lib/cms';
 
@@ -34,6 +35,8 @@ export default async function WorkshopsPage() {
   });
   return (
     <>
+      <ServiceSchema name="Workshops" description="Group somatic workshops on the houseboat at Taggs Island, online, and in corporate spaces. Crystal healing, breathwork, somatic practice." url="/experiences/workshops" reviews={reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 } as ReviewInput))} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Experiences', href: '/experiences' }, { name: 'Workshops', href: '/experiences/workshops' }]} />
       <SubPage {...props} />
       <UpcomingExperiences items={upcoming} accentColour="#7BAFDD" emptyLabel="Next workshop dates are announced to the mailing list first." />
       <ReviewsSection reviews={reviews} title="From past workshops" kicker="Reviews" kickerColour="#7BAFDD" />

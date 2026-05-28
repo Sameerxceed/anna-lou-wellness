@@ -1,0 +1,49 @@
+{
+  "collectionName": "components_quiz_state_results",
+  "info": {
+    "displayName": "Decoder State Result",
+    "icon": "heart",
+    "description": "One of the 3 nervous-system state outcomes for the Decoder quiz (Ventral / Sympathetic / Dorsal). The 3 state slugs are wired into the quiz logic — don't change them. Title, blurb, practice text, meditation URL, and CTA ARE editable."
+  },
+  "options": {},
+  "attributes": {
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "ventral",
+        "sympathetic",
+        "dorsal"
+      ],
+      "required": true,
+      "description": "Don't change — quiz logic maps answers to these 3 states. Ventral = grounded/connected, Sympathetic = fight-or-flight, Dorsal = freeze/shutdown."
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Result heading (e.g. 'Your signal: Ventral. You are mostly grounded right now.')"
+    },
+    "blurb": {
+      "type": "text",
+      "required": true,
+      "description": "Body paragraph(s) explaining what this state means and how to read the result. Blank lines = paragraph breaks."
+    },
+    "practice_intro": {
+      "type": "text",
+      "description": "Short intro to the practice that follows. e.g. 'A 5-minute practice you can use right now, without equipment.'"
+    },
+    "meditation_url": {
+      "type": "string",
+      "description": "URL to the meditation audio/video for this state (Bunny.net Stream, YouTube unlisted, MP3 link, etc.). Leave blank if the practice is text-only."
+    },
+    "cta_label": {
+      "type": "string",
+      "default": "Step inside REGULATED",
+      "description": "Button text below the practice (the upsell action). Default goes to the REGULATED course."
+    },
+    "cta_url": {
+      "type": "string",
+      "default": "/the-work/regulated",
+      "description": "Where the CTA button links to."
+    }
+  }
+}

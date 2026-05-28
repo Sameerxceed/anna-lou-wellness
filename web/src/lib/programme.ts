@@ -18,6 +18,8 @@ export interface ProgrammeCMS {
   ctaLabel?: string;
   ctaUrl?: string;
   stagesList?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 /**

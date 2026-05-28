@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
 import { getTestimonials, getFAQs } from '@/lib/cms';
@@ -37,6 +38,8 @@ export default async function SpeakingPage() {
 
   return (
     <>
+      <ServiceSchema name="Speaking" description="Keynotes, panels, fireside chats on the nervous system, somatic coaching, women rebuilding from burnout, and the inner work of leadership." url="/experiences/speaking" />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Experiences', href: '/experiences' }, { name: 'Speaking', href: '/experiences/speaking' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
       <section className="sp-hero">

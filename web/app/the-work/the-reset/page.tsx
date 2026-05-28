@@ -41,8 +41,11 @@ export default async function TheResetPage() {
     ctaLabel: 'Book a discovery call',
     ctaUrl: '/contact',
   });
+  const reviewInputs: ReviewInput[] = reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 }));
   return (
     <>
+      <ServiceSchema name="The Reset" description="Six weeks of 1:1 somatic coaching with Anna Lou. Nervous-system led, trauma-informed." url="/the-work/the-reset" price="1500" reviews={reviewInputs} />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'The Reset', href: '/the-work/the-reset' }]} />
       <ProgrammePage {...props} />
       <ReviewsSection reviews={reviews} title="From Reset alumnae" kicker="Reviews" kickerColour="#F280AA" />
       <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#F5F3EF" />
