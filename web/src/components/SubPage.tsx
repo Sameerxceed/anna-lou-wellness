@@ -9,11 +9,12 @@ interface SubPageProps {
   description?: string;
   paragraphs?: string[];
   cta?: { label: string; href: string };
+  inspirationLink?: { label: string; href: string };
   details?: { label: string; value: string }[];
   heroImage?: string; // optional CMS or stock image URL — kills the beige placeholder when set
 }
 
-export default function SubPage({ kicker, kickerColour, title, parentLabel, parentHref, description, paragraphs, cta, details, heroImage }: SubPageProps) {
+export default function SubPage({ kicker, kickerColour, title, parentLabel, parentHref, description, paragraphs, cta, inspirationLink, details, heroImage }: SubPageProps) {
   const content = paragraphs || (description ? [description] : ['This page will be populated from the CMS (Strapi) when connected.']);
 
   return (
@@ -45,6 +46,13 @@ export default function SubPage({ kicker, kickerColour, title, parentLabel, pare
               <Link href={cta.href} className="sub-cta-btn" style={{ background: kickerColour, borderColor: kickerColour }}>
                 {cta.label} <span>&rarr;</span>
               </Link>
+              {inspirationLink && inspirationLink.href && inspirationLink.label && (
+                <p className="sub-inspiration">
+                  <Link href={inspirationLink.href} style={{ color: kickerColour }}>
+                    {inspirationLink.label} <span>&rarr;</span>
+                  </Link>
+                </p>
+              )}
             </div>
           )}
           <Link href={parentHref} className="sub-back" style={{ color: kickerColour, borderColor: kickerColour }}>
@@ -73,6 +81,10 @@ const subStyles = `
 .sub-cta { text-align:center; margin-bottom:2rem; }
 .sub-cta-btn { color:#fff; font-family:Mulish,sans-serif; font-weight:500; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.7rem 1.8rem; border-radius:3px; border:1px solid; transition:all 0.3s; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; }
 .sub-cta-btn:hover { opacity:0.85; }
+.sub-inspiration { margin-top:0.9rem; font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:0.95rem; }
+.sub-inspiration a { text-decoration:none; border-bottom:1px solid currentColor; padding-bottom:1px; transition:opacity 0.3s; }
+.sub-inspiration a:hover { opacity:0.7; }
+.sub-inspiration span { margin-left:0.25rem; }
 .sub-back { font-family:Mulish,sans-serif; font-weight:400; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid; padding-bottom:2px; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; transition:gap 0.3s; }
 .sub-back:hover { gap:0.7rem; }
 @media (max-width:900px) { .sub-page { padding:1.5rem 1.2rem 2rem; } }

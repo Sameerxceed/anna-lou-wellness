@@ -57,6 +57,10 @@ export function removeFromCart(id: number) {
 
 export function clearCart() {
   saveCart([]);
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem(COUPON_KEY);
+    sessionStorage.removeItem(GIFTWRAP_KEY);
+  }
 }
 
 export function getCartCount(): number {
@@ -65,4 +69,53 @@ export function getCartCount(): number {
 
 export function getCartTotal(): number {
   return getCart().reduce((sum, item) => sum + item.price * item.qty, 0);
+}
+
+// ── Applied coupon (sessionStorage) ──
+
+export interface AppliedCoupon {
+  code: string;
+  type: 'percentage' | 'fixed_amount' | 'free_shipping';
+  discount: number;       // amount in £ — for free_shipping this is 0 (shipping handled separately)
+  freeShipping: boolean;
+  message: string;
+}
+
+const COUPON_KEY = 'siteCartCoupon';
+
+export function getAppliedCoupon(): AppliedCoupon | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = sessionStorage.getItem(COUPON_KEY);
+    return raw ? (JSON.parse(raw) as AppliedCoupon) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setAppliedCoupon(c: AppliedCoupon | null) {
+  if (typeof window === 'undefined') return;
+  if (c) sessionStorage.setItem(COUPON_KEY, JSON.stringify(c));
+  else sessionStorage.removeItem(COUPON_KEY);
+  notify();
+}
+
+export function clearAppliedCoupon() {
+  setAppliedCoupon(null);
+}
+
+// ── Gift wrap (sessionStorage) ──
+
+const GIFTWRAP_KEY = 'siteCartGiftWrap';
+
+export function getGiftWrap(): boolean {
+  if (typeof window === 'undefined') return false;
+  return sessionStorage.getItem(GIFTWRAP_KEY) === '1';
+}
+
+export function setGiftWrap(enabled: boolean) {
+  if (typeof window === 'undefined') return;
+  if (enabled) sessionStorage.setItem(GIFTWRAP_KEY, '1');
+  else sessionStorage.removeItem(GIFTWRAP_KEY);
+  notify();
 }

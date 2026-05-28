@@ -4,7 +4,7 @@
   "info": {
     "singularName": "coupon",
     "pluralName": "coupons",
-    "displayName": "zz \u00b7 Coupon (unused)"
+    "displayName": "Shop \u00b7 Coupon Code"
   },
   "options": {
     "draftAndPublish": false
@@ -63,10 +63,10 @@
   },
   "pluginOptions": {
     "content-manager": {
-      "visible": false
+      "visible": true
     },
     "content-type-builder": {
-      "visible": false
+      "visible": true
     }
   }
 }

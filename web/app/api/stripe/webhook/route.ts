@@ -9,6 +9,7 @@ import {
   markOrderPaid,
   decrementProductStock,
 } from '@/lib/strapi-admin';
+import { incrementCouponUsage } from '@/lib/strapi-coupon';
 
 /**
  * Stripe webhook handler.
@@ -107,10 +108,19 @@ async function handleShopOrder(event: StripeEvent, ref: StrapiRef, email: string
 
   if (Array.isArray(order.items)) {
     for (const item of order.items) {
-      if (item?.id && item?.qty) {
+      // gift-wrap line item uses id: -1 — skip stock decrement for it
+      if (item?.id && Number(item.id) > 0 && item?.qty) {
         await decrementProductStock(Number(item.id), Number(item.qty));
       }
     }
+  }
+
+  // Bump coupon usage now that payment is confirmed.
+  const obj2 = event.data.object as any;
+  const couponDocId = obj2?.metadata?.coupon_document_id;
+  if (couponDocId) {
+    try { await incrementCouponUsage(String(couponDocId)); }
+    catch (err: any) { console.warn('[stripe webhook] coupon usage bump failed:', err?.message); }
   }
 
   const tagResult = await subscribeAndTag(email, 'Shop Customers');

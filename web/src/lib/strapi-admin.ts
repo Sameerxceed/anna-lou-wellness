@@ -221,6 +221,8 @@ export type CreateOrderInput = {
   currency?: string;
   payment_method: 'stripe' | 'paypal' | 'bank_transfer';
   notes?: string;
+  coupon_code?: string;
+  discount_amount?: number;
 };
 
 export type StrapiOrder = {

@@ -16,6 +16,8 @@ const fallback = {
   ],
   ctaLabel: 'Browse personalised',
   ctaUrl: '/shop',
+  inspirationLabel: 'Looking for inspiration? Read how to choose your word',
+  inspirationUrl: '/life/style-and-beauty',
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -37,6 +39,11 @@ export default async function PersonalisedPage() {
       parentHref={page.parentHref}
       paragraphs={page.paragraphs}
       cta={{ label: page.ctaLabel, href: page.ctaUrl }}
+      inspirationLink={
+        page.inspirationLabel && page.inspirationUrl
+          ? { label: page.inspirationLabel, href: page.inspirationUrl }
+          : undefined
+      }
     />
   );
 }

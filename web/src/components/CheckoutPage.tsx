@@ -1,7 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getCart, getCartTotal, clearCart, type CartItem } from '@/lib/cart';
+import {
+  getCart,
+  getCartTotal,
+  clearCart,
+  getAppliedCoupon,
+  getGiftWrap,
+  setGiftWrap,
+  type CartItem,
+  type AppliedCoupon,
+} from '@/lib/cart';
 import { showToast } from '@/components/Toast';
 
 type BankDetails = {
@@ -12,22 +21,59 @@ type BankDetails = {
   reference: string;
 };
 
+type ShopSettings = {
+  freeShippingThreshold: number;
+  freeShippingLabel: string;
+  shippingFlatRate: number;
+  giftWrapEnabled: boolean;
+  giftWrapPrice: number;
+  giftWrapLabel: string;
+  giftWrapDescription: string;
+};
+
+const defaultShopSettings: ShopSettings = {
+  freeShippingThreshold: 50,
+  freeShippingLabel: 'Free UK shipping on orders over £50',
+  shippingFlatRate: 4.95,
+  giftWrapEnabled: true,
+  giftWrapPrice: 3.5,
+  giftWrapLabel: 'Add gift wrap',
+  giftWrapDescription: 'Hand-tied with a satin ribbon and a card you can personalise.',
+};
+
 export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [total, setTotal] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
+  const [giftWrap, setGiftWrapState] = useState(false);
+  const [settings, setSettings] = useState<ShopSettings>(defaultShopSettings);
   const [step, setStep] = useState<'form' | 'processing' | 'confirmed'>('form');
   const [orderNum, setOrderNum] = useState('');
   const [email, setEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'bank' | 'stripe'>('bank');
   const [bankDetails, setBankDetails] = useState<BankDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [confirmedTotal, setConfirmedTotal] = useState(0);
 
   useEffect(() => {
     const c = getCart();
     if (c.length === 0) { window.location.href = '/cart'; return; }
     setCart(c);
-    setTotal(getCartTotal());
+    setSubtotal(getCartTotal());
+    setCoupon(getAppliedCoupon());
+    setGiftWrapState(getGiftWrap());
+
+    fetch('/api/shop-settings')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((s) => { if (s) setSettings(s); })
+      .catch(() => {});
   }, []);
+
+  const discount = coupon?.discount || 0;
+  const qualifiesFreeShipping = coupon?.freeShipping || subtotal >= settings.freeShippingThreshold;
+  const shipping = qualifiesFreeShipping ? 0 : settings.shippingFlatRate;
+  const giftWrapAmount = giftWrap && settings.giftWrapEnabled ? settings.giftWrapPrice : 0;
+  const total = Math.max(0, subtotal - discount + shipping + giftWrapAmount);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +93,8 @@ export default function CheckoutPage() {
       },
       items: cart.map((i) => ({ productId: i.id, qty: i.qty })),
       paymentMethod: payment,
+      couponCode: coupon?.code || undefined,
+      giftWrap: giftWrap && settings.giftWrapEnabled,
     };
 
     try {
@@ -65,7 +113,6 @@ export default function CheckoutPage() {
 
       if (payment === 'stripe') {
         if (data.url) {
-          // Cart cleared on /thank-you page (after Stripe confirms payment)
           window.location.href = data.url;
           return;
         }
@@ -74,8 +121,8 @@ export default function CheckoutPage() {
         return;
       }
 
-      // Bank transfer
       setOrderNum(data.orderNumber);
+      setConfirmedTotal(Number(data.total) || total);
       setBankDetails(data.bankDetails);
       clearCart();
       setStep('confirmed');
@@ -109,7 +156,7 @@ export default function CheckoutPage() {
               </div>
             ))}
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.7rem 0 0', marginTop: '0.4rem', borderTop: '1px solid #c8c4bc', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400, fontSize: '0.9rem', color: '#1a1a18' }}>
-              <span>Total</span><span>&pound;{total.toFixed(2)}</span>
+              <span>Total</span><span>&pound;{confirmedTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -117,7 +164,7 @@ export default function CheckoutPage() {
           <div style={{ maxWidth: 460, margin: '1.5rem auto 0', textAlign: 'left', background: '#fff', border: '1px solid #c8c4bc', padding: '1.5rem' }}>
             <p className="section-label" style={{ marginBottom: '0.6rem', color: '#6E3A5A' }}>Bank Transfer Details</p>
             <p style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#3D3D3A', lineHeight: 1.7, marginBottom: '0.8rem' }}>
-              Please transfer <strong>&pound;{total.toFixed(2)}</strong> using your order number <strong>{bankDetails.reference}</strong> as the reference.
+              Please transfer <strong>&pound;{confirmedTotal.toFixed(2)}</strong> using your order number <strong>{bankDetails.reference}</strong> as the reference.
             </p>
             <div style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#3D3D3A', lineHeight: 1.8 }}>
               <div><strong>Account name:</strong> {bankDetails.accountName}</div>
@@ -160,6 +207,33 @@ export default function CheckoutPage() {
             <label style={{ display: 'block', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.5rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6e6a62', marginBottom: '0.4rem' }}>Shipping Address *</label>
             <textarea name="address" required placeholder="Full postal address" style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: '1px solid #c8c4bc', padding: '0.7rem', outline: 'none', minHeight: 80, resize: 'vertical' }} />
           </div>
+
+          {settings.giftWrapEnabled && (
+            <div style={{ marginBottom: '1.6rem', padding: '0.9rem 1.1rem', background: '#fff', border: '1px solid #ece6dc' }}>
+              <label style={{ display: 'flex', gap: '0.7rem', alignItems: 'flex-start', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={giftWrap}
+                  onChange={(e) => { const v = e.target.checked; setGiftWrapState(v); setGiftWrap(v); }}
+                  style={{ marginTop: 3, accentColor: '#c4704a' }}
+                />
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.6rem', alignItems: 'baseline' }}>
+                    <span style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400, fontSize: '0.62rem', letterSpacing: '0.16em', textTransform: 'uppercase' as const, color: '#1a1a18' }}>
+                      {settings.giftWrapLabel}
+                    </span>
+                    <span style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#1a1a18' }}>
+                      +£{settings.giftWrapPrice.toFixed(2)}
+                    </span>
+                  </div>
+                  <p style={{ fontFamily: "'Lora', serif", fontStyle: 'italic', fontSize: '0.8rem', color: '#6e6a62', margin: '0.25rem 0 0' }}>
+                    {settings.giftWrapDescription}
+                  </p>
+                </div>
+              </label>
+            </div>
+          )}
+
           <div style={{ marginTop: '1.8rem' }}>
             <p className="section-label">Payment Method</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.7rem' }}>
@@ -207,11 +281,22 @@ export default function CheckoutPage() {
           ))}
           <div style={{ marginTop: '0.8rem', paddingTop: '0.6rem', borderTop: '1px solid #c8c4bc' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0', fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#6e6a62' }}>
-              <span>Subtotal</span><span>&pound;{total.toFixed(2)}</span>
+              <span>Subtotal</span><span>&pound;{subtotal.toFixed(2)}</span>
             </div>
+            {discount > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0', fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#5a7a4a' }}>
+                <span>Discount {coupon?.code ? `(${coupon.code})` : ''}</span><span>&minus;&pound;{discount.toFixed(2)}</span>
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0', fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#6e6a62' }}>
-              <span>Shipping</span><span>Free</span>
+              <span>Shipping</span>
+              <span>{qualifiesFreeShipping ? <span style={{ color: '#5a7a4a' }}>Free</span> : <>&pound;{shipping.toFixed(2)}</>}</span>
             </div>
+            {giftWrapAmount > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0', fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#6e6a62' }}>
+                <span>Gift wrap</span><span>&pound;{giftWrapAmount.toFixed(2)}</span>
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem 0 0', marginTop: '0.3rem', borderTop: '1px solid #c8c4bc', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400, fontSize: '0.9rem', color: '#1a1a18' }}>
               <span>Total</span><span>&pound;{total.toFixed(2)}</span>
             </div>

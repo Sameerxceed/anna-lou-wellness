@@ -126,6 +126,41 @@
       "type": "integer",
       "default": 5
     },
+    "free_shipping_threshold": {
+      "type": "decimal",
+      "default": 50,
+      "description": "Cart subtotal at or above this value qualifies for free UK shipping. Set to 0 to always charge shipping. Default £50."
+    },
+    "free_shipping_label": {
+      "type": "string",
+      "default": "Free UK shipping on orders over £50",
+      "description": "Message shown on the cart page when the visitor qualifies / is close to qualifying for free shipping."
+    },
+    "shipping_flat_rate": {
+      "type": "decimal",
+      "default": 4.95,
+      "description": "Flat shipping rate (£) charged when the cart subtotal is below the free-shipping threshold. Default £4.95."
+    },
+    "gift_wrap_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show the optional gift-wrap toggle at checkout. Untick to hide the option entirely."
+    },
+    "gift_wrap_price": {
+      "type": "decimal",
+      "default": 3.50,
+      "description": "Price (£) added to the order when the buyer ticks 'Add gift wrap'. Default £3.50."
+    },
+    "gift_wrap_label": {
+      "type": "string",
+      "default": "Add gift wrap",
+      "description": "Short label shown next to the gift-wrap checkbox at checkout."
+    },
+    "gift_wrap_description": {
+      "type": "string",
+      "default": "Hand-tied with a satin ribbon and a card you can personalise.",
+      "description": "One-line description shown under the gift-wrap label at checkout."
+    },
     "review_moderation_enabled": {
       "type": "boolean",
       "default": true

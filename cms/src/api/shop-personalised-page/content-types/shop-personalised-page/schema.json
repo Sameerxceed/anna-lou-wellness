@@ -55,6 +55,16 @@
       "type": "string",
       "default": "/shop"
     },
+    "inspiration_label": {
+      "type": "string",
+      "default": "Looking for inspiration? Read how to choose your word",
+      "description": "Secondary link shown below the main CTA on /shop/personalised. Points buyers to an article or guide if they need help deciding what to engrave. Leave blank to hide."
+    },
+    "inspiration_url": {
+      "type": "string",
+      "default": "/life/style-and-beauty",
+      "description": "Target URL for the inspiration link. Usually points to a guide article in the magazine."
+    },
     "seo_title": { "type": "string" },
     "seo_description": { "type": "text" }
   }

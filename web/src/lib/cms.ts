@@ -260,10 +260,47 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       cookieBannerText: d.cookie_banner_text || fallbackSiteSettings.cookieBannerText,
       footerCopyright: d.footer_copyright || fallbackSiteSettings.footerCopyright,
       maintenanceMode: d.maintenance_mode ?? false,
+      freeShippingThreshold: typeof d.free_shipping_threshold === 'number' ? d.free_shipping_threshold : Number(d.free_shipping_threshold) || fallbackSiteSettings.freeShippingThreshold,
+      freeShippingLabel: d.free_shipping_label || fallbackSiteSettings.freeShippingLabel,
+      shippingFlatRate: typeof d.shipping_flat_rate === 'number' ? d.shipping_flat_rate : Number(d.shipping_flat_rate) || fallbackSiteSettings.shippingFlatRate,
+      giftWrapEnabled: d.gift_wrap_enabled ?? fallbackSiteSettings.giftWrapEnabled,
+      giftWrapPrice: typeof d.gift_wrap_price === 'number' ? d.gift_wrap_price : Number(d.gift_wrap_price) || fallbackSiteSettings.giftWrapPrice,
+      giftWrapLabel: d.gift_wrap_label || fallbackSiteSettings.giftWrapLabel,
+      giftWrapDescription: d.gift_wrap_description || fallbackSiteSettings.giftWrapDescription,
     };
   } catch {
     return fallbackSiteSettings;
   }
+}
+
+/**
+ * Subset of site-settings safe to expose publicly to the shop UI.
+ * Used by the cart/checkout client components to display the
+ * free-shipping tracker and gift-wrap toggle.
+ */
+export interface ShopSettings {
+  freeShippingThreshold: number;
+  freeShippingLabel: string;
+  shippingFlatRate: number;
+  giftWrapEnabled: boolean;
+  giftWrapPrice: number;
+  giftWrapLabel: string;
+  giftWrapDescription: string;
+  defaultCurrency: string;
+}
+
+export async function getShopSettings(): Promise<ShopSettings> {
+  const s = await getSiteSettings();
+  return {
+    freeShippingThreshold: s.freeShippingThreshold,
+    freeShippingLabel: s.freeShippingLabel,
+    shippingFlatRate: s.shippingFlatRate,
+    giftWrapEnabled: s.giftWrapEnabled,
+    giftWrapPrice: s.giftWrapPrice,
+    giftWrapLabel: s.giftWrapLabel,
+    giftWrapDescription: s.giftWrapDescription,
+    defaultCurrency: 'GBP',
+  };
 }
 
 // Navigation — fetched from Strapi `navigation` singleType (Anna edits in CMS),
@@ -415,6 +452,8 @@ export type SubPageData = {
   paragraphs: string[];
   ctaLabel: string;
   ctaUrl: string;
+  inspirationLabel?: string;
+  inspirationUrl?: string;
 };
 
 // /experiences landing page — header + the 4 category cards (Retreats /
@@ -527,6 +566,8 @@ export async function getSubPage(
       paragraphs: paragraphs.length > 0 ? paragraphs : fallback.paragraphs,
       ctaLabel: (r.cta_label as string) || fallback.ctaLabel,
       ctaUrl: (r.cta_url as string) || fallback.ctaUrl,
+      inspirationLabel: typeof r.inspiration_label === 'string' && r.inspiration_label.trim() ? r.inspiration_label : fallback.inspirationLabel,
+      inspirationUrl: typeof r.inspiration_url === 'string' && r.inspiration_url.trim() ? r.inspiration_url : fallback.inspirationUrl,
     };
   } catch {
     return fallback;

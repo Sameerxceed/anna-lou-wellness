@@ -28,6 +28,13 @@ export interface SiteSettings {
   footerCopyright: string;
   maintenanceMode: boolean;
   maintenanceMessage: string;
+  freeShippingThreshold: number;
+  freeShippingLabel: string;
+  shippingFlatRate: number;
+  giftWrapEnabled: boolean;
+  giftWrapPrice: number;
+  giftWrapLabel: string;
+  giftWrapDescription: string;
 }
 
 export interface NavItem {
@@ -72,6 +79,13 @@ export const siteSettings: SiteSettings = {
   footerCopyright: "Anna Lou Wellness. All rights reserved.",
   maintenanceMode: false,
   maintenanceMessage: "We're making some improvements. Please check back shortly.",
+  freeShippingThreshold: 50,
+  freeShippingLabel: "Free UK shipping on orders over £50",
+  shippingFlatRate: 4.95,
+  giftWrapEnabled: true,
+  giftWrapPrice: 3.5,
+  giftWrapLabel: "Add gift wrap",
+  giftWrapDescription: "Hand-tied with a satin ribbon and a card you can personalise.",
 };
 
 export const navigation: NavItem[] = [
