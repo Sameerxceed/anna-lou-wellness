@@ -1,10 +1,14 @@
 # Anna Lou Wellness — User Manual
 
-**Version 1.0 — Final handover edition · May 2026**
+**Version 1.1 — Updated 27 May 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
 A 2-page cheatsheet with the 10 most common tasks is included separately (`ANNA_QUICK_REFERENCE.docx`). Use that for daily work; come back here when you need depth.
+
+**Two ways to use this manual:**
+- Sections 0–15 are organised **by feature** (Pages, Articles, Shop, Mailchimp, Stripe, etc.). Best when you want to learn how a system works.
+- Section 16 is organised **by URL**. Best when you're looking at a live page and asking "where do I change this?". It includes a Quick Reference table mapping every page on the site to its CMS location.
 
 ---
 
@@ -774,6 +778,336 @@ WhatsApp / email — fastest is WhatsApp.
 - **Staging** — `staging.annalouwellness.com`, the test version. Stays live alongside the production site.
 - **Production / Live** — the real customer-facing site at `annalouwellness.com`.
 - **Cache** — the website remembers content for 60 seconds for speed. Why your saves take ~1 minute to appear.
+
+---
+
+## 16. Page-by-Page Edit Reference
+
+This section is organised by URL. Open any page on the live website, find its URL in the Quick Reference below, then jump to the matching detail section for full editing instructions.
+
+**Two browser tabs, side by side, work best:**
+- Left tab: the live page you want to edit
+- Right tab: `https://cms.annalouwellness.com/admin` (the CMS)
+
+Edit on the right → save → refresh on the left to see the change appear (usually within 1–2 seconds).
+
+### 16.1 Quick Reference — every page on the site
+
+#### Site-wide chrome (visible on every page)
+
+| What you see on the site | Where to edit in Strapi |
+|---|---|
+| Logo, top strip, social URLs, SEO defaults | Single Types → **Site Settings** |
+| Top navigation menu (dropdowns under each item) | Single Types → **Navigation** |
+| Footer (legal links, columns, newsletter CTA) | Single Types → **Footer** |
+| Cookie banner text | Single Types → **Site Settings** → `cookie_banner_text` |
+
+#### Homepage and one-off pages
+
+| URL | Where to edit |
+|---|---|
+| `/` (Homepage) | Single Types → **Homepage** + the 3 article cards pick from Story → Article (see §16.3 + §16.7) |
+| `/about` | Single Types → **About Page** |
+| `/about/press` | Content Manager → **Pages · Standalone** → entry with slug `about-press` |
+| `/about/partnerships` | Content Manager → **Pages · Standalone** → entry with slug `about-partnerships` |
+| `/contact` | Single Types → **Contact Page** + Site Settings (for email/address) |
+| `/testimonials` | Single Types → **Testimonials Page** (hero copy) + Content Manager → **Testimonial / Review** (each card) |
+| `/our-mission` | Content Manager → **Pages · Standalone** → entry with slug `our-mission` |
+| `/privacy-policy` | Content Manager → **Pages · Standalone** → entry with slug `privacy-policy` |
+| `/terms-and-conditions` | Content Manager → **Pages · Standalone** → entry with slug `terms-and-conditions` |
+| `/reset-letters` | Single Types → **Reset Letters Page** |
+| `/ask-anna` | No editable content (the AI assistant) |
+| `/free/nervous-system-decoder` | Single Types → **Decoder Page** |
+
+#### Work with Anna
+
+| URL | Where to edit |
+|---|---|
+| `/the-work` (hub) | Single Types → **Work With Anna Page** |
+| `/the-work/the-reset` | Content Manager → **Work · Programme** → slug `the-reset` |
+| `/the-work/signal` | Content Manager → **Work · Programme** → slug `signal` |
+| `/the-work/signal-and-build` | Content Manager → **Work · Programme** → slug `signal-and-build` |
+| `/the-work/one-day` | Content Manager → **Work · Programme** → slug `one-day` |
+| `/the-work/signal-collective` | Content Manager → **Work · Programme** → slug `signal-collective` |
+| `/the-work/recovery` | Content Manager → **Work · Programme** → slug `recovery` |
+| `/the-work/sessions` | Single Types → **Sessions Hub Page** + Content Manager → **Work · Coaching Session** |
+| `/the-work/sessions/{slug}` | Content Manager → **Work · Coaching Session** → matching slug |
+| `/the-work/quiz` | Single Types → **Quiz Page** |
+| `/the-work/ways-to-work-with-me` | Content Manager → **Pages · Standalone** → slug `the-work-ways-to-work-with-me` |
+
+#### Experiences
+
+| URL | Where to edit |
+|---|---|
+| `/experiences` (hub) | Single Types → **Experiences Landing Page** |
+| `/experiences/retreats` | Content Manager → **Experiences · Sub-page** slug `retreats` + Content Manager → **Experiences · Event** (dates) |
+| `/experiences/workshops` | **Experiences · Sub-page** slug `workshops` + **Experiences · Event** |
+| `/experiences/corporate-wellbeing` | **Experiences · Sub-page** slug `corporate-wellbeing` |
+| `/experiences/speaking` | **Experiences · Sub-page** slug `speaking` |
+
+#### Community
+
+| URL | Where to edit |
+|---|---|
+| `/community` (hub) | Single Types → **Community Page** |
+| `/community/the-returning-circle` | Content Manager → **Community Event Page** → slug `the-returning-circle` |
+| `/community/reset-room` | Single Types → **Reset Room Page** |
+| `/community/reset-room/vault` (members) | Content Manager → **Reset Room · Vault Journey** |
+| `/community/reset-room/replays` (members) | Content Manager → **Reset Room · Workshop Replay** |
+| `/community/membership` | Single Types → **Membership Page** |
+| `/community/events` | Content Manager → **Community Event Page** slug `events` + Content Manager → **Experiences · Event** |
+| `/community/resources` | Content Manager → **Pages · Standalone** → slug `community-resources` |
+
+#### Editorial sections (magazine)
+
+| URL | Where to edit |
+|---|---|
+| `/reset-stories` (hub) | Single Types → **Reset Stories Page** |
+| `/reset-stories/{slug}` | Content Manager → **Story · Article** → matching slug |
+| `/reset-stories/{category}` (sub-category landing) | Content Manager → **Story · Category** → matching slug |
+| `/life`, `/love-and-relationships`, `/work-and-money` (hubs + categories + articles) | Same pattern as Reset Stories — Single Type for hub copy, **Story · Category** for sub-pages, **Story · Article** for individual articles |
+| `/mantras` | Single Types → **Mantras Page** + Content Manager → **Story · Mantra** |
+| `/cosmic-forecast` | Content Manager → **Story · Cosmic Forecast** |
+
+#### Shop
+
+| URL | Where to edit |
+|---|---|
+| `/shop` (hub) | Single Types → **Shop Page** |
+| `/shop/{slug}` (individual product) | Content Manager → **Shop · Product** → matching slug |
+| `/shop?category={slug}` (category filter) | Content Manager → **Shop · Category** (tick `is_visible_in_nav` to add to dropdown) |
+| `/shop/emotional-support-jewellery` | Single Types → **Shop ESJ Page** |
+| `/shop/new-in` | Single Types → **Shop New In Page** |
+| `/shop/personalised` | Single Types → **Shop Personalised Page** |
+
+#### Other / system
+
+| URL | Where to edit |
+|---|---|
+| FAQ accordion at bottom of any page | Content Manager → **FAQ · Per Page** → filter by `page` field |
+| Email signup forms | Mailchimp-driven, see §8 |
+| `/cart`, `/checkout`, `/thank-you` | Stripe-driven, copy in code (ask Sameer) |
+| `/login`, `/account`, member dashboards | Auth flows — no editable content |
+
+### 16.2 Site-wide settings (Site Settings, Navigation, Footer)
+
+Three Single Types control everything that appears across every page. Edit once → applies everywhere.
+
+#### Site Settings
+
+**Strapi:** Single Types → **Site Settings**
+
+The global control panel. Key fields:
+
+| Field | What it controls |
+|---|---|
+| `site_name` | Browser tab suffix, SEO meta. Default: "Anna Lou Wellness" |
+| `site_tagline` | Below logo in some headers; SEO meta description |
+| `logo` | Top-nav logo. Upload SVG ideally, or transparent PNG 600×600 |
+| `favicon` | Browser tab icon |
+| `og_default_image` | Social share image (1200×630 JPG). Used when a specific page doesn't set its own |
+| `seo_description` | Default Google meta description (<160 chars) |
+| `instagram_url`, `facebook_url`, `youtube_url`, `tiktok_url`, `linkedin_url`, `substack_url`, `podcast_url` | Footer + nav social links. Blank → icon hidden. Use full `https://...` URLs |
+| `email` | Contact email shown in footer + Contact page |
+| `address` | Postal address shown in footer |
+| `notification_email` | Where order notifications go |
+| `cookie_banner_text` | Wording in the cookie consent bar |
+| `footer_copyright` | Bottom line of the footer |
+| `maintenance_mode` (boolean) | If ticked, site shows a maintenance message instead of normal content. **Use with care.** |
+
+#### Navigation
+
+**Strapi:** Single Types → **Navigation**
+
+| Field | What it controls |
+|---|---|
+| `top_strip_text` | Small dot-separated line above the logo. Decorative, not clickable |
+| `items` (repeatable) | Each top-level menu item |
+
+Per item: `label` (the menu word), `href` (where it links — `/path` for internal), `colour` (hex accent), `children` (the dropdown — same shape).
+
+**To add Client Stories under About:** open the "About" item → scroll to its `children` → click **+ Add an entry** → label `Client Stories`, href `/testimonials` → save.
+
+#### Footer
+
+**Strapi:** Single Types → **Footer**
+
+| Field | What it controls |
+|---|---|
+| `closing_message` | Big italic line at the bottom |
+| `substack_cta_label` + `substack_cta_url` | Newsletter button |
+| `explore_links`, `connect_links`, `legal_links` (each repeatable) | The three footer columns. Each entry is label + href |
+
+**Important:** every internal `href` MUST start with a `/` (e.g. `/privacy-policy`, not `privacy-policy`) or the link 404s.
+
+### 16.3 The Homepage (`/`)
+
+**Strapi:** Single Types → **Homepage** (most fields) + Story → Article (the 3 article cards).
+
+#### Anatomy, top to bottom
+
+**1. Issue line** — `issue_line` + `inside_this_issue_line`
+
+**2. Hero block** (text left, image + Substack box right):
+- Left text: `hero_kicker`, `hero_title`, `hero_body`, `hero_cta_primary_label`/`url`, `hero_cta_secondary_label`/`url`
+- Right image: `hero_image` (portrait or square)
+- Right Substack box: `hero_substack_kicker`, `hero_substack_title`, `hero_substack_cta_label`, `hero_substack_cta_url`
+- Mobile: image first (hook), then text, then box
+
+**3. Featured Reset Story** — long-form excerpt with drop-cap. The article shown is whichever Story · Article has `is_featured` ticked. Fallback fields on Homepage: `featured_fallback_title`, `_author`, `_reading_time`, `_excerpt`.
+
+**4. The 3-card article grid:**
+- Articles with `is_homepage_pinned` ticked appear first (ordered by `homepage_pin_order`, lower = earlier).
+- If fewer than 3 pinned, remaining slots fill with most-recent non-pinned, non-featured articles.
+- Pin up to 3 for exact control. Pin 0 for automatic.
+
+**5. Section colour blocks** — four pillar promos. Each has `*_block_kicker`, `_title`, `_body` (reset_stories, life, love, work_money).
+
+**6. Work with Anna teaser** — `work_kicker`, `work_title`, `work_body`, `work_cta_label`/`url`, `work_image`.
+
+**7. Community teaser** — same shape with `community_*` prefix.
+
+**8. Reviews section** — 3 testimonials where `is_featured = true` on the Testimonial entry. "Read all" link goes to `/testimonials`.
+
+**9. Press + certifications** — Content Manager → **Trust · Press Mention** + **Trust · Certification Badge**, with `is_homepage_featured` flag on each.
+
+**10. Newsletter / Substack final block** — `newsletter_kicker`, `_title`, `_body`, `_cta_label`, `_cta_url`.
+
+#### Common homepage edits
+
+| You want to... | Do this |
+|---|---|
+| Change the big hero headline | Homepage → `hero_title` |
+| Replace the hero image | Homepage → `hero_image` → upload new |
+| Update the Substack box wording | Homepage → 4 `hero_substack_*` fields |
+| Pick a different featured article | Story · Article → tick `is_featured` on your choice, untick the old one |
+| Curate the 3 small article cards | Story · Article → tick `is_homepage_pinned` on up to 3 |
+| Swap a homepage testimonial | Testimonial / Review → adjust `is_featured` flags |
+| Add a press logo | Trust · Press Mention → + Create → upload logo + tick `is_homepage_featured` |
+
+### 16.4 About, Contact, and standalone pages
+
+#### `/about`
+
+**Strapi:** Single Types → **About Page**
+
+| Field | What it controls |
+|---|---|
+| `kicker`, `title`, `roles_tagline` | Header at top |
+| `portrait` | Main portrait photo (3:4 portrait, max 400px tall) |
+| `story_paragraph_1` | First paragraph (with the drop-cap) |
+| `story_paragraph_2` | Second paragraph |
+| `additional_bio` | Body section below the press strip. Blank lines = paragraph breaks |
+| `press_logos` (repeatable) | Brand logos. Upload per row or leave empty for text fallback |
+| `certifications` (repeatable) | Accreditations. Each: name + colour. Upload `badge` for image, else styled text shows |
+
+#### `/about/press`, `/about/partnerships`
+
+Both are standalone pages. Content Manager → **Pages · Standalone** → find entry with slug `about-press` or `about-partnerships`. Standard fields (see §16.5 below).
+
+#### `/contact`
+
+**Strapi:** Single Types → **Contact Page** (hero copy) + Site Settings (email/address shown).
+
+Form is hardcoded — to change fields or destination, ask Sameer.
+
+#### Standalone pages (`/our-mission`, `/privacy-policy`, `/terms-and-conditions`, and any new ones)
+
+**Strapi:** Content Manager → **Pages · Standalone (Mission, Cookies, etc.)**
+
+Common fields per entry:
+
+| Field | What it controls |
+|---|---|
+| `title` | Big page heading |
+| `slug` | URL after the domain. **Don't change on existing pages** — footer links would break |
+| `kicker` | Small uppercase label above title |
+| `kicker_colour` | Hex colour. Pink `#F280AA`, blue `#7BAFDD`, gold `#FAA21B`, mint `#5DCAA5`, plum `#6E3A5A` |
+| `tagline` | Italic subtitle (one sentence) |
+| `hero_image` | Optional landscape image at the top |
+| `intro` | Main body — use the toolbar editor (H2/H3, bold, italic, lists, links, quotes). Blank lines between paragraphs |
+| `cta_label` + `cta_url` | Optional button at the bottom |
+| `seo_title`, `seo_description` | Optional SEO overrides |
+
+**Pasting from Word:** the richtext editor strips most Word formatting. Two options:
+1. Paste plain text → re-apply formatting using the toolbar buttons (H2 for sections, B for bold, list buttons for bullets).
+2. Send the Word doc to Sameer — he runs a script that imports it cleanly with formatting preserved.
+
+#### Add a brand new standalone page (e.g. Cookies, Returns)
+
+1. Content Manager → **Pages · Standalone** → **+ Create new entry**
+2. Fill the fields. The slug becomes the URL (`cookies` → `/cookies`).
+3. **Save & Publish.** Page is live within 1–2 seconds.
+4. To link from the footer: Single Types → **Footer** → add an entry to `legal_links` with the matching href (e.g. `/cookies`).
+
+No dev work needed.
+
+### 16.5 Testimonials (`/testimonials`)
+
+**Strapi:**
+- Single Types → **Testimonials Page** — hero copy at the top
+- Content Manager → **Testimonial / Review** — each individual card
+
+| Field | What it controls |
+|---|---|
+| `quote` | The testimonial text |
+| `reviewer_name` | Who said it |
+| `reviewer_location` | Their context (e.g. "Reset alumna", "Houseboat retreat") |
+| `photo` | Upload to make this a photo card |
+| `youtube_url` | Paste a YouTube URL to embed as a video card |
+| `video` + `video_thumbnail` | Alternative: upload MP4 + poster image |
+| `display_style` | `card` (default 3-col grid) or `banner` (full-width plum block — use sparingly, one every 6 cards) |
+| `tag` | Optional — bind to a specific page (e.g. `retreats`, `the-reset`) so it also shows in that page's reviews section |
+| `is_featured` | Tick → also appears on homepage's 3-review row |
+| `sort_order` | Lower = appears earlier |
+| `is_active` | Untick → hides from the site without deleting |
+
+**Add a new testimonial:** Content Manager → Testimonial / Review → + Create → at minimum fill `quote` + `reviewer_name` → save & publish. Add a photo or YouTube URL for richer formats.
+
+### 16.6 Common tasks (cheatsheet)
+
+**Save / publish:**
+- Single Types: just **Save** (publishes immediately)
+- Collection Types: **Save** = draft only, **Save & Publish** = live
+
+**See a change immediately:** hard-refresh with Ctrl + Shift + R after saving.
+
+**Undo a mistake:** clock icon (top right of edit screen) → Version History → pick earlier version → Restore.
+
+**Upload images:**
+- From the edit form: click any image field → drag-drop or browse
+- Pre-upload: left sidebar → Media Library → drag-drop
+
+**Recommended image sizes:**
+- Hero / large feature: 1600×1200+ JPG or PNG
+- Square / product / portrait: 1500×1500
+- Logo / badge: SVG ideally, or transparent PNG 600×600
+- Social share: 1200×630 JPG
+
+Strapi automatically generates 5 resized variants. Upload once at full res.
+
+**Brand colour palette** (use anywhere a hex code is asked for):
+- Plum `#6E3A5A` — Reset Stories, deep editorial, primary CTAs
+- Pink `#F280AA` — Love & Relationships, soft moments
+- Gold `#FAA21B` — Life, ritual
+- Mint `#5DCAA5` — Shop, fresh things
+- Blue `#7BAFDD` — Experiences, water
+- Cream `#FFD07A` — Work & Money
+
+### 16.7 Still to come in this section
+
+Coming in v1.2 (next update):
+- Each individual **programme page** (The Reset, Signal, Signal & Build, One Day, Signal Collective, Recovery) with full field walkthroughs
+- The 1:1 **Sessions** page + each session entry
+- Articles (full lifecycle — write, format, attach images, set category, publish)
+- All editorial **section hubs** (Reset Stories, Life, Love, Work & Money)
+- All community pages
+- Shop products + categories (field walkthrough)
+- The **FAQ system** — how per-page FAQs are wired
+- The **Reset Room** member area (vault + replays)
+- **Ask Anna** AI assistant settings
+
+The Quick Reference table at the top of §16.1 already tells you where to go for these — full walkthroughs are coming.
 
 ---
 
