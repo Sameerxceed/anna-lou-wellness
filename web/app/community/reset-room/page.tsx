@@ -2,9 +2,10 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getStockImage, STOCK } from '@/data/stock-images';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
-import { getFAQs } from '@/lib/cms';
+import { getFAQs, getTestimonials } from '@/lib/cms';
 import JoinResetRoomButton from '@/components/JoinResetRoomButton';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'The Reset Room | Monthly Somatic Membership',
@@ -32,12 +33,35 @@ export default async function ResetRoomPage() {
     const { data: d } = await fetchAPI('/reset-room-page', { populate: '*' });
     cms = (d as Record<string, unknown>) || null;
   } catch { cms = null; }
-  const faqs = await getFAQs({ page: 'reset-room' });
+  const [faqs, reviews] = await Promise.all([
+    getFAQs({ page: 'reset-room' }),
+    getTestimonials({ tag: 'reset-room' }).catch(() => []),
+  ]);
 
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined);
 
+  const reviewInputs: ReviewInput[] = reviews.map((r) => ({
+    reviewerName: r.reviewerName || 'Anonymous',
+    quote: r.quote,
+    rating: 5,
+  }));
+
   return (
     <>
+      <ServiceSchema
+        name="The Reset Room"
+        description="Monthly somatic membership with bi-weekly intimate video sessions, a monthly live group call, and a growing vault of guided journeys. £25/month, cancel any time."
+        url="/community/reset-room"
+        price="25.00"
+        reviews={reviewInputs}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Home', href: '/' },
+          { name: 'Community', href: '/community' },
+          { name: 'The Reset Room', href: '/community/reset-room' },
+        ]}
+      />
       <style dangerouslySetInnerHTML={{ __html: roomStyles }} />
 
       {/* Hero */}

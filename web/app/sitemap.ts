@@ -49,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/mantras`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${siteUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${siteUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${siteUrl}/wishlist`, lastModified: now, changeFrequency: 'never', priority: 0.1 },
   ];
 
   // Dynamic article pages

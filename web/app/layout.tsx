@@ -127,6 +127,15 @@ export default async function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;600&display=swap"
         />
         <link rel="manifest" href="/manifest.json" />
+        {/* Feed + AI-discovery autodiscovery — RSS readers and AI agents
+            (Perplexity, ChatGPT browsing, Claude, Gemini) check these links
+            on the root page to find machine-readable views of the site.
+            llms.txt: curated map of important pages, refreshed every 10 min.
+            feed.xml: RSS of all editorial articles.
+            products.xml: Google Merchant Centre catalogue feed. */}
+        <link rel="alternate" type="application/rss+xml" title="Anna Lou Wellness — articles" href="/feed.xml" />
+        <link rel="alternate" type="application/xml" title="Anna Lou Wellness — product feed" href="/products.xml" />
+        <link rel="alternate" type="text/plain" title="AI discovery map" href="/llms.txt" />
         {/* Canonical URLs are set per-page via generateMetadata */}
         <OrganizationSchema settings={siteSettings} />
         <WebSiteSchema />

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getProducts } from '@/lib/cms';
 import AddToCartButton from '@/components/AddToCartButton';
+import WishlistHeart from '@/components/WishlistHeart';
 import { ProductSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 
@@ -92,14 +93,24 @@ export default async function ProductDetailPage({ params }: Props) {
                 )}
               </div>
 
-              <AddToCartButton
-                id={product.id}
-                name={product.name}
-                price={product.price}
-                image={product.images[0] || ''}
-                slug={product.slug}
-                stock={product.stock}
-              />
+              <div style={{ display: 'flex', gap: '0.7rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                <AddToCartButton
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  image={product.images[0] || ''}
+                  slug={product.slug}
+                  stock={product.stock}
+                />
+                <WishlistHeart
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  image={product.images[0] || ''}
+                  slug={product.slug}
+                  variant="detail"
+                />
+              </div>
             </div>
           </div>
         </div>

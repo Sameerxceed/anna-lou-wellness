@@ -6,10 +6,11 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
-        disallow: ['/api/', '/admin/', '/checkout/'],
+        allow: ['/', '/llms.txt', '/feed.xml', '/products.xml'],
+        // /wishlist is a private utility page (per-device localStorage only) — not useful to index
+        disallow: ['/api/', '/admin/', '/checkout/', '/cart/', '/wishlist'],
       },
-      // AI crawler allowlist
+      // AI crawler allowlist — explicit allow so AI engines know they're welcome
       { userAgent: 'GPTBot', allow: '/' },
       { userAgent: 'ClaudeBot', allow: '/' },
       { userAgent: 'PerplexityBot', allow: '/' },
@@ -17,6 +18,9 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'CCBot', allow: '/' },
       { userAgent: 'Bingbot', allow: '/' },
       { userAgent: 'Applebot-Extended', allow: '/' },
+      { userAgent: 'anthropic-ai', allow: '/' },
+      { userAgent: 'cohere-ai', allow: '/' },
+      { userAgent: 'OAI-SearchBot', allow: '/' },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };

@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import AddToCartButton from '@/components/AddToCartButton';
+import WishlistHeart from '@/components/WishlistHeart';
 import type { Product, ShopCategoryNode } from '@/lib/cms';
 import { getStockImage } from '@/data/stock-images';
 
@@ -111,15 +112,27 @@ export default function ShopGrid({ products, categoryTree, initialParent = ALL_S
           const productImg = product.images[0] || getStockImage('product', product.slug);
           return (
             <div key={product.slug} className="group reveal">
+              <div style={{ position: 'relative' }}>
+                <WishlistHeart
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  image={productImg}
+                  slug={product.slug}
+                  variant="card"
+                />
+                <Link href={`/shop/${product.slug}`} className="block">
+                  <div className="aspect-square overflow-hidden mb-4 bg-cream">
+                    <img
+                      src={productImg}
+                      alt={product.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                </Link>
+              </div>
               <Link href={`/shop/${product.slug}`} className="block">
-                <div className="aspect-square overflow-hidden mb-4 bg-cream">
-                  <img
-                    src={productImg}
-                    alt={product.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
                 <h3 className="font-display font-normal text-[1rem] text-ink mb-1">{product.name}</h3>
                 <p className="font-body text-[0.78rem] text-stone mb-2 line-clamp-2">{product.shortDescription}</p>
               </Link>

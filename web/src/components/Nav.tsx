@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { getCartCount, onCartChange } from '@/lib/cart';
+import WishlistNavLink from '@/components/WishlistNavLink';
 
 interface NavItem {
   label: string;
@@ -152,6 +153,7 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
             </div>
             <div className="nav-actions">
               <Link href="/account" className="nav-action-btn">Login</Link>
+              <WishlistNavLink className="nav-action-btn" />
               <Link href="/cart" className="nav-action-btn nav-action-accent">
                 Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
               </Link>
@@ -214,6 +216,7 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
 
           <div className="mobile-actions">
             <Link href="/account" className="mobile-btn" onClick={() => setMobileOpen(false)}>Login</Link>
+            <WishlistNavLink className="mobile-btn" />
             <Link href="/cart" className="mobile-btn mobile-btn-accent" onClick={() => setMobileOpen(false)}>
               Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
             </Link>
