@@ -985,6 +985,23 @@ Per item: `label` (the menu word), `href` (where it links — `/path` for intern
 | Swap a homepage testimonial | Testimonial / Review → adjust `is_featured` flags |
 | Add a press logo | Trust · Press Mention → + Create → upload logo + tick `is_homepage_featured` |
 
+#### Surfacing content to the homepage — cheat sheet
+
+Most homepage sections aren't edited on the Homepage form — they pull from other collections via a "show on homepage" tick. Here's every one in one place. **Find the entry you want to feature → open it → tick the right flag → save.**
+
+| Homepage section | Where the content lives | What to tick / fill |
+|---|---|---|
+| Big featured story (with drop-cap) | Story · Article | `is_featured` (only one wins — most recent if multiple) |
+| The 3 article cards below | Story · Article | `is_homepage_pinned` on up to 3 articles. Set `homepage_pin_order` (1, 2, 3) to lock the left-to-right order |
+| Reviews row (3 testimonials) | Testimonial / Review | `is_featured` on the 3 you want shown. Adjust `sort_order` (lower = earlier) for ordering |
+| "Jewellery with meaning" product row (3 cards) | Shop · Product | `is_homepage_featured` on the products you want shown. Also fill `homepage_hook` (the italic Anna's-voice line on the card) |
+| "As seen in" press logo strip | Trust · Press Mention | `is_homepage_featured` on each logo. `sort_order` controls left-to-right |
+| "Certified" badge strip | Trust · Certification Badge | `is_homepage_featured` on each badge. `sort_order` for ordering |
+
+For everything else on the homepage (the hero copy, the four pillar promos, the Work / Community teasers, the newsletter band), edit fields **directly on the Homepage singleton** — they're not pulled from other collections.
+
+**One rule of thumb:** if it's a single piece of text/image, look in Homepage singleton. If it's a list of cards (articles, reviews, products, logos), look in the matching collection and find the `_homepage_` flag.
+
 ### 16.4 About, Contact, and standalone pages
 
 #### `/about`
@@ -1525,7 +1542,97 @@ Fields per FAQ entry:
 
 If you have a Word doc / spreadsheet of FAQs to add in bulk, Sameer has a script (`Docs/upload-faqs.ps1`) that reads a JSON file and creates them all at once. Send him the content and he'll run it.
 
-### 16.15 Ask Anna AI assistant
+### 16.15 Other landing pages (Reset Letters, Decoder, Quiz, Mantras, Cosmic Forecast)
+
+Five smaller pages that each have their own dedicated CMS entry. Cover them here so they're not orphaned.
+
+#### `/reset-letters` — Reset Letters Substack landing page
+
+**Strapi:** Single Types → **Reset Letters**
+
+A long landing page for the Substack publication. The fields are grouped by section in the form:
+
+| Section | Fields |
+|---|---|
+| Top label + strapline | `comingSoonLabel`, `strapline` |
+| Hero | `heroHeadline`, `heroBody1`, `heroBody2`, `heroImage` |
+| "What it is" block | `whatItIsTitle`, `whatItIsBody` |
+| "Each week" schedule | `eachWeekTitle`, `eachWeekBody` (one line per cadence item — Sunday / Wednesday / Monthly) |
+| Voices & Contributors | `voicesTitle`, `voicesBody` |
+| About Anna | `aboutAnnaTitle`, `aboutAnnaBody` |
+| Launch date | `launchLabel`, `launchDate` |
+| Founding member offer | `founderEyebrow`, `founderHeadline`, `founderBody`, `founderBenefits` (one benefit per line) |
+| Signup form | `ctaButtonLabel`, `ctaPlaceholder`, `ctaMicrocopy` |
+
+All fields have sensible defaults — edit any to change the on-page copy. The signup form itself submits to Mailchimp (Founding tag) — that wiring is set up and you don't need to touch it.
+
+#### `/free/nervous-system-decoder` — Free download lead magnet
+
+**Strapi:** Single Types → **Decoder**
+
+| Section | Fields |
+|---|---|
+| Hero | `heroEyebrow`, `heroTitle`, `heroTagline` |
+| Book cover graphic on the left | `coverLabel`, `coverTitle`, `coverSubtitle`, `coverAuthor`, `coverImage` (the photo behind the dark overlay) |
+| "Why this exists" body | `whyTitle`, `whyBody` (blank lines = paragraphs) |
+| "What's inside" bullet list | `insideTitle`, `insideItems` (one bullet per line) |
+| Signup form | `formTitle`, `formButtonLabel`, `formMicrocopy` |
+| After-submit success message | `successTitle`, `successBody` |
+
+The form on this page subscribes Anna's audience to Mailchimp and triggers the Decoder PDF email.
+
+#### `/the-work/quiz` — The Signal Method quiz
+
+**Strapi:** Single Types → **Quiz Page**
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `eyebrow`, `title`, `intro` | Hero copy at the top of the quiz |
+| `back_to_label`, `back_to_url` | The back-link at the top |
+| `results` (repeatable component) | The 6 result blurbs — one per programme/destination |
+
+Each result row has:
+- `slug` — which programme this result points to (`decoder`, `reset-room`, `reset`, `signal`, `signal-build`, `one-day`)
+- `title` — the "Start with X" headline
+- `blurb` — the longer body explaining the recommendation
+- `cta_label` — the button text
+
+The quiz questions themselves are in code (not editable from CMS) because the routing logic depends on the exact question structure. To change a question, ask Sameer.
+
+#### `/mantras` — the rotating mantra videos
+
+Two layers:
+
+**Page hero copy:** Single Types → **Mantras Page** (standard kicker/title/intro/SEO fields)
+
+**The mantra videos themselves:** Content Manager → **Story · Mantra**
+
+Per mantra:
+
+| Field | What it controls |
+|---|---|
+| `title` | Mantra title (e.g. "Come Back to Yourself") |
+| `youtube_url` | **Required.** Full YouTube URL — page extracts the video ID and embeds it |
+| `description` | Optional. Short text shown below the video |
+| `duration` | Free-text (e.g. "60 seconds", "90 seconds") |
+| `sort_order` | Lower = appears first |
+| `is_active` | Untick to hide without deleting |
+
+**Add a new mantra:** Story · Mantra → + Create → paste the YouTube URL → fill title → save. Live on `/mantras` instantly.
+
+#### `/cosmic-forecast` — weekly cosmic forecast posts
+
+**Strapi:** Content Manager → **Story · Cosmic Forecast**
+
+Anna posts a new forecast entry roughly weekly. The page shows the most recent one prominently and lists older ones below.
+
+Standard fields per entry: `title`, `slug`, `published_date`, `summary`, `body` (richtext), `hero_image`, `is_active`.
+
+To add a new forecast: + Create → set the published date → write the body → save & publish. Auto-becomes the latest forecast on the page.
+
+### 16.16 Ask Anna AI assistant
 
 **Strapi:** No CMS editing. The Ask Anna widget on the right side of the screen + the `/ask-anna` page are wired to the Anthropic API directly.
 
@@ -1540,7 +1647,7 @@ What it does automatically:
 
 If you want changes to what it can search or how it responds, message Sameer with the desired behaviour.
 
-### 16.16 What's coming next
+### 16.17 What's coming next
 
 The manual is now substantially complete for v1.1. Possible future additions based on Anna's feedback:
 - Screenshots inside each section (currently text-only — Anna may want visual reference)
