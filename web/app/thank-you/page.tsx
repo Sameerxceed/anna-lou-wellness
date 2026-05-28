@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { stripe } from '@/lib/stripe';
 import { fetchPurchasable, type PurchasableType } from '@/lib/strapi-purchasable';
+import { fetchOrder } from '@/lib/strapi-admin';
+import PurchaseTracker from '@/components/PurchaseTracker';
 
 export const metadata: Metadata = {
   title: 'Thank you — Anna Lou Wellness',
@@ -24,19 +26,50 @@ export default async function ThankYouPage({ searchParams }: PageProps) {
   let productName: string | null = null;
   let amount: string | null = null;
   let email: string | null = null;
+  let trackerValue = 0;
+  let trackerCurrency = 'GBP';
+  let trackerItems: Array<{ id: string | number; name: string; price: number; qty: number }> = [];
 
   // Best-effort: load session details. If anything fails, fall back to generic message.
   if (session_id && session_id.startsWith('cs_')) {
     try {
       const session = await stripe.checkout.sessions.retrieve(session_id);
       email = session.customer_email || session.customer_details?.email || null;
-      const meta = session.metadata as { strapi_type?: PurchasableType; strapi_id?: string };
-      if (meta?.strapi_type && meta?.strapi_id) {
-        const purchasable = await fetchPurchasable(meta.strapi_type, meta.strapi_id);
+      const meta = session.metadata as { strapi_type?: PurchasableType | 'order'; strapi_id?: string };
+      if (meta?.strapi_type === 'order' && meta?.strapi_id) {
+        // Shop order — pull totals + line items from Strapi
+        const order = await fetchOrder(meta.strapi_id);
+        if (order) {
+          productName = `Order ${order.order_number}`;
+          const totalPence = Math.round(Number(order.total) * 100);
+          amount = formatAmount(totalPence, 'gbp');
+          trackerValue = Number(order.total);
+          trackerCurrency = 'GBP';
+          trackerItems = Array.isArray(order.items)
+            ? order.items
+                .filter((i: any) => i && i.id && Number(i.id) > 0)
+                .map((i: any) => ({
+                  id: i.id,
+                  name: i.name,
+                  price: Number(i.price),
+                  qty: Number(i.qty),
+                }))
+            : [];
+        }
+      } else if (meta?.strapi_type && meta?.strapi_id) {
+        const purchasable = await fetchPurchasable(meta.strapi_type as PurchasableType, meta.strapi_id);
         if (purchasable) {
           productName = purchasable.name;
           amount = formatAmount(purchasable.pricePence, purchasable.currency);
+          trackerValue = purchasable.pricePence / 100;
+          trackerCurrency = (purchasable.currency || 'gbp').toUpperCase();
+          trackerItems = [{ id: purchasable.id, name: purchasable.name, price: trackerValue, qty: 1 }];
         }
+      }
+      // Fallback: Stripe knows the total even if Strapi lookup failed.
+      if (trackerValue === 0 && typeof session.amount_total === 'number') {
+        trackerValue = session.amount_total / 100;
+        trackerCurrency = (session.currency || 'gbp').toUpperCase();
       }
     } catch {
       // Stripe lookup or Strapi lookup failed — show generic confirmation
@@ -46,6 +79,14 @@ export default async function ThankYouPage({ searchParams }: PageProps) {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
+      {session_id && trackerValue > 0 && (
+        <PurchaseTracker
+          transactionId={session_id}
+          value={trackerValue}
+          currency={trackerCurrency}
+          items={trackerItems}
+        />
+      )}
 
       <section className="ty-page">
         <div className="ty-inner">

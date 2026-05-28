@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { trackEvent } from '@/lib/analytics';
 
 export default function ResetLettersSignupForm({
   buttonLabel,
@@ -38,10 +39,12 @@ export default function ResetLettersSignupForm({
         setSubmitting(false);
         return;
       }
+      trackEvent('sign_up', { method: 'reset_letters', list: 'Reset Letters' });
       window.location.href = '/welcome';
     } catch {
       // Network failure — still redirect (we don't want to lose the signup
       // intent on a transient hiccup). Backend webhooks will catch up.
+      trackEvent('sign_up', { method: 'reset_letters', list: 'Reset Letters' });
       window.location.href = '/welcome';
     }
   }

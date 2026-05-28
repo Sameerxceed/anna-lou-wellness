@@ -267,6 +267,11 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       giftWrapPrice: typeof d.gift_wrap_price === 'number' ? d.gift_wrap_price : Number(d.gift_wrap_price) || fallbackSiteSettings.giftWrapPrice,
       giftWrapLabel: d.gift_wrap_label || fallbackSiteSettings.giftWrapLabel,
       giftWrapDescription: d.gift_wrap_description || fallbackSiteSettings.giftWrapDescription,
+      googleAnalyticsId: d.google_analytics_id || '',
+      facebookPixelId: d.facebook_pixel_id || '',
+      googleSiteVerification: d.google_site_verification || '',
+      bingSiteVerification: d.bing_site_verification || '',
+      pinterestSiteVerification: d.pinterest_site_verification || '',
     };
   } catch {
     return fallbackSiteSettings;

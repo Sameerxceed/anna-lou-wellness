@@ -90,6 +90,9 @@ export type StripeCheckoutSession = {
   customer_details?: { email: string | null };
   metadata: Record<string, string>;
   line_items?: { data: Array<{ price: { id: string } | null }> };
+  amount_total?: number | null;
+  amount_subtotal?: number | null;
+  currency?: string | null;
 };
 
 export type StripeSubscription = {

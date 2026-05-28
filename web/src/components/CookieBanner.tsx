@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { setConsent } from '@/lib/analytics';
 
 interface CookieBannerProps {
   bannerText: string;
@@ -18,12 +19,12 @@ export default function CookieBanner({ bannerText }: CookieBannerProps) {
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('alw-cookies', 'accepted');
+    setConsent('granted');
     setShow(false);
   };
 
   const handleDecline = () => {
-    localStorage.setItem('alw-cookies', 'declined');
+    setConsent('denied');
     setShow(false);
   };
 

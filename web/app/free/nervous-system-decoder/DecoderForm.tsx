@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { trackEvent } from '@/lib/analytics';
 
 export default function DecoderForm({
   buttonLabel,
@@ -41,6 +42,7 @@ export default function DecoderForm({
         setSubmitting(false);
         return;
       }
+      trackEvent('generate_lead', { method: 'decoder', source: 'decoder-landing', value: 0, currency: 'GBP' }, 'Lead');
       setDone(true);
     } catch {
       setError('Network error. Please try again.');

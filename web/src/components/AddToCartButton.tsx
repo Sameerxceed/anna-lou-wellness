@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { addToCart } from '@/lib/cart';
 import { showToast } from '@/components/Toast';
+import { trackEvent } from '@/lib/analytics';
 
 interface Props {
   id: number;
@@ -34,6 +35,11 @@ export default function AddToCartButton({ id, name, price, image, slug, stock, q
     addToCart({ id, name, price, image, slug }, qty);
     setAdded(true);
     showToast(qty > 1 ? `${qty} items added to cart` : 'Added to cart');
+    trackEvent('add_to_cart', {
+      currency: 'GBP',
+      value: price * qty,
+      items: [{ item_id: String(id), item_name: name, price, quantity: qty }],
+    });
     setTimeout(() => setAdded(false), 1400);
   };
 

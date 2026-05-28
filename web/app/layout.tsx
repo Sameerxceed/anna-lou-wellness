@@ -9,6 +9,7 @@ import ScrollReveal from '@/components/ScrollReveal';
 import Toast from '@/components/Toast';
 import FloatingAskAnna from '@/components/FloatingAskAnna';
 import { WebSiteSchema, PersonSchema, LocalBusinessSchema } from '@/components/StructuredData';
+import Analytics from '@/components/Analytics';
 import './globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -53,6 +54,12 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     other: {
       'theme-color': '#231F20',
+      // Search-engine verification meta tags — Anna fills these in CMS once
+      // she's claimed each property. Empty values are rendered as empty
+      // strings and ignored by the engines, which is fine.
+      ...(settings.googleSiteVerification ? { 'google-site-verification': settings.googleSiteVerification } : {}),
+      ...(settings.bingSiteVerification ? { 'msvalidate.01': settings.bingSiteVerification } : {}),
+      ...(settings.pinterestSiteVerification ? { 'p:domain_verify': settings.pinterestSiteVerification } : {}),
     },
   };
 }
@@ -143,6 +150,7 @@ export default async function RootLayout({
         <LocalBusinessSchema />
       </head>
       <body>
+        <Analytics gaId={siteSettings.googleAnalyticsId} fbPixelId={siteSettings.facebookPixelId} />
         <Nav navigation={navigation} siteSettings={siteSettings} topStripText={topStripText} />
         <main>{children}</main>
         <Footer siteSettings={siteSettings} footer={footer} />

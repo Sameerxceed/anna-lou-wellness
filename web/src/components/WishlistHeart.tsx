@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { isInWishlist, toggleWishlist, onWishlistChange } from '@/lib/wishlist';
 import { showToast } from '@/components/Toast';
+import { trackEvent } from '@/lib/analytics';
 
 interface Props {
   id: number;
@@ -29,6 +30,13 @@ export default function WishlistHeart({ id, name, price, image, slug, variant = 
     e.stopPropagation();
     const nowActive = toggleWishlist({ id, name, price, image, slug });
     showToast(nowActive ? 'Saved to wishlist' : 'Removed from wishlist');
+    if (nowActive) {
+      trackEvent('add_to_wishlist', {
+        currency: 'GBP',
+        value: price,
+        items: [{ item_id: String(id), item_name: name, price, quantity: 1 }],
+      });
+    }
   };
 
   if (variant === 'detail') {

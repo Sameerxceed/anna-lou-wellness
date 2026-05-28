@@ -12,6 +12,7 @@ import {
   type AppliedCoupon,
 } from '@/lib/cart';
 import { showToast } from '@/components/Toast';
+import { trackEvent, trackPurchase } from '@/lib/analytics';
 
 type BankDetails = {
   accountName: string;
@@ -67,6 +68,19 @@ export default function CheckoutPage() {
       .then((r) => (r.ok ? r.json() : null))
       .then((s) => { if (s) setSettings(s); })
       .catch(() => {});
+
+    // Fire begin_checkout once when the visitor lands on this page with a
+    // populated cart. GA4 + Meta both expect this event before purchase.
+    trackEvent('begin_checkout', {
+      currency: 'GBP',
+      value: getCartTotal(),
+      items: c.map((i) => ({
+        item_id: String(i.id),
+        item_name: i.name,
+        price: i.price,
+        quantity: i.qty,
+      })),
+    });
   }, []);
 
   const discount = coupon?.discount || 0;
@@ -124,6 +138,13 @@ export default function CheckoutPage() {
       setOrderNum(data.orderNumber);
       setConfirmedTotal(Number(data.total) || total);
       setBankDetails(data.bankDetails);
+      // Fire purchase event BEFORE clearing the cart so we still have items.
+      trackPurchase({
+        transactionId: data.orderNumber,
+        value: Number(data.total) || total,
+        currency: 'GBP',
+        items: cart.map((i) => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
+      });
       clearCart();
       setStep('confirmed');
       showToast('Order placed. Bank details below.');

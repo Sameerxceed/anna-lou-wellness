@@ -35,6 +35,10 @@ export interface SiteSettings {
   giftWrapPrice: number;
   giftWrapLabel: string;
   giftWrapDescription: string;
+  facebookPixelId: string;
+  googleSiteVerification: string;
+  bingSiteVerification: string;
+  pinterestSiteVerification: string;
 }
 
 export interface NavItem {
@@ -86,6 +90,10 @@ export const siteSettings: SiteSettings = {
   giftWrapPrice: 3.5,
   giftWrapLabel: "Add gift wrap",
   giftWrapDescription: "Hand-tied with a satin ribbon and a card you can personalise.",
+  facebookPixelId: "",
+  googleSiteVerification: "",
+  bingSiteVerification: "",
+  pinterestSiteVerification: "",
 };
 
 export const navigation: NavItem[] = [

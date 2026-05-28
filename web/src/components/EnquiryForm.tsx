@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 export interface EnquiryField {
   name: string;
@@ -50,6 +51,7 @@ export default function EnquiryForm({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       }).catch(() => null);
+      trackEvent('generate_lead', { method: 'enquiry_form', endpoint, value: 0, currency: 'GBP' }, 'Lead');
       setDone(true);
     } catch (err: any) {
       setError(err?.message || 'Something went wrong. Try again or email hello@annalouwellness.com.');

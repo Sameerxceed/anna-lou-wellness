@@ -176,7 +176,24 @@
       "type": "email"
     },
     "google_analytics_id": {
-      "type": "string"
+      "type": "string",
+      "description": "GA4 measurement ID, e.g. G-XXXXXXXXXX. Get it from analytics.google.com → Admin → Data Streams. Once filled, GA4 tracking activates site-wide automatically (no code change)."
+    },
+    "facebook_pixel_id": {
+      "type": "string",
+      "description": "Meta Pixel ID (15-16 digits). Get it from business.facebook.com → Events Manager → Data Sources. Required for Facebook/Instagram ads conversion tracking. Leave blank if not running Meta ads."
+    },
+    "google_site_verification": {
+      "type": "string",
+      "description": "Google Search Console verification token (HTML tag method). Paste only the content value (between quotes), not the full <meta> tag. Get it at search.google.com/search-console → Settings → Ownership verification → HTML tag."
+    },
+    "bing_site_verification": {
+      "type": "string",
+      "description": "Bing Webmaster Tools verification token. Get it at bing.com/webmasters → Site → Settings → Ownership verification → Meta tag. Paste only the content value."
+    },
+    "pinterest_site_verification": {
+      "type": "string",
+      "description": "Pinterest domain verification token. Get it at pinterest.com → Business hub → Claim website → HTML tag method. Paste only the content value. Lets Pinterest pull product feeds + show analytics."
     },
     "cookie_banner_text": {
       "type": "text",
