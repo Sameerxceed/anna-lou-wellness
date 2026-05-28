@@ -51,27 +51,39 @@ export function setConsent(state: 'granted' | 'denied') {
   window.dispatchEvent(new CustomEvent('alw-consent-changed', { detail: { state } }));
 }
 
-/** Lazy load FB Pixel after consent — Meta has no consent-mode queue. */
+/**
+ * Lazy load FB Pixel after consent — Meta has no consent-mode queue.
+ *
+ * This is Meta's standard bootstrap snippet, transliterated to TS. The
+ * inner `n` is a function the snippet later attaches properties to
+ * (callMethod, queue, push, loaded, version). Strict TS infers `n` as
+ * `() => void`, so the property assignments don't typecheck. The whole
+ * IIFE is the canonical Meta snippet — we keep its shape and just
+ * declare `n: any` to silence the strict checker.
+ */
 function loadFacebookPixel(pixelId: string) {
-  if (!pixelId || typeof window === 'undefined' || window.fbq) return;
-  (function (f: any, b, e, v) {
+  if (!pixelId || typeof window === 'undefined' || (window as any).fbq) return;
+  (function (f: any, b: any, e: string, v: string) {
     if (f.fbq) return;
-    const n = (f.fbq = function () {
-      n.callMethod ? n.callMethod.apply(n, arguments as any) : n.queue.push(arguments);
+    const n: any = (f.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
     });
     if (!f._fbq) f._fbq = n;
     n.push = n;
     n.loaded = true;
     n.version = '2.0';
     n.queue = [];
-    const t = b.createElement(e) as HTMLScriptElement;
+    const t: any = b.createElement(e);
     t.async = true;
     t.src = v;
     const s = b.getElementsByTagName(e)[0];
     s.parentNode?.insertBefore(t, s);
   })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-  window.fbq && window.fbq('init', pixelId);
-  window.fbq && window.fbq('track', 'PageView');
+  const w = window as any;
+  if (w.fbq) {
+    w.fbq('init', pixelId);
+    w.fbq('track', 'PageView');
+  }
 }
 
 /** Public: track an event to whichever destinations are configured. */
