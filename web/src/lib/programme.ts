@@ -18,6 +18,8 @@ export interface ProgrammeCMS {
   ctaLabel?: string;
   ctaUrl?: string;
   stagesList?: string;
+  pricePence?: number;
+  isRecurring?: boolean;
   seoTitle?: string;
   seoDescription?: string;
 }

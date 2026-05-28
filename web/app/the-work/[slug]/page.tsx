@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import BuyProgrammeButton from '@/components/BuyProgrammeButton';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
@@ -93,6 +94,35 @@ export default async function DynamicProgrammePage({ params }: PageProps) {
         ]}
       />
       <ProgrammePage {...props} />
+      {/* For direct-buy programmes (pricePence > 0, not recurring), render
+          a Stripe Checkout button right below the ProgrammePage CTA. The
+          ProgrammePage's own bottom CTA stays as a fallback enquiry link. */}
+      {cms.pricePence && cms.pricePence > 0 && !cms.isRecurring && (
+        <section style={{ background: cms.accentColour || '#6E3A5A', padding: '2.5rem 2rem', textAlign: 'center' }}>
+          <div style={{ maxWidth: 600, margin: '0 auto' }}>
+            <BuyProgrammeButton
+              slug={slug}
+              label={cms.ctaLabel || `Buy ${cleanTitle}`}
+              background="#FFFFFF"
+              className="buy-programme-btn"
+            />
+            <p style={{ marginTop: '0.8rem', fontFamily: 'Mulish, sans-serif', fontSize: '0.7rem', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.75)' }}>
+              Secured by Stripe. Instant access.
+            </p>
+          </div>
+          <style dangerouslySetInnerHTML={{ __html: `
+            .buy-programme-btn {
+              font-family: Mulish, sans-serif; font-weight: 600;
+              font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+              color: ${cms.accentColour || '#6E3A5A'};
+              padding: 1.1rem 2rem; border: 1px solid #FFFFFF; border-radius: 3px;
+              cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;
+              transition: transform 0.2s;
+            }
+            .buy-programme-btn:hover:not(:disabled) { transform: translateY(-1px); }
+          ` }} />
+        </section>
+      )}
       <ReviewsSection
         reviews={reviews}
         title={`From ${cleanTitle} alumnae`}
