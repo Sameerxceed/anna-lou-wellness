@@ -3,6 +3,7 @@ import PageHero from '@/components/PageHero';
 import FAQAccordion from '@/components/FAQAccordion';
 import { getContactInfo, getFAQs } from '@/lib/cms';
 import { getGenericPageBySlug } from '@/lib/generic-page';
+import { BreadcrumbSchema } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -18,6 +19,7 @@ export default async function ContactPage() {
 
   return (
     <>
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Contact', href: '/contact' }]} />
       <PageHero label={cms?.kicker || 'Say Hello'} title={cms?.title || 'Contact'} bgClass="hero-contact" height="30vh" />
 
       <section className="py-8 px-8">

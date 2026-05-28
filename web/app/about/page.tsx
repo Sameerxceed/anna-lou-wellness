@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getAboutPage, getFAQs } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
+import { BreadcrumbSchema } from '@/components/StructuredData';
 
 export const revalidate = 3600;
 
@@ -52,6 +53,7 @@ export default async function AboutPage() {
 
   return (
     <>
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'About', href: '/about' }]} />
       <style dangerouslySetInnerHTML={{ __html: aboutStyles }} />
 
       {/* Header */}

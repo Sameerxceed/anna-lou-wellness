@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { fetchAPI } from '@/lib/strapi';
+import { BreadcrumbSchema } from '@/components/StructuredData';
 import DecoderQuizClient, {
   type DecoderQuizHero,
   type DecoderStateResult,
@@ -83,5 +84,16 @@ async function loadDecoderQuizPage(): Promise<{ hero: DecoderQuizHero; results: 
 
 export default async function DecoderQuizPage() {
   const { hero, results } = await loadDecoderQuizPage();
-  return <DecoderQuizClient hero={hero} results={results} />;
+  return (
+    <>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Home', href: '/' },
+          { name: 'Free Decoder', href: '/free/nervous-system-decoder' },
+          { name: 'Quiz', href: '/free/nervous-system-decoder/quiz' },
+        ]}
+      />
+      <DecoderQuizClient hero={hero} results={results} />
+    </>
+  );
 }

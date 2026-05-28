@@ -1,6 +1,6 @@
 # Anna Lou Wellness — User Manual
 
-**Version 1.1 — Updated 27 May 2026**
+**Version 1.3 — Updated 28 May 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -817,7 +817,9 @@ Edit on the right → save → refresh on the left to see the change appear (usu
 | `/terms-and-conditions` | Content Manager → **Pages · Standalone** → entry with slug `terms-and-conditions` |
 | `/reset-letters` | Single Types → **Reset Letters Page** |
 | `/ask-anna` | No editable content (the AI assistant) |
-| `/free/nervous-system-decoder` | Single Types → **Decoder Page** |
+| `/free/nervous-system-decoder` | Single Types → **Decoder** (page copy) |
+| `/free/nervous-system-decoder/quiz` | Single Types → **Decoder Quiz (Free)** (hero + 3 result blurbs) |
+| `/the-work/regulated` | Content Manager → **Work · Programme** → entry `regulated` (pay-what-you-feel course) |
 
 #### Work with Anna
 
@@ -1647,9 +1649,61 @@ What it does automatically:
 
 If you want changes to what it can search or how it responds, message Sameer with the desired behaviour.
 
-### 16.17 What's coming next
+### 16.17 The Sales Funnel: Decoder → REGULATED → Reset Room
 
-The manual is now substantially complete for v1.1. Possible future additions based on Anna's feedback:
+A coordinated 3-step funnel was added on 28 May:
+
+1. **Free entry — The Nervous System Decoder**
+   - Landing page: `/free/nervous-system-decoder` (Decoder singleton in Strapi)
+   - Interactive quiz: `/free/nervous-system-decoder/quiz` (Decoder Quiz singleton)
+   - The signup form on the landing page POSTs to `/api/lead/decoder`, which:
+     - Verifies a Cloudflare Turnstile token (anti-spam)
+     - Upserts the subscriber in Mailchimp
+     - Applies the **`Decoder Subscriber`** tag → triggers Anna's "Decoder Upsell" journey
+
+2. **Paid course — REGULATED**
+   - Sales page: `/the-work/regulated` (Work · Programme entry, slug `regulated`)
+   - Pay-what-you-feel from £5 (`pricePence = 500`)
+   - The "Step inside REGULATED" CTA hits Stripe Checkout (via `/api/stripe/checkout` with `strapi_type=programme`, `strapi_id=regulated`)
+   - On successful checkout, the Stripe webhook applies the **`REGULATED Buyer`** tag → triggers Anna's "REGULATED Follow-up" journey AND exits the Decoder Upsell journey
+
+3. **Membership — The Reset Room** (already wired)
+   - Sales page: `/community/membership`
+   - Monthly subscription £25/month
+   - On checkout, applies `Reset Room Members` tag
+
+#### Mailchimp tags used by the funnel
+
+| Tag | When applied | Triggers / exits |
+|---|---|---|
+| `Decoder Subscriber` | Decoder form submit | Triggers Decoder Upsell journey |
+| `REGULATED Buyer` | REGULATED Stripe checkout completes | Triggers REGULATED Follow-up journey + exits Decoder journey |
+| `Reset Room Members` | Reset Room Stripe checkout completes | Triggers Reset Room welcome journey |
+
+#### The 6 templates Anna built for the funnel (in Mailchimp)
+
+| Template | Sent when |
+|---|---|
+| `ALW - 13.1 - Decoder results ready (immediate)` | Trigger fires |
+| `ALW - 13.2 - Decoder upsell to REGULATED (2 days)` | +2 days, if not yet bought REGULATED |
+| `ALW - 13.3 - Decoder upsell final (4 days)` | +4 days, if still not bought |
+| `ALW - 14.1 - REGULATED welcome (on access)` | REGULATED Buyer tag applied |
+| `ALW - 14.2 - REGULATED nudge to Reset Room` | +few days into REGULATED |
+| `ALW - 14.3 - REGULATED final + Reset Room (1 week)` | +1 week into REGULATED |
+
+These live in Strapi-free; Anna picks them in Mailchimp's Customer Journey builder. The hardcoded URLs in them already point to the right pages on the production site.
+
+#### Where Anna edits
+
+- **Decoder page copy** → Strapi → Single Types → **Decoder**
+- **Quiz hero + 3 state result blurbs + meditation URLs** → Strapi → Single Types → **Decoder Quiz (Free)**. The 3 results are pre-seeded with placeholder copy; Anna replaces them with her own.
+- **REGULATED sales page copy + price + Mailchimp tag** → Strapi → Content Manager → Work · Programme → entry `regulated`
+- **Email templates** → Mailchimp → Email templates → Saved templates (the 6 `ALW - 13.*` and `ALW - 14.*` entries)
+- **The 2 customer journeys** → Mailchimp → Automations → Customer Journeys
+
+### 16.18 What's coming next
+
+The manual is now substantially complete for v1.3. Possible future additions based on Anna's feedback:
 - Screenshots inside each section (currently text-only — Anna may want visual reference)
 - A 5-minute video walkthrough of the most-used edits
 - A printable 1-page emergency cheatsheet for the launch day

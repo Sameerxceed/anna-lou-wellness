@@ -213,6 +213,17 @@ module.exports = {
       strapi.log.warn('[seed-article-categories] failed:', err.message);
     }
 
+    // ═══ Seed Decoder Quiz singleton (idempotent — skips if results exist) ═══
+    // Populates the 3 nervous-system state result blurbs so the live quiz at
+    // /free/nervous-system-decoder/quiz works end-to-end on first boot.
+    // Anna replaces the placeholder copy in Strapi when she's ready.
+    try {
+      const seedDecoderQuiz = require('./seed-decoder-quiz');
+      await seedDecoderQuiz(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-decoder-quiz] failed:', err.message);
+    }
+
     // ═══ Set media upload descriptions ═══
     try {
       const setMediaDescriptions = require('./media-guide');

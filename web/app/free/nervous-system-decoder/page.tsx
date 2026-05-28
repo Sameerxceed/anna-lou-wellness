@@ -2,6 +2,7 @@ import { getStockImage } from '@/data/stock-images';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
 import { getFAQs } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import DecoderForm from './DecoderForm';
 
 export const dynamic = 'force-dynamic';
@@ -27,6 +28,13 @@ export default async function DecoderPage() {
 
   return (
     <>
+      <ServiceSchema
+        name="The Nervous System Decoder"
+        description="A free somatic self-audit guide. Identify which of the three nervous system states you are in and get a practice for each."
+        url="/free/nervous-system-decoder"
+        price="0"
+      />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Free Decoder', href: '/free/nervous-system-decoder' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
       <section className="dec-hero">

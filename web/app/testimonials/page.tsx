@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getTestimonials, getTestimonialsPage, getFAQs, type Testimonial } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
+import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getTestimonialsPage();
@@ -58,8 +59,26 @@ export default async function TestimonialsPage() {
     rows.push({ type: 'banner', item: banners[bannerIdx++] });
   }
 
+  // Aggregate the full wall as reviews on the coaching service — this is what
+  // gives Google rich-snippet stars on /testimonials and feeds AI engines
+  // (ChatGPT, Perplexity, Gemini) a clean Review + AggregateRating block.
+  const reviewInputs: ReviewInput[] = all
+    .filter((t) => t.quote)
+    .map((t) => ({
+      reviewerName: t.reviewerName || 'Anonymous',
+      quote: t.quote,
+      rating: 5,
+    }));
+
   return (
     <>
+      <ServiceSchema
+        name="Anna Lou Wellness Coaching"
+        description="Trauma-informed somatic coaching, retreats, workshops, and the Signal Method. Reviews from real clients."
+        url="/testimonials"
+        reviews={reviewInputs}
+      />
+      <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Client Stories', href: '/testimonials' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
       <section className="ts-hero">
