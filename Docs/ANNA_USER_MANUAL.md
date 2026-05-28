@@ -1094,20 +1094,460 @@ Strapi automatically generates 5 resized variants. Upload once at full res.
 - Blue `#7BAFDD` — Experiences, water
 - Cream `#FFD07A` — Work & Money
 
-### 16.7 Still to come in this section
+### 16.7 Programme pages (The Reset, Signal, Signal & Build, One Day, Signal Collective, Recovery)
 
-Coming in v1.2 (next update):
-- Each individual **programme page** (The Reset, Signal, Signal & Build, One Day, Signal Collective, Recovery) with full field walkthroughs
-- The 1:1 **Sessions** page + each session entry
-- Articles (full lifecycle — write, format, attach images, set category, publish)
-- All editorial **section hubs** (Reset Stories, Life, Love, Work & Money)
-- All community pages
-- Shop products + categories (field walkthrough)
-- The **FAQ system** — how per-page FAQs are wired
-- The **Reset Room** member area (vault + replays)
-- **Ask Anna** AI assistant settings
+**Strapi:** Content Manager → **Work · Programme** → each programme is one entry.
 
-The Quick Reference table at the top of §16.1 already tells you where to go for these — full walkthroughs are coming.
+All six programme pages share the same template, so the field walkthrough below applies to every entry — only the slug, copy, colour, and price change. To edit `/the-work/the-reset`, open the Work · Programme entry with slug `the-reset`. Same pattern for `signal`, `signal-and-build`, `one-day`, `signal-collective`, `recovery`.
+
+#### The fields, in the order they appear on the page
+
+| Field | What it controls | Notes |
+|---|---|---|
+| `title` | Big heading at the top of the page (e.g. "The Reset.") | Keep punctuation if it's part of the brand voice (the trailing dot is intentional) |
+| `slug` | URL after `/the-work/` (e.g. `the-reset`). **Don't change** on existing programmes — links across the site would break | |
+| `tagline` | Italic single-line subtitle under the title | One sentence. "Six weeks. One-to-one. Signal back online." |
+| `accentColour` | Hex code that tints the page (kicker colour, button accents, section labels) | Pink `#F280AA`, blue `#7BAFDD`, gold `#FAA21B`, mint `#5DCAA5`, plum `#6E3A5A` |
+| `heroImage` | Image on the right side of the hero | Portrait orientation works best (4:5). 1600×2000 ideal. |
+| `intro` | The main long-form body below the hero. **Separate paragraphs with a blank line** between them | Each blank line = new paragraph on the page |
+| `whatsIncludedLabel` | Heading above the bullet-list section | Default: "What's included" |
+| `whatsIncludedItems` | The bullet points themselves. **One bullet per line.** No `-` prefix needed — each line becomes a bullet | "Six 1:1 sessions, weekly, 60 minutes each" |
+| `approachLabel` + `approachBody` | Optional second info section (heading + body). Leave both blank to hide | Use for "The approach", "How it works", etc. |
+| `outcomesLabel` + `outcomesBody` | Optional third info section. Same shape | Use for "What changes", "What you'll leave with" |
+| `pricingLabel` | Heading above the price block | Default: "Investment" |
+| `pricingBody` | Price details in prose | "£1,500. Paid in full or two instalments of £750." |
+| `ctaLabel` + `ctaUrl` | The big button at the bottom of the page | Default: "Book a discovery call" → `/contact` |
+| `displayOrder` | Lower numbers show first in lists. Used to order programmes on `/the-work` hub | Default 100 — change only if reordering |
+| `stagesList` | Optional. Only used by Recovery (Untangle / Unbind / Unbound). **One stage per line, format: `Label\|Title\|Body`** | Example: `Month One\|Untangle.\|We identify where the patterns live.` Leave blank for non-staged programmes |
+
+#### Stripe / payment fields (advanced — usually set once)
+
+| Field | What it controls |
+|---|---|
+| `pricePence` | Programme price in **pence** (1500.00 GBP = `150000`). Leave `0` for "by enquiry" programmes — Stripe checkout button won't show |
+| `currency` | 3-letter ISO code, lowercase. Default `gbp` |
+| `isRecurring` | Tick only if billed monthly/yearly. Leave OFF for normal programmes |
+| `recurringInterval` | `month` or `year`. Only relevant when `isRecurring` is on |
+| `mailchimpTag` | The exact Mailchimp tag attached to a customer on successful payment. **Case-sensitive — must match Mailchimp exactly.** Examples: "The Reset (6-week)", "Signal (12-week)" |
+| `grantsResetRoomAccess` | Leave OFF. Only the Reset Room membership entry has this on |
+| `seoTitle` + `seoDescription` | Optional SEO overrides. Keep description <160 chars |
+
+#### Common programme edits
+
+| You want to... | Do this |
+|---|---|
+| Change The Reset's price | Work · Programme → entry `the-reset` → update `pricingBody` (the prose) + `pricePence` (the Stripe-charged value). Keep both in sync |
+| Rewrite the body copy | Update `intro`. Use blank lines for paragraph breaks |
+| Add/remove a bullet from "What's included" | Edit `whatsIncludedItems` — one bullet per line. Reorder by moving lines |
+| Swap the hero image | Upload a new one to `heroImage`. Old one stays in Media Library |
+| Add a "What changes" section | Fill `outcomesLabel` + `outcomesBody`. Both must have content for the section to appear |
+| Re-route the discovery call button to a Calendly link | Update `ctaUrl` to the full Calendly URL |
+
+#### Add a new programme
+
+1. Content Manager → Work · Programme → **+ Create new entry**.
+2. Fill `title` (e.g. "New Programme") — `slug` auto-generates.
+3. Fill the rest of the fields (intro, what's included, pricing, etc.).
+4. Set `displayOrder` to control where it sits in the /the-work hub list.
+5. **Save & Publish.** The page is live at `/the-work/{your-slug}` within seconds.
+6. If you want it linked from the main nav, also add an entry to Navigation → Work with Anna → children.
+
+### 16.8 1:1 Sessions (`/the-work/sessions` + individual sessions)
+
+The Sessions page has two layers:
+
+1. **Hub page** (`/the-work/sessions`) — the top section with the heading + intro copy
+2. **Individual session cards** — one card per coaching session type (Dating Reset, Founder Reset, Nervous System Reset)
+
+#### Hub page
+
+**Strapi:** Single Types → **Sessions Hub Page**
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `kicker` | Small uppercase label above the heading |
+| `kicker_colour` | Hex colour for the kicker |
+| `title` | Main heading (e.g. "1:1 Reset Sessions") |
+| `intro` | The intro paragraph(s) below the heading. Blank line between paragraphs |
+| `seo_title`, `seo_description` | Optional SEO overrides |
+
+#### Individual session cards
+
+**Strapi:** Content Manager → **Work · Coaching Session** → one entry per session
+
+Fields per session:
+
+| Field | What it controls |
+|---|---|
+| `name` | Session name (e.g. "Founder Reset") |
+| `slug` | URL after `/the-work/sessions/` (e.g. `founder-reset`) |
+| `tagline` | The one-line hook under the title on the card |
+| `description` | Long body for the session detail page. Richtext (bold, italic, lists via toolbar) |
+| `duration` | Free-text, e.g. "60 minutes", "90 minutes" |
+| `price` | Numeric price (e.g. `200` for £200) |
+| `price_label` | Free-text price display (e.g. "£200 per session", "Enquire", "From £200") |
+| `accent_colour` | Hex code for the card's accent line + page colour. Pink for Dating, gold for Founder, blue for Nervous System |
+| `hero_image` | Image at the top of the individual session page |
+| `is_active` | Untick to hide from the site without deleting |
+| `sort_order` | Lower number = appears earlier on the hub grid |
+
+#### Common session edits
+
+- **Add a new session:** Coaching Session → + Create → fill name (slug auto), tagline, description, price → save. It auto-appears on `/the-work/sessions` and is live at `/the-work/sessions/{slug}`.
+- **Reorder sessions on the hub:** adjust `sort_order` on each. Lower wins.
+- **Temporarily hide a session:** untick `is_active`. Re-tick to bring back.
+
+### 16.9 Experiences (Retreats, Workshops, Corporate Wellbeing, Speaking)
+
+Two layers, same as sessions:
+
+1. **Each experience type page** — the hero + intro at `/experiences/retreats`, `/experiences/workshops`, etc.
+2. **Individual upcoming events** — the actual retreat/workshop instances that get listed on those pages
+
+#### Each experience page
+
+**Strapi:** Content Manager → **Experiences · Sub-page** → one entry per experience type (`retreats`, `workshops`, `corporate-wellbeing`, `speaking`)
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `title` | Heading (e.g. "Workshops") |
+| `slug` | URL — must match exactly: `retreats`, `workshops`, `corporate-wellbeing`, `speaking` |
+| `kicker` + `kickerColour` | Small uppercase label above the title and its colour |
+| `eyebrow` | Optional secondary label (e.g. "Experiences · For teams") |
+| `tagline` | Optional italic one-liner under the title |
+| `heroImage` | Top-of-page image |
+| `intro` | Body copy. Blank lines = paragraph breaks |
+| `ctaLabel` + `ctaUrl` | Optional button (e.g. "View upcoming workshops" → `/community/events`) |
+| `secondaryList` | Optional. For pages with a list of cards (Corporate "Formats" grid, Speaking "Talks" list). **One item per line, format: `Title\|Body`** |
+| `seoTitle`, `seoDescription` | Optional SEO overrides |
+
+#### Individual upcoming events
+
+**Strapi:** Content Manager → **Experiences · Event** → one entry per upcoming retreat / workshop / etc.
+
+These power the "Book your place" grids on each experience page (and on `/community/events`).
+
+Fields per event:
+
+| Field | What it controls |
+|---|---|
+| `name` | Event title (e.g. "Houseboat Nervous System Reset · 27 June") |
+| `slug` | URL slug (auto-generated from name) |
+| `type` | `retreat`, `workshop`, `corporate`, or `speaking` — determines which experience page lists it |
+| `description` | Long body (richtext). Shown on the card and event detail |
+| `date` | Date of the event |
+| `location` | e.g. "Taggs Island, Hampton" or "Online (Zoom)" |
+| `price` | Numeric price |
+| `price_label` | Display label, e.g. "£115 · Day immersion", "Pay what you can" |
+| `hero_image` | Event image |
+| `booking_url` | **Where the "Book this place" button links to.** Paste a Stripe checkout URL, Calendly, Eventbrite — anything. **Leave blank** to fall back to a /contact link |
+| `is_upcoming` | Tick to show in upcoming lists. Untick when the date has passed |
+| `is_active` | Untick to hide entirely |
+| `sort_order` | Lower = earlier in the list |
+
+#### Common experience edits
+
+- **Add a new retreat:** Experiences · Event → + Create → `type = retreat`, fill name/date/location/price, paste booking link in `booking_url` → save. Auto-appears on `/experiences/retreats` and `/community/events`.
+- **Workshop sold out:** untick `is_upcoming` on the event entry (keeps the entry for archive purposes; just hides from upcoming lists).
+- **Change the booking destination for an event:** edit `booking_url`. If you want to revert to "open my email", just clear that field.
+- **Edit the page hero copy for /experiences/retreats:** Experiences · Sub-page → entry `retreats` → update `intro`.
+
+### 16.10 Articles (write, format, publish)
+
+This is the editorial collection. Every Reset Story, Life piece, Love & Relationships, Work & Money article is one entry in this collection.
+
+**Strapi:** Content Manager → **Story · Article**
+
+#### Fields
+
+| Field | What it controls |
+|---|---|
+| `title` | Article title. Appears as the H1 on the article page |
+| `slug` | URL slug (auto from title). Final URL is `/{section}/{slug}` based on category |
+| `excerpt` | Short summary (1-2 sentences). Shown on article cards across the site and in the homepage featured area |
+| `body` | The full article body. Richtext — use toolbar for headings, bold/italic, lists, links, quotes. **Blank line between paragraphs** |
+| `hero_image` | Main article image. Landscape works best (16:9 or 4:3) |
+| `category` | **Required.** Pick from Story · Category. The category's `section` field (reset-stories / life / love-and-relationships / work-and-money) determines which URL section the article lives in |
+| `author` | Default: "Anna Lou". Change for guest writers |
+| `reading_time` | Free-text, e.g. "6 min read", "2 min read" |
+| `is_featured` | Tick to make this the big banner article on the homepage. Only one should be ticked at a time (most recent wins if multiple) |
+| `is_homepage_pinned` | Tick to lock this article into one of the 3 homepage cards |
+| `homepage_pin_order` | Among pinned articles, lower number = earlier (1 = leftmost) |
+| `is_free` | Tick = full article shows on the website. Untick = paywall + Substack-only |
+| `substack_canonical_url` | If the article also lives on Substack, paste the Substack URL here. Adds a "Read on Substack →" link and sets the SEO canonical |
+| `related_products` | Optional. Link to Shop products to make a "Shop the story" section |
+| `shop_tags` | Repeatable. Each tag is a photo + product link with a hover caption ("Anna is wearing the [piece]"). Use only when a product is central to the story |
+| `seo_title` + `seo_description` | Optional SEO overrides |
+
+#### Write a new article — step by step
+
+1. Content Manager → Story · Article → **+ Create new entry**
+2. Fill `title` → `slug` auto-generates
+3. Write the `excerpt` — this shows on cards, so make it pull people in
+4. Write the `body` using the toolbar — use H2 for sections, **bold** for emphasis, blockquotes for pull quotes
+5. Upload `hero_image` (landscape, ideally 1600×900 or larger)
+6. Pick a `category` — this decides the URL section
+7. Set `reading_time` ("3 min read" etc.)
+8. Decide flags:
+   - `is_free` — almost always ticked (untick only for paywalled paid articles)
+   - `is_featured` — only tick if you want this to be the big homepage banner (untick the previous one)
+   - `is_homepage_pinned` — tick if you want to control which articles are in the 3-card grid
+9. **Save & Publish.** The article is live at `/{section}/{slug}` (e.g. `/life/houseboat-life`) within seconds.
+
+#### Common article edits
+
+- **Change which article is the homepage featured one:** untick `is_featured` on the current one → tick on the new one → save both.
+- **Re-categorise an article:** change `category` → the URL section changes automatically (the slug stays the same).
+- **Hide an article without deleting it:** the easiest way is to set `category` to nothing and the article disappears from listings (but is still accessible by URL). Cleaner: untick the published state.
+- **Add "Shop the story" photos:** in the article, expand `shop_tags` → + Add an entry → upload a photo, link to a product → set caption prefix and alt text. Repeat for each photo.
+
+### 16.11 Editorial section hubs (Reset Stories / Life / Love & Relationships / Work & Money)
+
+Each of the four editorial sections has a hub page and a set of sub-category landing pages.
+
+#### Section hubs
+
+**Strapi:** Single Types — one per section:
+- **Reset Stories Page** — `/reset-stories`
+- **Life Page** — `/life`
+- **Love And Relationships Page** — `/love-and-relationships`
+- **Work And Money Page** — `/work-and-money`
+
+Each has the same fields:
+
+| Field | What it controls |
+|---|---|
+| `kicker` + `kicker_colour` | Small uppercase label above the title |
+| `title` | Main heading |
+| `tagline` / `intro` | Body copy below the title |
+| `hero_image` | Top-of-page image (optional — most use brand colour blocks instead) |
+| Various block fields (`featured_kicker`, `recent_label`, etc.) | Headings for sub-sections of the hub |
+| `seo_title`, `seo_description` | Optional SEO overrides |
+
+The actual articles shown on each hub come from the **Story · Article** collection — articles whose `category.section` matches that hub.
+
+#### Sub-category landing pages
+
+URLs like `/life/rituals-and-energy`, `/love-and-relationships/motherhood` — each is a landing page for one sub-category showing all articles in that category.
+
+**Strapi:** Content Manager → **Story · Category**
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `name` | Display name (e.g. "Motherhood") |
+| `slug` | URL slug — **must match the nav link exactly** (e.g. `motherhood`) |
+| `section` | Which top-level section this category lives under (`reset-stories`, `life`, `love-and-relationships`, `work-and-money`) |
+| `colour` | Hex accent colour. Matches the section colour by default |
+| `description` | Subtitle shown on the category landing page |
+| `sort_order` | Lower = earlier in lists |
+
+#### Common edits
+
+- **Rename a category:** open the entry → change `name`. **Do NOT change `slug`** unless you also update the nav link, or the URL will 404.
+- **Add a new sub-category:** Story · Category → + Create → name + section + colour + description. Then add it to Navigation → matching section → children, with href `/{section}/{slug}`.
+- **Articles in the new category:** open any article → set its `category` to the new one.
+
+### 16.12 Community pages
+
+#### `/community` (hub)
+
+**Strapi:** Single Types → **Community Page**
+
+Standard hub-page fields: kicker, title, intro, plus headers for each block (Reset Room, Returning Circle, Events, Resources).
+
+#### `/community/reset-room`
+
+**Strapi:** Single Types → **Reset Room Page**
+
+A long page. Fields are grouped by section in the form:
+
+- **Hero:** `hero_eyebrow`, `hero_title`, `hero_tagline`, `hero_cta_label`, `hero_secondary_label`, `hero_image`
+- **What's inside / pillars:** repeatable list of pillar cards
+- **Vault preview:** copy + link to vault
+- **Live call info:** schedule, format
+- **Pricing:** `price_title`, `price_body`, `price_cta_label`
+- **SEO**: standard fields
+
+Each field has an inline description in Strapi explaining where it shows on the page. Edit any field → live in 1-2 seconds.
+
+#### `/community/reset-room/vault` (members only)
+
+The Reset Room vault is a grid of guided journeys for paying members.
+
+**Strapi:** Content Manager → **Reset Room · Vault Journey** → one entry per journey
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `name` | Journey title |
+| `slug` | URL slug (auto from name) |
+| `description` | Short description shown on the grid card (1-2 sentences) |
+| `kind` | Filter tag: Foundational journey, Daily practice, Somatic release, etc. Used for filter pills on the vault page |
+| `tone_colour` | Hex accent colour for the card border + filter |
+| `duration` | Free-text, e.g. "12 min", "20 mins" |
+| `audio_file` | MP3 upload — goes to private podcast feed + downloadable for members |
+| `video_url` | Optional video embed URL (Bunny.net or any iframe URL) |
+| `video_thumbnail` | Poster image for the video player (1280×720 JPEG, max 500KB) |
+| `companion_pdf` | Optional downloadable workbook PDF |
+| `body` | Full "About this journey" content shown below the player |
+| `recorded_date` | When this was recorded (optional, shown in metadata) |
+| `sort_order` | Lower = appears earlier in vault grid |
+| `is_active` | Untick to hide without deleting |
+
+#### `/community/reset-room/replays` (members only)
+
+Recordings of past workshops + monthly live calls.
+
+**Strapi:** Content Manager → **Reset Room · Workshop Replay**
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `title` | Replay title |
+| `slug` | URL slug |
+| `description` | Short description shown on the card |
+| `kind` | Monthly live call, Workshop, Q&A session, Special event |
+| `recorded_date` | **Required.** Date — sorted newest-first on the page |
+| `duration` | e.g. "90 min", "45 min" |
+| `video_url` | Embed URL (Bunny.net or similar) |
+| `video_thumbnail` | Poster image |
+| `audio_file` | Optional audio-only version for the podcast feed |
+| `body` | Show notes, summary, links (richtext) |
+| `is_active` | Hide without deleting |
+
+#### `/community/membership` (the Reset Room signup page)
+
+**Strapi:** Single Types → **Membership Page**
+
+Standard fields: kicker, title, intro paragraphs, price details, CTA label.
+
+The actual signup → Stripe checkout flow is wired automatically — Anna doesn't need to do anything Stripe-related, just edit the copy.
+
+#### `/community/the-returning-circle`, `/community/events`
+
+Both use the **Community Event Page** collection. Open the entry with the matching slug (`the-returning-circle` or `events`) and edit kicker/title/intro/cta.
+
+`/community/events` also pulls upcoming events from Experiences · Event (any event with `is_upcoming` ticked appears in the list below the hero).
+
+#### `/community/resources`
+
+Standalone page (Pages · Standalone, slug `community-resources`). Standard fields as in §16.4.
+
+### 16.13 Shop products + categories
+
+#### Products
+
+**Strapi:** Content Manager → **Shop · Product** → one entry per product
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `name` | Product name (e.g. "Citrine Strength Bracelet") |
+| `slug` | URL slug (auto) — final URL is `/shop/{slug}` |
+| `description` | Long product description (richtext) |
+| `short_description` | One-line tagline shown on product cards |
+| `price` | Numeric price (e.g. `48.00` for £48) |
+| `compare_at_price` | Optional. If set higher than `price`, the product shows a sale price + strikethrough on the original |
+| `category` | Pick from Shop · Category. **Required for the product to show in the right shop section** |
+| `images` | Multiple uploads. The first one is the main thumbnail; the rest become a gallery |
+| `stock` | Numeric stock count. Drops automatically when orders are placed |
+| `is_featured` | Generic featured flag (in-shop carousel etc.) |
+| `is_homepage_featured` | Show in the "Jewellery with meaning" homepage row. Top 3 by `sort_order` win |
+| `homepage_hook` | Italic line shown on the homepage product card (Anna's voice — "I reach for this one when I need…") |
+| `is_active` | Untick to hide from the shop without deleting |
+| `sku` | Optional SKU code |
+| `weight_grams` | Used for shipping calculations |
+| `tax_class` | `standard`, `reduced`, or `zero` |
+| `tags` | Comma-separated tags for filtering/search ("best-seller, gift, new-in") |
+
+#### Categories
+
+**Strapi:** Content Manager → **Shop · Category** → one entry per category or sub-category
+
+Fields:
+
+| Field | What it controls |
+|---|---|
+| `name` | Display name (e.g. "Bracelets") |
+| `slug` | URL slug (auto from name) |
+| `parent` | Optional. Set to a parent category to make this a sub-category (e.g. "Bracelets" → parent "Jewellery") |
+| `description` | Optional. Short text shown on the category landing page above the product grid |
+| `is_visible_in_nav` | **Important.** Tick to show this category in the shop dropdown menu. Untick to keep it for internal organisation but hide from the menu |
+| `sort_order` | Lower = appears first in the nav |
+
+#### Common shop edits
+
+- **Add a new product:** Shop · Product → + Create → fill name, price, description, upload images, pick category → save. Live on the shop instantly.
+- **Mark a product as out of stock:** set `stock` to `0`. The product still shows but with an out-of-stock indicator and the buy button disabled.
+- **Hide a product temporarily:** untick `is_active`.
+- **Add a new top-level shop category:** Shop · Category → + Create → name, leave `parent` blank, tick `is_visible_in_nav` → save. Appears in the Shop dropdown.
+- **Add a sub-category (e.g. new jewellery type):** Shop · Category → + Create → name, set `parent` to the top-level category (e.g. "Jewellery") → save. Appears under that parent in the dropdown.
+
+### 16.14 The FAQ system (per-page FAQs)
+
+Every meaningful page on the site has an FAQ accordion at the bottom — programme pages, experience pages, shop, about, contact, etc. The questions and answers come from a single CMS collection, tagged by page.
+
+**Strapi:** Content Manager → **FAQ · Per Page**
+
+Fields per FAQ entry:
+
+| Field | What it controls |
+|---|---|
+| `question` | The Q in Q&A |
+| `answer` | The A. Richtext — use the toolbar for bold/italic/links/lists. Markdown links work too: `[text](url)` |
+| `page` | **Required.** Which page this FAQ appears on. Dropdown of 25 page slugs (the-reset, signal, retreats, workshops, reset-room, etc.) |
+| `category` | Optional grouping for future FAQ overview pages. Not displayed today |
+| `sort_order` | Lower = appears earlier on the page. Use 10, 20, 30 for easy reordering |
+| `is_active` | Untick to hide without deleting |
+
+#### Add a new FAQ
+
+1. FAQ · Per Page → + Create
+2. Type the question + answer
+3. Pick the `page` dropdown — this binds the FAQ to that page (`the-reset` → shows on `/the-work/the-reset`)
+4. Set `sort_order` to control position (or leave at 0 — most recent shows first within the page)
+5. Save & Publish. The FAQ accordion on that page updates within 1-2 seconds.
+
+#### How many FAQs per page?
+
+5-8 is the sweet spot. 10-12 fine if a page genuinely needs that depth (e.g. shop returns / shipping). 15+ becomes a wall of plus-signs and Google starts truncating in rich snippets.
+
+#### Bulk-add Anna's FAQs
+
+If you have a Word doc / spreadsheet of FAQs to add in bulk, Sameer has a script (`Docs/upload-faqs.ps1`) that reads a JSON file and creates them all at once. Send him the content and he'll run it.
+
+### 16.15 Ask Anna AI assistant
+
+**Strapi:** No CMS editing. The Ask Anna widget on the right side of the screen + the `/ask-anna` page are wired to the Anthropic API directly.
+
+What Anna can do:
+- Change the API key (rotate periodically) — that's an environment variable change Sameer handles
+- Change the system prompt (the "voice" / personality of the assistant) — code change, ask Sameer
+
+What it does automatically:
+- Searches the live site's Experiences, Articles, and Products to answer questions like "do you have a retreat in June?" → returns real upcoming events + links
+- Stays in Anna's voice and refuses out-of-scope questions
+- Streaming responses, mobile-friendly widget
+
+If you want changes to what it can search or how it responds, message Sameer with the desired behaviour.
+
+### 16.16 What's coming next
+
+The manual is now substantially complete for v1.1. Possible future additions based on Anna's feedback:
+- Screenshots inside each section (currently text-only — Anna may want visual reference)
+- A 5-minute video walkthrough of the most-used edits
+- A printable 1-page emergency cheatsheet for the launch day
+
+Tell Sameer if any of those would help.
 
 ---
 
