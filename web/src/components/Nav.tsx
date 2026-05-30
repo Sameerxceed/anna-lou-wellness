@@ -154,7 +154,10 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
             <div className="nav-actions">
               <Link href="/account" className="nav-action-btn">Login</Link>
               <WishlistNavLink className="nav-action-btn" />
-              <Link href="/cart" className="nav-action-btn nav-action-accent">
+              <Link href="/cart" className="nav-action-btn nav-action-accent" aria-label={cartCount > 0 ? `Cart (${cartCount})` : 'Cart'}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" />
+                </svg>
                 Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
               </Link>
               <button
@@ -217,7 +220,10 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
           <div className="mobile-actions">
             <Link href="/account" className="mobile-btn" onClick={() => setMobileOpen(false)}>Login</Link>
             <WishlistNavLink className="mobile-btn" />
-            <Link href="/cart" className="mobile-btn mobile-btn-accent" onClick={() => setMobileOpen(false)}>
+            <Link href="/cart" className="mobile-btn mobile-btn-accent" onClick={() => setMobileOpen(false)} aria-label={cartCount > 0 ? `Cart (${cartCount})` : 'Cart'}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" />
+              </svg>
               Cart{cartCount > 0 && <span className="nav-cart-badge">{cartCount}</span>}
             </Link>
           </div>
