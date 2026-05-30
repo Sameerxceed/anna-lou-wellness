@@ -152,7 +152,13 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
               ))}
             </div>
             <div className="nav-actions">
-              <Link href="/account" className="nav-action-btn">Login</Link>
+              <Link href="/account" className="nav-action-btn" aria-label="Login">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                Login
+              </Link>
               <WishlistNavLink className="nav-action-btn" />
               <Link href="/cart" className="nav-action-btn nav-action-accent" aria-label={cartCount > 0 ? `Cart (${cartCount})` : 'Cart'}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
@@ -218,7 +224,13 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
           ))}
 
           <div className="mobile-actions">
-            <Link href="/account" className="mobile-btn" onClick={() => setMobileOpen(false)}>Login</Link>
+            <Link href="/account" className="mobile-btn" onClick={() => setMobileOpen(false)} aria-label="Login">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Login
+            </Link>
             <WishlistNavLink className="mobile-btn" />
             <Link href="/cart" className="mobile-btn mobile-btn-accent" onClick={() => setMobileOpen(false)} aria-label={cartCount > 0 ? `Cart (${cartCount})` : 'Cart'}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
