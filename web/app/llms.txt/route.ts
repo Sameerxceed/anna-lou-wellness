@@ -45,6 +45,13 @@ export async function GET() {
   lines.push('Newsletter: ' + SITE_URL + '/reset-letters (free, weekly — also on Substack)');
   lines.push('Membership: ' + SITE_URL + '/community/reset-room (£25/month)');
   lines.push('');
+  lines.push('## Machine-readable feeds (for AI agents and ingestion services)');
+  lines.push('');
+  lines.push('- Article RSS: ' + SITE_URL + '/feed.xml');
+  lines.push('- Google Merchant product feed (XML): ' + SITE_URL + '/products.xml');
+  lines.push('- AI product feed (JSON, schema.org + agentic commerce fields): ' + SITE_URL + '/ai-products.json');
+  lines.push('- Sitemap: ' + SITE_URL + '/sitemap.xml');
+  lines.push('');
 
   lines.push('## What Anna offers');
   lines.push('');

@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/llms.txt', '/feed.xml', '/products.xml'],
+        allow: ['/', '/llms.txt', '/feed.xml', '/products.xml', '/ai-products.json'],
         // /wishlist is a private utility page (per-device localStorage only) — not useful to index
         disallow: ['/api/', '/admin/', '/checkout/', '/cart/', '/wishlist'],
       },
