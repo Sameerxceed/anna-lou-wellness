@@ -49,7 +49,8 @@ export async function GET() {
   lines.push('');
   lines.push('- Article RSS: ' + SITE_URL + '/feed.xml');
   lines.push('- Google Merchant product feed (XML): ' + SITE_URL + '/products.xml');
-  lines.push('- AI product feed (JSON, schema.org + agentic commerce fields): ' + SITE_URL + '/ai-products.json');
+  lines.push('- AI product feed (JSON, OpenAI Agentic Commerce spec): ' + SITE_URL + '/ai-products.json');
+  lines.push('- AI product feed (JSONL, OpenAI Agentic Commerce spec — gzip + SFTP-ready): ' + SITE_URL + '/ai-products.jsonl');
   lines.push('- Sitemap: ' + SITE_URL + '/sitemap.xml');
   lines.push('');
 

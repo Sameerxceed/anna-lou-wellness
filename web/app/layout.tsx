@@ -142,7 +142,8 @@ export default async function RootLayout({
             products.xml: Google Merchant Centre catalogue feed. */}
         <link rel="alternate" type="application/rss+xml" title="Anna Lou Wellness — articles" href="/feed.xml" />
         <link rel="alternate" type="application/xml" title="Anna Lou Wellness — Google Merchant product feed" href="/products.xml" />
-        <link rel="alternate" type="application/json" title="Anna Lou Wellness — AI product feed (agentic commerce)" href="/ai-products.json" />
+        <link rel="alternate" type="application/json" title="Anna Lou Wellness — OpenAI Agentic Commerce product feed (JSON)" href="/ai-products.json" />
+        <link rel="alternate" type="application/x-ndjson" title="Anna Lou Wellness — OpenAI Agentic Commerce product feed (JSONL)" href="/ai-products.jsonl" />
         <link rel="alternate" type="text/plain" title="AI discovery map" href="/llms.txt" />
         {/* Canonical URLs are set per-page via generateMetadata */}
         <OrganizationSchema settings={siteSettings} />
