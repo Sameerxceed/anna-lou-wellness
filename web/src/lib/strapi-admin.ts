@@ -262,6 +262,7 @@ export type RegulatedModule = {
   body?: string;
   video_url?: string;
   audio_url?: string;
+  audio_file?: { url?: string; name?: string; ext?: string; mime?: string } | null;
   duration_label?: string;
   is_intro?: boolean;
   downloadable_file?: { url?: string; name?: string; ext?: string } | null;

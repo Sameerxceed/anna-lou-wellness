@@ -122,11 +122,20 @@ function ModuleCard({ m, accent }: { m: any; accent: string }) {
           </div>
         )}
 
-        {m.audio_url && (
-          <div className="reg-audio">
-            <audio controls src={m.audio_url} preload="metadata" />
-          </div>
-        )}
+        {(() => {
+          // Prefer the directly-uploaded audio file (most common case).
+          // Fall back to the external audio URL if no upload.
+          const uploadedAudio = m.audio_file?.url
+            ? (m.audio_file.url.startsWith('http') ? m.audio_file.url : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${m.audio_file.url}`)
+            : null;
+          const audioSrc = uploadedAudio || m.audio_url;
+          if (!audioSrc) return null;
+          return (
+            <div className="reg-audio">
+              <audio controls src={audioSrc} preload="metadata" />
+            </div>
+          );
+        })()}
 
         {m.body && (
           <div
