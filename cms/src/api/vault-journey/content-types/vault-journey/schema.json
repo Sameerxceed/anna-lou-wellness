@@ -34,10 +34,13 @@
         "Reset journey",
         "Pattern work",
         "Founding signature",
+        "E-book",
+        "Audio meditation",
+        "Workbook",
         "Other"
       ],
       "default": "Foundational journey",
-      "description": "Used for the filter pills on the vault page."
+      "description": "Acts like folders on the live Vault page — members can filter by this. Use 'Audio meditation' or 'E-book' or 'Workbook' for those formats; use one of the journey types for guided journeys."
     },
     "tone_colour": {
       "type": "string",
