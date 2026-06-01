@@ -130,6 +130,11 @@
       "default": false,
       "description": "Leave OFF for normal programmes. Only the Reset Room membership should have this on."
     },
+    "grantsRegulatedAccess": {
+      "type": "boolean",
+      "default": false,
+      "description": "Turn ON for the REGULATED programme entry only. When ticked, a Stripe purchase grants the buyer access to the course at /the-work/regulated/access. Leave OFF for every other programme."
+    },
     "seoTitle": {
       "type": "string",
       "description": "Optional SEO override. Leave blank to use the title."

@@ -99,6 +99,15 @@
     "accessUntil": {
       "type": "datetime",
       "description": "When canceled, set to current_period_end. Cron revokes role after this."
+    },
+    "hasRegulatedAccess": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if this user has purchased REGULATED (one-off payment). Lifetime access — no cron revoke."
+    },
+    "regulatedAccessSince": {
+      "type": "datetime",
+      "description": "When the user purchased REGULATED. Used for the welcome email window and for sorting member lists."
     }
   }
 }

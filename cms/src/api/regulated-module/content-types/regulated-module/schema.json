@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "regulated_modules",
+  "info": {
+    "singularName": "regulated-module",
+    "pluralName": "regulated-modules",
+    "displayName": "REGULATED · Module",
+    "description": "Course modules (lessons) shown to anyone who has purchased REGULATED. Listed in sort_order on /the-work/regulated/access. Each module can be text-only, video, audio, downloadable, or any combination — fields are all optional except title + sort_order. Modules are MEMBER-ONLY — they are NOT publicly readable; the access page fetches them server-side using the admin token."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Module heading shown to members. E.g. 'Module 1: Coming Home to Your Body'."
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "description": "URL slug — used if/when we add module detail pages. Auto-generates from title."
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 100,
+      "required": true,
+      "description": "Lower numbers appear first. Use 10, 20, 30 for the first three so you can insert later modules between (e.g. 15) without renumbering everything."
+    },
+    "intro": {
+      "type": "text",
+      "description": "Short intro sentence shown under the title in the module list. Optional."
+    },
+    "body": {
+      "type": "richtext",
+      "description": "Main lesson content — markdown supported. Use for any module that is text-led (essay, written practice, instructions)."
+    },
+    "video_url": {
+      "type": "string",
+      "description": "URL of the video lesson. YouTube unlisted, Vimeo, or any embeddable provider. Leave blank for non-video modules."
+    },
+    "audio_url": {
+      "type": "string",
+      "description": "URL of the audio lesson (Bunny.net, podcast host, or direct MP3). Renders as an audio player. Leave blank if no audio."
+    },
+    "downloadable_file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files"
+      ],
+      "description": "Optional PDF, worksheet, or audio file customers can download. Upload once, shows as a download button on the module."
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "description": "Optional thumbnail shown next to the module title in the list. Recommend 800x600 or similar."
+    },
+    "duration_label": {
+      "type": "string",
+      "description": "Optional readable duration, e.g. '12 minutes' or '15 min audio + worksheet'. Shown as a small caption."
+    },
+    "is_intro": {
+      "type": "boolean",
+      "default": false,
+      "description": "Tick ONE module as the introduction. It gets highlighted at the top of the access page. Leave the rest unticked."
+    }
+  }
+}
