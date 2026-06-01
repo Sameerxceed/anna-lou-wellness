@@ -39,9 +39,17 @@
       "type": "string",
       "description": "URL of the video lesson. YouTube unlisted, Vimeo, or any embeddable provider. Leave blank for non-video modules."
     },
+    "audio_file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "audios"
+      ],
+      "description": "Upload the MP3 directly here for an audio lesson / meditation. Easiest path — the file is hosted in your Media Library and played in-browser. Either use this OR Audio URL below (not both)."
+    },
     "audio_url": {
       "type": "string",
-      "description": "URL of the audio lesson (Bunny.net, podcast host, or direct MP3). Renders as an audio player. Leave blank if no audio."
+      "description": "Alternative to Audio File above — paste a URL if your audio is hosted elsewhere (Bunny.net, podcast host, external MP3). Leave blank if you uploaded a file above."
     },
     "downloadable_file": {
       "type": "media",
