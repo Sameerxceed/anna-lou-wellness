@@ -1,6 +1,6 @@
 # Anna Lou Wellness — User Manual
 
-**Version 1.3 — Updated 28 May 2026**
+**Version 1.4 — Updated 1 June 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -1395,27 +1395,62 @@ A long page. Fields are grouped by section in the form:
 
 Each field has an inline description in Strapi explaining where it shows on the page. Edit any field → live in 1-2 seconds.
 
-#### `/community/reset-room/vault` (members only)
+#### `/community/reset-room/vault` (members only) — audio meditations, e-books, journeys
 
-The Reset Room vault is a grid of guided journeys for paying members.
+The Reset Room vault is the library Reset Room members log in to. One entry per item — audio meditation, e-book, workbook, or guided journey. The `kind` field acts as folders for members (filter pills at the top of the page).
 
-**Strapi:** Content Manager → **Reset Room · Vault Journey** → one entry per journey
+**Strapi:** Content Manager → **Reset Room · Vault Journey** → **+ Create new entry**
 
-Fields:
+##### To upload an audio meditation
+
+1. Fill `name` — title of the meditation (e.g. "Coming Back Online")
+2. Fill `description` — 1-2 sentences shown on the card
+3. Set `kind` = **"Audio meditation"**
+4. Fill `duration` — free text, e.g. "12 min"
+5. Upload your MP3 in **`audio_file`**
+6. Optional: upload a thumbnail in `video_thumbnail` (acts as the cover image — 1280×720 JPEG, max 500KB)
+7. Pick a `tone_colour` (hex, brand colours: #F280AA pink, #FFD07A yellow, #7BAFDD blue, #5DCAA5 green, #FAA21B amber, #6E3A5A plum)
+8. Set `sort_order` — lower numbers appear earlier in the grid
+9. **Save & Publish**. Live for members within 1-2 seconds.
+
+##### To upload an e-book or workbook
+
+Same flow, but:
+- Set `kind` = **"E-book"** (or **"Workbook"** if it's something to write into)
+- Leave `audio_file` blank
+- Upload your PDF in **`companion_pdf`**
+- Add a cover image in `video_thumbnail` if you want one
+- Use the `body` field for a longer description or chapter overview if helpful
+
+##### To upload a guided journey (with audio + video + PDF)
+
+- Set `kind` = **"Foundational journey"** (or one of the journey types)
+- Fill all media fields you have: `audio_file`, `video_url`, `companion_pdf`
+- Use `body` for the "About this journey" content shown below the player
+
+##### How members find your content
+
+On `/community/reset-room/vault` they see filter pills at the top: **All / Audio meditation / E-book / Foundational journey / Workbook / Daily practice** etc. They click a pill, only that kind shows. So everything tagged the same way lives together for them — categories work like folders.
+
+##### Organising your own uploaded files
+
+Strapi → **Media Library** (left sidebar) → you can create folders here for your own admin convenience (e.g. "Meditations 2026", "E-books"). This is just for your file management — members see content via the Vault, not the Media Library.
+
+All Vault fields at a glance:
 
 | Field | What it controls |
 |---|---|
-| `name` | Journey title |
-| `slug` | URL slug (auto from name) |
+| `name` | Title shown on the card and at the top of the detail page |
+| `slug` | URL slug (auto-generates from name) |
 | `description` | Short description shown on the grid card (1-2 sentences) |
-| `kind` | Filter tag: Foundational journey, Daily practice, Somatic release, etc. Used for filter pills on the vault page |
+| `kind` | Filter tag — acts as folders for members. New options: Audio meditation, E-book, Workbook |
 | `tone_colour` | Hex accent colour for the card border + filter |
-| `duration` | Free-text, e.g. "12 min", "20 mins" |
-| `audio_file` | MP3 upload — goes to private podcast feed + downloadable for members |
-| `video_url` | Optional video embed URL (Bunny.net or any iframe URL) |
-| `video_thumbnail` | Poster image for the video player (1280×720 JPEG, max 500KB) |
-| `companion_pdf` | Optional downloadable workbook PDF |
-| `body` | Full "About this journey" content shown below the player |
+| `duration` | Free-text, e.g. "12 min", "20 mins", "85 pages" |
+| `audio_file` | MP3 upload — for meditations or journey audio |
+| `video_url` | Optional video embed URL (Bunny.net, YouTube unlisted, any iframe) |
+| `video_thumbnail` | Poster / cover image (1280×720 JPEG, max 500KB) |
+| `companion_pdf` | PDF upload — use this for e-books, workbooks, or companion docs |
+| `body` | Full "About this" content shown below the player / on the detail page |
 | `recorded_date` | When this was recorded (optional, shown in metadata) |
 | `sort_order` | Lower = appears earlier in vault grid |
 | `is_active` | Untick to hide without deleting |
@@ -1701,7 +1736,56 @@ These live in Strapi-free; Anna picks them in Mailchimp's Customer Journey build
 - **Email templates** → Mailchimp → Email templates → Saved templates (the 6 `ALW - 13.*` and `ALW - 14.*` entries)
 - **The 2 customer journeys** → Mailchimp → Automations → Customer Journeys
 
-### 16.18 What's coming next
+### 16.18 REGULATED course modules (the content buyers access after purchase)
+
+When someone buys REGULATED, they're redirected to **`/the-work/regulated/access`** — the private course area. Whatever you publish in the **REGULATED · Module** collection appears there, in the order you set.
+
+#### One-time setup (before the first sale)
+
+1. Strapi → Content Manager → **Work · Programme** → open the **REGULATED** entry
+2. Find the field **`grantsRegulatedAccess`** → tick it on
+3. **Save**
+
+This tells the system that a Stripe purchase of REGULATED should grant the buyer access to the course area. You only do this once.
+
+#### Adding course modules
+
+1. Strapi → Content Manager → **REGULATED · Module** → **+ Create new entry**
+2. Fill the fields that fit your content (all are optional except `title` and `sort_order`):
+
+| Field | What it controls |
+|---|---|
+| `title` | Module heading (e.g. "Module 1: Coming Home to Your Body") |
+| `slug` | URL slug (auto from title) |
+| `sort_order` | Lower numbers appear first. Use 10, 20, 30 so you can insert later modules between (e.g. 15) without renumbering |
+| `intro` | Short intro sentence shown under the title |
+| `body` | Main lesson content — markdown supported. Use for text-led modules |
+| `video_url` | YouTube unlisted, Vimeo, or any embeddable URL. Renders as a video player |
+| `audio_url` | MP3 / podcast URL. Renders as an audio player |
+| `downloadable_file` | Optional PDF, worksheet, or audio file customers can download |
+| `thumbnail` | Optional thumbnail shown above the title (800×600 recommended) |
+| `duration_label` | Free text, e.g. "12 minutes" or "15 min audio + worksheet" |
+| `is_intro` | Tick ONE module to highlight at the top of the access page. Leave the rest unticked |
+
+3. **Save & Publish.** The module appears for buyers within 1-2 seconds.
+
+#### Module shapes
+
+You can mix and match per module:
+- **Text-led lesson** — fill `title`, `body`, optionally `downloadable_file` (worksheet)
+- **Video lesson** — fill `title`, `video_url`, optionally `intro` (1-line summary)
+- **Audio meditation** — fill `title`, `audio_url`, `duration_label`
+- **PDF download** — fill `title`, `downloadable_file`, `intro` describing what's inside
+
+#### The access link for your welcome email
+
+In your REGULATED welcome email in Mailchimp, the access link is:
+
+**`https://annalouwellness.com/the-work/regulated/access`**
+
+Paste that wherever your email says `[access link]`.
+
+### 16.19 What's coming next
 
 The manual is now substantially complete for v1.3. Possible future additions based on Anna's feedback:
 - Screenshots inside each section (currently text-only — Anna may want visual reference)
