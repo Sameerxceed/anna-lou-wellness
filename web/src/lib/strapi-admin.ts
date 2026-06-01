@@ -166,6 +166,125 @@ export async function grantResetRoomMembership(args: {
 }
 
 /**
+ * Grant REGULATED course access (one-off purchase, no cron revoke).
+ *
+ * Sets hasRegulatedAccess=true + regulatedAccessSince=now on the user.
+ * Creates the user (with the default 'authenticated' role, NOT
+ * reset-room-member) if they don't yet exist, and sends a password-reset
+ * email so they can set their own password and log in.
+ *
+ * If the user is already a Reset Room member, we keep them in that
+ * role and just flip the flag — they get both accesses.
+ *
+ * Idempotent. Safe to call from Stripe webhook retries.
+ */
+export async function grantRegulatedAccess(args: {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}): Promise<{ created: boolean; userId: number }> {
+  const now = new Date().toISOString();
+  const existing = await findUserByEmail(args.email);
+
+  if (existing) {
+    // Just flip the flag — preserve role + other state.
+    // If user already has regulatedAccessSince, keep it; else stamp now.
+    const fullUser = await fetchUserById(existing.id);
+    const since = fullUser?.regulatedAccessSince || now;
+    const res = await fetch(`${STRAPI_URL}/api/users/${existing.id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        hasRegulatedAccess: true,
+        regulatedAccessSince: since,
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`grantRegulatedAccess update ${res.status}: ${await res.text()}`);
+    }
+    return { created: false, userId: existing.id };
+  }
+
+  // Need a role for the new user — default to 'authenticated'
+  const authRole = await findRoleByType('authenticated');
+  if (!authRole) throw new Error('Role "authenticated" not found in Strapi');
+
+  // Random password — user resets via email
+  const password = Array.from(crypto.getRandomValues(new Uint8Array(24)))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  const username = args.email.split('@')[0] + '-' + Math.random().toString(36).slice(2, 8);
+  const res = await fetch(`${STRAPI_URL}/api/users`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({
+      email: args.email.toLowerCase(),
+      username,
+      password,
+      confirmed: true,
+      blocked: false,
+      role: authRole.id,
+      firstName: args.firstName,
+      lastName: args.lastName,
+      hasRegulatedAccess: true,
+      regulatedAccessSince: now,
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(`grantRegulatedAccess create ${res.status}: ${await res.text()}`);
+  }
+  const created = (await res.json()) as StrapiUser;
+  await sendPasswordReset(args.email);
+  return { created: true, userId: created.id };
+}
+
+async function fetchUserById(id: number): Promise<any | null> {
+  const res = await fetch(`${STRAPI_URL}/api/users/${id}`, {
+    headers: authHeaders(),
+    cache: 'no-store',
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+/**
+ * REGULATED course modules — fetched by the access page using the admin
+ * token (modules are NOT publicly readable). Returns ordered list.
+ */
+export type RegulatedModule = {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  sort_order: number;
+  intro?: string;
+  body?: string;
+  video_url?: string;
+  audio_url?: string;
+  duration_label?: string;
+  is_intro?: boolean;
+  downloadable_file?: { url?: string; name?: string; ext?: string } | null;
+  thumbnail?: { url?: string } | null;
+};
+
+export async function fetchRegulatedModules(): Promise<RegulatedModule[]> {
+  const url = new URL(`${STRAPI_URL}/api/regulated-modules`);
+  url.searchParams.set('sort', 'sort_order:asc');
+  url.searchParams.set('pagination[limit]', '50');
+  url.searchParams.set('populate', '*');
+  url.searchParams.set('publicationState', 'live');
+
+  const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+  if (!res.ok) {
+    console.warn('[regulated] fetchRegulatedModules:', res.status, await res.text());
+    return [];
+  }
+  const json = await res.json();
+  return Array.isArray(json?.data) ? json.data : [];
+}
+
+/**
  * Demote a user from reset-room-member back to the default 'authenticated' role.
  * Called on subscription cancellation.
  */

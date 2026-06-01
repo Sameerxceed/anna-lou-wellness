@@ -55,12 +55,19 @@ export async function POST(req: NextRequest) {
   }
 
   const mode = purchasable.isRecurring ? 'subscription' : 'payment';
+  // Success path priority: Reset Room dashboard > REGULATED course > generic thank-you.
+  // (If a future programme grants both, dashboard takes precedence because
+  //  that's the higher-engagement membership surface.)
   const successPath = purchasable.grantsResetRoomAccess
     ? '/community/reset-room/dashboard'
-    : '/thank-you';
+    : purchasable.grantsRegulatedAccess
+      ? '/the-work/regulated/access'
+      : '/thank-you';
   const cancelPath = purchasable.grantsResetRoomAccess
     ? '/community/reset-room'
-    : '/';
+    : purchasable.grantsRegulatedAccess
+      ? '/the-work/regulated'
+      : '/';
 
   // Metadata flows from checkout session -> subscription (via subscription_data) -> webhook event.
   // The webhook re-fetches from Strapi using strapi_type + strapi_id rather than trusting the metadata

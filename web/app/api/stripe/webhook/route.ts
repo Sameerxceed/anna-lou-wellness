@@ -5,6 +5,7 @@ import { subscribeAndTag, removeTag } from '@/lib/mailchimp';
 import {
   grantResetRoomMembership,
   revokeResetRoomMembership,
+  grantRegulatedAccess,
   fetchOrder,
   markOrderPaid,
   decrementProductStock,
@@ -170,6 +171,15 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
       console.info(`[stripe webhook] Reset Room ${result.created ? 'created' : 'updated'} user ${result.userId}`);
     } catch (err: any) {
       console.error(`[stripe webhook] Strapi grant failed for ${email}:`, err?.message);
+    }
+  }
+
+  if (purchasable.grantsRegulatedAccess) {
+    try {
+      const result = await grantRegulatedAccess({ email });
+      console.info(`[stripe webhook] REGULATED access ${result.created ? 'granted (new user)' : 'granted (existing user)'}: ${result.userId}`);
+    } catch (err: any) {
+      console.error(`[stripe webhook] REGULATED grant failed for ${email}:`, err?.message);
     }
   }
 }

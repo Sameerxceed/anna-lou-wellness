@@ -20,6 +20,7 @@ const PROTECTED_PREFIXES = [
   '/community/reset-room/vault',
   '/community/reset-room/replays',
   '/community/reset-room/account',
+  '/the-work/regulated/access',
 ];
 
 export function middleware(req: NextRequest) {
@@ -43,5 +44,6 @@ export const config = {
     '/community/reset-room/vault/:path*',
     '/community/reset-room/replays/:path*',
     '/community/reset-room/account/:path*',
+    '/the-work/regulated/access/:path*',
   ],
 };

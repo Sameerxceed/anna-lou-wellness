@@ -26,12 +26,15 @@ export type SessionUser = {
   memberSince: string | null;
   accessUntil: string | null;
   podcastRssUrl: string | null;
+  hasRegulatedAccess: boolean;
+  regulatedAccessSince: string | null;
   role: { id: number; name: string; type: string };
 };
 
 export type Session = {
   user: SessionUser;
-  isMember: boolean; // role.type === 'reset-room-member'
+  isMember: boolean;             // role.type === 'reset-room-member'
+  hasRegulatedAccess: boolean;   // user.hasRegulatedAccess flag (one-off REGULATED purchase)
 };
 
 /**
@@ -52,7 +55,8 @@ export async function getSession(): Promise<Session | null> {
     const user = (await res.json()) as SessionUser;
     if (!user?.id) return null;
     const isMember = user.role?.type === 'reset-room-member';
-    return { user, isMember };
+    const hasRegulatedAccess = Boolean(user.hasRegulatedAccess);
+    return { user, isMember, hasRegulatedAccess };
   } catch {
     return null;
   }

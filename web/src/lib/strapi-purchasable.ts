@@ -30,6 +30,7 @@ export type Purchasable = {
   recurringInterval: 'month' | 'year' | null;
   mailchimpTag: string | null;
   grantsResetRoomAccess: boolean;
+  grantsRegulatedAccess: boolean;
 };
 
 function normalize(type: PurchasableType, raw: any): Purchasable | null {
@@ -47,6 +48,7 @@ function normalize(type: PurchasableType, raw: any): Purchasable | null {
     recurringInterval: raw.recurringInterval || null,
     mailchimpTag: raw.mailchimpTag || null,
     grantsResetRoomAccess: Boolean(raw.grantsResetRoomAccess),
+    grantsRegulatedAccess: Boolean(raw.grantsRegulatedAccess),
   };
 }
 
