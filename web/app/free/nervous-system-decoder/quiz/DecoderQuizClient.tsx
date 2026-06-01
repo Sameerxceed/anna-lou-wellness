@@ -3,34 +3,27 @@
 /**
  * DecoderQuizClient — Anna's "Nervous System Decoder" quiz.
  *
- * Implements her 1 June 2026 wireframe spec exactly:
- *   - Five questions, A/B/C answers, one per screen, progress bar
- *   - Scoring: count A/B/C, then in order:
- *       A >= 3            -> Signal Clear   (mint background)
- *       else B >= C       -> Signal Scrambled (cream-light)
- *       else              -> Signal Faint   (lavender)
- *   - Email is captured AFTER Q5 and BEFORE the result reveal
- *     (this is the trigger that tags the subscriber in Mailchimp with
- *     the result-specific tag — Anna's journeys route from those tags)
- *   - Signal Clear: meditation player, no upsell
- *   - Signal Scrambled / Faint: REGULATED CTA (pink for scrambled,
- *     blue/gentler for faint)
+ * Fully CMS-driven. The only thing in code is:
+ *   - Scoring rule (A>=3 -> Clear, else B>=C -> Scrambled, else -> Faint)
+ *   - Colour palette per result (mint / cream-light / lavender — the wireframe)
+ *   - Mailchimp result-tag names (kept stable in code so Anna's journeys
+ *     don't silently break if a copy edit changes the human-readable label)
  *
- * The 5 questions + their A/B/C answer text are hardcoded here. They
- * came straight from Anna's wireframe and are unlikely to change
- * frequently. Result page copy + meditation URL + CTA URL come from
- * Strapi's decoder-quiz-page singleton so Anna can iterate without code.
+ * Everything else — the 5 questions, their A/B/C answers, the result
+ * pages, all button + label text — comes from CMS via props.
+ *
+ * See cms/src/api/decoder-quiz-page/content-types/decoder-quiz-page/schema.json
+ * for the editable fields. Anna can iterate without code changes.
  */
 
 import { useState } from 'react';
 import Link from 'next/link';
 
-// Internal state names match the wireframe + CMS enum.
 export type DecoderState = 'clear' | 'scrambled' | 'faint';
 
 export type DecoderStateResult = {
-  // Accept the legacy polyvagal values too for backwards compatibility with
-  // any singleton that still has them — the lookup map below normalises.
+  // Legacy polyvagal values (ventral/sympathetic/dorsal) still accepted
+  // for backwards compatibility with old singleton records.
   state: DecoderState | 'ventral' | 'sympathetic' | 'dorsal';
   title: string;
   blurb: string;
@@ -40,76 +33,44 @@ export type DecoderStateResult = {
   ctaUrl: string;
 };
 
-export type DecoderQuizHero = {
+export type DecoderQuestion = {
+  text: string;
+  answerA: string;
+  answerB: string;
+  answerC: string;
+};
+
+export type DecoderQuizCopy = {
   eyebrow: string;
   title: string;
   intro: string;
+  beginButtonLabel: string;
   backToLabel: string;
   backToUrl: string;
+  emailGateTitle: string;
+  emailGateIntro: string;
+  emailGateButtonLabel: string;
+  emailGateFineprint: string;
+  practiceLabelClear: string;
+  practiceLabelScrambled: string;
+  practiceLabelFaint: string;
+  priceMicrocopy: string;
+  retakeButtonLabel: string;
 };
 
-// Maps legacy polyvagal slugs to Anna's brand-language states so old
-// records keep rendering until they're updated in CMS.
+// Legacy polyvagal slug -> Anna's brand-language state, for any singleton
+// records that haven't been re-seeded yet.
 const LEGACY_TO_NEW: Record<string, DecoderState> = {
   ventral: 'clear',
   sympathetic: 'scrambled',
   dorsal: 'faint',
 };
-
 function normaliseState(s: string): DecoderState {
   if (s === 'clear' || s === 'scrambled' || s === 'faint') return s;
   return LEGACY_TO_NEW[s] || 'scrambled';
 }
 
-// ─── Questions (Anna's wireframe, 1 Jun 2026) ───
 type AnswerKey = 'A' | 'B' | 'C';
-interface Question {
-  text: string;
-  answers: { key: AnswerKey; label: string }[];
-}
-
-const QUESTIONS: Question[] = [
-  {
-    text: 'When I try to rest, lately…',
-    answers: [
-      { key: 'A', label: 'I can settle, even if it takes a moment.' },
-      { key: 'B', label: 'My mind starts racing and I cannot switch off.' },
-      { key: 'C', label: 'I shut down or zone out rather than properly rest.' },
-    ],
-  },
-  {
-    text: 'When I look at my phone or read the news…',
-    answers: [
-      { key: 'A', label: 'I can engage and put it down without it staying with me.' },
-      { key: 'B', label: 'I feel it land in my body and stay buzzing afterwards.' },
-      { key: 'C', label: 'I scroll without really taking it in, or I avoid it altogether.' },
-    ],
-  },
-  {
-    text: 'Other people’s moods and stress…',
-    answers: [
-      { key: 'A', label: 'I notice them, but they do not pull me out of myself.' },
-      { key: 'B', label: 'Land in me. I pick them up and carry them.' },
-      { key: 'C', label: 'Reach me faintly. It can feel like I am behind glass.' },
-    ],
-  },
-  {
-    text: 'When something small goes wrong…',
-    answers: [
-      { key: 'A', label: 'I can take it, breathe, and move on.' },
-      { key: 'B', label: 'I am tipped over more easily than I would like.' },
-      { key: 'C', label: 'I freeze or go quiet, even when I want to respond.' },
-    ],
-  },
-  {
-    text: 'If I check in with myself right now, what I notice is…',
-    answers: [
-      { key: 'A', label: 'I feel mostly here, in my body.' },
-      { key: 'B', label: 'I feel wired or on edge.' },
-      { key: 'C', label: 'I feel flat, foggy, or far away from myself.' },
-    ],
-  },
-];
 
 function scoreToState(counts: Record<AnswerKey, number>): DecoderState {
   if (counts.A >= 3) return 'clear';
@@ -117,15 +78,16 @@ function scoreToState(counts: Record<AnswerKey, number>): DecoderState {
   return 'faint';
 }
 
-// ─── Per-result theme (matches wireframe) ───
-const THEME: Record<DecoderState, { bg: string; accent: string; ctaBg: string; pillTagLabel: string }> = {
-  clear:     { bg: '#E1F5EE', accent: '#5DCAA5', ctaBg: '#F280AA', pillTagLabel: 'Signal Clear' },
-  scrambled: { bg: '#FFF0D2', accent: '#FAA21B', ctaBg: '#F280AA', pillTagLabel: 'Signal Scrambled' },
-  faint:     { bg: '#E9EBF6', accent: '#7BAFDD', ctaBg: '#7BAFDD', pillTagLabel: 'Signal Faint' },
+// Per-result theme (matches wireframe) — stays in code because it's a
+// design system constraint, not editorial content.
+const THEME: Record<DecoderState, { bg: string; accent: string; ctaBg: string }> = {
+  clear:     { bg: '#E1F5EE', accent: '#5DCAA5', ctaBg: '#F280AA' },
+  scrambled: { bg: '#FFF0D2', accent: '#FAA21B', ctaBg: '#F280AA' },
+  faint:     { bg: '#E9EBF6', accent: '#7BAFDD', ctaBg: '#7BAFDD' },
 };
 
-// Mailchimp tags Anna's Customer Journeys listen for. Keep these stable —
-// changing them silently breaks her email flows.
+// Mailchimp tag names — kept in code so Anna can edit display copy in CMS
+// without accidentally breaking the journey triggers in Mailchimp.
 const TAG_FOR_STATE: Record<DecoderState, string> = {
   clear: 'Decoder · Signal Clear',
   scrambled: 'Decoder · Signal Scrambled',
@@ -133,13 +95,14 @@ const TAG_FOR_STATE: Record<DecoderState, string> = {
 };
 
 interface Props {
-  hero: DecoderQuizHero;
+  copy: DecoderQuizCopy;
+  questions: DecoderQuestion[];
   results: DecoderStateResult[];
 }
 
 type Step = 'intro' | 'question' | 'email' | 'result';
 
-export default function DecoderQuizClient({ hero, results }: Props) {
+export default function DecoderQuizClient({ copy, questions, results }: Props) {
   const [step, setStep] = useState<Step>('intro');
   const [questionIdx, setQuestionIdx] = useState(0);
   const [answers, setAnswers] = useState<AnswerKey[]>([]);
@@ -149,12 +112,11 @@ export default function DecoderQuizClient({ hero, results }: Props) {
   const [submitError, setSubmitError] = useState('');
 
   function answer(key: AnswerKey) {
-    const nextAnswers = [...answers, key];
-    setAnswers(nextAnswers);
-    if (questionIdx + 1 < QUESTIONS.length) {
+    const next = [...answers, key];
+    setAnswers(next);
+    if (questionIdx + 1 < questions.length) {
       setQuestionIdx(questionIdx + 1);
     } else {
-      // Last question answered — move to email capture (gates the result)
       setStep('email');
     }
   }
@@ -165,10 +127,13 @@ export default function DecoderQuizClient({ hero, results }: Props) {
   );
   const winnerState: DecoderState = scoreToState(counts);
   const tag = TAG_FOR_STATE[winnerState];
-
-  // Find the matching CMS result, normalising any legacy state slugs
-  const result = results.find((r) => normaliseState(r.state) === winnerState) || results[0] || null;
   const theme = THEME[winnerState];
+  const result = results.find((r) => normaliseState(r.state) === winnerState) || results[0] || null;
+
+  const practiceLabel =
+    winnerState === 'clear' ? copy.practiceLabelClear
+      : winnerState === 'scrambled' ? copy.practiceLabelScrambled
+        : copy.practiceLabelFaint;
 
   async function submitEmail(e: React.FormEvent) {
     e.preventDefault();
@@ -184,8 +149,6 @@ export default function DecoderQuizClient({ hero, results }: Props) {
           firstName: firstName.trim() || undefined,
           source: 'decoder-quiz',
           result: winnerState,
-          // Send the human-readable tag too so the API can use it directly
-          // without re-deriving — keeps tag naming in one place.
           resultTag: tag,
         }),
       });
@@ -212,48 +175,52 @@ export default function DecoderQuizClient({ hero, results }: Props) {
   }
 
   const progressPct = step === 'question'
-    ? ((questionIdx + 1) / QUESTIONS.length) * 100
-    : step === 'email'
-      ? 100
-      : 0;
+    ? ((questionIdx + 1) / Math.max(1, questions.length)) * 100
+    : step === 'email' ? 100 : 0;
+
+  const currentQ = questions[questionIdx];
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: quizStyles }} />
       <section className="dq-wrap" style={step === 'result' ? { background: theme.bg } : undefined}>
-        <Link href={hero.backToUrl} className="dq-back">&larr; {hero.backToLabel}</Link>
+        <Link href={copy.backToUrl} className="dq-back">&larr; {copy.backToLabel}</Link>
 
         {step === 'intro' && (
           <div className="dq-card">
-            <p className="dq-eyebrow">{hero.eyebrow}</p>
-            <h1 className="dq-title">{hero.title}</h1>
-            <p className="dq-intro">{hero.intro}</p>
-            <button className="dq-btn dq-btn-primary" onClick={() => setStep('question')}>
-              Begin the Decoder &rarr;
-            </button>
+            <p className="dq-eyebrow">{copy.eyebrow}</p>
+            <h1 className="dq-title">{copy.title}</h1>
+            <p className="dq-intro">{copy.intro}</p>
+            <div style={{ textAlign: 'center' }}>
+              <button className="dq-btn dq-btn-primary" onClick={() => setStep('question')}>
+                {copy.beginButtonLabel} &rarr;
+              </button>
+            </div>
           </div>
         )}
 
-        {step === 'question' && (
+        {step === 'question' && currentQ && (
           <div className="dq-card">
             <div className="dq-progress">
-              <span>Question {questionIdx + 1} of {QUESTIONS.length}</span>
+              <span>Question {questionIdx + 1} of {questions.length}</span>
               <div className="dq-progress-bar">
                 <div className="dq-progress-fill" style={{ width: `${progressPct}%` }} />
               </div>
             </div>
-            <h2 className="dq-question">{QUESTIONS[questionIdx].text}</h2>
+            <h2 className="dq-question">{currentQ.text}</h2>
             <div className="dq-options">
-              {QUESTIONS[questionIdx].answers.map((ans) => (
-                <button
-                  key={ans.key}
-                  className="dq-option"
-                  onClick={() => answer(ans.key)}
-                >
-                  <span className="dq-option-letter">{ans.key}</span>
-                  <span>{ans.label}</span>
-                </button>
-              ))}
+              <button className="dq-option" onClick={() => answer('A')}>
+                <span className="dq-option-letter">A</span>
+                <span>{currentQ.answerA}</span>
+              </button>
+              <button className="dq-option" onClick={() => answer('B')}>
+                <span className="dq-option-letter">B</span>
+                <span>{currentQ.answerB}</span>
+              </button>
+              <button className="dq-option" onClick={() => answer('C')}>
+                <span className="dq-option-letter">C</span>
+                <span>{currentQ.answerC}</span>
+              </button>
             </div>
           </div>
         )}
@@ -266,10 +233,8 @@ export default function DecoderQuizClient({ hero, results }: Props) {
                 <div className="dq-progress-fill" style={{ width: '100%' }} />
               </div>
             </div>
-            <h2 className="dq-title" style={{ textAlign: 'center' }}>Where would you like your result?</h2>
-            <p className="dq-intro" style={{ textAlign: 'center' }}>
-              Pop your email in, and your result, your practice, and a follow-up are yours.
-            </p>
+            <h2 className="dq-title" style={{ textAlign: 'center' }}>{copy.emailGateTitle}</h2>
+            <p className="dq-intro" style={{ textAlign: 'center' }}>{copy.emailGateIntro}</p>
             <form onSubmit={submitEmail} className="dq-email-form">
               <input
                 type="text"
@@ -294,21 +259,16 @@ export default function DecoderQuizClient({ hero, results }: Props) {
                 className="dq-btn dq-btn-primary"
                 style={{ width: '100%', justifyContent: 'center' }}
               >
-                {submitting ? 'Sending…' : 'Show me my result →'}
+                {submitting ? 'Sending…' : `${copy.emailGateButtonLabel} →`}
               </button>
               {submitError && <p className="dq-error">{submitError}</p>}
-              <p className="dq-fineprint">
-                One short email. Unsubscribe any time.
-              </p>
+              <p className="dq-fineprint">{copy.emailGateFineprint}</p>
             </form>
           </div>
         )}
 
         {step === 'result' && result && (
-          <div
-            className="dq-card dq-result"
-            style={{ borderTop: `4px solid ${theme.accent}`, background: '#fff' }}
-          >
+          <div className="dq-card dq-result" style={{ borderTop: `4px solid ${theme.accent}`, background: '#fff' }}>
             <p className="dq-eyebrow" style={{ color: theme.accent }}>Your result</p>
             <h2 className="dq-title">{result.title}</h2>
             <div className="dq-blurb">
@@ -316,9 +276,7 @@ export default function DecoderQuizClient({ hero, results }: Props) {
             </div>
             {result.practiceIntro && (
               <div className="dq-practice" style={{ borderLeftColor: theme.accent }}>
-                <span className="dq-practice-label" style={{ color: theme.accent }}>
-                  {winnerState === 'clear' ? 'A short meditation to stay clear' : winnerState === 'scrambled' ? 'Try this now' : 'One small thing'}
-                </span>
+                <span className="dq-practice-label" style={{ color: theme.accent }}>{practiceLabel}</span>
                 <p>{result.practiceIntro}</p>
               </div>
             )}
@@ -348,7 +306,7 @@ export default function DecoderQuizClient({ hero, results }: Props) {
                     {result.ctaLabel || 'See REGULATED'} &rarr;
                   </Link>
                 </div>
-                <p className="dq-price">Pay what you feel, from &pound;5.</p>
+                {copy.priceMicrocopy && <p className="dq-price">{copy.priceMicrocopy}</p>}
               </>
             )}
             {winnerState === 'clear' && (
@@ -362,7 +320,7 @@ export default function DecoderQuizClient({ hero, results }: Props) {
                 </Link>
               </div>
             )}
-            <button className="dq-btn dq-btn-ghost dq-retake" onClick={restart}>Retake the quiz</button>
+            <button className="dq-btn dq-btn-ghost dq-retake" onClick={restart}>{copy.retakeButtonLabel}</button>
           </div>
         )}
       </section>

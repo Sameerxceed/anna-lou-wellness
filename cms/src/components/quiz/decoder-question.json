@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_quiz_decoder_questions",
+  "info": {
+    "displayName": "Decoder Quiz Question",
+    "icon": "question",
+    "description": "One question for the Nervous System Decoder quiz at /free/nervous-system-decoder/quiz. Order matters — the first answer becomes A, second B, third C. Scoring counts A/B/C across all 5 questions (A=Signal Clear, B=Scrambled, C=Faint). You should keep this structure: each question has exactly 3 answers, one per state, in A→B→C order."
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "text",
+      "required": true,
+      "description": "The question itself. Anna's style: short, ends with an ellipsis (…) so the answer completes the sentence. E.g. 'When I try to rest, lately…'"
+    },
+    "answer_a": {
+      "type": "text",
+      "required": true,
+      "description": "Answer A — the regulated/grounded response. Counted toward Signal Clear when picked."
+    },
+    "answer_b": {
+      "type": "text",
+      "required": true,
+      "description": "Answer B — the activated/wired response. Counted toward Signal Scrambled."
+    },
+    "answer_c": {
+      "type": "text",
+      "required": true,
+      "description": "Answer C — the flat/shutdown response. Counted toward Signal Faint."
+    }
+  }
+}

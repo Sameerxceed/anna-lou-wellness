@@ -5,21 +5,29 @@
     "singularName": "decoder-quiz-page",
     "pluralName": "decoder-quiz-pages",
     "displayName": "Decoder Quiz (Free)",
-    "description": "The interactive Nervous System Decoder quiz at /free/nervous-system-decoder/quiz. Hero copy + the 3 state result blurbs are editable here. The questions and scoring weights stay in code (technical content that doesn't change often)."
+    "description": "Every piece of copy on /free/nervous-system-decoder/quiz, fully CMS-editable. Hero, button labels, the 5 questions and their A/B/C answers, the email gate copy, the 3 result pages, and the practice labels. The only thing in code is the scoring logic (A=Clear, B=Scrambled, C=Faint) and the colour palette per result."
   },
   "options": { "draftAndPublish": false },
   "attributes": {
     "eyebrow": {
       "type": "string",
-      "default": "Free. Always free."
+      "default": "Issue No. 01 · Free Resource",
+      "description": "Small uppercase label above the title on the intro screen."
     },
     "title": {
       "type": "string",
-      "default": "Which state is your nervous system in?"
+      "default": "The Nervous System Decoder.",
+      "description": "Main heading on the intro screen."
     },
     "intro": {
       "type": "text",
-      "default": "A few short questions, no email required to see your result. At the end you get one of three readings (Ventral, Sympathetic, Dorsal) and a practice you can use today."
+      "default": "Five short questions. Answer honestly. At the end we will read where your inner guidance system is right now, and give you a practice you can use today.",
+      "description": "Intro paragraph on the first screen, above the Begin button."
+    },
+    "begin_button_label": {
+      "type": "string",
+      "default": "Begin the Decoder",
+      "description": "Text on the button that starts the quiz."
     },
     "back_to_label": {
       "type": "string",
@@ -29,11 +37,61 @@
       "type": "string",
       "default": "/free/nervous-system-decoder"
     },
+    "questions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "quiz.decoder-question",
+      "description": "The 5 quiz questions, in order. Each question has A/B/C answers. Keep this at 5 questions — the scoring rule (A≥3 → Clear, else B≥C → Scrambled, else Faint) assumes 5. You can edit the text of any question or any answer freely. If the order or count changes, ping Sameer first."
+    },
+    "email_gate_title": {
+      "type": "string",
+      "default": "Where would you like your result?",
+      "description": "Heading on the email capture screen (between Q5 and the result reveal)."
+    },
+    "email_gate_intro": {
+      "type": "text",
+      "default": "Pop your email in, and your result, your practice, and a follow-up are yours.",
+      "description": "Paragraph under the email gate heading."
+    },
+    "email_gate_button_label": {
+      "type": "string",
+      "default": "Show me my result",
+      "description": "Text on the button that reveals the result after email capture."
+    },
+    "email_gate_fineprint": {
+      "type": "string",
+      "default": "One short email. Unsubscribe any time.",
+      "description": "Small italic line under the email submit button."
+    },
+    "practice_label_clear": {
+      "type": "string",
+      "default": "A short meditation to stay clear",
+      "description": "Small uppercase label above the practice block on the Signal Clear result page."
+    },
+    "practice_label_scrambled": {
+      "type": "string",
+      "default": "Try this now",
+      "description": "Small uppercase label above the practice block on the Signal Scrambled result page."
+    },
+    "practice_label_faint": {
+      "type": "string",
+      "default": "One small thing",
+      "description": "Small uppercase label above the practice block on the Signal Faint result page."
+    },
+    "price_microcopy": {
+      "type": "string",
+      "default": "Pay what you feel, from £5.",
+      "description": "Italic line shown under the REGULATED CTA on the Scrambled + Faint result pages."
+    },
+    "retake_button_label": {
+      "type": "string",
+      "default": "Retake the quiz"
+    },
     "results": {
       "type": "component",
       "repeatable": true,
       "component": "quiz.state-result",
-      "description": "Three result blurbs (one per state: ventral, sympathetic, dorsal). Don't add or remove entries — the 3 states match the quiz scoring logic. Title, blurb, practice, meditation URL, and CTA ARE editable."
+      "description": "Three result blurbs, one per state (clear / scrambled / faint). Don't add or remove entries — the scoring logic expects exactly 3. Title, blurb, practice text, meditation URL, and CTA ARE editable."
     },
     "seo_title": { "type": "string" },
     "seo_description": { "type": "text" }
