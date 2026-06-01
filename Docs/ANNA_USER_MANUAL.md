@@ -1,6 +1,6 @@
 # Anna Lou Wellness — User Manual
 
-**Version 1.4 — Updated 1 June 2026**
+**Version 1.5 — Updated 1 June 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -1761,7 +1761,8 @@ This tells the system that a Stripe purchase of REGULATED should grant the buyer
 | `intro` | Short intro sentence shown under the title |
 | `body` | Main lesson content — markdown supported. Use for text-led modules |
 | `video_url` | YouTube unlisted, Vimeo, or any embeddable URL. Renders as a video player |
-| `audio_url` | MP3 / podcast URL. Renders as an audio player |
+| `audio_file` | **Easiest path** — drag-drop an MP3 here. File hosted in your Media Library, plays in-browser. |
+| `audio_url` | Alternative to `audio_file` — paste a URL if the audio is hosted elsewhere (Bunny.net, podcast feed, external MP3). Leave blank if you uploaded a file above. |
 | `downloadable_file` | Optional PDF, worksheet, or audio file customers can download |
 | `thumbnail` | Optional thumbnail shown above the title (800×600 recommended) |
 | `duration_label` | Free text, e.g. "12 minutes" or "15 min audio + worksheet" |
@@ -1774,8 +1775,12 @@ This tells the system that a Stripe purchase of REGULATED should grant the buyer
 You can mix and match per module:
 - **Text-led lesson** — fill `title`, `body`, optionally `downloadable_file` (worksheet)
 - **Video lesson** — fill `title`, `video_url`, optionally `intro` (1-line summary)
-- **Audio meditation** — fill `title`, `audio_url`, `duration_label`
+- **Audio meditation** — fill `title`, drag-drop MP3 into `audio_file`, `duration_label` (e.g. "12 minutes")
 - **PDF download** — fill `title`, `downloadable_file`, `intro` describing what's inside
+
+#### Verified working end-to-end (1 Jun 2026)
+
+The full funnel was tested on staging: Stripe purchase → user auto-created with REGULATED access → password set → login → access page renders with the uploaded audio meditation playing inline. Anna can demo this exact flow to her brother on the meeting recording.
 
 #### The access link for your welcome email
 
