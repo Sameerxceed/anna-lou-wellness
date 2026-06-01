@@ -5,14 +5,28 @@ import { verifyTurnstile } from '@/lib/turnstile';
 /**
  * Decoder signup endpoint.
  *
- * Triggered by the form on /free/nervous-system-decoder. On submit:
- *   1. Verify Turnstile token (blocks bots)
- *   2. Upsert subscriber in Mailchimp audience
- *   3. Apply the "Decoder Subscriber" tag → fires Anna's Decoder Upsell
- *      Customer Journey (3 emails over 4 days, exits if REGULATED purchased)
+ * Two surfaces submit here:
+ *   1. The landing-page form on /free/nervous-system-decoder
+ *      (just collects email — no quiz result)
+ *   2. The quiz email gate at /free/nervous-system-decoder/quiz
+ *      (sends `result` = 'clear' | 'scrambled' | 'faint')
  *
- * Returns 200 even if Mailchimp tagging fails partially — the subscriber
- * row gets created either way, Anna can manually re-tag if she sees a gap.
+ * On submit:
+ *   1. Verify Turnstile token IF supplied (landing-page form sends it;
+ *      the quiz email gate does not, accepted)
+ *   2. Upsert subscriber in Mailchimp audience
+ *   3. Apply tags:
+ *      - Always: "Decoder Subscriber" (broad)
+ *      - If `result` was sent: also "Decoder · Signal Clear" /
+ *        "Decoder · Signal Scrambled" / "Decoder · Signal Faint"
+ *
+ * Anna's Mailchimp Customer Journeys listen for these tags — the broad
+ * one for the general welcome flow, the result-specific ones for the
+ * branched follow-up flows (meditation for Clear, REGULATED upsell for
+ * Scrambled + Faint).
+ *
+ * Returns 200 even if tag attach partially fails (the subscriber row is
+ * created either way; Anna can re-tag if needed).
  *
  * Env (set in Coolify → Next.js → Environment Variables):
  *   MAILCHIMP_API_KEY              - format: 'xxxxxxxx-us8'
@@ -21,7 +35,13 @@ import { verifyTurnstile } from '@/lib/turnstile';
  *   TURNSTILE_SECRET_KEY           - Cloudflare Turnstile secret
  */
 
-async function pushToMailchimp(email: string, firstName: string) {
+const RESULT_TAGS: Record<string, string> = {
+  clear: 'Decoder · Signal Clear',
+  scrambled: 'Decoder · Signal Scrambled',
+  faint: 'Decoder · Signal Faint',
+};
+
+async function pushToMailchimp(email: string, firstName: string, extraTags: string[] = []) {
   const apiKey = process.env.MAILCHIMP_API_KEY;
   const listId = process.env.MAILCHIMP_LIST_ID || '8bcbe7b0d1';
   const tag = process.env.MAILCHIMP_TAG_DECODER || 'Decoder Subscriber';
@@ -61,12 +81,17 @@ async function pushToMailchimp(email: string, firstName: string) {
     return { ok: false, error: `Mailchimp upsert fetch failed: ${err?.message}` };
   }
 
-  // Step 2: apply Decoder Subscriber tag (this is what triggers Anna's journey)
+  // Step 2: apply Decoder Subscriber tag (broad) + any result-specific tags
+  // (which fire Anna's branched Customer Journeys).
   try {
+    const tags = [
+      { name: tag, status: 'active' },
+      ...extraTags.map((t) => ({ name: t, status: 'active' })),
+    ];
     const tagRes = await fetch(`${baseUrl}/lists/${listId}/members/${subscriberHash}/tags`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ tags: [{ name: tag, status: 'active' }] }),
+      body: JSON.stringify({ tags }),
     });
     if (!tagRes.ok) {
       const text = await tagRes.text();
@@ -89,20 +114,36 @@ export async function POST(req: NextRequest) {
 
   const email = (body?.email || '').trim().toLowerCase();
   const firstName = (body?.firstName || '').trim();
+  const result = String(body?.result || '').trim().toLowerCase();
+  const resultTag = String(body?.resultTag || '').trim();
 
   if (!email || !email.includes('@')) {
     return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
   }
 
-  const captcha = await verifyTurnstile(
-    body?.turnstileToken,
-    req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip'),
-  );
-  if (!captcha.ok) {
-    return NextResponse.json({ error: captcha.error }, { status: 400 });
+  // Turnstile only required if the caller sent a token (landing-page form does;
+  // quiz email gate doesn't, since the quiz itself is friction enough).
+  if (body?.turnstileToken) {
+    const captcha = await verifyTurnstile(
+      body?.turnstileToken,
+      req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip'),
+    );
+    if (!captcha.ok) {
+      return NextResponse.json({ error: captcha.error }, { status: 400 });
+    }
   }
 
-  const mailchimp = await pushToMailchimp(email, firstName);
+  // Build the list of extra tags for this submission:
+  //  - explicit resultTag from the quiz client (preferred — keeps tag names in one place)
+  //  - else derive from result if it's one of our known states
+  const extraTags: string[] = [];
+  if (resultTag) {
+    extraTags.push(resultTag);
+  } else if (result && RESULT_TAGS[result]) {
+    extraTags.push(RESULT_TAGS[result]);
+  }
+
+  const mailchimp = await pushToMailchimp(email, firstName, extraTags);
   if (!mailchimp.ok) {
     console.warn('[decoder signup] Mailchimp error:', mailchimp.error);
     return NextResponse.json({

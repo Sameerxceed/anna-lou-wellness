@@ -10,12 +10,15 @@
     "state": {
       "type": "enumeration",
       "enum": [
+        "clear",
+        "scrambled",
+        "faint",
         "ventral",
         "sympathetic",
         "dorsal"
       ],
       "required": true,
-      "description": "Don't change — quiz logic maps answers to these 3 states. Ventral = grounded/connected, Sympathetic = fight-or-flight, Dorsal = freeze/shutdown."
+      "description": "Quiz logic uses Anna's brand language: 'clear', 'scrambled', 'faint'. Legacy polyvagal values (ventral / sympathetic / dorsal) kept in the enum for backwards compatibility with old records — don't use for new ones. Mapping: ventral≈clear, sympathetic≈scrambled, dorsal≈faint."
     },
     "title": {
       "type": "string",

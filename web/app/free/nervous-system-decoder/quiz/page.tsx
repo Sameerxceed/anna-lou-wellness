@@ -14,40 +14,43 @@ export const metadata: Metadata = {
 
 // Hardcoded fallbacks — used only if the CMS singleton is unreachable.
 // Anna edits the live content in Strapi under "Decoder Quiz (Free)".
+// Hardcoded fallbacks — Anna's 1 Jun 2026 wireframe copy. Used only if the
+// CMS singleton is unreachable; the singleton itself is seeded with the
+// same copy by cms/src/seed-decoder-quiz.js so Anna can edit live.
 const heroFallback: DecoderQuizHero = {
-  eyebrow: 'Free. Always free.',
-  title: 'Which state is your nervous system in?',
-  intro: 'A few short questions, no email required to see your result. At the end you get one of three readings (Ventral, Sympathetic, Dorsal) and a practice you can use today.',
+  eyebrow: 'Issue No. 01 · Free Resource',
+  title: 'The Nervous System Decoder.',
+  intro: 'Five short questions. Answer honestly. At the end we will read where your inner guidance system is right now, and give you a practice you can use today.',
   backToLabel: 'Back to the Decoder',
   backToUrl: '/free/nervous-system-decoder',
 };
 
 const resultsFallback: DecoderStateResult[] = [
   {
-    state: 'ventral',
-    title: 'Your signal: Ventral. You are mostly grounded right now.',
-    blurb: "Your nervous system is in its ventral vagal state — the place from which you connect, rest, create, and engage. This does not mean nothing is hard; it means you have the inner resource to meet what is.\n\nProtect this state. It is the foundation everything else gets built on.",
-    practiceIntro: 'A short practice to deepen the regulation you already have:',
+    state: 'clear',
+    title: 'Your signal is clear.',
+    blurb: 'Right now, your inner world is mostly steady. You can think, rest, feel, and come back to yourself. That is not luck and it is not nothing. It is something to protect.\n\nThe world is loud, and even a clear signal gets pulled at. Staying clear is a practice, not a fixed state.\n\nSo here is a short meditation from me, to help you hold your ground and stay where you are.',
+    practiceIntro: 'A short meditation to stay clear:',
     meditationUrl: '',
-    ctaLabel: 'Step inside REGULATED',
+    ctaLabel: 'Step inside The Reset Room',
+    ctaUrl: '/community/reset-room',
+  },
+  {
+    state: 'scrambled',
+    title: 'Your signal is scrambled.',
+    blurb: 'Read this as information, not a verdict. Your inner world has been picking up a lot of signal that was never yours to carry. That is why you are wired and tired at the same time.\n\nThe longer work, the one that teaches you how to stay anchored, lives inside REGULATED.',
+    practiceIntro: 'Try this now: Feet on the floor. Let your exhale grow a little longer than your inhale, three or four breaths. Look slowly around the room and name three things you can see. That is your signal coming back online. It is small, but it is real.',
+    meditationUrl: '',
+    ctaLabel: 'See REGULATED',
     ctaUrl: '/the-work/regulated',
   },
   {
-    state: 'sympathetic',
-    title: 'Your signal: Sympathetic. You are activated — fight or flight.',
-    blurb: 'Your nervous system has moved into sympathetic activation. The body reads the current environment as something to push against, push through, or run from. Cortisol is high, breath is shallow, jaw and shoulders likely tight.\n\nThis is not a flaw — it is your system trying to keep you safe. The work is to let the activation discharge so you can come back down to ventral.',
-    practiceIntro: 'A 5-minute practice to discharge the activation:',
+    state: 'faint',
+    title: 'Your signal is faint.',
+    blurb: 'Something in you has gone quiet. That is not weakness and it is not a flaw. It is what an inner world does when it has been carrying too much for too long. It turns the volume down, to protect you.\n\nBe gentle with yourself today.\n\nWhen you feel ready for the longer work, REGULATED is the practice that brings you home, slowly and at your own pace.',
+    practiceIntro: 'One small thing: Look up and find one thing in front of you. A colour, a corner of light, a shape. Let your eyes rest on it for a moment. That is enough.',
     meditationUrl: '',
-    ctaLabel: 'Step inside REGULATED',
-    ctaUrl: '/the-work/regulated',
-  },
-  {
-    state: 'dorsal',
-    title: 'Your signal: Dorsal. You are in freeze or shutdown.',
-    blurb: 'Your nervous system has dropped into the dorsal vagal state — freeze, collapse, or shutdown. Energy is low, motivation is hard to access, and the body wants to be horizontal. This is what happens when the system has been asked to hold too much for too long.\n\nThe way back is not to push. It is to gently, slowly, signal safety to the body so it can come up to sympathetic and then to ventral.',
-    practiceIntro: 'A gentle practice to begin coming back online:',
-    meditationUrl: '',
-    ctaLabel: 'Step inside REGULATED',
+    ctaLabel: 'See REGULATED',
     ctaUrl: '/the-work/regulated',
   },
 ];
