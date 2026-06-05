@@ -100,8 +100,10 @@ async function seedDecoderQuiz(strapi) {
     const hasQuestions =
       Array.isArray(existing?.questions) && existing.questions.length >= 5;
 
-    if (hasNewStates && hasQuestions) {
-      strapi.log.info('[seed-decoder-quiz] skipped — singleton already has questions + new state values');
+    const hasLede = !!existing?.lede;
+
+    if (hasNewStates && hasQuestions && hasLede) {
+      strapi.log.info('[seed-decoder-quiz] skipped — singleton already has questions + new state values + lede');
       return;
     }
 
@@ -109,6 +111,7 @@ async function seedDecoderQuiz(strapi) {
     const data = {};
     if (!hasNewStates) data.results = RESULTS;
     if (!hasQuestions) data.questions = QUESTIONS;
+    if (!hasLede) data.lede = 'What it is, and why it is free.';
 
     if (existing) {
       await strapi.entityService.update(

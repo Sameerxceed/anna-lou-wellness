@@ -43,6 +43,8 @@ export type DecoderQuestion = {
 export type DecoderQuizCopy = {
   eyebrow: string;
   title: string;
+  lede: string;
+  heroImageUrl: string;
   intro: string;
   beginButtonLabel: string;
   backToLabel: string;
@@ -190,7 +192,13 @@ export default function DecoderQuizClient({ copy, questions, results }: Props) {
           <div className="dq-card">
             <p className="dq-eyebrow">{copy.eyebrow}</p>
             <h1 className="dq-title">{copy.title}</h1>
-            <p className="dq-intro">{copy.intro}</p>
+            {copy.lede && <p className="dq-lede"><em>{copy.lede}</em></p>}
+            {copy.heroImageUrl && (
+              <div className="dq-hero" style={{ backgroundImage: `url('${copy.heroImageUrl}')` }} />
+            )}
+            {copy.intro.split(/\n\s*\n/).map((p, i) => (
+              <p key={i} className="dq-intro">{p}</p>
+            ))}
             <div style={{ textAlign: 'center' }}>
               <button className="dq-btn dq-btn-primary" onClick={() => setStep('question')}>
                 {copy.beginButtonLabel} &rarr;
@@ -341,9 +349,12 @@ const quizStyles = `
 .dq-card { max-width:720px; margin:0 auto; background:#FAF7F1; border-radius:8px; padding:2.5rem 2rem; box-shadow:0 6px 30px rgba(0,0,0,0.05); }
 .dq-email-card { background:#FCE8EF; }
 .dq-eyebrow { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; color:#6E3A5A; margin-bottom:0.8rem; text-align:center; }
-.dq-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.7rem,3.5vw,2.4rem); color:#231F20; line-height:1.3; margin-bottom:1rem; text-wrap:balance; text-align:center; }
+.dq-title { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:clamp(1.7rem,3.5vw,2.4rem); color:#231F20; line-height:1.3; margin-bottom:0.6rem; text-wrap:balance; text-align:center; }
+.dq-lede { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#8C8880; text-align:center; margin-bottom:1.4rem; }
+.dq-hero { width:100%; aspect-ratio:16/10; background-size:cover; background-position:center; background-color:rgba(35,31,32,0.04); border-radius:6px; margin-bottom:1.6rem; }
 .dq-question { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-weight:400; font-size:clamp(1.3rem,2.4vw,1.7rem); color:#231F20; line-height:1.4; margin-bottom:1.5rem; text-align:center; }
-.dq-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; line-height:1.8; color:#3D3D3A; margin-bottom:1.8rem; text-align:center; }
+.dq-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; line-height:1.8; color:#3D3D3A; margin-bottom:1rem; text-align:center; }
+.dq-intro:last-of-type { margin-bottom:1.8rem; }
 .dq-progress { display:flex; align-items:center; gap:14px; margin-bottom:1.8rem; color:#8C8880; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; font-family:Mulish,sans-serif; }
 .dq-progress-bar { flex:1; height:2px; background:rgba(35,31,32,0.12); position:relative; border-radius:2px; }
 .dq-progress-fill { position:absolute; left:0; top:0; height:100%; background:#F280AA; transition:width 0.4s; border-radius:2px; }

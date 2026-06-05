@@ -133,12 +133,12 @@ export default async function TheWorkPage() {
 
       <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#fff" />
 
-      {/* Free download CTA */}
+      {/* Decoder quiz CTA */}
       <section className="work-free reveal">
         <p className="work-kicker">Start here</p>
         <h2 className="work-section-title">The Nervous System Decoder</h2>
-        <p className="work-body" style={{ maxWidth: '550px', margin: '0 auto 1.5rem', textAlign: 'center' }}>A free guide to understanding your inner guidance system. Download it, read it, and begin.</p>
-        <Link href="#" className="work-download-btn">Download free <span>&rarr;</span></Link>
+        <p className="work-body" style={{ maxWidth: '550px', margin: '0 auto 1.5rem', textAlign: 'center' }}>Five short questions to read where your inner guidance system is right now — and a practice you can use today.</p>
+        <Link href="/free/nervous-system-decoder" className="work-download-btn">Begin the Decoder <span>&rarr;</span></Link>
       </section>
     </>
   );

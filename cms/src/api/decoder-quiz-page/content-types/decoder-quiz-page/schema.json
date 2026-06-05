@@ -19,10 +19,22 @@
       "default": "The Nervous System Decoder.",
       "description": "Main heading on the intro screen."
     },
+    "lede": {
+      "type": "string",
+      "default": "What it is, and why it is free.",
+      "description": "Italic subtitle shown directly under the title on the intro screen."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"],
+      "description": "Lifestyle photo at the top of the intro screen. Calm interior, natural light, warm cream tones. No human faces. Recommended size 1200×800."
+    },
     "intro": {
       "type": "text",
-      "default": "Five short questions. Answer honestly. At the end we will read where your inner guidance system is right now, and give you a practice you can use today.",
-      "description": "Intro paragraph on the first screen, above the Begin button."
+      "default": "It explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state.\n\nTake a few minutes. Answer honestly. We will show you which of the three states your inner world is in right now.",
+      "description": "Intro copy on the first screen, above the Begin button. Use a blank line to break into paragraphs."
     },
     "begin_button_label": {
       "type": "string",

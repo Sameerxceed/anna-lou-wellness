@@ -1,239 +1,129 @@
-import { getStockImage } from '@/data/stock-images';
+import { Metadata } from 'next';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
-import { getFAQs } from '@/lib/cms';
-import FAQAccordion from '@/components/FAQAccordion';
 import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
-import DecoderForm from './DecoderForm';
+import DecoderQuizClient, {
+  type DecoderQuestion,
+  type DecoderQuizCopy,
+  type DecoderStateResult,
+} from './quiz/DecoderQuizClient';
+
+export const metadata: Metadata = {
+  title: 'The Nervous System Decoder | Free Quiz | Anna Lou Wellness',
+  description: 'A short interactive quiz to read where your inner guidance system is right now — Signal Clear, Signal Scrambled, or Signal Faint — plus a practice you can use today.',
+  alternates: { canonical: '/free/nervous-system-decoder' },
+};
 
 export const dynamic = 'force-dynamic';
 
-const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
-  const v = cms?.[key];
-  return typeof v === 'string' && v.trim() ? v : fallback;
+const copyFallback: DecoderQuizCopy = {
+  eyebrow: 'Issue No. 01 · Free Resource',
+  title: 'The Nervous System Decoder.',
+  lede: 'What it is, and why it is free.',
+  heroImageUrl: '',
+  intro: 'It explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state.\n\nTake a few minutes. Answer honestly. We will show you which of the three states your inner world is in right now.',
+  beginButtonLabel: 'Begin the Decoder',
+  backToLabel: 'Back to home',
+  backToUrl: '/',
+  emailGateTitle: 'Where would you like your result?',
+  emailGateIntro: 'Pop your email in, and your result, your practice, and a follow-up are yours.',
+  emailGateButtonLabel: 'Show me my result',
+  emailGateFineprint: 'One short email. Unsubscribe any time.',
+  practiceLabelClear: 'A short meditation to stay clear',
+  practiceLabelScrambled: 'Try this now',
+  practiceLabelFaint: 'One small thing',
+  priceMicrocopy: 'Pay what you feel, from £5.',
+  retakeButtonLabel: 'Retake the quiz',
 };
-const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-const splitLines = (s: string) => s.split('\n').map((p) => p.trim()).filter(Boolean);
+
+const questionsFallback: DecoderQuestion[] = [
+  { text: 'When I try to rest, lately…', answerA: 'I can settle, even if it takes a moment.', answerB: 'My mind starts racing and I cannot switch off.', answerC: 'I shut down or zone out rather than properly rest.' },
+  { text: 'When I look at my phone or read the news…', answerA: 'I can engage and put it down without it staying with me.', answerB: 'I feel it land in my body and stay buzzing afterwards.', answerC: 'I scroll without really taking it in, or I avoid it altogether.' },
+  { text: 'Other people’s moods and stress…', answerA: 'I notice them, but they do not pull me out of myself.', answerB: 'Land in me. I pick them up and carry them.', answerC: 'Reach me faintly. It can feel like I am behind glass.' },
+  { text: 'When something small goes wrong…', answerA: 'I can take it, breathe, and move on.', answerB: 'I am tipped over more easily than I would like.', answerC: 'I freeze or go quiet, even when I want to respond.' },
+  { text: 'If I check in with myself right now, what I notice is…', answerA: 'I feel mostly here, in my body.', answerB: 'I feel wired or on edge.', answerC: 'I feel flat, foggy, or far away from myself.' },
+];
+
+const resultsFallback: DecoderStateResult[] = [
+  { state: 'clear', title: 'Your signal is clear.', blurb: 'Right now, your inner world is mostly steady. You can think, rest, feel, and come back to yourself. That is not luck and it is not nothing. It is something to protect.\n\nThe world is loud, and even a clear signal gets pulled at. Staying clear is a practice, not a fixed state.\n\nSo here is a short meditation from me, to help you hold your ground and stay where you are.', practiceIntro: 'A short meditation to stay clear:', meditationUrl: '', ctaLabel: 'Step inside The Reset Room', ctaUrl: '/community/reset-room' },
+  { state: 'scrambled', title: 'Your signal is scrambled.', blurb: 'Read this as information, not a verdict. Your inner world has been picking up a lot of signal that was never yours to carry. That is why you are wired and tired at the same time.\n\nThe longer work, the one that teaches you how to stay anchored, lives inside REGULATED.', practiceIntro: 'Try this now: Feet on the floor. Let your exhale grow a little longer than your inhale, three or four breaths. Look slowly around the room and name three things you can see. That is your signal coming back online. It is small, but it is real.', meditationUrl: '', ctaLabel: 'See REGULATED', ctaUrl: '/the-work/regulated' },
+  { state: 'faint', title: 'Your signal is faint.', blurb: 'Something in you has gone quiet. That is not weakness and it is not a flaw. It is what an inner world does when it has been carrying too much for too long. It turns the volume down, to protect you.\n\nBe gentle with yourself today.\n\nWhen you feel ready for the longer work, REGULATED is the practice that brings you home, slowly and at your own pace.', practiceIntro: 'One small thing: Look up and find one thing in front of you. A colour, a corner of light, a shape. Let your eyes rest on it for a moment. That is enough.', meditationUrl: '', ctaLabel: 'See REGULATED', ctaUrl: '/the-work/regulated' },
+];
+
+type LoadResult = {
+  copy: DecoderQuizCopy;
+  questions: DecoderQuestion[];
+  results: DecoderStateResult[];
+};
+
+async function loadDecoderQuizPage(): Promise<LoadResult> {
+  try {
+    const { data: d } = await fetchAPI('/decoder-quiz-page', { populate: '*' });
+    if (!d) return { copy: copyFallback, questions: questionsFallback, results: resultsFallback };
+    const r = d as Record<string, unknown>;
+
+    const cmsResults = Array.isArray(r.results) ? (r.results as Array<Record<string, unknown>>) : [];
+    const results: DecoderStateResult[] = cmsResults.length === 3
+      ? cmsResults.map((c): DecoderStateResult => ({
+          state: ((c.state as string) || 'clear') as DecoderStateResult['state'],
+          title: (c.title as string) || '',
+          blurb: (c.blurb as string) || '',
+          practiceIntro: (c.practice_intro as string) || '',
+          meditationUrl: (c.meditation_url as string) || '',
+          ctaLabel: (c.cta_label as string) || 'Step inside REGULATED',
+          ctaUrl: (c.cta_url as string) || '/the-work/regulated',
+        }))
+      : resultsFallback;
+
+    const cmsQuestions = Array.isArray(r.questions) ? (r.questions as Array<Record<string, unknown>>) : [];
+    const questions: DecoderQuestion[] = cmsQuestions.length === 5
+      ? cmsQuestions.map((q): DecoderQuestion => ({
+          text: (q.text as string) || '',
+          answerA: (q.answer_a as string) || '',
+          answerB: (q.answer_b as string) || '',
+          answerC: (q.answer_c as string) || '',
+        }))
+      : questionsFallback;
+
+    const heroImageUrl = mediaUrl(r.hero_image as { url?: string } | undefined) || '';
+
+    const copy: DecoderQuizCopy = {
+      eyebrow: (r.eyebrow as string) || copyFallback.eyebrow,
+      title: (r.title as string) || copyFallback.title,
+      lede: (r.lede as string) || copyFallback.lede,
+      heroImageUrl,
+      intro: (r.intro as string) || copyFallback.intro,
+      beginButtonLabel: (r.begin_button_label as string) || copyFallback.beginButtonLabel,
+      backToLabel: (r.back_to_label as string) || copyFallback.backToLabel,
+      backToUrl: (r.back_to_url as string) || copyFallback.backToUrl,
+      emailGateTitle: (r.email_gate_title as string) || copyFallback.emailGateTitle,
+      emailGateIntro: (r.email_gate_intro as string) || copyFallback.emailGateIntro,
+      emailGateButtonLabel: (r.email_gate_button_label as string) || copyFallback.emailGateButtonLabel,
+      emailGateFineprint: (r.email_gate_fineprint as string) || copyFallback.emailGateFineprint,
+      practiceLabelClear: (r.practice_label_clear as string) || copyFallback.practiceLabelClear,
+      practiceLabelScrambled: (r.practice_label_scrambled as string) || copyFallback.practiceLabelScrambled,
+      practiceLabelFaint: (r.practice_label_faint as string) || copyFallback.practiceLabelFaint,
+      priceMicrocopy: (r.price_microcopy as string) || copyFallback.priceMicrocopy,
+      retakeButtonLabel: (r.retake_button_label as string) || copyFallback.retakeButtonLabel,
+    };
+
+    return { copy, questions, results };
+  } catch {
+    return { copy: copyFallback, questions: questionsFallback, results: resultsFallback };
+  }
+}
 
 export default async function DecoderPage() {
-  let cms: Record<string, unknown> | null = null;
-  try {
-    const { data: d } = await fetchAPI('/decoder-page', { populate: '*' });
-    cms = (d as Record<string, unknown>) || null;
-  } catch { cms = null; }
-  const faqs = await getFAQs({ page: 'decoder' });
-
-  const coverImageUrl = mediaUrl(cms?.coverImage as { url?: string } | undefined) || getStockImage('decoder', 'decoder-cover');
-  const whyParas = splitParas(f(cms, 'whyBody', ''));
-  const insideItems = splitLines(f(cms, 'insideItems', ''));
-
+  const { copy, questions, results } = await loadDecoderQuizPage();
   return (
     <>
       <ServiceSchema
         name="The Nervous System Decoder"
-        description="A free somatic self-audit guide. Identify which of the three nervous system states you are in and get a practice for each."
+        description="A free somatic self-audit quiz. Identify which of the three nervous system states you are in and get a practice for each."
         url="/free/nervous-system-decoder"
         price="0"
       />
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Free Decoder', href: '/free/nervous-system-decoder' }]} />
-      <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
-
-      <section className="dec-hero">
-        <div className="dec-hero-inner">
-          <p className="dec-eyebrow">{f(cms, 'heroEyebrow', 'Free. Always free.')}</p>
-          <h1 className="dec-title">{f(cms, 'heroTitle', 'The Nervous System Decoder.')}</h1>
-          <p className="dec-tagline"><em>{f(cms, 'heroTagline', 'The first thing if you are new here.')}</em></p>
-        </div>
-      </section>
-
-      <section className="dec-body">
-        <div className="dec-grid">
-          <div className="dec-left">
-            <div className="dec-cover" style={{ backgroundImage: `url('${coverImageUrl}')` }}>
-              <div className="dec-cover-overlay" />
-              <div className="dec-cover-content">
-                <p className="dec-cover-label">{f(cms, 'coverLabel', 'Free Guide')}</p>
-                <p className="dec-cover-title">{f(cms, 'coverTitle', 'The Nervous System Decoder')}</p>
-                <p className="dec-cover-sub">{f(cms, 'coverSubtitle', 'A somatic self-audit, in seven quiet questions.')}</p>
-                <p className="dec-cover-author">{f(cms, 'coverAuthor', 'By Anna Lou Scaife')}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="dec-right">
-            <p className="dec-section-label">{f(cms, 'whyTitle', 'Why this exists')}</p>
-            {whyParas.map((p, i) => <p key={i} className="dec-body-text">{p}</p>)}
-
-            <div className="dec-whats-inside">
-              <p className="dec-section-label">{f(cms, 'insideTitle', "What's inside")}</p>
-              <ul>
-                {insideItems.map((item, i) => <li key={i}>{item}</li>)}
-              </ul>
-            </div>
-
-            <DecoderForm
-              formTitle={f(cms, 'formTitle', 'Send it to me')}
-              buttonLabel={f(cms, 'formButtonLabel', 'Send me the Decoder')}
-              microcopy={f(cms, 'formMicrocopy', 'No spam. Unsubscribe in one click. We never share your email.')}
-              successTitle={f(cms, 'successTitle', 'Your Decoder is on its way.')}
-              successBody={f(cms, 'successBody', 'Look for an email from Anna in the next few minutes. If it is not there, check spam or promotions.\n\nIn the meantime, if you want to go further, here is what comes next.')}
-            />
-          </div>
-        </div>
-      </section>
-
-      <FAQAccordion faqs={faqs} accentColour="#FFD07A" background="#F5F3EF" />
+      <DecoderQuizClient copy={copy} questions={questions} results={results} />
     </>
   );
 }
-
-const pageStyles = `
-.dec-hero {
-  background: linear-gradient(160deg, #F1EAE0 0%, #FCE8EF 100%);
-  padding: 3.5rem 2rem 2.5rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.dec-hero::after {
-  content: ''; position: absolute;
-  width: 200px; height: 200px; border-radius: 50%;
-  background: #FFD07A; filter: blur(80px); opacity: 0.5;
-  top: -40px; right: -40px;
-}
-.dec-hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
-.dec-eyebrow {
-  font-family: Mulish, sans-serif; font-weight: 500;
-  font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
-  color: #6E3A5A; margin-bottom: 0.6rem;
-}
-.dec-title {
-  font-family: 'Work Sans', sans-serif; font-weight: 300;
-  font-size: clamp(2.4rem, 5.5vw, 3.8rem); color: #231F20;
-  letter-spacing: 0.04em; line-height: 1.15; margin-bottom: 0.5rem;
-}
-.dec-tagline {
-  font-family: 'EB Garamond', Georgia, serif; font-style: italic;
-  font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: #3D3D3A;
-}
-
-.dec-body { background: #fff; padding: 3rem 2rem; }
-.dec-grid {
-  max-width: 1100px; margin: 0 auto;
-  display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 3rem; align-items: start;
-}
-
-.dec-left { position: sticky; top: 100px; }
-.dec-cover {
-  aspect-ratio: 3/4; border-radius: 8px;
-  background-size: cover; background-position: center;
-  position: relative; overflow: hidden;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
-}
-.dec-cover-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(35,31,32,0.15) 0%, rgba(35,31,32,0.55) 100%);
-}
-.dec-cover-content {
-  position: relative; z-index: 1; padding: 2.5rem 2rem;
-  height: 100%; display: flex; flex-direction: column; justify-content: space-between;
-  color: #F1EAE0;
-}
-.dec-cover-label {
-  font-family: Mulish, sans-serif; font-weight: 500;
-  font-size: 0.55rem; letter-spacing: 0.28em; text-transform: uppercase;
-  color: #FFD07A;
-}
-.dec-cover-title {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.2;
-  color: #fff; margin-bottom: 0.5rem;
-}
-.dec-cover-sub {
-  font-family: 'EB Garamond', Georgia, serif; font-style: italic;
-  font-size: 0.95rem; color: rgba(255,255,255,0.85);
-}
-.dec-cover-author {
-  font-family: Mulish, sans-serif; font-weight: 400;
-  font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-}
-
-.dec-section-label {
-  font-family: Mulish, sans-serif; font-weight: 500;
-  font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;
-  color: #6E3A5A; margin-bottom: 0.6rem;
-}
-.dec-body-text {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 1rem; line-height: 1.8; color: #3D3D3A;
-  margin-bottom: 1rem;
-}
-
-.dec-whats-inside { background: #F5F3EF; padding: 1.5rem; border-radius: 6px; margin: 2rem 0; }
-.dec-whats-inside ul { list-style: none; padding: 0; margin: 0; }
-.dec-whats-inside li {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 0.95rem; line-height: 1.7; color: #3D3D3A;
-  padding: 0.4rem 0 0.4rem 1.5rem; position: relative;
-}
-.dec-whats-inside li::before {
-  content: '+'; position: absolute; left: 0; color: #6E3A5A; font-weight: 700; font-size: 1.1rem;
-}
-
-.dec-form { background: #231F20; padding: 1.8rem; border-radius: 8px; margin-top: 2rem; }
-.dec-form .dec-section-label { color: #FFD07A; }
-.dec-label { display: block; margin-bottom: 0.9rem; }
-.dec-label span {
-  display: block;
-  font-family: Mulish, sans-serif; font-weight: 500;
-  font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: rgba(241,234,224,0.7); margin-bottom: 0.4rem;
-}
-.dec-label input {
-  width: 100%; height: 44px;
-  background: rgba(241,234,224,0.06);
-  border: 1px solid rgba(241,234,224,0.15);
-  border-radius: 4px;
-  padding: 0 0.9rem;
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 0.95rem; color: #F1EAE0;
-  outline: none; transition: border-color 0.2s;
-}
-.dec-label input:focus { border-color: #FFD07A; }
-.dec-submit {
-  width: 100%; height: 48px;
-  background: #FFD07A; color: #231F20; border: none; border-radius: 4px;
-  font-family: Mulish, sans-serif; font-weight: 600;
-  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
-  cursor: pointer; transition: background 0.2s;
-  margin-top: 0.4rem;
-}
-.dec-submit:hover { background: #FFC15C; }
-.dec-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-.dec-fineprint {
-  font-family: Mulish, sans-serif; font-weight: 300;
-  font-size: 0.6rem; color: rgba(241,234,224,0.4);
-  text-align: center; margin-top: 0.8rem; letter-spacing: 0.05em;
-}
-
-.dec-success { background: #F5F3EF; padding: 1.8rem; border-radius: 8px; margin-top: 2rem; }
-.dec-success-title {
-  font-family: 'EB Garamond', Georgia, serif; font-style: italic;
-  font-size: 1.6rem; color: #231F20; margin-bottom: 0.8rem;
-}
-.dec-cta-row { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
-.dec-cta-link {
-  font-family: Mulish, sans-serif; font-weight: 500;
-  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: #6E3A5A; text-decoration: none;
-  border-bottom: 1px solid #6E3A5A;
-  padding-bottom: 2px; align-self: flex-start;
-  transition: gap 0.3s;
-}
-.dec-cta-link:hover { color: #5A2E4A; border-bottom-color: #5A2E4A; }
-
-@media (max-width: 900px) {
-  .dec-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .dec-left { position: static; max-width: 320px; margin: 0 auto; }
-}
-`;
