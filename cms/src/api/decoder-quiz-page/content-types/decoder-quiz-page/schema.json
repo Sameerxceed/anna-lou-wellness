@@ -43,11 +43,11 @@
     },
     "back_to_label": {
       "type": "string",
-      "default": "Back to the Decoder"
+      "default": "Back to home"
     },
     "back_to_url": {
       "type": "string",
-      "default": "/free/nervous-system-decoder"
+      "default": "/"
     },
     "questions": {
       "type": "component",

@@ -102,8 +102,15 @@ async function seedDecoderQuiz(strapi) {
 
     const hasLede = !!existing?.lede;
 
-    if (hasNewStates && hasQuestions && hasLede) {
-      strapi.log.info('[seed-decoder-quiz] skipped — singleton already has questions + new state values + lede');
+    // The old back-link defaults pointed back to /free/nervous-system-decoder
+    // when the quiz lived under /quiz. Now that the quiz IS that page, those
+    // values loop. Only auto-fix if the singleton still has the stale defaults —
+    // never overwrite a custom value Anna has typed.
+    const backLabelIsStale = existing?.back_to_label === 'Back to the Decoder';
+    const backUrlIsStale = existing?.back_to_url === '/free/nervous-system-decoder';
+
+    if (hasNewStates && hasQuestions && hasLede && !backLabelIsStale && !backUrlIsStale) {
+      strapi.log.info('[seed-decoder-quiz] skipped — singleton already current');
       return;
     }
 
@@ -112,6 +119,8 @@ async function seedDecoderQuiz(strapi) {
     if (!hasNewStates) data.results = RESULTS;
     if (!hasQuestions) data.questions = QUESTIONS;
     if (!hasLede) data.lede = 'What it is, and why it is free.';
+    if (backLabelIsStale) data.back_to_label = 'Back to home';
+    if (backUrlIsStale) data.back_to_url = '/';
 
     if (existing) {
       await strapi.entityService.update(
