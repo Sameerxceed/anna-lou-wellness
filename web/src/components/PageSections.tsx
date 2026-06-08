@@ -142,7 +142,7 @@ function Hero({ section }: { section: Section }) {
         {section.subtitle != null && (section.subtitle as string).trim() && (
           <p style={{ fontFamily: 'EB Garamond, Georgia, serif', fontStyle: 'italic', fontSize: 'clamp(1.05rem, 2vw, 1.35rem)', maxWidth: 640, margin: s.inner.textAlign === 'center' ? '0 auto 1.5rem' : '0 0 1.5rem', color: imgUrl ? 'rgba(255,255,255,0.92)' : '#3D3D3A' }}>{section.subtitle as string}</p>
         )}
-        {(section.cta_text || section.cta_secondary_text) && (
+        {(Boolean(section.cta_text) || Boolean(section.cta_secondary_text)) && (
           <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', justifyContent: s.inner.textAlign === 'center' ? 'center' : 'flex-start', marginTop: '1.2rem' }}>
             {section.cta_text != null && (section.cta_text as string).trim() && (
               <Link href={(section.cta_link as string) || '#'} style={{ display: 'inline-block', padding: '0.85rem 1.6rem', background: s.accent, color: '#fff', textDecoration: 'none', borderRadius: 4, fontFamily: 'Mulish, sans-serif', fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600 }}>{section.cta_text as string}</Link>
