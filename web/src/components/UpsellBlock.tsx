@@ -12,8 +12,10 @@ import Link from 'next/link';
 import { mediaUrl } from '@/lib/strapi';
 
 export type UpsellItem = {
-  label: string;
-  link: string;
+  // label + link are optional in the CMS-returned shape — runtime filters
+  // out items missing either before render (see `list = ...filter(...)`).
+  label?: string;
+  link?: string;
   eyebrow?: string;
   blurb?: string;
   image?: { url?: string } | null;
@@ -60,11 +62,13 @@ export default function UpsellBlock({
           <h2 className="alw-upsells-title">{title}</h2>
           <div className="alw-upsell-grid">
             {list.map((item, i) => {
+              // filter() above guarantees label + link are non-empty strings.
+              const link = item.link as string;
               const imgUrl = mediaUrl(item.image);
-              const Tag = (isExternal(item.link) ? 'a' : Link) as React.ElementType;
-              const linkProps = isExternal(item.link)
-                ? { href: item.link, target: '_blank', rel: 'noopener' }
-                : { href: item.link };
+              const Tag = (isExternal(link) ? 'a' : Link) as React.ElementType;
+              const linkProps = isExternal(link)
+                ? { href: link, target: '_blank', rel: 'noopener' }
+                : { href: link };
               return (
                 <Tag key={i} className="alw-upsell-card" {...linkProps}>
                   {imgUrl && <div className="alw-upsell-img" style={{ backgroundImage: `url('${imgUrl}')` }} />}
