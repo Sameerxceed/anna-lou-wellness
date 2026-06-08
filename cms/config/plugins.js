@@ -1,8 +1,10 @@
 module.exports = ({ env }) => ({
   upload: {
     config: {
-      // Local uploads stored on Railway Volume at /app/public/uploads
-      sizeLimit: 25 * 1024 * 1024, // 25MB max (covers video uploads)
+      // 50MB ceiling — iPhone HEIC photos run 20-30MB; large workshop hero
+      // shots and short MP4s sometimes hit 40MB. Anything bigger is almost
+      // certainly an accident and should be flagged before upload.
+      sizeLimit: 50 * 1024 * 1024,
       breakpoints: {
         xlarge: 1920,
         large: 1200,

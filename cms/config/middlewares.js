@@ -31,7 +31,21 @@ module.exports = ({ env }) => [
   },
   'strapi::poweredBy',
   'strapi::query',
-  'strapi::body',
+  {
+    name: 'strapi::body',
+    config: {
+      // Lift the multipart cap so bulk uploads of iPhone photos don't fail
+      // before reaching the image-resize middleware. 250mb covers ~10
+      // HEIC photos at once. Matches the per-file 50mb cap in
+      // plugins.js -> upload.sizeLimit.
+      formLimit: '256mb',
+      jsonLimit: '256mb',
+      textLimit: '256mb',
+      formidable: {
+        maxFileSize: 250 * 1024 * 1024,
+      },
+    },
+  },
   'global::image-resize',
   'strapi::session',
   'strapi::favicon',
