@@ -97,7 +97,7 @@ export default async function HomePage() {
           <div className="hp-hero-text">
             <p className="hp-hero-tag">{f(cms, 'heroKicker', 'Reset Stories')}</p>
             <h1 className="hp-hero-title">{f(cms, 'heroTitle', 'Come back to yourself.')}</h1>
-            <p className="hp-hero-body">{f(cms, 'heroBody', 'What does it actually feel like to live in full alignment with who you are? Not the managed version. Not the performing one. The whole one. We are exploring that here, through honest stories, real practices, and a life beautifully lived.')}</p>
+            <p className="hp-hero-body">{f(cms, 'heroBody', 'Honest stories, real practices, and a life beautifully lived — for women coming back to themselves.')}</p>
             <div className="hp-hero-ctas">
               <Link href={f(cms, 'heroCtaPrimaryUrl', '/reset-stories')} className="cta-link cta-plum">{f(cms, 'heroCtaPrimaryLabel', 'Read the Reset Stories')} <span>&rarr;</span></Link>
               <Link href={f(cms, 'heroCtaSecondaryUrl', '/the-work')} className="cta-link cta-pink">{f(cms, 'heroCtaSecondaryLabel', 'Work with Anna')} <span>&rarr;</span></Link>
@@ -177,8 +177,8 @@ export default async function HomePage() {
           <div className="reveal">
             <p className="hp-kicker" style={{ color: '#F280AA' }}>{f(cms, 'workKicker', 'Work with Anna')}</p>
             <h2 className="hp-section-title">{f(cms, 'workTitle', 'Your inner world already knows.')}</h2>
-            <p className="hp-body">{f(cms, 'workBody1', 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.')}</p>
-            <p className="hp-body" style={{ marginBottom: '1.5rem' }}>{f(cms, 'workBody2', 'The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey.')}</p>
+            <p className="hp-body" style={{ marginBottom: '1.5rem' }}>{f(cms, 'workBody1', 'This work meets you in the body, where the patterns actually live. The Signal Method™ is the umbrella — programmes underneath for each stage of the journey.')}</p>
+            {f(cms, 'workBody2', '') && <p className="hp-body" style={{ marginBottom: '1.5rem' }}>{f(cms, 'workBody2', '')}</p>}
             <div className="hp-cta-group">
               <Link href={f(cms, 'workCtaPrimaryUrl', '/the-work')} className="cta-link cta-pink">{f(cms, 'workCtaPrimaryLabel', 'Start with the free Nervous System Decoder')} <span>&rarr;</span></Link>
               <Link href={f(cms, 'workCtaSecondaryUrl', '/the-work/ways-to-work-with-me')} className="cta-link cta-muted">{f(cms, 'workCtaSecondaryLabel', 'Explore all the ways to work')} <span>&rarr;</span></Link>
@@ -258,7 +258,7 @@ export default async function HomePage() {
         <div className="hp-shop-inner">
           <p className="hp-kicker reveal" style={{ color: '#5DCAA5' }}>{f(cms, 'shopKicker', 'Anna Lou of London')}</p>
           <h2 className="hp-section-title reveal rd1">{f(cms, 'shopTitle', 'Jewellery with meaning. Made to be worn.')}</h2>
-          <p className="hp-body reveal rd2">{f(cms, 'shopBody', 'I have been designing jewellery for over twenty-five years. What I have learned, across all of that, is that the pieces that actually matter are not the most expensive ones. They are the ones you reach for in hard moments. The ones that remind you.')}</p>
+          <p className="hp-body reveal rd2">{f(cms, 'shopBody', 'Twenty-five years of jewellery design. The pieces that matter are the ones you reach for in hard moments — the ones that remind you.')}</p>
           <div className="hp-shop-grid">
             {(featuredProducts.length > 0 ? featuredProducts : [
               { id: 'p1', slug: 'moonstone-necklace', name: 'Moonstone Necklace', hook: 'I reach for this one when I need to remember what is underneath the noise', image: getStockImage('product', 'product-1', 'card'), price: 0 },

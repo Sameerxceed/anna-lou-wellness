@@ -243,6 +243,16 @@ module.exports = {
     } catch (err) {
       strapi.log.warn('[seed-field-labels] failed:', err.message);
     }
+
+    // ═══ Trim verbose homepage paragraphs (Anna's 5 Jun feedback) ═══
+    // Conditional, idempotent — only rewrites a field if it still holds the
+    // pre-trim verbose default. Becomes a no-op once Anna has edited it.
+    try {
+      const trimHomepageCopy = require('./trim-homepage-copy');
+      await trimHomepageCopy(strapi);
+    } catch (err) {
+      strapi.log.warn('[trim-homepage-copy] failed:', err.message);
+    }
   },
 
   destroy(/* { strapi } */) {},
