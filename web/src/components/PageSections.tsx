@@ -23,6 +23,7 @@
 
 import Link from 'next/link';
 import { mediaUrl } from '@/lib/strapi';
+import BuyProgrammeButton from '@/components/BuyProgrammeButton';
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -391,6 +392,108 @@ function Embed({ section }: { section: Section }) {
   );
 }
 
+function NumberedList({ section }: { section: Section }) {
+  const s = styleFromBlock(section.style as Style | undefined);
+  const items = Array.isArray(section.items) ? (section.items as Array<{ heading?: string; body?: string }>) : [];
+  return (
+    <section style={s.outer}>
+      <BgLayer url={s.bgImageUrl} overlay={s.overlayOpacity} />
+      <div style={{ ...s.inner, maxWidth: 760 }}>
+        {Boolean(section.eyebrow) && (
+          <p style={{ fontFamily: 'Mulish, sans-serif', fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: s.accent, textAlign: 'center', marginBottom: '0.8rem' }}>{section.eyebrow as string}</p>
+        )}
+        {Boolean(section.heading) && (
+          <h2 style={{ fontFamily: 'EB Garamond, Georgia, serif', fontWeight: 400, fontSize: 'clamp(1.7rem, 4vw, 2.6rem)', lineHeight: 1.15, textAlign: 'center', marginBottom: '0.6rem' }}>{section.heading as string}</h2>
+        )}
+        <div style={{ width: 40, height: 1, background: s.accent, margin: '1rem auto 2rem' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {items.map((item, i) => (
+            <div key={i} style={{ background: '#fff', padding: '1.6rem 1.7rem', borderRadius: 4, boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontFamily: 'EB Garamond, Georgia, serif', fontStyle: 'italic', fontSize: '2.4rem', color: s.accent, lineHeight: 1, display: 'block', marginBottom: '0.4rem' }}>{String(i + 1).padStart(2, '0')}</span>
+              {item.heading && <strong style={{ display: 'block', fontFamily: 'EB Garamond, Georgia, serif', fontWeight: 500, fontSize: '1.2rem', lineHeight: 1.3, marginBottom: '0.4rem' }}>{item.heading}</strong>}
+              {item.body && <p style={{ fontFamily: 'EB Garamond, Georgia, serif', fontSize: '0.98rem', lineHeight: 1.65, color: '#3D3530', margin: 0 }}>{item.body}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AnchorBand({ section }: { section: Section }) {
+  const bg = (section.background_colour as string) || '#231F20';
+  const fg = (section.text_colour as string) || '#FAA21B';
+  const words = String((section.words as string) || '').split(/\.\s*/).map((w) => w.trim()).filter(Boolean);
+  if (words.length === 0) return null;
+  return (
+    <section style={{ background: bg, color: fg, padding: '4rem 1.2rem', textAlign: 'center' }}>
+      <p style={{ fontFamily: 'EB Garamond, Georgia, serif', fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(1.6rem, 4vw, 2.6rem)', letterSpacing: '0.02em', lineHeight: 1.4, color: fg }}>
+        {words.map((w, i) => (
+          <span key={i} style={{ display: 'inline-block', margin: '0 0.5rem' }}>{w}.</span>
+        ))}
+      </p>
+    </section>
+  );
+}
+
+function PayWhatYouFeel({ section }: { section: Section }) {
+  const s = styleFromBlock(section.style as Style | undefined);
+  return (
+    <section style={s.outer}>
+      <BgLayer url={s.bgImageUrl} overlay={s.overlayOpacity} />
+      <div style={{ ...s.inner, textAlign: 'center' }}>
+        <div style={{ background: '#EDE8DF', border: '1px solid #D8D0C2', padding: '2rem 2.2rem', margin: '0 auto', maxWidth: 540, textAlign: 'center', borderRadius: 4 }}>
+          {Boolean(section.label) && (
+            <p style={{ fontFamily: 'Mulish, sans-serif', fontSize: '0.65rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: s.accent, marginBottom: '0.6rem' }}>{section.label as string}</p>
+          )}
+          {Boolean(section.price) && (
+            <p style={{ fontFamily: 'EB Garamond, Georgia, serif', fontStyle: 'italic', fontSize: '1.8rem', color: '#231F20', marginBottom: '0.4rem' }}>{section.price as string}</p>
+          )}
+          {Boolean(section.note) && (
+            <p style={{ fontFamily: 'EB Garamond, Georgia, serif', fontSize: '0.95rem', color: '#8C8880', margin: 0 }}>{section.note as string}</p>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BuyProgramme({ section }: { section: Section }) {
+  const s = styleFromBlock(section.style as Style | undefined);
+  const slug = (section.programme_slug as string) || '';
+  const label = (section.label as string) || 'Step inside';
+  const secondary = (section.secondary_text as string) || '';
+  const anchorId = (section.anchor_id as string) || undefined;
+  if (!slug) return null;
+  return (
+    <section id={anchorId} style={{ ...s.outer, textAlign: 'center' }}>
+      <BgLayer url={s.bgImageUrl} overlay={s.overlayOpacity} />
+      <div style={{ ...s.inner, textAlign: 'center' }}>
+        <BuyProgrammeButton
+          slug={slug}
+          label={label}
+          background={s.accent}
+          className="page-buy-btn"
+        />
+        {secondary && (
+          <p style={{ fontFamily: 'EB Garamond, Georgia, serif', fontStyle: 'italic', fontSize: '0.95rem', color: 'inherit', opacity: 0.8, marginTop: '0.8rem' }}>{secondary}</p>
+        )}
+        <style dangerouslySetInnerHTML={{ __html: `
+          .page-buy-btn {
+            font-family: Mulish, sans-serif; font-weight: 600;
+            font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: #fff;
+            padding: 1.1rem 2.2rem; border: 0; border-radius: 3px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;
+            transition: transform 0.2s, opacity 0.2s;
+          }
+          .page-buy-btn:hover:not(:disabled) { transform: translateY(-1px); opacity: 0.92; }
+        ` }} />
+      </div>
+    </section>
+  );
+}
+
 function Fallback({ section }: { section: Section }) {
   // Quiet fallback: don't crash if a component doesn't yet have a renderer.
   // Surfaces nothing in production. Useful during development.
@@ -414,6 +517,10 @@ const RENDERERS: Record<string, React.FC<{ section: Section }>> = {
   'sections.image-pair': ImagePair,
   'sections.image-with-caption': ImageWithCaption,
   'sections.gallery': Gallery,
+  'sections.numbered-list': NumberedList,
+  'sections.anchor-band': AnchorBand,
+  'sections.pay-what-you-feel': PayWhatYouFeel,
+  'sections.buy-programme': BuyProgramme,
   'sections.cta-banner': CtaBanner,
   'sections.custom-html': CustomHtml,
   'sections.embed': Embed,

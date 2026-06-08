@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_sections_buy_programmes",
+  "info": {
+    "displayName": "Buy programme button",
+    "icon": "shopping-cart",
+    "description": "Stripe Checkout button bound to a Programme entry's slug. Use this in a Page Builder page that needs to sell a programme (REGULATED sales page, etc.) — the button reads the price and grants flag from the matching Programme entry."
+  },
+  "options": {},
+  "attributes": {
+    "programme_slug": {
+      "type": "string",
+      "required": true,
+      "description": "Slug of the Programme entry this button sells (must match exactly). Example: 'regulated' for the REGULATED programme. Anna's Programme entries live under Work · Programme."
+    },
+    "label": {
+      "type": "string",
+      "default": "Step inside",
+      "description": "Button text. Example: 'Yes, I want in', 'Step inside REGULATED'. Keep short."
+    },
+    "secondary_text": {
+      "type": "string",
+      "description": "Optional italic line under the button. Example: 'Pay what you feel · From £5'. Leave blank to hide."
+    },
+    "anchor_id": {
+      "type": "string",
+      "description": "Optional HTML id for this section so other CTAs on the page can jump to it. Example: 'join' lets a button with href '#join' scroll here. Lowercase only, no spaces."
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, padding for this section."
+    }
+  }
+}

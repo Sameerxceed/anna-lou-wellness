@@ -263,6 +263,17 @@ module.exports = {
     } catch (err) {
       strapi.log.warn('[seed-upsells] failed:', err.message);
     }
+
+    // ═══ Seed REGULATED sales page (Page entry slug='regulated') ═══
+    // Builds the full editorial sales page from Anna's 8 Jun HTML mockup
+    // (Docs/REGULATED-sales-page-preview.html). Idempotent: skips if a
+    // Page with slug 'regulated' already exists.
+    try {
+      const seedRegulatedSalesPage = require('./seed-regulated-sales-page');
+      await seedRegulatedSalesPage(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-regulated-sales-page] failed:', err.message);
+    }
   },
 
   destroy(/* { strapi } */) {},

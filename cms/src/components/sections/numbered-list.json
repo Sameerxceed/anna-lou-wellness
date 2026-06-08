@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_sections_numbered_lists",
+  "info": {
+    "displayName": "Numbered list",
+    "icon": "list-ol",
+    "description": "Editorial numbered list — large italic numerals with a heading and paragraph per item. Used for 'What you'll learn', '5 things to know', programme curricula, etc."
+  },
+  "options": {},
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "description": "Small uppercase label above the title. Example: 'Inside REGULATED · You will learn'. Leave blank to hide."
+    },
+    "heading": {
+      "type": "string",
+      "description": "Section heading above the list. Example: 'A new pay-what-you-feel course.'"
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.numbered-item",
+      "description": "The numbered entries. Add as many as you need. Number is auto-assigned by position — 01, 02, 03..."
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, padding, max width for this section."
+    }
+  }
+}

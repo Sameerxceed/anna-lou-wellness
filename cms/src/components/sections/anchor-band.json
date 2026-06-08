@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_sections_anchor_bands",
+  "info": {
+    "displayName": "Anchor word band",
+    "icon": "ellipsis-h",
+    "description": "Editorial band of 2–6 short words (e.g. 'Anchored. Clear. Sovereign. Yours.') on a contrasting background. Used as a punchy section break in long-form sales pages."
+  },
+  "options": {},
+  "attributes": {
+    "words": {
+      "type": "string",
+      "required": true,
+      "description": "The words to display, separated by full stops. Example: 'Anchored. Clear. Sovereign. Yours.'. Each word is shown as its own emphasis."
+    },
+    "background_colour": {
+      "type": "string",
+      "default": "#231F20",
+      "description": "Hex colour for the band background. Default near-black (#231F20). For light bands try #F5F3EF (cream) or #6E3A5A (plum)."
+    },
+    "text_colour": {
+      "type": "string",
+      "default": "#FAA21B",
+      "description": "Hex colour for the words. Default gold (#FAA21B) — looks good on a dark background. For light backgrounds try #6E3A5A (plum)."
+    }
+  }
+}

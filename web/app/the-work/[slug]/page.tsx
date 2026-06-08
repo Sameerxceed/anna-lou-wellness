@@ -5,9 +5,12 @@ import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
 import BuyProgrammeButton from '@/components/BuyProgrammeButton';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
+import PageSections from '@/components/PageSections';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
+import { getCustomPageBySlug } from '@/lib/custom-page';
+import { mediaUrl } from '@/lib/strapi';
 import { getTestimonials, getFAQs } from '@/lib/cms';
 
 /**
@@ -33,6 +36,19 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  // Page Builder entry wins for metadata if Anna created one with this slug.
+  const page = await getCustomPageBySlug(slug);
+  if (page) {
+    const title = page.seo_title || page.title;
+    const description = page.seo_description || page.summary || undefined;
+    const ogImage = mediaUrl(page.og_image as { url?: string } | undefined) || mediaUrl(page.hero_image as { url?: string } | undefined);
+    return {
+      title: `${title} | Anna Lou Wellness`,
+      description,
+      alternates: { canonical: `/the-work/${slug}` },
+      openGraph: { title, description, url: `/the-work/${slug}`, images: ogImage ? [{ url: ogImage }] : undefined },
+    };
+  }
   const cms = await getProgrammeBySlug(slug);
   if (!cms) return { title: 'Programme not found' };
   return {
@@ -49,6 +65,41 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DynamicProgrammePage({ params }: PageProps) {
   const { slug } = await params;
+
+  // If Anna built a custom Page entry with this slug, render the Page Builder
+  // version instead of the generic Programme template. This is how the
+  // REGULATED sales page (and any other rich sales page Anna wants to design)
+  // takes over the URL. The Programme entry stays for commerce/checkout
+  // (Stripe pricing, grants flags) and is referenced from a buy-programme
+  // section inside the Page.
+  const pageEntry = await getCustomPageBySlug(slug);
+  if (pageEntry) {
+    const sections = Array.isArray(pageEntry.sections) ? pageEntry.sections : [];
+    return (
+      <article>
+        <BreadcrumbSchema
+          items={[
+            { name: 'Home', href: '/' },
+            { name: 'Work with Anna', href: '/the-work' },
+            { name: pageEntry.title, href: `/the-work/${slug}` },
+          ]}
+        />
+        {sections.length === 0 ? (
+          <section style={{ padding: '4rem 2rem', textAlign: 'center', fontFamily: 'EB Garamond, Georgia, serif', color: '#8C8880', fontStyle: 'italic' }}>
+            This page is empty. Open it in the CMS and add some sections.
+          </section>
+        ) : (
+          <PageSections sections={sections} />
+        )}
+        <UpsellBlock
+          items={(pageEntry.upsells as UpsellItem[] | undefined) || []}
+          title="Where next."
+          kicker="Continue your journey"
+        />
+      </article>
+    );
+  }
+
   const [cms, reviews, faqs] = await Promise.all([
     getProgrammeBySlug(slug),
     getTestimonials({ tag: slug }),

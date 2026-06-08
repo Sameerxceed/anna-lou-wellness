@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_numbered_items",
+  "info": {
+    "displayName": "Numbered item",
+    "icon": "list-ol",
+    "description": "One entry in a Numbered list. Heading + paragraph."
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true,
+      "description": "Item heading. Example: 'What somatic protection actually is'."
+    },
+    "body": {
+      "type": "text",
+      "required": true,
+      "description": "Item body. One short paragraph."
+    }
+  }
+}

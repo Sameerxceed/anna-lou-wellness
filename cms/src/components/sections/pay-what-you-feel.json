@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_sections_pay_what_you_feel",
+  "info": {
+    "displayName": "Pay-what-you-feel block",
+    "icon": "money-bill",
+    "description": "Bordered price box with a small label, italic price, and a note. Used on pay-what-you-feel sales pages (REGULATED) above the buy button."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "default": "Pay what you feel",
+      "description": "Small uppercase label at the top of the box."
+    },
+    "price": {
+      "type": "string",
+      "default": "from £5",
+      "description": "Italic price line. Example: 'from £5', '£90', 'Free to start'."
+    },
+    "note": {
+      "type": "text",
+      "description": "Small note under the price. Example: 'You choose what feels right. Full details at checkout.'"
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, padding for the section around the box."
+    }
+  }
+}
