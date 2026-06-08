@@ -50,7 +50,9 @@ export default async function CirclePage() {
         <div className="rc-details-inner">
           <p className="rc-section-label">How it runs</p>
           {(() => {
-            const sessions = Array.isArray(cms?.sessions) ? (cms!.sessions as Array<Record<string, unknown>>) : [];
+            const cmsAny = cms as Record<string, unknown> | null;
+            const rawSessions = cmsAny?.sessions;
+            const sessions = Array.isArray(rawSessions) ? (rawSessions as Array<Record<string, unknown>>) : [];
             if (sessions.length > 0) {
               return (
                 <ul className="rc-sessions">
