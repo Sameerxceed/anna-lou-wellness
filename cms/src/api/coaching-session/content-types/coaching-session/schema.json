@@ -4,7 +4,7 @@
   "info": {
     "singularName": "coaching-session",
     "pluralName": "coaching-sessions",
-    "displayName": "Work \u00b7 Coaching Session",
+    "displayName": "Work · Coaching Session",
     "description": "1:1 coaching session types: Reset Sessions, Founder Reset, Dating Reset, Nervous System Reset"
   },
   "options": {
@@ -59,10 +59,12 @@
       "default": 0
     },
     "seo_title": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
     },
     "seo_description": {
-      "type": "text"
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
     }
   }
 }

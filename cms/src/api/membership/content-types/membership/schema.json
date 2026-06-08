@@ -4,8 +4,8 @@
   "info": {
     "singularName": "membership",
     "pluralName": "memberships",
-    "displayName": "Work \u00b7 Membership (Reset Room)",
-    "description": "The Reset Room monthly subscription. Price is set here in pence \u2014 Stripe is just the gateway, this is the source of truth."
+    "displayName": "Work · Membership (Reset Room)",
+    "description": "The Reset Room monthly subscription. Price is set here in pence — Stripe is just the gateway, this is the source of truth."
   },
   "options": {
     "draftAndPublish": false
@@ -24,7 +24,7 @@
       "type": "integer",
       "default": 2500,
       "required": true,
-      "description": "Price in pence. \u00a325 = 2500. \u00a319.50 = 1950. Must be a whole number of pence."
+      "description": "Price in pence. £25 = 2500. £19.50 = 1950. Must be a whole number of pence."
     },
     "currency": {
       "type": "string",
@@ -69,10 +69,12 @@
       ]
     },
     "seo_title": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
     },
     "seo_description": {
-      "type": "text"
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
     }
   }
 }

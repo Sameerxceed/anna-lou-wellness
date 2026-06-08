@@ -49,12 +49,43 @@ export default async function CirclePage() {
       <section className="rc-details">
         <div className="rc-details-inner">
           <p className="rc-section-label">How it runs</p>
-          <ul>
-            <li>Weekly, Wednesdays, 7.30pm to 8.45pm UK</li>
-            <li>Hybrid. In person on the houseboat at Taggs Island, or on Zoom</li>
-            <li>Donation-based. Pay what feels right when you book</li>
-            <li>Replays kept inside the Reset Room library</li>
-          </ul>
+          {(() => {
+            const sessions = Array.isArray(cms?.sessions) ? (cms!.sessions as Array<Record<string, unknown>>) : [];
+            if (sessions.length > 0) {
+              return (
+                <ul className="rc-sessions">
+                  {sessions.map((s, i) => {
+                    const day = (s.day_of_week as string) || '';
+                    const time = (s.time as string) || '';
+                    const loc = (s.location_label as string) || '';
+                    const locUrl = (s.location_url as string) || '';
+                    const notes = (s.notes as string) || '';
+                    return (
+                      <li key={i} className="rc-session">
+                        <p className="rc-session-when">{[day, time].filter(Boolean).join(', ')}</p>
+                        {loc && (
+                          locUrl
+                            ? <a href={locUrl} target="_blank" rel="noopener" className="rc-session-loc">{loc}</a>
+                            : <p className="rc-session-loc">{loc}</p>
+                        )}
+                        {notes && <p className="rc-session-notes">{notes}</p>}
+                      </li>
+                    );
+                  })}
+                  <li>Donation-based. Pay what feels right when you book</li>
+                  <li>Replays kept inside the Reset Room library</li>
+                </ul>
+              );
+            }
+            return (
+              <ul>
+                <li>Weekly, Wednesdays, 7.30pm to 8.45pm UK</li>
+                <li>Hybrid. In person on the houseboat at Taggs Island, or on Zoom</li>
+                <li>Donation-based. Pay what feels right when you book</li>
+                <li>Replays kept inside the Reset Room library</li>
+              </ul>
+            );
+          })()}
         </div>
       </section>
 
@@ -104,6 +135,12 @@ const pageStyles = `
 .rc-details li { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.7; color: #3D3D3A; padding: 0.5rem 0 0.5rem 1.5rem; position: relative; border-bottom: 1px solid rgba(0,0,0,0.06); }
 .rc-details li:last-child { border-bottom: none; }
 .rc-details li::before { content: '+'; position: absolute; left: 0; color: #5DCAA5; font-weight: 700; }
+.rc-sessions .rc-session { padding: 0.8rem 0 0.8rem 1.5rem; }
+.rc-session-when { font-family: 'Work Sans', sans-serif; font-weight: 500; font-size: 0.95rem; color: #231F20; margin-bottom: 0.2rem; }
+.rc-session-loc { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; color: #3D3D3A; }
+a.rc-session-loc { color: #6E3A5A; text-decoration: underline; text-underline-offset: 2px; }
+a.rc-session-loc:hover { color: #5A2E4A; }
+.rc-session-notes { font-family: 'EB Garamond', Georgia, serif; font-size: 0.92rem; color: #5D5A52; font-style: italic; margin-top: 0.25rem; }
 
 .rc-rsvp { background: #fff; padding: 3rem 2rem 4rem; }
 .rc-rsvp-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 3rem; align-items: start; }

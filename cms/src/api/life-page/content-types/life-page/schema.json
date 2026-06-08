@@ -39,10 +39,12 @@
       "description": "Hex colour for the kicker label. Default is the brand colour for this section."
     },
     "seo_title": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
     },
     "seo_description": {
-      "type": "text"
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
     }
   }
 }

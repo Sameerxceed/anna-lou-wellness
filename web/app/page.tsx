@@ -151,7 +151,8 @@ export default async function HomePage() {
                 <div className="article-card-body">
                   <p className="article-card-cat" style={{ color: accentForText(article.category?.colour) }}>{article.category?.name || 'Stories'}</p>
                   <h3 className="article-card-title">{article.title}</h3>
-                  <p className="article-card-date">{article.readingTime}</p>
+                  {article.excerpt && <p className="article-card-excerpt">{article.excerpt}</p>}
+                  <span className="article-card-readmore">Read more <span aria-hidden>&rarr;</span></span>
                 </div>
               </Link>
             );
@@ -506,7 +507,10 @@ const homepageStyles = `
    even when its category colour is light. The colour itself is set via
    inline style on the element. */
 .article-card-cat { font-family:Mulish,sans-serif; font-weight:600; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem; }
-.article-card-title { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:0.95rem; color:#231F20; line-height:1.3; margin-bottom:0.3rem; }
+.article-card-title { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:0.95rem; color:#231F20; line-height:1.3; margin-bottom:0.4rem; }
+.article-card-excerpt { font-family:'EB Garamond',Georgia,serif; font-weight:400; font-size:0.85rem; color:#3D3D3A; line-height:1.55; margin-bottom:0.5rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.article-card-readmore { font-family:Mulish,sans-serif; font-weight:600; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:#6E3A5A; display:inline-block; border-bottom:1px solid #6E3A5A; padding-bottom:1px; transition:gap 0.2s; }
+.article-card:hover .article-card-readmore { color:#231F20; border-bottom-color:#231F20; }
 /* #8C8880 on white = 3.0:1 (fails AA). Deepened to #5D5A52 = 5.4:1, passes. */
 .article-card-date { font-family:Mulish,sans-serif; font-size:0.6rem; color:#5D5A52; }
 
@@ -629,6 +633,15 @@ const homepageStyles = `
   .hp-articles, .hp-editorial-sections, .hp-experiences, .hp-newsletter, .hp-shop, .hp-media, .hp-testimonials, .hp-press { padding-left:1rem !important; padding-right:1rem !important; }
   .hp-newsletter-tiers { flex-direction:column; align-items:center; }
   .hp-hero-ctas, .hp-cta-group { flex-direction:column; align-items:flex-start; }
+
+  /* Cup-of-Jo magazine-card sizing on mobile: bigger, readable, generous spacing.
+     Anna's 5 Jun feedback: cards looked tiny on mobile; needed image + category +
+     preview text + Read More pattern. Desktop sizes left untouched. */
+  .article-card-body { padding:1rem 1.1rem 1.2rem; }
+  .article-card-cat { font-size:0.7rem; letter-spacing:0.18em; margin-bottom:0.5rem; }
+  .article-card-title { font-size:1.25rem; line-height:1.3; margin-bottom:0.6rem; }
+  .article-card-excerpt { font-size:1rem; line-height:1.65; margin-bottom:0.8rem; -webkit-line-clamp:3; }
+  .article-card-readmore { font-size:0.7rem; letter-spacing:0.18em; }
 }
 @media (max-width:480px) {
   /* Portrait images that get height-clamped on mobile shrink in width too

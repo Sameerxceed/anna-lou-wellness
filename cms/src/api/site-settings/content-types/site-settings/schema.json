@@ -5,7 +5,7 @@
     "singularName": "site-settings",
     "pluralName": "site-settings-list",
     "displayName": "3. Site Settings",
-    "description": "Global site configuration \u2014 branding, payments, commerce, social links"
+    "description": "Global site configuration — branding, payments, commerce, social links"
   },
   "options": {
     "draftAndPublish": false
@@ -48,7 +48,8 @@
       ]
     },
     "seo_description": {
-      "type": "text"
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
     },
     "seo_keywords": {
       "type": "text"
@@ -148,7 +149,7 @@
     },
     "gift_wrap_price": {
       "type": "decimal",
-      "default": 3.50,
+      "default": 3.5,
       "description": "Price (£) added to the order when the buyer ticks 'Add gift wrap'. Default £3.50."
     },
     "gift_wrap_label": {

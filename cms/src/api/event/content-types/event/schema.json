@@ -4,7 +4,7 @@
   "info": {
     "singularName": "event",
     "pluralName": "events",
-    "displayName": "zz \u00b7 Event (unused)"
+    "displayName": "zz · Event (unused)"
   },
   "options": {
     "draftAndPublish": false
@@ -16,7 +16,8 @@
     },
     "date": {
       "type": "date",
-      "required": true
+      "required": true,
+      "description": "Click the month name at top of the picker to jump months/years. Use the < > arrows to step one month at a time. Leave empty for evergreen items (no fixed date)."
     },
     "time": {
       "type": "string"
@@ -46,7 +47,8 @@
       ]
     },
     "booking_url": {
-      "type": "string"
+      "type": "string",
+      "description": "Where the 'Book now' / 'Buy' button takes people. Examples: https://buy.stripe.com/abcd, https://calendly.com/anna/intro, or a path like /the-work/regulated. Leave blank to hide the button."
     },
     "is_published": {
       "type": "boolean",

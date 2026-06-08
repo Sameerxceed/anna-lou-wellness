@@ -7,7 +7,9 @@
     "displayName": "Work · Quiz (What do you need?)",
     "description": "The /the-work/quiz page. Hero copy + 6 result blurbs are editable here. The 5 questions and scoring weights stay in code (technical content that doesn't change often)."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "eyebrow": {
       "type": "string",
@@ -35,7 +37,13 @@
       "component": "quiz.result",
       "description": "Six result blurbs (one per recommendation slug). Don't add or remove entries — the 6 slugs match the quiz scoring logic. Title, blurb, and CTA ARE editable."
     },
-    "seo_title": { "type": "string" },
-    "seo_description": { "type": "text" }
+    "seo_title": {
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
+    },
+    "seo_description": {
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
+    }
   }
 }

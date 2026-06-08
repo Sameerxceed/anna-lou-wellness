@@ -7,7 +7,9 @@
     "displayName": "Work · 1:1 Sessions hub",
     "description": "The /the-work/sessions page hero copy. The cards below the hero come from the Coaching Session collection (one entry per session type)."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "eyebrow": {
       "type": "string",
@@ -27,7 +29,13 @@
       "type": "text",
       "default": "Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation."
     },
-    "seo_title": { "type": "string" },
-    "seo_description": { "type": "text" }
+    "seo_title": {
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
+    },
+    "seo_description": {
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
+    }
   }
 }

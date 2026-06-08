@@ -44,6 +44,12 @@
       "type": "text",
       "description": "Main body. Separate paragraphs with a BLANK LINE between them."
     },
+    "sessions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.session-slot",
+      "description": "Recurring sessions to list on this page (Returning Circle and similar). Add one entry per location/time — e.g. one for Taggs Island, one for Zoom. Order matters: top entry shows first. Leave empty to fall back to the page's hardcoded copy."
+    },
     "ctaLabel": {
       "type": "string",
       "default": "Join the Circle",

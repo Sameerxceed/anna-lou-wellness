@@ -4,7 +4,7 @@
   "info": {
     "singularName": "article",
     "pluralName": "articles",
-    "displayName": "Story \u00b7 Article",
+    "displayName": "Story · Article",
     "description": "Editorial articles for Reset Stories, Life, Love & Relationships, Work & Money"
   },
   "options": {
@@ -71,10 +71,12 @@
       "description": "Canonical URL on Substack for the 12 free posts"
     },
     "seo_title": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
     },
     "seo_description": {
-      "type": "text"
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
     },
     "related_products": {
       "type": "relation",

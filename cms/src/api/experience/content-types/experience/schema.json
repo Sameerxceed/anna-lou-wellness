@@ -4,7 +4,7 @@
   "info": {
     "singularName": "experience",
     "pluralName": "experiences",
-    "displayName": "Experiences \u00b7 Event",
+    "displayName": "Experiences · Event",
     "description": "Retreats, workshops, corporate wellbeing, speaking engagements"
   },
   "options": {
@@ -34,7 +34,8 @@
       "type": "richtext"
     },
     "date": {
-      "type": "date"
+      "type": "date",
+      "description": "Click the month name at top of the picker to jump months/years. Use the < > arrows to step one month at a time. Leave empty for evergreen items (no fixed date)."
     },
     "location": {
       "type": "string"
@@ -57,7 +58,8 @@
       "default": true
     },
     "booking_url": {
-      "type": "string"
+      "type": "string",
+      "description": "Where the 'Book now' / 'Buy' button takes people. Examples: https://buy.stripe.com/abcd, https://calendly.com/anna/intro, or a path like /the-work/regulated. Leave blank to hide the button."
     },
     "is_active": {
       "type": "boolean",
@@ -68,10 +70,12 @@
       "default": 0
     },
     "seo_title": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
     },
     "seo_description": {
-      "type": "text"
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
     }
   }
 }

@@ -7,7 +7,9 @@
     "displayName": "Decoder Quiz (Free)",
     "description": "Every piece of copy on /free/nervous-system-decoder/quiz, fully CMS-editable. Hero, button labels, the 5 questions and their A/B/C answers, the email gate copy, the 3 result pages, and the practice labels. The only thing in code is the scoring logic (A=Clear, B=Scrambled, C=Faint) and the colour palette per result."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "eyebrow": {
       "type": "string",
@@ -28,7 +30,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "description": "Lifestyle photo at the top of the intro screen. Calm interior, natural light, warm cream tones. No human faces. Recommended size 1200×800."
     },
     "intro": {
@@ -105,7 +109,13 @@
       "component": "quiz.state-result",
       "description": "Three result blurbs, one per state (clear / scrambled / faint). Don't add or remove entries — the scoring logic expects exactly 3. Title, blurb, practice text, meditation URL, and CTA ARE editable."
     },
-    "seo_title": { "type": "string" },
-    "seo_description": { "type": "text" }
+    "seo_title": {
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
+    },
+    "seo_description": {
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
+    }
   }
 }

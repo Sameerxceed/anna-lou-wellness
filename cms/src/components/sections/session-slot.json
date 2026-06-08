@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_sections_session_slots",
+  "info": {
+    "displayName": "Session slot",
+    "description": "A single recurring session entry (Returning Circle and similar). Add one per location/time. Use the Sessions repeater on a Community Event page to list multiple."
+  },
+  "options": {},
+  "attributes": {
+    "day_of_week": {
+      "type": "string",
+      "description": "When this session runs. Example: 'Wednesdays' or 'Sundays at 11am'."
+    },
+    "time": {
+      "type": "string",
+      "description": "Time window. Example: '7.30pm to 8.45pm UK'. Leave blank if not fixed."
+    },
+    "location_label": {
+      "type": "string",
+      "description": "Where this session is held. Example: 'In person on the houseboat (Taggs Island)' or 'Live on Zoom'."
+    },
+    "location_url": {
+      "type": "string",
+      "description": "Optional link for the location — e.g. Google Maps for the houseboat, or the Zoom join page. Leave blank for plain text."
+    },
+    "notes": {
+      "type": "text",
+      "description": "Any extra detail about this session. One short paragraph at most."
+    }
+  }
+}

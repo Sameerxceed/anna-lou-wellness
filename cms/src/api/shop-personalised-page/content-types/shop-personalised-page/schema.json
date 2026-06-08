@@ -7,7 +7,9 @@
     "displayName": "Shop · Personalised",
     "description": "Sub-page under Shop > Personalised Pieces. All visible copy is editable here."
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "kicker": {
       "type": "string",
@@ -65,7 +67,13 @@
       "default": "/life/style-and-beauty",
       "description": "Target URL for the inspiration link. Usually points to a guide article in the magazine."
     },
-    "seo_title": { "type": "string" },
-    "seo_description": { "type": "text" }
+    "seo_title": {
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
+    },
+    "seo_description": {
+      "type": "text",
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
+    }
   }
 }
