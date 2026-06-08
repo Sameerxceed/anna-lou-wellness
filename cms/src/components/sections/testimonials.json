@@ -13,10 +13,17 @@
       "type": "json",
       "required": true
     },
-    "style": {
+    "layout": {
       "type": "enumeration",
       "enum": ["slider", "grid"],
-      "default": "grid"
+      "default": "grid",
+      "description": "How to display the testimonials. Grid = side by side. Slider = scrollable carousel."
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, text colour, padding, alignment, max width, and background image for this section. Leave any field blank to use defaults."
     }
   }
 }

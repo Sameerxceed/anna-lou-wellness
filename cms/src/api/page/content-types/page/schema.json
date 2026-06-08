@@ -4,40 +4,47 @@
   "info": {
     "singularName": "page",
     "pluralName": "pages",
-    "displayName": "zz · Page-legacy (unused)"
+    "displayName": "Page (build your own)",
+    "description": "Build a brand-new page yourself by stacking sections. Pick a title, give it a slug (the URL), then add as many sections as you like — heroes, text blocks, image+text splits, galleries, image pairs, full-bleed photos, CTAs, FAQs and more. Each section has style options (background colour, padding, alignment, background image)."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "title": {
       "type": "string",
-      "required": true
+      "required": true,
+      "description": "Page title (shown in the browser tab and used for the heading if your first section doesn't set one)."
     },
     "slug": {
       "type": "uid",
       "targetField": "title",
-      "required": true
+      "required": true,
+      "description": "The URL this page lives at. The page becomes /p/<slug>. Lowercase letters and dashes only. Strapi fills this for you when you save."
     },
-    "template": {
-      "type": "enumeration",
-      "enum": [
-        "default",
-        "landing",
-        "editorial",
-        "services"
-      ],
-      "default": "default"
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Cover image used when this page is shared on social or shown in a listing. Not displayed on the page itself unless you add a Hero or Full-bleed image section. Recommended 1600x900."
+    },
+    "summary": {
+      "type": "text",
+      "description": "One-line summary used as the meta description for Google and as the preview text in social shares. About 155 characters."
     },
     "sections": {
       "type": "dynamiczone",
       "components": [
         "sections.hero",
         "sections.text-block",
-        "sections.card-grid",
-        "sections.testimonials",
-        "sections.cta-banner",
+        "sections.image-text-split",
+        "sections.full-bleed-image",
+        "sections.image-pair",
+        "sections.image-with-caption",
         "sections.gallery",
+        "sections.cta-banner",
+        "sections.testimonials",
+        "sections.card-grid",
         "sections.faq",
         "sections.team-grid",
         "sections.contact-form",
@@ -45,7 +52,8 @@
         "sections.featured-products",
         "sections.custom-html",
         "sections.press-strip"
-      ]
+      ],
+      "description": "The page itself. Click 'Add a component to sections' to start. You can drag sections to reorder. Each section has its own Style block for background colour, padding, and alignment."
     },
     "seo_title": {
       "type": "string",
@@ -58,21 +66,13 @@
     "og_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"],
+      "description": "Optional social-share image override. Leave blank to use the Hero image above."
     },
     "sort_order": {
       "type": "integer",
-      "default": 0
-    }
-  },
-  "pluginOptions": {
-    "content-manager": {
-      "visible": false
-    },
-    "content-type-builder": {
-      "visible": false
+      "default": 0,
+      "description": "Used if these pages are listed somewhere. Lower numbers appear first. Leave 0 if you don't have a listing."
     }
   }
 }

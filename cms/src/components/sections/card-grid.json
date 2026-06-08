@@ -15,8 +15,18 @@
     },
     "columns": {
       "type": "enumeration",
-      "enum": ["2", "3", "4"],
+      "enum": [
+        "2",
+        "3",
+        "4"
+      ],
       "default": "3"
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, text colour, padding, alignment, max width, and background image for this section. Leave any field blank to use defaults."
     }
   }
 }

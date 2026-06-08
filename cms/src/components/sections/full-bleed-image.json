@@ -1,0 +1,58 @@
+{
+  "collectionName": "components_sections_full_bleed_images",
+  "info": {
+    "displayName": "Full-bleed image",
+    "icon": "image",
+    "description": "Single edge-to-edge image with optional text overlay. Great for hero shots between sections."
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true,
+      "description": "Landscape photo, at least 1920px wide. The image fills the full screen width and is taller on desktop than mobile."
+    },
+    "overlay_eyebrow": {
+      "type": "string",
+      "description": "Small uppercase label that sits on top of the image. Example: 'On the boat'. Leave blank for a plain image with no text."
+    },
+    "overlay_heading": {
+      "type": "string",
+      "description": "Big heading that sits on top of the image. Leave blank for a plain image with no text."
+    },
+    "overlay_body": {
+      "type": "text",
+      "description": "One short paragraph below the heading (optional). Keep it tight — full-bleed images work best with minimal text."
+    },
+    "overlay_position": {
+      "type": "enumeration",
+      "enum": ["top-left", "top-center", "top-right", "center", "bottom-left", "bottom-center", "bottom-right"],
+      "default": "center",
+      "description": "Where the text sits on the image. Pick a position that doesn't cover the important part of the photo."
+    },
+    "overlay_text_colour": {
+      "type": "string",
+      "default": "#F5F3EF",
+      "description": "Text colour for the overlay. Default cream looks good on most photos. Use #231F20 (near-black) if your photo is very pale."
+    },
+    "overlay_darken": {
+      "type": "integer",
+      "default": 30,
+      "min": 0,
+      "max": 80,
+      "description": "How much to dim the image so overlay text stays readable (0 = no dimming, 80 = very dark). Increase if your photo is bright."
+    },
+    "min_height": {
+      "type": "enumeration",
+      "enum": ["short", "medium", "tall", "fullscreen"],
+      "default": "medium",
+      "description": "How tall the image is. Short = ~40vh, Medium = ~60vh, Tall = ~80vh, Fullscreen = 100vh."
+    },
+    "caption": {
+      "type": "string",
+      "description": "Optional tiny caption shown below the image (outside the photo). Example credit line."
+    }
+  }
+}

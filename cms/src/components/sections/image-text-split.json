@@ -1,0 +1,54 @@
+{
+  "collectionName": "components_sections_image_text_splits",
+  "info": {
+    "displayName": "Image + Text split",
+    "icon": "columns",
+    "description": "An image next to a block of text. Pick which side the image sits on. Stacks vertically on mobile (image first)."
+  },
+  "options": {},
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "description": "Small uppercase label above the heading. Example: 'About Anna', 'The Houseboat', 'Why this matters'. Leave blank to hide."
+    },
+    "heading": {
+      "type": "string",
+      "description": "Main heading for this section. Keep under ~8 words."
+    },
+    "body": {
+      "type": "text",
+      "description": "Main body copy. Plain text — separate paragraphs with a blank line between them."
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true,
+      "description": "The image to show beside the text. Portrait, landscape, or square — they all work. Recommended at least 1200px wide."
+    },
+    "image_caption": {
+      "type": "string",
+      "description": "Tiny italic caption shown under the image (optional). Example: 'Photo by Sarah'. Leave blank to hide."
+    },
+    "image_position": {
+      "type": "enumeration",
+      "enum": ["left", "right"],
+      "default": "right",
+      "description": "Which side the image sits on (desktop only — on mobile, image is always above text)."
+    },
+    "cta_label": {
+      "type": "string",
+      "description": "Optional button under the text. Example: 'Read the full story', 'Join the workshop'. Leave blank to hide button."
+    },
+    "cta_url": {
+      "type": "string",
+      "description": "Where the button takes people. Example: /the-work/regulated or https://buy.stripe.com/abc. Leave blank to hide button."
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, text colour, padding, alignment, max width, and background image for this section."
+    }
+  }
+}

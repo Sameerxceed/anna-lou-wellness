@@ -15,9 +15,21 @@
     "fields": {
       "type": "json",
       "default": [
-        { "name": "name", "type": "text", "required": true },
-        { "name": "email", "type": "email", "required": true },
-        { "name": "message", "type": "textarea", "required": true }
+        {
+          "name": "name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "required": true
+        },
+        {
+          "name": "message",
+          "type": "textarea",
+          "required": true
+        }
       ]
     },
     "submit_text": {
@@ -27,6 +39,12 @@
     "success_message": {
       "type": "string",
       "default": "Thank you for your message. We'll be in touch soon."
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, text colour, padding, alignment, max width, and background image for this section. Leave any field blank to use defaults."
     }
   }
 }

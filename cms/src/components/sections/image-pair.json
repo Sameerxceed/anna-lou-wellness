@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_sections_image_pairs",
+  "info": {
+    "displayName": "Image pair",
+    "icon": "th-large",
+    "description": "Two images side by side. Useful for before/after, two angles of the same place, or two related products. Stacks vertically on mobile."
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "description": "Optional heading above both images. Leave blank for plain images with no title."
+    },
+    "image_left": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true,
+      "description": "Left image. Same aspect ratio as right image gives the cleanest look (both portrait, or both landscape)."
+    },
+    "caption_left": {
+      "type": "string",
+      "description": "Optional small caption under the left image. Example: 'Boat exterior'. Leave blank to hide."
+    },
+    "image_right": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true,
+      "description": "Right image."
+    },
+    "caption_right": {
+      "type": "string",
+      "description": "Optional small caption under the right image. Example: 'Boat interior'."
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, padding, max width for this section."
+    }
+  }
+}

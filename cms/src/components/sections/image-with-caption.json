@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_sections_image_with_captions",
+  "info": {
+    "displayName": "Image with caption",
+    "icon": "image",
+    "description": "Single centred image with a caption underneath. Use this for any single photo that needs to sit in its own section."
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true,
+      "description": "The image. Any aspect ratio is fine. Recommended at least 1200px wide."
+    },
+    "caption": {
+      "type": "text",
+      "description": "Caption shown beneath the image (optional). Short and italic by default. Can include credit line + a sentence of context."
+    },
+    "max_image_width": {
+      "type": "enumeration",
+      "enum": ["narrow", "medium", "wide", "full"],
+      "default": "medium",
+      "description": "How wide the image displays. Narrow = ~600px (good for portraits), Medium = ~900px, Wide = ~1200px, Full = edge to edge."
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, padding for this section. (Width is set by max_image_width above.)"
+    }
+  }
+}

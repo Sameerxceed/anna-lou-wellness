@@ -12,6 +12,12 @@
     "logos": {
       "type": "json",
       "required": true
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, text colour, padding, alignment, max width, and background image for this section. Leave any field blank to use defaults."
     }
   }
 }

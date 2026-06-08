@@ -12,13 +12,25 @@
     "images": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "required": true
     },
     "layout": {
       "type": "enumeration",
-      "enum": ["grid", "masonry", "slider"],
+      "enum": [
+        "grid",
+        "masonry",
+        "slider"
+      ],
       "default": "grid"
+    },
+    "style": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.section-style",
+      "description": "Optional background colour, text colour, padding, alignment, max width, and background image for this section. Leave any field blank to use defaults."
     }
   }
 }

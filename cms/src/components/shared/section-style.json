@@ -1,0 +1,54 @@
+{
+  "collectionName": "components_shared_section_styles",
+  "info": {
+    "displayName": "Style options",
+    "icon": "paint-brush",
+    "description": "Optional styling for a page section. Leave any field blank to use the theme default. Hex colours look like #FCE8EF (pink), #F5F3EF (cream), #231F20 (near-black), #6E3A5A (plum)."
+  },
+  "options": {},
+  "attributes": {
+    "background_colour": {
+      "type": "string",
+      "description": "Hex colour for the section background. Examples: #FCE8EF (soft pink), #F5F3EF (cream), #DCEFE6 (mint), #FFD07A (warm gold), #231F20 (near-black), #fff (white). Leave blank for white."
+    },
+    "text_colour": {
+      "type": "string",
+      "description": "Hex colour for the section text. Examples: #231F20 (near-black, default), #F5F3EF (cream — use on dark backgrounds), #6E3A5A (plum). Leave blank to keep dark text."
+    },
+    "accent_colour": {
+      "type": "string",
+      "description": "Hex colour for buttons, links, and small accents inside this section. Examples: #6E3A5A (plum), #F280AA (pink), #FAA21B (gold), #7BAFDD (blue), #5DCAA5 (mint). Leave blank for plum."
+    },
+    "padding": {
+      "type": "enumeration",
+      "enum": ["tight", "normal", "spacious"],
+      "default": "normal",
+      "description": "How much vertical space this section takes. Tight = compact, Spacious = lots of breathing room."
+    },
+    "alignment": {
+      "type": "enumeration",
+      "enum": ["left", "center", "right"],
+      "default": "left",
+      "description": "Horizontal alignment for the text inside this section."
+    },
+    "max_width": {
+      "type": "enumeration",
+      "enum": ["narrow", "medium", "wide", "full"],
+      "default": "medium",
+      "description": "Width of the content inside this section. Narrow = ~700px (good for long reading), Medium = ~960px, Wide = ~1200px, Full = edge to edge."
+    },
+    "background_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Optional photo behind the text. Tip: pick text_colour = #F5F3EF (cream) when using a dark background image so the text stays readable."
+    },
+    "background_image_overlay": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "max": 80,
+      "description": "Darkness of the dim layer over the background image (0 = none, 80 = very dark). Helps text stay readable on bright photos. Ignored if no background image."
+    }
+  }
+}

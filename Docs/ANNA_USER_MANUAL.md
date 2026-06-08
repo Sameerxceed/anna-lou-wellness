@@ -1790,7 +1790,98 @@ In your REGULATED welcome email in Mailchimp, the access link is:
 
 Paste that wherever your email says `[access link]`.
 
-### 16.19 What's coming next
+### 16.19 Building a brand-new page yourself (the Page Builder)
+
+You can now create new pages on your site without help — full design control, multiple images, colours, the lot. This is the **Page (build your own)** collection in your CMS sidebar.
+
+**It works on your phone.** Strapi's admin is responsive — you can build entire pages from mobile. The flow below is written assuming you're on iPhone or iPad. Desktop is the same but easier (more screen space).
+
+#### Step 1 — Create the page
+
+1. Tap the menu (☰) → **Content Manager** → **Page (build your own)** → **Create new entry**
+2. Fill in:
+   - **Title** — appears in the browser tab. Example: *"Beach Reset Day"*
+   - **Slug** — auto-fills from the title. This becomes the URL: `annalouwellness.com/p/beach-reset-day`
+   - **Hero image** — the photo used when this page is shared on social (Instagram, WhatsApp). Optional but recommended.
+   - **Summary** — one line that shows up in search results and link previews. ~155 characters.
+3. **Save** as a draft (top-right). You can keep editing.
+
+#### Step 2 — Add sections
+
+Scroll down to **Sections**. Tap **+ Add a component to sections**. You'll see a list of section types:
+
+| Section | When to use |
+|---|---|
+| **Hero** | A big opening with title, subtitle, optional background image, and CTA buttons. Almost every page starts with one. |
+| **Text Block** | A heading + body paragraphs. Good for long-form copy. |
+| **Image + Text split** | One image side-by-side with a heading + body. Choose left or right for the image. |
+| **Full-bleed image** | A big edge-to-edge photo, optionally with text floating on top. Great between long text sections. |
+| **Image pair** | Two photos side-by-side (e.g. boat exterior + interior). |
+| **Image with caption** | A single centred photo with caption underneath. |
+| **Gallery** | A grid of multiple photos. |
+| **CTA Banner** | A call to action with heading + button. |
+| **Testimonials** | Customer quotes. |
+| **FAQ** | Question-and-answer accordion. |
+| **Embed** | Embed a YouTube or Vimeo video by pasting its URL. |
+| **Custom HTML** | For anything else — drop in raw HTML. Use sparingly. |
+
+Pick one. Fill in its fields. Save. Repeat for the next section. **Drag** the small ≡ handle to reorder sections.
+
+#### Step 3 — Style each section
+
+Inside every section there's a **Style** block. Tap to expand. You'll see:
+
+- **Background colour** — paste a hex code. Common ones for the ALW palette:
+  - `#FFFFFF` (white)
+  - `#F5F3EF` (cream)
+  - `#FCE8EF` (soft pink)
+  - `#DCEFE6` (mint)
+  - `#FFD07A` (warm gold)
+  - `#231F20` (near-black — pair with cream text)
+- **Text colour** — usually leave blank (defaults to dark). Set to `#F5F3EF` (cream) when using a dark background.
+- **Accent colour** — colour for buttons and links inside this section. Defaults to plum `#6E3A5A`.
+- **Padding** — Tight / Normal / Spacious. Normal is the default.
+- **Alignment** — Left / Center / Right text alignment.
+- **Max width** — Narrow / Medium / Wide / Full. Narrow = best for long reading.
+- **Background image** — drop in a photo to sit behind the text. Set **Background image overlay** (0–80) to dim it so the text stays readable.
+
+#### Step 4 — Add images everywhere you want
+
+Every section type that allows images lets you drop in a photo from your phone:
+
+- Tap the image field → **Add an asset** → **Upload assets** → choose from your camera roll
+- Once uploaded, the image is auto-rotated, auto-resized, and renamed to something readable
+- You can use the same image multiple times across pages — just upload once
+
+#### Step 5 — Save and preview
+
+1. Tap **Save**
+2. Tap **Publish** (top-right, blue button)
+3. Open `annalouwellness.com/p/<your-slug>` in another tab. Your page is live.
+
+Edits go live in 1–2 seconds — no waiting for a rebuild.
+
+#### Tips for mobile editing
+
+- Strapi remembers what you typed if your phone screen locks — relaunch and continue
+- If a long form feels cramped, rotate to landscape
+- For the Sections list, **drag the ≡ handle slowly** — too fast and the page scrolls instead
+- If you accidentally tap **Delete** on a section, **Save** without publishing and reload — drafts are preserved
+- Photos taken on iPhone (HEIC format) work — they're auto-converted to JPEG on upload
+
+#### Mistakes that don't matter
+
+- **Wrong colour** — change it, save, refresh the live page. Instant.
+- **Wrong order** — drag to reorder, save, refresh. Instant.
+- **Wrong image** — open the section, remove the image, add a new one, save.
+- **Page looks bad** — leave it as a draft. Only published pages are live. Nothing public breaks.
+
+#### Mistakes that do matter
+
+- **Don't change the slug** after the page is live and shared — the URL will break for anyone with the old link
+- **Don't paste invalid hex codes** (e.g. `#GGGGGG`) — the colour will silently default to white
+
+### 16.20 What's coming next
 
 The manual is now substantially complete for v1.3. Possible future additions based on Anna's feedback:
 - Screenshots inside each section (currently text-only — Anna may want visual reference)
