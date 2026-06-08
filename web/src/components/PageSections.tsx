@@ -310,7 +310,8 @@ function ImageWithCaption({ section }: { section: Section }) {
 function Gallery({ section }: { section: Section }) {
   const s = styleFromBlock(section.style as Style | undefined);
   const images = Array.isArray(section.images) ? (section.images as Array<MediaShape>) : [];
-  const urls = images.map(mediaUrl).filter(Boolean) as string[];
+  // Wrap mediaUrl in an arrow so map's index arg doesn't collide with mediaUrl's optional `size`.
+  const urls = images.map((m) => mediaUrl(m)).filter(Boolean) as string[];
   return (
     <section style={s.outer}>
       <BgLayer url={s.bgImageUrl} overlay={s.overlayOpacity} />
