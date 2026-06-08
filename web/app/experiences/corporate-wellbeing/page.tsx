@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import EnquiryForm from '@/components/EnquiryForm';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
@@ -101,6 +102,7 @@ export default async function CorporatePage() {
       </section>
 
       <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
+      <UpsellBlock items={(cms?.upsells as UpsellItem[] | undefined) || []} title="Where next." kicker="Continue your journey" />
     </>
   );
 }

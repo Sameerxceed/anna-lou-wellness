@@ -1,6 +1,14 @@
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
 import { getStockImage, StockCategory } from '@/data/stock-images';
 
+export interface ExperiencePageUpsell {
+  label?: string;
+  link?: string;
+  eyebrow?: string;
+  blurb?: string;
+  image?: { url?: string } | null;
+}
+
 export interface ExperiencePageCMS {
   slug: string;
   title: string;
@@ -11,6 +19,7 @@ export interface ExperiencePageCMS {
   ctaLabel?: string;
   ctaUrl?: string;
   secondaryList?: string;
+  upsells?: ExperiencePageUpsell[];
 }
 
 /**
@@ -32,7 +41,11 @@ export function parseSecondaryList(raw: string | undefined): { title: string; bo
 
 export async function getExperienceBySlug(slug: string): Promise<ExperiencePageCMS | null> {
   try {
-    const { data } = await fetchAPI('/experience-pages', { 'filters[slug][$eq]': slug, populate: '*' });
+    const { data } = await fetchAPI('/experience-pages', {
+      'filters[slug][$eq]': slug,
+      populate: '*',
+      'populate[upsells][populate]': '*',
+    });
     if (Array.isArray(data) && data.length > 0) return data[0] as ExperiencePageCMS;
     return null;
   } catch {

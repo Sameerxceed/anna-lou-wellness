@@ -4,6 +4,7 @@ import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
 import BuyProgrammeButton from '@/components/BuyProgrammeButton';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
@@ -130,6 +131,11 @@ export default async function DynamicProgrammePage({ params }: PageProps) {
         kickerColour={cms.accentColour || '#F280AA'}
       />
       <FAQAccordion faqs={faqs} accentColour={cms.accentColour || '#F280AA'} background="#F5F3EF" />
+      <UpsellBlock
+        items={(cms.upsells as UpsellItem[] | undefined) || []}
+        title="Where next."
+        kicker="Continue your journey"
+      />
     </>
   );
 }

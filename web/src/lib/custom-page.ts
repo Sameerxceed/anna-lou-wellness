@@ -7,6 +7,14 @@
 
 import { fetchAPI } from '@/lib/strapi';
 
+export type CustomPageUpsell = {
+  label?: string;
+  link?: string;
+  eyebrow?: string;
+  blurb?: string;
+  image?: { url?: string } | null;
+};
+
 export type CustomPageCMS = {
   id: number | string;
   documentId?: string;
@@ -18,6 +26,7 @@ export type CustomPageCMS = {
   seo_description?: string;
   og_image?: { url?: string } | null;
   sections?: Array<{ __component: string; id: number | string; [key: string]: unknown }>;
+  upsells?: CustomPageUpsell[];
 };
 
 export async function getCustomPageBySlug(slug: string): Promise<CustomPageCMS | null> {
@@ -30,6 +39,7 @@ export async function getCustomPageBySlug(slug: string): Promise<CustomPageCMS |
       'populate[sections][populate]': '*',
       'populate[hero_image]': '*',
       'populate[og_image]': '*',
+      'populate[upsells][populate]': '*',
       'pagination[pageSize]': '1',
     });
     if (Array.isArray(data) && data.length > 0) {

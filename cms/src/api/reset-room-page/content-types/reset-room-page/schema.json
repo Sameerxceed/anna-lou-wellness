@@ -149,6 +149,13 @@
     "priceCtaLabel": {
       "type": "string",
       "default": "Join the Reset Room"
+    },
+    "upsells": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.upsell-reference",
+      "max": 3,
+      "description": "Up to 3 'next step' cards shown at the bottom of the page. Anna's 8 Jun mapping: The Reset + Pendulum Subconscious Healing."
     }
   }
 }

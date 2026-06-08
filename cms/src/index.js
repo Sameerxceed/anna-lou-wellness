@@ -253,6 +253,16 @@ module.exports = {
     } catch (err) {
       strapi.log.warn('[trim-homepage-copy] failed:', err.message);
     }
+
+    // ═══ Seed Anna's 8 Jun per-page upsell mapping ═══
+    // Decoder/REGULATED/Reset Room/etc. each get their explicit "next step"
+    // cards. Idempotent — never overwrites Anna's manual edits.
+    try {
+      const seedUpsells = require('./seed-upsells');
+      await seedUpsells(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-upsells] failed:', err.message);
+    }
   },
 
   destroy(/* { strapi } */) {},

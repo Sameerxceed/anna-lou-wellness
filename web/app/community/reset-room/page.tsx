@@ -5,6 +5,7 @@ import { fetchAPI, mediaUrl } from '@/lib/strapi';
 import { getFAQs, getTestimonials } from '@/lib/cms';
 import JoinResetRoomButton from '@/components/JoinResetRoomButton';
 import FAQAccordion from '@/components/FAQAccordion';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
@@ -30,7 +31,11 @@ const bullets = (raw: string): string[] =>
 export default async function ResetRoomPage() {
   let cms: Record<string, unknown> | null = null;
   try {
-    const { data: d } = await fetchAPI('/reset-room-page', { populate: '*' });
+    // populate=* + deep populate for upsells (component nested image needs it)
+    const { data: d } = await fetchAPI('/reset-room-page', {
+      populate: '*',
+      'populate[upsells][populate]': '*',
+    });
     cms = (d as Record<string, unknown>) || null;
   } catch { cms = null; }
   const [faqs, reviews] = await Promise.all([
@@ -208,6 +213,11 @@ export default async function ResetRoomPage() {
       </section>
 
       <FAQAccordion faqs={faqs} kicker="Quick answers" title="Frequently Asked" accentColour="#F280AA" background="#fff" />
+      <UpsellBlock
+        items={(cms?.upsells as UpsellItem[] | undefined) || []}
+        title="Where next."
+        kicker="Continue your journey"
+      />
     </>
   );
 }

@@ -1,5 +1,13 @@
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
 
+export interface ProgrammeUpsell {
+  label?: string;
+  link?: string;
+  eyebrow?: string;
+  blurb?: string;
+  image?: { url?: string } | null;
+}
+
 export interface ProgrammeCMS {
   slug: string;
   title: string;
@@ -22,6 +30,7 @@ export interface ProgrammeCMS {
   isRecurring?: boolean;
   seoTitle?: string;
   seoDescription?: string;
+  upsells?: ProgrammeUpsell[];
 }
 
 /**
@@ -43,7 +52,13 @@ export function parseStages(raw: string | undefined): { label: string; title: st
 
 export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | null> {
   try {
-    const { data } = await fetchAPI('/programmes', { 'filters[slug][$eq]': slug, populate: '*' });
+    // populate=* pulls top-level fields including the upsells component, but
+    // the nested image inside each upsell needs explicit deep populate.
+    const { data } = await fetchAPI('/programmes', {
+      'filters[slug][$eq]': slug,
+      populate: '*',
+      'populate[upsells][populate]': '*',
+    });
     if (Array.isArray(data) && data.length > 0) return data[0] as ProgrammeCMS;
     return null;
   } catch {

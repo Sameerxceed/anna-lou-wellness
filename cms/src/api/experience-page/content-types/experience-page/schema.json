@@ -97,6 +97,13 @@
     "seoDescription": {
       "type": "text",
       "description": "Optional SEO description for Google."
+    },
+    "upsells": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.upsell-reference",
+      "max": 3,
+      "description": "Up to 3 'next step' cards shown at the bottom. Anna's 8 Jun mapping — e.g. Workshops page shows Reset Room + The Reset; Corporate Workshops shows nothing (leave empty)."
     }
   }
 }

@@ -3,6 +3,7 @@ import SubPage from '@/components/SubPage';
 import UpcomingExperiences from '@/components/UpcomingExperiences';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getExperienceBySlug, experienceProps } from '@/lib/experience-page';
 import { getExperiences, getTestimonials, getFAQs } from '@/lib/cms';
@@ -42,6 +43,7 @@ export default async function RetreatPage() {
       <UpcomingExperiences items={upcoming} accentColour="#7BAFDD" emptyLabel="Next retreat dates are announced to the mailing list first." />
       <ReviewsSection reviews={reviews} title="From past retreats" kicker="Reviews" kickerColour="#7BAFDD" />
       <FAQAccordion faqs={faqs} accentColour="#7BAFDD" background="#F5F3EF" />
+      <UpsellBlock items={(cms?.upsells as UpsellItem[] | undefined) || []} title="Where next." kicker="Continue your journey" />
     </>
   );
 }

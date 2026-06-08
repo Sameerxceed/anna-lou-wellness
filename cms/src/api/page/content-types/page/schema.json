@@ -73,6 +73,13 @@
       "type": "integer",
       "default": 0,
       "description": "Used if these pages are listed somewhere. Lower numbers appear first. Leave 0 if you don't have a listing."
+    },
+    "upsells": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.upsell-reference",
+      "max": 3,
+      "description": "Up to 3 'next step' cards shown at the bottom of this page. Leave empty to hide the upsell block entirely."
     }
   }
 }

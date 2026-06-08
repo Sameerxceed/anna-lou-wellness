@@ -76,6 +76,13 @@
     "seo_description": {
       "type": "text",
       "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
+    },
+    "upsells": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.upsell-reference",
+      "max": 3,
+      "description": "Up to 3 'next step' cards shown at the bottom of this experience page. Leave empty to hide the upsell block entirely (Corporate Workshops show nothing)."
     }
   }
 }

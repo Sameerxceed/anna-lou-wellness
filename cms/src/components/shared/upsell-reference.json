@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_shared_upsell_references",
+  "info": {
+    "displayName": "Upsell card",
+    "icon": "arrow-right",
+    "description": "One 'next step' card that points readers from this page to another offering. Add up to 3 per page."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "description": "Card title. Example: 'The Reset Room' or 'Signal & Build'."
+    },
+    "link": {
+      "type": "string",
+      "required": true,
+      "description": "Where the card takes people. Use an internal path like /the-work/regulated or a full URL."
+    },
+    "eyebrow": {
+      "type": "string",
+      "description": "Small uppercase label above the title. Examples: 'Go deeper', 'Next step', 'Or this'. Leave blank to hide."
+    },
+    "blurb": {
+      "type": "text",
+      "description": "One-line description shown under the title. Keep it tight — ~12 words."
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Optional thumbnail (square or landscape). If left blank the card is text-only."
+    }
+  }
+}

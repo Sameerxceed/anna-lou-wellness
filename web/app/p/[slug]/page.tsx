@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getCustomPageBySlug, getAllCustomPageSlugs } from '@/lib/custom-page';
 import { mediaUrl } from '@/lib/strapi';
 import PageSections from '@/components/PageSections';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,6 +48,11 @@ export default async function CustomPage({ params }: { params: Promise<Params> }
       ) : (
         <PageSections sections={sections} />
       )}
+      <UpsellBlock
+        items={(page.upsells as UpsellItem[] | undefined) || []}
+        title="Where next."
+        kicker="Continue your journey"
+      />
     </article>
   );
 }
