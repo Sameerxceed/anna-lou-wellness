@@ -30,6 +30,11 @@ import { getTestimonials, getFAQs } from '@/lib/cms';
  * and the FAQ accordion + Reviews section auto-attach.
  */
 
+// Force dynamic rendering so newly-created Page entries (e.g. REGULATED
+// seeded after the build) are picked up immediately. Without this, Next.js
+// can cache a 404 from the static prerender pass and keep serving it.
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
