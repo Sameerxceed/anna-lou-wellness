@@ -29,6 +29,7 @@ import SectionFilterPills from './extensions/SectionFilterPills';
 import QuickEditDashboard from './extensions/QuickEditDashboard';
 import QuickEditDashboardPage from './extensions/QuickEditDashboardPage';
 import RelatedItemsPanel from './extensions/RelatedItemsPanel';
+import GenerateSeoPanel from './extensions/GenerateSeoPanel';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -153,6 +154,22 @@ const bootstrap = (app: StrapiApp) => {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('[ALW admin] RelatedItemsPanel injection failed:', err);
+  }
+
+  // Inject "Generate SEO" panel into the right sidebar of every edit view.
+  // Reads the entry's title + body, calls /api/seo-generator/generate (Claude),
+  // shows back an SEO title + description with copy-to-clipboard buttons that
+  // Anna pastes into the seo_title / seo_description fields below.
+  // Replaces the bad seeded "One-day immersion in Anna's CODES framework..."
+  // style descriptions Anna flagged in her 5 Jun feedback.
+  try {
+    app.getPlugin('content-manager')?.injectComponent('editView', 'right-links', {
+      name: 'GenerateSeoPanel',
+      Component: GenerateSeoPanel,
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] GenerateSeoPanel injection failed:', err);
   }
 
   // Quick Edit dashboard — register as a sidebar menu link so it's always
