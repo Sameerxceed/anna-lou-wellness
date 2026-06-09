@@ -103,11 +103,14 @@ export default async function AccountPage({
   );
 }
 
+const RETURNABLE_STATUSES = new Set(['paid', 'shipped', 'completed']);
+
 function OrderRow({ order }: { order: any }) {
   const items = Array.isArray(order.items) ? order.items : [];
   const date = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
   const statusLabel = (order.status || 'pending').replace(/_/g, ' ');
   const total = Number(order.total || 0).toFixed(2);
+  const canReturn = RETURNABLE_STATUSES.has(order.status);
   return (
     <li className="acct-order">
       <div className="acct-order-head">
@@ -128,6 +131,13 @@ function OrderRow({ order }: { order: any }) {
       {order.tracking_number && order.tracking_url && (
         <p className="acct-tracking">
           <a href={order.tracking_url} target="_blank" rel="noopener">Track parcel: {order.tracking_number}</a>
+        </p>
+      )}
+      {canReturn && (
+        <p className="acct-actions">
+          <Link href={`/account/orders/${order.order_number}/return`} className="acct-action-link">
+            Request a return →
+          </Link>
         </p>
       )}
     </li>
@@ -173,6 +183,8 @@ const pageStyles = `
 
 .acct-tracking { margin: 0.6rem 0 0; font-family: 'EB Garamond', Georgia, serif; font-size: 0.88rem; }
 .acct-tracking a { color: #6E3A5A; }
+.acct-actions { margin: 0.5rem 0 0; font-family: 'EB Garamond', Georgia, serif; font-size: 0.88rem; }
+.acct-action-link { color: #6E3A5A; }
 
 .acct-meta { list-style: none; padding: 0; margin: 0; font-family: 'EB Garamond', Georgia, serif; font-size: 0.95rem; color: #4a463e; line-height: 1.8; }
 .acct-logout { margin-top: 1rem; }
