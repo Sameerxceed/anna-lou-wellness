@@ -41,8 +41,8 @@ const GROUPS: { groupTitle: string; groupBlurb: string; files: FileEntry[] }[] =
         name: 'Sitemap',
         path: '/sitemap.xml',
         audience: 'Google, Bing, all search crawlers',
-        purpose: 'Master list of every page on your site, including programmes, articles, experiences, practitioners. Google uses this to discover new content and prioritise what to index.',
-        updates: 'Automatically — every time you add or change content, the next request rebuilds the sitemap.',
+        purpose: 'Master list of every page on your site — auto-includes new programmes, articles, products, experiences, Page Builder pages, and editorial entries you create. Google uses this to discover content and prioritise what to index.',
+        updates: 'Automatically when you add or publish anything in: Articles, Products, Programmes, Experiences, Page Builder pages. No code change needed for new entries in those collections.',
       },
       {
         name: 'Robots.txt',

@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
-import { getArticles, getProducts } from '@/lib/cms';
+import { getArticles, getProducts, getExperiences } from '@/lib/cms';
+import { fetchAPI } from '@/lib/strapi';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com';
@@ -44,6 +45,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${siteUrl}/about/press`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${siteUrl}/about/partnerships`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${siteUrl}/practitioners`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${siteUrl}/testimonials`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${siteUrl}/reset-letters`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${siteUrl}/contact`, lastModified: now, changeFrequency: 'yearly', priority: 0.5 },
     { url: `${siteUrl}/cosmic-forecast`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${siteUrl}/mantras`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
@@ -83,5 +87,72 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch {}
 
-  return [...staticPages, ...articleEntries, ...productEntries];
+  // Dynamic programme pages — any new entry Anna adds to Work · Programme
+  // auto-appears in the sitemap without code change.
+  const programmeEntries: MetadataRoute.Sitemap = [];
+  try {
+    const { data } = await fetchAPI('/programmes', {
+      fields: 'slug',
+      'pagination[pageSize]': '100',
+    });
+    if (Array.isArray(data)) {
+      for (const p of data as Array<{ slug?: string }>) {
+        if (p.slug) {
+          programmeEntries.push({
+            url: `${siteUrl}/the-work/${p.slug}`,
+            lastModified: now,
+            changeFrequency: 'monthly',
+            priority: 0.8,
+          });
+        }
+      }
+    }
+  } catch {}
+
+  // Dynamic experience event pages
+  const experienceEntries: MetadataRoute.Sitemap = [];
+  try {
+    const experiences = await getExperiences();
+    for (const e of experiences) {
+      if (e.slug) {
+        experienceEntries.push({
+          url: `${siteUrl}/experiences/${e.slug}`,
+          lastModified: now,
+          changeFrequency: 'monthly',
+          priority: 0.6,
+        });
+      }
+    }
+  } catch {}
+
+  // Dynamic Page Builder pages (/p/<slug>) — anything Anna creates in
+  // 'Page (build your own)' collection auto-appears.
+  const customPageEntries: MetadataRoute.Sitemap = [];
+  try {
+    const { data } = await fetchAPI('/pages', {
+      fields: 'slug',
+      'pagination[pageSize]': '100',
+    });
+    if (Array.isArray(data)) {
+      for (const p of data as Array<{ slug?: string }>) {
+        if (p.slug) {
+          customPageEntries.push({
+            url: `${siteUrl}/p/${p.slug}`,
+            lastModified: now,
+            changeFrequency: 'weekly',
+            priority: 0.6,
+          });
+        }
+      }
+    }
+  } catch {}
+
+  return [
+    ...staticPages,
+    ...articleEntries,
+    ...productEntries,
+    ...programmeEntries,
+    ...experienceEntries,
+    ...customPageEntries,
+  ];
 }
