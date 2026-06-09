@@ -393,6 +393,22 @@ export async function fetchOrder(documentId: string): Promise<StrapiOrder | null
 }
 
 /**
+ * Fetch an order by its order_number. Used by the Stripe webhook to enforce
+ * idempotency — Stripe can retry webhook delivery, so we must not create the
+ * same order twice for the same order_number.
+ */
+export async function fetchOrderByNumber(orderNumber: string): Promise<StrapiOrder | null> {
+  const url = new URL(`${STRAPI_URL}/api/orders`);
+  url.searchParams.set('filters[order_number][$eq]', orderNumber);
+  url.searchParams.set('pagination[limit]', '1');
+  const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+  if (!res.ok) throw new Error(`fetchOrderByNumber ${res.status}: ${await res.text()}`);
+  const json = await res.json();
+  const data = Array.isArray(json?.data) ? json.data : [];
+  return data.length > 0 ? (data[0] as StrapiOrder) : null;
+}
+
+/**
  * Mark an order paid + store the Stripe payment ID. Called from webhook.
  */
 export async function markOrderPaid(documentId: string, stripePaymentId: string): Promise<void> {

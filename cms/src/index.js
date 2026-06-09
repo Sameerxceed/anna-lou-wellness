@@ -104,10 +104,12 @@ module.exports = {
         }
       }
 
-      // ── Public create/update APIs (guest checkout, cart, coupon validation) ──
+      // ── Public create/update APIs ──
+      // Order creation is owned by the Next.js /api/checkout route using the
+      // admin API token, NOT public. Anyone POSTing /api/orders directly would
+      // bypass payment validation. Coupon findOne is public so /api/coupon/validate
+      // (Next.js) can read it via its admin token's read fall-through.
       const publicWriteAPIs = [
-        { api: 'api::order.order', actions: ['create'] },
-        { api: 'api::cart.cart', actions: ['find', 'findOne', 'create', 'update'] },
         { api: 'api::coupon.coupon', actions: ['findOne'] },
       ];
 
@@ -118,6 +120,26 @@ module.exports = {
               data: { action: `${api}.${action}`, role: publicRole.id },
             });
           } catch (err) { /* Permission may already exist */ }
+        }
+      }
+
+      // Actively REVOKE any previously-granted public-write permissions that
+      // the legacy template granted. Without this, removing entries above
+      // does nothing on existing installs — the rows persist in the DB.
+      const revokedPublicActions = [
+        'api::order.order.create',
+        'api::cart.cart.find',
+        'api::cart.cart.findOne',
+        'api::cart.cart.create',
+        'api::cart.cart.update',
+      ];
+      for (const action of revokedPublicActions) {
+        try {
+          await strapi.query('plugin::users-permissions.permission').deleteMany({
+            where: { action, role: publicRole.id },
+          });
+        } catch (err) {
+          strapi.log.warn(`Could not revoke ${action}: ${err.message}`);
         }
       }
 

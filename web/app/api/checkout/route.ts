@@ -7,6 +7,7 @@ import {
 } from '@/lib/strapi-admin';
 import { fetchCouponByCode, validateCoupon, incrementCouponUsage } from '@/lib/strapi-coupon';
 import { getShopSettings } from '@/lib/cms';
+import { sendOrderConfirmation, sendOwnerOrderNotification } from '@/lib/email';
 
 /**
  * Shop checkout endpoint.
@@ -222,38 +223,72 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Cart total below Stripe minimum charge' }, { status: 400 });
   }
 
-  // ── Create Order in Strapi ──
   const orderNumber = newOrderNumber();
-  let order;
-  try {
-    order = await createOrder({
-      order_number: orderNumber,
-      customer_name: String(customer.name).trim(),
-      customer_email: String(customer.email).trim().toLowerCase(),
-      customer_phone: customer.phone ? String(customer.phone).trim() : undefined,
-      shipping_address: String(customer.address).trim(),
-      items: orderItems,
-      subtotal,
-      shipping_cost,
-      total,
-      currency: 'gbp',
-      payment_method: paymentMethod === 'stripe' ? 'stripe' : 'bank_transfer',
-      notes: body?.notes ? String(body.notes).trim() : undefined,
-      coupon_code: appliedCouponCode || undefined,
-      discount_amount: discount_amount > 0 ? discount_amount : undefined,
-    });
-  } catch (err: any) {
-    console.error('[checkout] createOrder failed:', err?.message);
-    return NextResponse.json({ error: 'Failed to create order. Please try again.' }, { status: 502 });
-  }
+  const customer_name = String(customer.name).trim();
+  const customer_email = String(customer.email).trim().toLowerCase();
+  const customer_phone = customer.phone ? String(customer.phone).trim() : undefined;
+  const shipping_address = String(customer.address).trim();
+  const notes = body?.notes ? String(body.notes).trim() : undefined;
 
-  // ── Bank transfer: return order details (no Stripe session) ──
+  // ── Bank transfer: create Order in Strapi immediately ──
+  // Bank transfers DON'T get a webhook-driven create — there's no payment
+  // gateway to confirm later. Anna manually reconciles when the bank receipt
+  // arrives, so the order must exist in Strapi the moment the customer leaves
+  // the checkout page (so Anna can match the £ in her bank to the reference).
   if (paymentMethod === 'bank') {
-    // Bump coupon usage now (no payment provider to confirm later for bank
-    // transfers — Anna will manually reconcile if customer never pays).
+    let order;
+    try {
+      order = await createOrder({
+        order_number: orderNumber,
+        customer_name,
+        customer_email,
+        customer_phone,
+        shipping_address,
+        items: orderItems,
+        subtotal,
+        shipping_cost,
+        total,
+        currency: 'gbp',
+        payment_method: 'bank_transfer',
+        notes,
+        coupon_code: appliedCouponCode || undefined,
+        discount_amount: discount_amount > 0 ? discount_amount : undefined,
+      });
+    } catch (err: any) {
+      console.error('[checkout] bank order createOrder failed:', err?.message);
+      return NextResponse.json({ error: 'Failed to create order. Please try again.' }, { status: 502 });
+    }
+
     if (appliedCouponDocId) {
       incrementCouponUsage(appliedCouponDocId).catch((e) => console.warn('[checkout] coupon usage bump failed:', e?.message));
     }
+
+    // Fire-and-forget customer + owner emails; never block the response.
+    sendOrderConfirmation({
+      order_number: orderNumber,
+      payment_method: 'bank_transfer',
+      customer_name,
+      customer_email,
+      shipping_address,
+      items: orderItems,
+      subtotal,
+      shipping_cost,
+      discount_amount,
+      gift_wrap_amount: giftWrapPence / 100,
+      total,
+    }).catch((e) => console.warn('[checkout] customer email send failed:', e?.message));
+
+    sendOwnerOrderNotification({
+      order_number: orderNumber,
+      payment_method: 'bank_transfer',
+      customer_name,
+      customer_email,
+      customer_phone,
+      shipping_address,
+      items: orderItems,
+      total,
+    }).catch((e) => console.warn('[checkout] owner email send failed:', e?.message));
+
     return NextResponse.json({
       ok: true,
       orderNumber,
@@ -269,10 +304,13 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // ── Stripe: create Checkout Session ──
+  // ── Stripe: create Checkout Session (Strapi Order is NOT created yet) ──
+  // We previously created a pending Strapi Order here and let the webhook
+  // mark it paid. That left orphan 'pending' orders forever when customers
+  // abandoned checkout. Now: pack everything needed to RECONSTRUCT the order
+  // into Stripe session metadata, and only create the Strapi Order from the
+  // webhook on `checkout.session.completed` (status='paid' from the start).
   try {
-    // If a fixed-amount discount applies, attach it via a one-off Stripe coupon
-    // so the total Stripe charges matches what we stored on the order.
     let stripeDiscounts: any[] | undefined;
     if (discountPence > 0) {
       const stripeCoupon = await stripe.coupons.create({
@@ -284,21 +322,46 @@ export async function POST(req: NextRequest) {
       stripeDiscounts = [{ coupon: stripeCoupon.id }];
     }
 
+    // Compact cart for Stripe metadata: [[productId, qty], ...]. Gift-wrap
+    // isn't in this list — it's reconstructed from giftWrap=1 in metadata.
+    const cartPairs = items.map((it: any) => [Number(it.productId), Math.max(1, Math.floor(Number(it.qty || 1)))]);
+    const cartJson = JSON.stringify(cartPairs);
+
+    // Stripe metadata: 50 keys max, 500 chars per value. Cart JSON for 20
+    // products is ~260 chars — safe for any realistic ALW cart.
+    if (cartJson.length > 480) {
+      return NextResponse.json({ error: 'Cart too large for single checkout. Please split into multiple orders.' }, { status: 400 });
+    }
+
     const sessionMetadata: Record<string, string> = {
-      strapi_type: 'order',
-      strapi_id: order.documentId,
+      strapi_type: 'shop_order',
       order_number: orderNumber,
+      cart_items: cartJson,
+      customer_name: customer_name.slice(0, 240),
+      shipping_address: shipping_address.slice(0, 480),
+      gift_wrap: wantsGiftWrap && giftWrapEnabled ? '1' : '0',
+      subtotal_pence: String(subtotalPence),
+      shipping_pence: String(shippingPence),
+      discount_pence: String(discountPence),
+      gift_wrap_pence: String(giftWrapPence),
+      total_pence: String(totalPence),
     };
+    if (customer_phone) sessionMetadata.customer_phone = customer_phone.slice(0, 60);
+    if (notes) sessionMetadata.notes = notes.slice(0, 480);
     if (appliedCouponCode) sessionMetadata.coupon_code = appliedCouponCode;
     if (appliedCouponDocId) sessionMetadata.coupon_document_id = appliedCouponDocId;
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: stripeLineItems,
-      customer_email: order.customer_email,
+      customer_email,
       success_url: `${SITE_URL}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/cart`,
       metadata: sessionMetadata,
+      // Generate a proper Stripe Invoice for every payment — gives Anna a
+      // downloadable PDF in her Stripe dashboard for each order, and the
+      // customer a "View invoice" link in their Stripe receipt email.
+      invoice_creation: { enabled: true },
       ...(stripeDiscounts ? { discounts: stripeDiscounts } : {}),
     });
 
