@@ -32,6 +32,7 @@ import RelatedItemsPanel from './extensions/RelatedItemsPanel';
 import GenerateSeoPanel from './extensions/GenerateSeoPanel';
 import ViewLivePanel from './extensions/ViewLivePanel';
 import QuickPhotoEditor from './extensions/QuickPhotoEditor';
+import SeoFilesPage from './extensions/SeoFilesPage';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -63,6 +64,21 @@ const QuickPhotoMenuIcon = () => (
     aria-hidden="true"
   >
     📷
+  </span>
+);
+
+const SeoFilesMenuIcon = () => (
+  <span
+    style={{
+      fontSize: 18,
+      lineHeight: 1,
+      display: 'inline-block',
+      width: 20,
+      textAlign: 'center',
+    }}
+    aria-hidden="true"
+  >
+    🤖
   </span>
 );
 
@@ -232,6 +248,13 @@ const bootstrap = (app: StrapiApp) => {
       icon: QuickPhotoMenuIcon,
       intlLabel: { id: 'alw.menu.quick-photos', defaultMessage: 'Quick Photos' },
       Component: async () => ({ default: QuickPhotoEditor }),
+      permissions: [],
+    });
+    appAny.addMenuLink?.({
+      to: '/alw-seo-files',
+      icon: SeoFilesMenuIcon,
+      intlLabel: { id: 'alw.menu.seo-files', defaultMessage: 'SEO & AI Files' },
+      Component: async () => ({ default: SeoFilesPage }),
       permissions: [],
     });
   } catch (err) {
