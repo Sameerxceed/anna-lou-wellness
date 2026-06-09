@@ -17,7 +17,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 // ─── Auth helpers (same shape as the other panels) ────────────────────────
 
-function getAdminToken(): string | null {
+function getAdminToken(): { token: string | null; foundAt: string } {
   const read = (s: Storage | undefined, k: string): string | null => {
     if (!s) return null;
     const raw = s.getItem(k);
@@ -25,17 +25,22 @@ function getAdminToken(): string | null {
     try { const p = JSON.parse(raw); if (typeof p === 'string') return p; } catch { /* raw */ }
     return raw;
   };
-  for (const k of ['jwtToken', 'strapi-jwt-token', 'jwt']) {
+  // Strapi versions disagree on the JWT storage key. Try every common one.
+  // 'jwtToken' is the v5 default; the others are v3/v4 holdovers.
+  for (const k of ['jwtToken', 'strapi-jwt-token', 'jwt', 'strapi_admin_jwt']) {
     const fromSession = read(typeof sessionStorage !== 'undefined' ? sessionStorage : undefined, k);
-    if (fromSession) return fromSession;
+    if (fromSession) return { token: fromSession, foundAt: `sessionStorage["${k}"]` };
     const fromLocal = read(typeof localStorage !== 'undefined' ? localStorage : undefined, k);
-    if (fromLocal) return fromLocal;
+    if (fromLocal) return { token: fromLocal, foundAt: `localStorage["${k}"]` };
   }
-  return null;
+  // Last resort: surface every key so we can see what Strapi actually stores
+  const sessionKeys = typeof sessionStorage !== 'undefined' ? Object.keys(sessionStorage) : [];
+  const localKeys = typeof localStorage !== 'undefined' ? Object.keys(localStorage) : [];
+  return { token: null, foundAt: `(no token found — session keys: [${sessionKeys.join(', ')}], local keys: [${localKeys.join(', ')}])` };
 }
 
 async function adminFetch(path: string, init?: RequestInit) {
-  const token = getAdminToken();
+  const { token } = getAdminToken();
   const headers: Record<string, string> = { ...(init?.headers as Record<string, string> | undefined) };
   if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(path, { ...init, headers, credentials: 'include' });
@@ -270,7 +275,7 @@ export default function QuickPhotoEditor() {
       form.append('ref', row.uid);
       form.append('refId', row.documentId);
       form.append('field', row.fieldName);
-      const token = getAdminToken();
+      const { token } = getAdminToken();
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -310,16 +315,22 @@ export default function QuickPhotoEditor() {
       {!loading && rows.length === 0 && (
         <div style={styles.empty}>
           <p style={{ marginBottom: 12 }}>No photos found.</p>
+          <p style={{ fontSize: 12, color: '#666687', fontStyle: 'normal', marginBottom: 12 }}>
+            <strong>Admin token lookup:</strong> <code style={{ background: '#F6F6F9', padding: '1px 4px' }}>{getAdminToken().foundAt}</code>
+          </p>
           {debugErrors.length > 0 ? (
-            <details style={{ textAlign: 'left', maxWidth: 720, margin: '0 auto', fontSize: 12, color: '#B72B1A', fontStyle: 'normal' }}>
+            <details style={{ textAlign: 'left', maxWidth: 720, margin: '0 auto', fontSize: 12, color: '#B72B1A', fontStyle: 'normal' }} open>
               <summary style={{ cursor: 'pointer', marginBottom: 8 }}>Show {debugErrors.length} error(s) from loading</summary>
               <ul style={{ paddingLeft: 18, lineHeight: 1.6 }}>
                 {debugErrors.map((e, i) => <li key={i}><code style={{ background: '#F6F6F9', padding: '1px 4px' }}>{e}</code></li>)}
               </ul>
+              <p style={{ marginTop: 12, color: '#666687', fontStyle: 'italic' }}>
+                If you see 401 errors above, the admin auth token isn't being sent. Sameer needs to check the token lookup pattern.
+              </p>
             </details>
           ) : (
             <p style={{ fontSize: 12, color: '#666687', fontStyle: 'normal' }}>
-              All catalogue fetches returned successfully but no image fields were detected. Try opening an entry directly in the Content Manager to confirm the schema is what we expect.
+              All catalogue fetches returned successfully but no image fields were detected.
             </p>
           )}
         </div>
