@@ -2047,12 +2047,101 @@ When you're inside an entry's edit form (like editing the Homepage) and want to 
 
 Saves 2 taps every time.
 
-### 16.27 What's coming next
+### 16.28 Customer accounts — one login for everything
 
-The manual is now substantially complete for v1.3. Possible future additions based on Anna's feedback:
-- Screenshots inside each section (currently text-only — Anna may want visual reference)
-- A 5-minute video walkthrough of the most-used edits
-- A printable 1-page emergency cheatsheet for the launch day
+Every customer who places an order automatically gets an account on the site. They use it to log in, see their order history, request returns, and access any course they buy. **The same login works for the shop, the Reset Room, and any course or experience.** One email, one password, everything.
+
+**How accounts get created**
+
+- A new customer places their first order (any payment method).
+- The site creates a user record silently with their email.
+- The customer receives a "Welcome — set your password" email with a one-time link.
+- They click the link → choose a password → land on `/account` already signed in.
+
+**Returning customers**
+
+- They click the **Login** link in the top nav.
+- Sign in with email + password → land on `/account`.
+- See every order, click any to request a return, or jump straight to Reset Room / REGULATED if they have access.
+
+**Forgot password?**
+
+- On the sign-in page → "Forgot your password?" → enter email → get a fresh reset link.
+
+**Where to manage users**
+
+- Strapi → Users (top of left sidebar, under Content Manager).
+- Each user has email, name, role, and the flags that grant Reset Room or REGULATED access.
+
+### 16.29 Order lifecycle emails — automatic on every status change
+
+Every order moves through statuses (paid → shipped → completed, or cancelled, or refunded). The system emails the customer automatically on every transition — you don't write any of these emails yourself.
+
+**Full playbook** for what each status does, what the customer sees, and what to fill in BEFORE saving lives in `Docs/ALW_Order_Playbook_For_Anna.docx`. Send Sameer for the file or open it in Word — it's the most important doc for day-to-day order operations.
+
+**Quick reference**
+
+| Status change | Customer email | What you fill in first |
+|---|---|---|
+| → shipped | "Your order is on its way" with tracking link | tracking_number, tracking_url, shipping_carrier |
+| → completed | "Hope you are enjoying your order" + review request | nothing |
+| → cancelled | "Your order has been cancelled" + reason | cancellation_reason |
+| → refunded | "Your refund has been processed" + amount | refund_amount (or leave blank for full refund) |
+
+**Editing email wording**
+
+Every email's subject + body is in Strapi → **Email Template** collection. 10 rows, one per email. You edit subject + intro + outro + button label. Merge tags like `{{order_number}}`, `{{customer_name}}`, `{{tracking_url}}` get filled in at send time. Full list of merge tags is in the Order Playbook.
+
+### 16.30 Auto-refund via Stripe — change status, money goes back
+
+The most important automation: **changing an order's status to `refunded` fires the Stripe refund automatically.** You don't open the Stripe dashboard. The money returns to the customer's card within minutes.
+
+**Full refund**: leave `refund_amount` blank → status → `refunded` → save. Refunds the order total.
+
+**Partial refund** (customer keeps £40 of £100, refund £60): fill `refund_amount = 60.00` → status → `refunded` → save.
+
+**Bank transfer refunds**: status change still fires the email but YOU send the money back via your bank (Stripe was never involved).
+
+**Safety net**: once an order has `stripe_refund_id` stamped, the system blocks double-refunds. If Stripe rejects the call (card expired, payment too old), you get an admin email with the error so you can handle it manually.
+
+### 16.31 Returns — customer-initiated from their account
+
+Customers can request returns themselves from `/account` → click "Request a return" next to any eligible order. They pick which items, the reason, optional notes.
+
+**What you do when a return comes in**
+
+1. You get a "[Return requested]" admin email.
+2. Open Strapi → **Shop · Return Request** → click the new entry.
+3. Fill `notes` with shipping instructions for the customer (where to send it, who pays postage).
+4. Status → `approved` → save. Customer gets the "Your return is approved — here's how to ship it back" email with your notes.
+5. When items arrive: optional status → `received`.
+6. Fill `refund_amount` (you may keep an amount for return shipping) → status → `refunded` → save.
+7. Stripe refund fires automatically, customer gets the refund email, parent order flips to `refunded` too.
+
+Full step-by-step lives in the Order Playbook.
+
+### 16.32 Calendly bookings — paste a link, customer books without leaving your site
+
+You can put any Calendly event-type URL into the booking field on programmes, experiences, or coaching sessions. When the customer clicks the "Book" button, Calendly opens **as a popup right on your page** — they pick a time, confirm, and Calendly emails them. They never leave annalouwellness.com.
+
+**Steps**
+
+1. Log in to Calendly, create your event types (Discovery Call, Founder Reset Session, Speaking Enquiry, etc.).
+2. Copy each event type's URL. Looks like `https://calendly.com/anna-annalouoflondon/discovery-call`.
+3. In Strapi, paste the URL into:
+   - **Programme** entries → `ctaUrl` field (bottom CTA on the programme page)
+   - **Experience** entries (workshops/retreats) → `booking_url` field
+   - **Coaching Session** entries → `booking_url` field
+4. Save. Done — the button on the live site now opens Calendly as a popup.
+
+**It also still works for non-Calendly URLs.** Stripe checkout links, internal pages like `/the-work/regulated`, or any external URL — paste them in the same field and they open the normal way (new tab or in-page). The system only triggers the popup when it detects a Calendly URL.
+
+### 16.33 What's coming next
+
+The manual is now substantially complete for v1.4. Possible additions based on what comes up in real use:
+- Screenshots inside each section.
+- A 5-minute video walkthrough of the most-used edits.
+- A printable 1-page emergency cheatsheet for the launch day.
 
 Tell Sameer if any of those would help.
 
