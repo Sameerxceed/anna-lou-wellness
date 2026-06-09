@@ -18,13 +18,16 @@ import { useLocation } from 'react-router-dom';
 
 const PUBLIC_SITE_URL = (() => {
   if (typeof window === 'undefined') return '';
-  // Heuristic: production CMS lives at cms.<domain>, the public site at <domain>.
-  // Strapi staging at staging.cms.<domain> -> staging.<domain>. Fall back to
-  // www if neither matches.
   const host = window.location.hostname;
-  if (host.startsWith('cms.')) return `https://${host.slice(4)}`;
+  // Explicit map for ALW — the new Next.js site lives at staging.<apex>
+  // while the old Squarespace still owns the apex. Once the apex flips,
+  // change the first mapping below to 'https://annalouwellness.com'.
+  if (host === 'cms.annalouwellness.com') return 'https://staging.annalouwellness.com';
+  if (host === 'staging.cms.annalouwellness.com') return 'https://staging.annalouwellness.com';
+  // Generic fallback patterns for other deployments
   if (host.startsWith('staging.cms.')) return `https://staging.${host.slice(12)}`;
-  return 'https://annalouwellness.com';
+  if (host.startsWith('cms.')) return `https://${host.slice(4)}`;
+  return 'https://staging.annalouwellness.com';
 })();
 
 type EditContext = { uid: string; documentId: string; kind: 'collection-type' | 'single-type' } | null;

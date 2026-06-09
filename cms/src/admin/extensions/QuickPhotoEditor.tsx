@@ -167,55 +167,85 @@ export default function QuickPhotoEditor() {
   const load = useCallback(async () => {
     setLoading(true);
     const out: Row[] = [];
+    const errors: string[] = [];
+
     for (const entry of CATALOGUE) {
+      // Build populate params for each known image field explicitly.
+      // Strapi v5's content-manager admin API doesn't reliably resolve
+      // 'populate=*' into nested media — has to be field-by-field.
+      const populate = new URLSearchParams();
+      entry.fields.forEach((f) => populate.append('populate', f.name));
+
       if (entry.kind === 'single') {
         try {
-          const data = await adminFetch(`/content-manager/single-types/${entry.uid}?populate=*`);
-          const e = (data?.data || data) as Record<string, unknown>;
+          const data = await adminFetch(`/content-manager/single-types/${entry.uid}?${populate.toString()}`);
+          // Strapi v5 single-type admin response can be { data: {...} }, { ...entry } directly,
+          // or { documentId, ...attrs } at root. Try every shape.
+          const e = (((data as { data?: unknown })?.data) || data) as Record<string, unknown>;
+          if (!e || typeof e !== 'object') {
+            errors.push(`${entry.uid}: empty response`);
+            continue;
+          }
           for (const f of entry.fields) {
-            const media = e?.[f.name] as { url?: string } | null | undefined;
+            // Media field may be the object directly, or wrapped in { data: {...} } in some versions.
+            const raw = e[f.name] as { url?: string; data?: { url?: string } } | null | undefined;
+            const mediaUrl = raw?.url || (raw?.data as { url?: string } | undefined)?.url || null;
             out.push({
               uid: entry.uid,
-              documentId: (e?.documentId as string) || String(e?.id || ''),
+              documentId: (e.documentId as string) || String(e.id || ''),
               collectionLabel: entry.label,
               entryLabel: entry.label,
               fieldName: f.name,
               fieldLabel: f.label,
-              imageUrl: media?.url ? STRAPI_MEDIA_URL(media.url) : null,
+              imageUrl: mediaUrl ? STRAPI_MEDIA_URL(mediaUrl) : null,
             });
           }
         } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          errors.push(`${entry.uid}: ${msg}`);
           // eslint-disable-next-line no-console
           console.warn(`[QuickPhotos] failed loading singleton ${entry.uid}:`, err);
         }
       } else {
         try {
-          const params = new URLSearchParams();
-          params.set('populate', '*');
-          params.set('pageSize', '60');
-          if (entry.filterActive) params.set('filters[is_active][$eq]', 'true');
-          const data = await adminFetch(`/content-manager/collection-types/${entry.uid}?${params.toString()}`);
-          const results = (data?.results || data?.data?.results || []) as Array<Record<string, unknown>>;
-          for (const e of results) {
-            const entryName = (e.title as string) || (e.name as string) || (e.reviewer_name as string) || (e.documentId as string) || '(untitled)';
+          populate.set('pageSize', '60');
+          if (entry.filterActive) populate.set('filters[is_active][$eq]', 'true');
+          const data = await adminFetch(`/content-manager/collection-types/${entry.uid}?${populate.toString()}`);
+          // Strapi v5 collection-type admin: { results: [], pagination } typically.
+          // Some versions wrap as { data: { results }, meta }.
+          const root = data as { results?: unknown[]; data?: { results?: unknown[] } } | null;
+          const results = (root?.results || root?.data?.results || []) as Array<Record<string, unknown>>;
+          if (results.length === 0) {
+            errors.push(`${entry.uid}: no entries`);
+          }
+          for (const ent of results) {
+            const entryName = (ent.title as string) || (ent.name as string) || (ent.reviewer_name as string) || (ent.documentId as string) || '(untitled)';
             for (const f of entry.fields) {
-              const media = e?.[f.name] as { url?: string } | null | undefined;
+              const raw = ent[f.name] as { url?: string; data?: { url?: string } } | null | undefined;
+              const mediaUrl = raw?.url || (raw?.data as { url?: string } | undefined)?.url || null;
               out.push({
                 uid: entry.uid,
-                documentId: (e?.documentId as string) || String(e?.id || ''),
+                documentId: (ent.documentId as string) || String(ent.id || ''),
                 collectionLabel: entry.label,
                 entryLabel: entryName,
                 fieldName: f.name,
                 fieldLabel: f.label,
-                imageUrl: media?.url ? STRAPI_MEDIA_URL(media.url) : null,
+                imageUrl: mediaUrl ? STRAPI_MEDIA_URL(mediaUrl) : null,
               });
             }
           }
         } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          errors.push(`${entry.uid}: ${msg}`);
           // eslint-disable-next-line no-console
           console.warn(`[QuickPhotos] failed loading collection ${entry.uid}:`, err);
         }
       }
+    }
+
+    if (errors.length) {
+      // eslint-disable-next-line no-console
+      console.warn('[QuickPhotos] errors during load:', errors);
     }
     setRows(out);
     setLoading(false);
