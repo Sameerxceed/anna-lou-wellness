@@ -21,6 +21,12 @@
       "target": "api::customer.customer",
       "inversedBy": "orders"
     },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "description": "Logged-in user this order belongs to. Auto-linked when a customer places an order — even guests get an account auto-created."
+    },
     "customer_name": {
       "type": "string",
       "required": true

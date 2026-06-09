@@ -1,21 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Edge middleware — Reset Room route guard.
+ * Edge middleware — auth gate for logged-in routes.
  *
  * Approach:
  * - We can't run Strapi fetch reliably from middleware (Edge runtime, no DNS for internal hosts in some setups).
  * - So we do a lightweight check: presence of the `rr_session` cookie.
  * - If absent → redirect to /login (with return URL).
- * - The actual role check (reset-room-member vs not) happens server-side inside each page via getSession().
- *   Pages call `if (!session?.isMember) redirect('/community/reset-room')`.
+ * - The actual role/flag check (reset-room-member, hasRegulatedAccess) happens
+ *   server-side inside each page via getSession(). Pages call
+ *   `if (!session?.isMember) redirect('/community/reset-room')`.
  *
  * This split keeps the middleware fast and the auth strict at the page level.
+ *
+ * /account is for ANY logged-in user (shop customer, member, course buyer).
+ * /community/reset-room/* is gated AGAIN at page level for members only.
+ * /the-work/regulated/access is gated AGAIN at page level for hasRegulatedAccess.
  */
 
 const SESSION_COOKIE = 'rr_session';
 
 const PROTECTED_PREFIXES = [
+  '/account',
   '/community/reset-room/dashboard',
   '/community/reset-room/vault',
   '/community/reset-room/replays',
@@ -40,6 +46,8 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    '/account/:path*',
+    '/account',
     '/community/reset-room/dashboard/:path*',
     '/community/reset-room/vault/:path*',
     '/community/reset-room/replays/:path*',

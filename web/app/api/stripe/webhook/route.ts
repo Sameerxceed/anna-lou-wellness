@@ -6,6 +6,7 @@ import {
   grantResetRoomMembership,
   revokeResetRoomMembership,
   grantRegulatedAccess,
+  grantShopCustomerAccount,
   fetchOrder,
   fetchOrderByNumber,
   markOrderPaid,
@@ -177,12 +178,25 @@ async function handleShopOrderCreate(event: StripeEvent, orderNumber: string, em
   const discount_amount = Number(md.discount_pence || 0) / 100;
   const total = Number(md.total_pence || obj?.amount_total || 0) / 100;
 
+  // Ensure customer has an account (same user across shop / Reset Room / REGULATED).
+  let accountResult: Awaited<ReturnType<typeof grantShopCustomerAccount>> | null = null;
+  const customerName = md.customer_name || 'Customer';
+  try {
+    accountResult = await grantShopCustomerAccount({
+      email,
+      firstName: customerName.split(' ')[0] || undefined,
+      lastName: customerName.split(' ').slice(1).join(' ') || undefined,
+    });
+  } catch (err: any) {
+    console.warn(`[stripe webhook] grantShopCustomerAccount failed for ${email} (non-fatal):`, err?.message);
+  }
+
   // Create order with status='paid' immediately — payment is already confirmed.
   let createdOrder;
   try {
     createdOrder = await createOrder({
       order_number: orderNumber,
-      customer_name: md.customer_name || 'Customer',
+      customer_name: customerName,
       customer_email: email,
       customer_phone: md.customer_phone || undefined,
       shipping_address: md.shipping_address || '',
@@ -195,6 +209,7 @@ async function handleShopOrderCreate(event: StripeEvent, orderNumber: string, em
       notes: md.notes || undefined,
       coupon_code: md.coupon_code || undefined,
       discount_amount: discount_amount > 0 ? discount_amount : undefined,
+      user: accountResult?.userId,
     });
     // Stamp it paid + record the Stripe payment id.
     await markOrderPaid(createdOrder.documentId, stripePaymentId);
@@ -202,6 +217,19 @@ async function handleShopOrderCreate(event: StripeEvent, orderNumber: string, em
   } catch (err: any) {
     console.error(`[stripe webhook] createOrder failed for ${orderNumber}:`, err?.message);
     return;
+  }
+
+  // First-time customer → welcome + set-password email
+  if (accountResult?.created && accountResult.resetToken) {
+    const siteUrl = process.env.PUBLIC_SITE_URL || 'https://staging.annalouwellness.com';
+    const setPasswordUrl = `${siteUrl}/login/reset?code=${encodeURIComponent(accountResult.resetToken)}&welcome=1`;
+    sendFromTemplate('shop_account_invite', {
+      account: {
+        email,
+        first_name: customerName.split(' ')[0] || customerName,
+        set_password_url: setPasswordUrl,
+      },
+    }).catch((e) => console.warn(`[stripe webhook] welcome email failed:`, e?.message));
   }
 
   // Decrement stock for real products (skip gift-wrap line id:-1).

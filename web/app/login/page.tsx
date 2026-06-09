@@ -27,9 +27,9 @@ async function LoginPageInner({
       <style dangerouslySetInnerHTML={{ __html: loginStyles }} />
       <section className="login-page">
         <div className="login-card">
-          <p className="login-eyebrow">Reset Room</p>
+          <p className="login-eyebrow">Your account</p>
           <h1 className="login-title">Sign in.</h1>
-          <p className="login-sub"><em>Welcome back. Sit down. The room is open.</em></p>
+          <p className="login-sub"><em>One login for orders, the Reset Room, and any course you buy.</em></p>
 
           {reset === '1' && (
             <div className="login-banner">
@@ -38,10 +38,11 @@ async function LoginPageInner({
             </div>
           )}
 
-          <LoginForm nextUrl={next || '/community/reset-room/dashboard'} />
+          <LoginForm nextUrl={next || '/account'} />
 
           <div className="login-footer">
-            <p>Not a member yet? <a href="/community/reset-room">Join the Reset Room</a></p>
+            <p>New here? Your account is created automatically when you place your first order.</p>
+            <p style={{ marginTop: '0.4rem' }}>Looking for the Reset Room? <a href="/community/reset-room">Learn more</a></p>
           </div>
         </div>
       </section>

@@ -283,27 +283,47 @@ type ReturnRequestLike = {
   notes?: string;
 };
 
+type AccountLike = {
+  first_name?: string | null;
+  email: string;
+  set_password_url?: string | null;
+  reset_password_url?: string | null;
+};
+
 type MergeContext = {
-  order: OrderLike;
+  order?: OrderLike | null;
   returnRequest?: ReturnRequestLike | null;
+  account?: AccountLike | null;
 };
 
 function mergeTags(input: string | undefined | null, ctx: MergeContext): string {
   if (!input) return '';
-  const { order, returnRequest } = ctx;
+  const { order, returnRequest, account } = ctx;
+  const customerName = order?.customer_name || account?.first_name || 'there';
+  const customerEmail = order?.customer_email || account?.email || '';
   const replacements: Record<string, string> = {
-    order_number: order.order_number || '',
-    customer_name: order.customer_name || 'there',
-    customer_email: order.customer_email || '',
-    total: (Number(order.total) || 0).toFixed(2),
-    shipping_address: order.shipping_address || '',
-    tracking_number: order.tracking_number || '',
-    tracking_url: order.tracking_url || '',
-    shipping_carrier: order.shipping_carrier || 'our courier',
-    cancellation_reason: order.cancellation_reason || '',
-    refund_amount: order.refund_amount != null ? Number(order.refund_amount).toFixed(2) : (Number(order.total) || 0).toFixed(2),
+    // Order context — empty strings when there's no order (account-only emails)
+    order_number: order?.order_number || '',
+    customer_name: customerName,
+    customer_email: customerEmail,
+    total: order ? (Number(order.total) || 0).toFixed(2) : '',
+    shipping_address: order?.shipping_address || '',
+    tracking_number: order?.tracking_number || '',
+    tracking_url: order?.tracking_url || '',
+    shipping_carrier: order?.shipping_carrier || 'our courier',
+    cancellation_reason: order?.cancellation_reason || '',
+    refund_amount: order?.refund_amount != null
+      ? Number(order.refund_amount).toFixed(2)
+      : order
+        ? (Number(order.total) || 0).toFixed(2)
+        : '',
     return_reason: returnRequest?.reason ? returnRequest.reason.replace(/_/g, ' ') : '',
     return_notes: returnRequest?.notes || '',
+    // Account context
+    first_name: account?.first_name || customerName,
+    set_password_url: account?.set_password_url || '',
+    reset_password_url: account?.reset_password_url || account?.set_password_url || '',
+    // Constants
     site_url: PUBLIC_SITE_URL,
     admin_url: ADMIN_URL,
   };
@@ -374,9 +394,10 @@ function ctaButtonHtml(label: string, url: string): string {
 function renderTemplateHtml(template: EmailTemplate, ctx: MergeContext): string {
   const introHtml = richtextToHtml(template.intro, ctx);
   const outroHtml = richtextToHtml(template.outro, ctx);
-  const bankHtml = template.include_bank_details ? bankDetailsHtml(ctx.order) : '';
-  const summaryHtml = template.include_order_summary ? orderSummaryHtml(ctx.order) : '';
-  const addressHtml = template.include_shipping_address ? shippingAddressHtml(ctx.order) : '';
+  const hasOrder = !!ctx.order;
+  const bankHtml = hasOrder && template.include_bank_details ? bankDetailsHtml(ctx.order!) : '';
+  const summaryHtml = hasOrder && template.include_order_summary ? orderSummaryHtml(ctx.order!) : '';
+  const addressHtml = hasOrder && template.include_shipping_address ? shippingAddressHtml(ctx.order!) : '';
   const ctaLabel = mergeTags(template.cta_label, ctx);
   const ctaUrl = mergeTags(template.cta_url, ctx);
   const ctaHtml = ctaButtonHtml(ctaLabel, ctaUrl);
@@ -384,6 +405,9 @@ function renderTemplateHtml(template: EmailTemplate, ctx: MergeContext): string 
   const preheader = mergeTags(template.preheader, ctx);
   const preheaderHidden = preheader
     ? `<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;color:transparent;">${escape(preheader)}</div>`
+    : '';
+  const subheading = hasOrder
+    ? `<p style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#1a1a18;margin:0 0 18px;">Order ${escape(ctx.order!.order_number)}</p>`
     : '';
 
   return `<!doctype html>
@@ -397,7 +421,7 @@ function renderTemplateHtml(template: EmailTemplate, ctx: MergeContext): string 
         </td></tr>
         <tr><td style="padding:28px 32px;">
           <p style="font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#c4704a;margin:0 0 6px;">${escape(heading)}</p>
-          <p style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#1a1a18;margin:0 0 18px;">Order ${escape(ctx.order.order_number)}</p>
+          ${subheading}
           ${introHtml}
           ${bankHtml}
           ${summaryHtml}
@@ -418,15 +442,15 @@ function renderTemplateText(template: EmailTemplate, ctx: MergeContext): string 
   const introText = richtextToText(template.intro, ctx);
   const outroText = richtextToText(template.outro, ctx);
   const order = ctx.order;
-  const items: OrderEmailItem[] = Array.isArray(order.items) ? order.items as OrderEmailItem[] : [];
+  const items: OrderEmailItem[] = order && Array.isArray(order.items) ? order.items as OrderEmailItem[] : [];
   const lines: string[] = [
     mergeTags(template.name, ctx),
-    `Order ${order.order_number}`,
+    order ? `Order ${order.order_number}` : '',
     '',
     introText,
     '',
   ];
-  if (template.include_bank_details) {
+  if (order && template.include_bank_details) {
     lines.push(
       'Bank transfer details:',
       `  Amount: ${money(order.total)}`,
@@ -438,7 +462,7 @@ function renderTemplateText(template: EmailTemplate, ctx: MergeContext): string 
       '',
     );
   }
-  if (template.include_order_summary && items.length > 0) {
+  if (order && template.include_order_summary && items.length > 0) {
     lines.push('Items:');
     items.forEach((i) => lines.push(`  ${i.name} x${i.qty}  ${money(i.price * i.qty)}`));
     lines.push('');
@@ -448,7 +472,7 @@ function renderTemplateText(template: EmailTemplate, ctx: MergeContext): string 
     lines.push(`Total: ${money(Number(order.total))}`);
     lines.push('');
   }
-  if (template.include_shipping_address && order.shipping_address) {
+  if (order && template.include_shipping_address && order.shipping_address) {
     lines.push('Shipping to:', order.shipping_address, '');
   }
   lines.push(outroText);
@@ -477,12 +501,16 @@ export async function sendFromTemplate(
     console.info(`[email] template "${templateKey}" disabled in CMS — skipped`);
     return { ok: false, error: 'template_disabled' };
   }
-  const to = template.audience === 'admin' ? OWNER_EMAIL : ctx.order.customer_email;
+  const customerEmail = ctx.order?.customer_email || ctx.account?.email || '';
+  const to = template.audience === 'admin' ? OWNER_EMAIL : customerEmail;
   if (!to) {
     console.warn(`[email] template "${templateKey}" has no recipient`);
     return { ok: false, error: 'no_recipient' };
   }
-  const subject = mergeTags(template.subject, ctx) || `Order ${ctx.order.order_number}`;
+  const fallbackSubject = ctx.order
+    ? `Order ${ctx.order.order_number}`
+    : 'Anna Lou Wellness';
+  const subject = mergeTags(template.subject, ctx) || fallbackSubject;
   const html = renderTemplateHtml(template, ctx);
   const text = renderTemplateText(template, ctx);
   return send({
@@ -490,6 +518,6 @@ export async function sendFromTemplate(
     subject,
     html,
     text,
-    replyTo: template.audience === 'admin' ? ctx.order.customer_email : OWNER_EMAIL,
+    replyTo: template.audience === 'admin' ? customerEmail : OWNER_EMAIL,
   });
 }

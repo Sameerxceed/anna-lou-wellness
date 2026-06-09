@@ -3,6 +3,7 @@ import { stripe } from '@/lib/stripe';
 import {
   fetchProductsByIds,
   createOrder,
+  grantShopCustomerAccount,
   type CreateOrderInput,
 } from '@/lib/strapi-admin';
 import { fetchCouponByCode, validateCoupon, incrementCouponUsage } from '@/lib/strapi-coupon';
@@ -236,6 +237,20 @@ export async function POST(req: NextRequest) {
   // arrives, so the order must exist in Strapi the moment the customer leaves
   // the checkout page (so Anna can match the £ in her bank to the reference).
   if (paymentMethod === 'bank') {
+    // Ensure customer has an account so they can log in to /account later.
+    // Returns { created: true, userId, resetToken } for first-time customers,
+    // or { created: false, userId } for repeat customers.
+    let accountResult: Awaited<ReturnType<typeof grantShopCustomerAccount>> | null = null;
+    try {
+      accountResult = await grantShopCustomerAccount({
+        email: customer_email,
+        firstName: customer_name.split(' ')[0] || undefined,
+        lastName: customer_name.split(' ').slice(1).join(' ') || undefined,
+      });
+    } catch (err: any) {
+      console.warn('[checkout] grantShopCustomerAccount failed (non-fatal):', err?.message);
+    }
+
     let order;
     try {
       order = await createOrder({
@@ -253,10 +268,23 @@ export async function POST(req: NextRequest) {
         notes,
         coupon_code: appliedCouponCode || undefined,
         discount_amount: discount_amount > 0 ? discount_amount : undefined,
+        user: accountResult?.userId,
       });
     } catch (err: any) {
       console.error('[checkout] bank order createOrder failed:', err?.message);
       return NextResponse.json({ error: 'Failed to create order. Please try again.' }, { status: 502 });
+    }
+
+    // First-time customer → send the welcome + set-password email
+    if (accountResult?.created && accountResult.resetToken) {
+      const setPasswordUrl = `${SITE_URL}/login/reset?code=${encodeURIComponent(accountResult.resetToken)}&welcome=1`;
+      sendFromTemplate('shop_account_invite', {
+        account: {
+          email: customer_email,
+          first_name: customer_name.split(' ')[0] || customer_name,
+          set_password_url: setPasswordUrl,
+        },
+      }).catch((e) => console.warn('[checkout] welcome email failed:', e?.message));
     }
 
     if (appliedCouponDocId) {

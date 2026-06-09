@@ -113,6 +113,12 @@ export async function updateUserRole(userId: number, roleId: number): Promise<vo
 /**
  * Trigger a password-reset email so a newly-created user can set their own password.
  * Uses the public users-permissions endpoint (not the admin token).
+ *
+ * NOTE: Strapi's built-in forgot-password requires the email plugin to be
+ * configured. Anna's CMS has no email plugin, so the reset email won't
+ * actually leave Strapi. Use generateResetToken() instead and send your own
+ * email via Resend (web/src/lib/email.ts) — that's what grantShopCustomerAccount
+ * and the /api/auth/forgot-password route do.
  */
 export async function sendPasswordReset(email: string): Promise<void> {
   const res = await fetch(`${STRAPI_URL}/api/auth/forgot-password`, {
@@ -125,6 +131,70 @@ export async function sendPasswordReset(email: string): Promise<void> {
     // Don't throw — email send is best-effort. Log and continue.
     console.warn(`[strapi-admin] sendPasswordReset ${res.status}: ${await res.text()}`);
   }
+}
+
+/**
+ * Generate a password reset token + write it to the user. Returns the raw
+ * token; pass it back via `${SITE}/login/reset?code=${token}` in your own
+ * email. The customer's /login/reset form will POST it back to Strapi's
+ * /api/auth/reset-password.
+ *
+ * Strapi v5 doesn't hash reset tokens at the DB level (unlike passwords), so
+ * we can simply write a random string. We use 48 hex chars (192 bits).
+ */
+export async function generateResetToken(userId: number): Promise<string> {
+  const token = Array.from(crypto.getRandomValues(new Uint8Array(24)))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+  const res = await fetch(`${STRAPI_URL}/api/users/${userId}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ resetPasswordToken: token }),
+  });
+  if (!res.ok) {
+    throw new Error(`generateResetToken ${res.status}: ${await res.text()}`);
+  }
+  return token;
+}
+
+/**
+ * Ensure a shop customer has a user account so they can log in later to see
+ * their orders, manage returns, and access any course they buy.
+ *
+ * Pattern:
+ * - If a user exists for this email → no-op (returning customer, already has
+ *   account from a previous order / Reset Room / REGULATED). Returns
+ *   { created: false } so the caller knows NOT to send the invite email.
+ * - If no user → create with default 'authenticated' role + a random
+ *   password they'll never use, generate a reset token, return both so the
+ *   caller can send a "set your password" Resend email.
+ *
+ * Same Strapi User collection that powers Reset Room + REGULATED, so the
+ * customer has ONE login across the whole site.
+ */
+export async function grantShopCustomerAccount(args: {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}): Promise<{ created: boolean; userId: number; resetToken?: string }> {
+  const existing = await findUserByEmail(args.email);
+  if (existing) {
+    return { created: false, userId: existing.id };
+  }
+
+  const authRole = await findRoleByType('authenticated');
+  if (!authRole) throw new Error('Role "authenticated" not found in Strapi');
+
+  const username = args.email.split('@')[0] + '-' + Math.random().toString(36).slice(2, 8);
+  const created = await createUser({
+    email: args.email,
+    username,
+    firstName: args.firstName,
+    lastName: args.lastName,
+    roleId: authRole.id,
+  });
+  const resetToken = await generateResetToken(created.id);
+  return { created: true, userId: created.id, resetToken };
 }
 
 /**
@@ -343,6 +413,7 @@ export type CreateOrderInput = {
   notes?: string;
   coupon_code?: string;
   discount_amount?: number;
+  user?: number; // Strapi user.id — links the order to the customer's account
 };
 
 export type StrapiOrder = {
@@ -440,6 +511,41 @@ export async function fetchEmailTemplate(key: string): Promise<EmailTemplate | n
   const json = await res.json();
   const data = Array.isArray(json?.data) ? json.data : [];
   return data.length > 0 ? (data[0] as EmailTemplate) : null;
+}
+
+/**
+ * Fetch all orders for a logged-in user, newest first. Used by /account.
+ * Returns the user's own orders only (filtered by user.id), so a stolen JWT
+ * still can't see anyone else's order history.
+ */
+export async function fetchOrdersForUser(userId: number): Promise<any[]> {
+  const url = new URL(`${STRAPI_URL}/api/orders`);
+  url.searchParams.set('filters[user][id][$eq]', String(userId));
+  url.searchParams.set('sort', 'createdAt:desc');
+  url.searchParams.set('pagination[limit]', '50');
+  const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+  if (!res.ok) {
+    console.warn(`[strapi-admin] fetchOrdersForUser ${res.status}: ${await res.text()}`);
+    return [];
+  }
+  const json = await res.json();
+  return Array.isArray(json?.data) ? json.data : [];
+}
+
+/**
+ * Fetch all orders matching an email address (used as a fallback for guest
+ * orders placed BEFORE the user set up their password, so they show up in
+ * /account once they log in). Filtered by customer_email exact match.
+ */
+export async function fetchOrdersForEmail(email: string): Promise<any[]> {
+  const url = new URL(`${STRAPI_URL}/api/orders`);
+  url.searchParams.set('filters[customer_email][$eqi]', email);
+  url.searchParams.set('sort', 'createdAt:desc');
+  url.searchParams.set('pagination[limit]', '50');
+  const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+  if (!res.ok) return [];
+  const json = await res.json();
+  return Array.isArray(json?.data) ? json.data : [];
 }
 
 /**
