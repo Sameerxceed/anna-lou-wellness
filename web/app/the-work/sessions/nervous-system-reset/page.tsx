@@ -19,6 +19,8 @@ export default async function NervousSystemResetPage() {
       opening={cms?.intro || 'Nervous System Reset is for the woman whose body has been holding the line for a long time and has started to lose the signal. We do not talk it out. We work with what is happening in the body, gently and slowly, and we bring the signal back online.'}
       accentColour={cms?.accentColour || '#7BAFDD'}
       image={mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('programmes', 'nervous-system-reset')}
+      bookingUrl={cms?.ctaUrl || undefined}
+      bookingLabel={cms?.ctaLabel ? `${cms.ctaLabel} →` : undefined}
     />
   );
 }

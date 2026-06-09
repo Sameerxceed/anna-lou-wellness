@@ -58,6 +58,10 @@
       "type": "integer",
       "default": 0
     },
+    "booking_url": {
+      "type": "string",
+      "description": "Where the 'Book a discovery call' button takes people. Paste your Calendly link (e.g. https://calendly.com/anna-annalouoflondon/discovery-call) and it opens as a popup so the customer stays on your site. Leave blank to default to /contact."
+    },
     "seo_title": {
       "type": "string",
       "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."

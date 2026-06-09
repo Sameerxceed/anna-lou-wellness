@@ -87,7 +87,7 @@
     "ctaUrl": {
       "type": "string",
       "default": "/contact",
-      "description": "Where the bottom button links to."
+      "description": "Where the bottom button links to. Paste your Calendly link here (e.g. https://calendly.com/anna-annalouoflondon/discovery-call) and it will open as a popup so the customer stays on the site. Any other URL opens normally."
     },
     "displayOrder": {
       "type": "integer",

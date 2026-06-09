@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import BookingButton from './BookingButton';
 
 export interface ProgrammeSection {
   label: string;
@@ -70,9 +71,12 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
       <section className="prog-cta" style={{ background: accentColour }}>
         <div className="prog-cta-inner">
           <h2 className="prog-cta-title">Ready when you are.</h2>
-          <Link href={cta.href} className="prog-cta-btn" style={{ color: accentColour }}>
-            {cta.label} &rarr;
-          </Link>
+          <BookingButton
+            url={cta.href}
+            label={`${cta.label} →`}
+            className="prog-cta-btn"
+            style={{ color: accentColour }}
+          />
           <p className="prog-cta-fineprint">If unsure, book a free fifteen-minute discovery call. Anna will hear what you actually need.</p>
         </div>
       </section>

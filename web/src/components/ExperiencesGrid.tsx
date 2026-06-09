@@ -13,6 +13,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import { isCalendlyUrl, openCalendlyPopup } from './BookingButton';
 import Link from 'next/link';
 import { getStockImage } from '@/data/stock-images';
 
@@ -99,10 +100,20 @@ export default function ExperiencesGrid({ items }: { items: ExperienceCard[] }) 
             const img = item.heroImage || getStockImage('experiences', item.slug);
             const href = item.bookingUrl || meta.href;
             const isExternal = /^https?:\/\//i.test(href);
-            const cardProps = isExternal
-              ? { href, target: '_blank' as const, rel: 'noopener' }
-              : { href };
-            const Tag = (isExternal ? 'a' : Link) as React.ElementType;
+            const useCalendly = isCalendlyUrl(href);
+            const cardProps: Record<string, any> = useCalendly
+              ? {
+                  href,
+                  onClick: async (e: React.MouseEvent) => {
+                    e.preventDefault();
+                    const opened = await openCalendlyPopup(href);
+                    if (!opened) window.open(href, '_blank', 'noopener,noreferrer');
+                  },
+                }
+              : isExternal
+                ? { href, target: '_blank' as const, rel: 'noopener' }
+                : { href };
+            const Tag = (isExternal || useCalendly ? 'a' : Link) as React.ElementType;
             return (
               <Tag key={item.id} className="xg-card" {...cardProps}>
                 <div className="xg-card-img" style={{ backgroundImage: `url('${img}')` }}>

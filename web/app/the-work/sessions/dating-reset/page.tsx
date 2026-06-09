@@ -19,6 +19,8 @@ export default async function DatingResetPage() {
       opening={cms?.intro || 'Dating Reset is for the woman who has noticed the same pattern showing up again and is ready to ask why. We do not do dating tips. We do the underneath. The patterns, the attachment shape, the unfinished business with the version of love you grew up with.'}
       accentColour={cms?.accentColour || '#F280AA'}
       image={mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('love-and-relationships', 'dating-reset')}
+      bookingUrl={cms?.ctaUrl || undefined}
+      bookingLabel={cms?.ctaLabel ? `${cms.ctaLabel} →` : undefined}
     />
   );
 }

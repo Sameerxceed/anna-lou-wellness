@@ -1,4 +1,5 @@
 import type { Experience } from '@/lib/cms';
+import BookingButton from './BookingButton';
 
 // Renders a grid of upcoming experiences (retreats or workshops) below the
 // static category copy on /experiences/retreats and /experiences/workshops.
@@ -52,15 +53,12 @@ export default function UpcomingExperiences({ items, accentColour, emptyLabel }:
                   {e.description && (
                     <p className="upcoming-desc">{e.description.split('\n\n')[0]}</p>
                   )}
-                  <a
-                    href={e.bookingUrl || `/contact?subject=${encodeURIComponent('Booking enquiry — ' + e.name)}`}
-                    target={e.bookingUrl ? '_blank' : undefined}
-                    rel={e.bookingUrl ? 'noopener noreferrer' : undefined}
+                  <BookingButton
+                    url={e.bookingUrl || `/contact?subject=${encodeURIComponent('Booking enquiry — ' + e.name)}`}
+                    label={`${e.bookingUrl ? 'Book this place' : 'Enquire'} →`}
                     className="upcoming-cta"
                     style={{ color: accentColour, borderColor: accentColour }}
-                  >
-                    {e.bookingUrl ? 'Book this place' : 'Enquire'} &rarr;
-                  </a>
+                  />
                 </article>
               ))}
             </div>

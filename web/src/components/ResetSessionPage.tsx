@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import BookingButton from './BookingButton';
 
 export interface ResetSessionPageProps {
   name: string;
@@ -6,9 +7,19 @@ export interface ResetSessionPageProps {
   opening: string;
   accentColour: string;
   image: string;
+  bookingUrl?: string;
+  bookingLabel?: string;
 }
 
-export default function ResetSessionPage({ name, tagline, opening, accentColour, image }: ResetSessionPageProps) {
+export default function ResetSessionPage({
+  name,
+  tagline,
+  opening,
+  accentColour,
+  image,
+  bookingUrl,
+  bookingLabel,
+}: ResetSessionPageProps) {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
@@ -53,9 +64,12 @@ export default function ResetSessionPage({ name, tagline, opening, accentColour,
         <div className="rsp-cta-inner">
           <h2 className="rsp-cta-title">Ready to book?</h2>
           <p className="rsp-cta-body">Stripe checkout opens in a new tab. The intake form is sent on booking.</p>
-          <Link href="/contact" className="rsp-cta-btn" style={{ color: accentColour }}>
-            Book this session · £200 &rarr;
-          </Link>
+          <BookingButton
+            url={bookingUrl || '/contact'}
+            label={bookingLabel || 'Book this session · £200 →'}
+            className="rsp-cta-btn"
+            style={{ color: accentColour }}
+          />
           <p className="rsp-cta-fineprint">Not sure if it&apos;s the right fit? <Link href="/the-work/quiz" style={{ color: '#fff', textDecoration: 'underline' }}>Take the 5-minute quiz</Link> instead.</p>
         </div>
       </section>

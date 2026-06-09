@@ -19,6 +19,8 @@ export default async function FounderResetPage() {
       opening={cms?.intro || 'Most founder problems are not strategy problems. They are capacity problems wearing strategy clothes. A Founder Reset is the session where we work out which one yours is, and we move it.'}
       accentColour={cms?.accentColour || '#FAA21B'}
       image={mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'founder-reset')}
+      bookingUrl={cms?.ctaUrl || undefined}
+      bookingLabel={cms?.ctaLabel ? `${cms.ctaLabel} →` : undefined}
     />
   );
 }
