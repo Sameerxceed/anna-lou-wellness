@@ -42,7 +42,15 @@ const defaultShopSettings: ShopSettings = {
   giftWrapDescription: 'Hand-tied with a satin ribbon and a card you can personalise.',
 };
 
-export default function CheckoutPage() {
+type InitialUser = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+} | null;
+
+export default function CheckoutPage({ initialUser = null }: { initialUser?: InitialUser } = {}) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [subtotal, setSubtotal] = useState(0);
   const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
@@ -50,11 +58,16 @@ export default function CheckoutPage() {
   const [settings, setSettings] = useState<ShopSettings>(defaultShopSettings);
   const [step, setStep] = useState<'form' | 'processing' | 'confirmed'>('form');
   const [orderNum, setOrderNum] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(initialUser?.email || '');
   const [paymentMethod, setPaymentMethod] = useState<'bank' | 'stripe'>('bank');
   const [bankDetails, setBankDetails] = useState<BankDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmedTotal, setConfirmedTotal] = useState(0);
+
+  const isLoggedIn = Boolean(initialUser);
+  const fullName = initialUser
+    ? [initialUser.firstName, initialUser.lastName].filter(Boolean).join(' ').trim()
+    : '';
 
   useEffect(() => {
     const c = getCart();
@@ -204,10 +217,27 @@ export default function CheckoutPage() {
     );
   }
 
+  const fieldDefaults: Record<string, string> = {
+    name: fullName,
+    email: initialUser?.email || '',
+    phone: initialUser?.phone || '',
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '4rem', alignItems: 'start' }} className="checkout-grid">
         <div>
+          {/* Logged-in welcome OR "sign in" prompt for returning customers */}
+          {isLoggedIn ? (
+            <div style={{ padding: '0.85rem 1.1rem', background: '#EFE4D8', border: '1px solid #c4704a', marginBottom: '1.6rem', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#3D3D3A', lineHeight: 1.5 }}>
+              Signed in as <strong>{initialUser?.email}</strong>. Your details below are pre-filled from your last order — feel free to edit. <a href="/api/auth/logout" style={{ color: '#6E3A5A', marginLeft: '0.4rem' }}>Sign out</a>
+            </div>
+          ) : (
+            <div style={{ padding: '0.85rem 1.1rem', background: '#F5F0E8', border: '1px solid #ece6dc', marginBottom: '1.6rem', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#3D3D3A', lineHeight: 1.5 }}>
+              Already shopped with us? <a href={`/login?next=${encodeURIComponent('/checkout')}`} style={{ color: '#6E3A5A', fontWeight: 600 }}>Sign in</a> to pre-fill your details and skip the form.
+            </div>
+          )}
+
           <p className="section-label">Your Details</p>
           <h2 className="section-heading" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Shipping Information</h2>
           {[
@@ -219,6 +249,7 @@ export default function CheckoutPage() {
               <label style={{ display: 'block', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.5rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6e6a62', marginBottom: '0.4rem' }}>{field.label}</label>
               <input
                 name={field.name} type={field.type} required={field.required} placeholder={field.placeholder}
+                defaultValue={fieldDefaults[field.name] || ''}
                 onChange={field.isEmail ? (e) => setEmail(e.target.value) : undefined}
                 style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }}
               />
@@ -226,8 +257,19 @@ export default function CheckoutPage() {
           ))}
           <div style={{ marginBottom: '1.4rem' }}>
             <label style={{ display: 'block', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.5rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6e6a62', marginBottom: '0.4rem' }}>Shipping Address *</label>
-            <textarea name="address" required placeholder="Full postal address" style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: '1px solid #c8c4bc', padding: '0.7rem', outline: 'none', minHeight: 80, resize: 'vertical' }} />
+            <textarea
+              name="address" required placeholder="Full postal address"
+              defaultValue={initialUser?.address || ''}
+              style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: '1px solid #c8c4bc', padding: '0.7rem', outline: 'none', minHeight: 80, resize: 'vertical' }}
+            />
           </div>
+
+          {/* Guest account-creation notice — only shown to non-logged-in users */}
+          {!isLoggedIn && (
+            <div style={{ marginBottom: '1.4rem', padding: '0.7rem 1rem', background: '#FAF7F0', border: '1px dashed #c8c4bc', fontFamily: "'Lora', serif", fontSize: '0.8rem', color: '#6e6a62', fontStyle: 'italic', lineHeight: 1.5 }}>
+              We&rsquo;ll create a free account for you with this email so you can track your order, see past purchases, and skip the form next time. We&rsquo;ll send you a one-time link to set your password — no marketing emails.
+            </div>
+          )}
 
           {settings.giftWrapEnabled && (
             <div style={{ marginBottom: '1.6rem', padding: '0.9rem 1.1rem', background: '#fff', border: '1px solid #ece6dc' }}>
