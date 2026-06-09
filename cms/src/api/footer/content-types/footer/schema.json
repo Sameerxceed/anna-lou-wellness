@@ -8,7 +8,7 @@
     "description": "Footer at the bottom of every page — closing message, link columns, legal, Substack CTA."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "closing_message": {

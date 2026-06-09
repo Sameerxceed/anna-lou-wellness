@@ -4,11 +4,11 @@
   "info": {
     "singularName": "mantra",
     "pluralName": "mantras",
-    "displayName": "Story \u00b7 Mantra",
+    "displayName": "Story · Mantra",
     "description": "Short mantra videos from Anna's YouTube Come Back to Yourself playlist"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "title": {

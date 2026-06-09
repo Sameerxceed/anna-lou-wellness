@@ -8,7 +8,7 @@
     "description": "Public landing page copy for /community/reset-room"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "heroEyebrow": {
@@ -25,7 +25,7 @@
     },
     "heroCtaLabel": {
       "type": "string",
-      "default": "Join the Reset Room \u00b7 \u00a325/month"
+      "default": "Join the Reset Room · £25/month"
     },
     "heroSecondaryLabel": {
       "type": "string",
@@ -33,7 +33,7 @@
     },
     "heroPriceStrip": {
       "type": "string",
-      "default": "\u00a325/month \u00b7 No minimum term \u00b7 Cancel any time"
+      "default": "£25/month · No minimum term · Cancel any time"
     },
     "heroImage": {
       "type": "media",
@@ -48,7 +48,7 @@
     },
     "introBody": {
       "type": "text",
-      "default": "This is where the work stops being something you read and starts being something you practice. A members-only video room, a monthly live call with me, and a growing vault of guided journeys. All for \u00a325 a month."
+      "default": "This is where the work stops being something you read and starts being something you practice. A members-only video room, a monthly live call with me, and a growing vault of guided journeys. All for £25 a month."
     },
     "pillarsKicker": {
       "type": "string",
@@ -116,7 +116,7 @@
     },
     "alsoIncluded1": {
       "type": "text",
-      "default": "Workshop replays \u2014 every workshop I have ever run, free for you inside."
+      "default": "Workshop replays — every workshop I have ever run, free for you inside."
     },
     "alsoIncluded2": {
       "type": "text",
@@ -140,7 +140,7 @@
     },
     "priceTitle": {
       "type": "string",
-      "default": "\u00a325 a month. Cancel any time."
+      "default": "£25 a month. Cancel any time."
     },
     "priceBody": {
       "type": "text",

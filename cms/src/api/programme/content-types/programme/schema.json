@@ -4,11 +4,11 @@
   "info": {
     "singularName": "programme",
     "pluralName": "programmes",
-    "displayName": "Work \u00b7 Programme",
+    "displayName": "Work · Programme",
     "description": "One entry per coaching offer or 1:1 session (The Reset, Signal, Founder Reset, etc.). The slug must match the URL path."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "title": {
@@ -20,7 +20,7 @@
       "type": "uid",
       "targetField": "title",
       "required": true,
-      "description": "URL slug. Must match the route \u2014 e.g. 'the-reset', 'signal', 'founder-reset'. Strapi auto-generates from title but you can edit."
+      "description": "URL slug. Must match the route — e.g. 'the-reset', 'signal', 'founder-reset'. Strapi auto-generates from title but you can edit."
     },
     "tagline": {
       "type": "string",
@@ -55,20 +55,20 @@
     "approachLabel": {
       "type": "string",
       "default": "The approach",
-      "description": "Optional \u2014 heading for a second info section."
+      "description": "Optional — heading for a second info section."
     },
     "approachBody": {
       "type": "text",
-      "description": "Optional \u2014 second info section body."
+      "description": "Optional — second info section body."
     },
     "outcomesLabel": {
       "type": "string",
       "default": "What changes",
-      "description": "Optional \u2014 heading for a third info section."
+      "description": "Optional — heading for a third info section."
     },
     "outcomesBody": {
       "type": "text",
-      "description": "Optional \u2014 third info section body."
+      "description": "Optional — third info section body."
     },
     "pricingLabel": {
       "type": "string",
@@ -77,7 +77,7 @@
     },
     "pricingBody": {
       "type": "text",
-      "description": "Pricing details. e.g. '\u00a31,500. Paid in full or two instalments of \u00a3750.'"
+      "description": "Pricing details. e.g. '£1,500. Paid in full or two instalments of £750.'"
     },
     "ctaLabel": {
       "type": "string",
@@ -101,7 +101,7 @@
     "pricePence": {
       "type": "integer",
       "default": 0,
-      "description": "Optional. Price in pence (e.g. 150000 = \u00a31,500). Leave 0 or blank for 'by enquiry' programmes \u2014 the Book button won't show a price button."
+      "description": "Optional. Price in pence (e.g. 150000 = £1,500). Leave 0 or blank for 'by enquiry' programmes — the Book button won't show a price button."
     },
     "currency": {
       "type": "string",

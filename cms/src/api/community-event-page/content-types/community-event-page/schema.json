@@ -8,7 +8,7 @@
     "description": "Sub-pages under /community (Returning Circle, Events)."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "title": {

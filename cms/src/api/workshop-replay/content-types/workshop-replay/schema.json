@@ -8,7 +8,7 @@
     "description": "Recordings of past workshops + monthly live calls. Members-only."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "title": {

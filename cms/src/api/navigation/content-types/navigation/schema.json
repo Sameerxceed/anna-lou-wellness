@@ -5,10 +5,10 @@
     "singularName": "navigation",
     "pluralName": "navigations",
     "displayName": "2. Navigation",
-    "description": "Main site navigation \u2014 top-level items and their dropdown children"
+    "description": "Main site navigation — top-level items and their dropdown children"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "items": {
@@ -18,8 +18,8 @@
     },
     "top_strip_text": {
       "type": "string",
-      "description": "Tiny text strip across the very top of every page. Use middle-dot (\u00b7) between words, e.g. 'Stories \u00b7 Work with Anna \u00b7 Experiences \u00b7 Shop \u00b7 Community'",
-      "default": "Stories \u00b7 Work with Anna \u00b7 Experiences \u00b7 Shop \u00b7 Community"
+      "description": "Tiny text strip across the very top of every page. Use middle-dot (·) between words, e.g. 'Stories · Work with Anna · Experiences · Shop · Community'",
+      "default": "Stories · Work with Anna · Experiences · Shop · Community"
     }
   }
 }

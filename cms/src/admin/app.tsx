@@ -30,6 +30,7 @@ import QuickEditDashboard from './extensions/QuickEditDashboard';
 import QuickEditDashboardPage from './extensions/QuickEditDashboardPage';
 import RelatedItemsPanel from './extensions/RelatedItemsPanel';
 import GenerateSeoPanel from './extensions/GenerateSeoPanel';
+import ViewLivePanel from './extensions/ViewLivePanel';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -154,6 +155,20 @@ const bootstrap = (app: StrapiApp) => {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('[ALW admin] RelatedItemsPanel injection failed:', err);
+  }
+
+  // Inject "View live page" button into the right sidebar of every edit view.
+  // Shows a green "Open in new tab" link to the public URL the entry powers.
+  // Lets Anna edit in CMS, switch to live tab, pull-to-refresh on phone to
+  // see changes within seconds (on-demand revalidation already wired).
+  try {
+    app.getPlugin('content-manager')?.injectComponent('editView', 'right-links', {
+      name: 'ViewLivePanel',
+      Component: ViewLivePanel,
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] ViewLivePanel injection failed:', err);
   }
 
   // Inject "Generate SEO" panel into the right sidebar of every edit view.

@@ -197,6 +197,8 @@ async function seedFAQs(strapi) {
           page,
           sort_order: (i + 1) * 10,
           is_active: true,
+          // draftAndPublish is on; publish immediately so seeded FAQs are live.
+          publishedAt: new Date(),
         },
       });
       createdTotal++;

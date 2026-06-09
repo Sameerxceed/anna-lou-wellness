@@ -8,7 +8,7 @@
     "description": "Holding page copy for /reset-letters (Substack launch)"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "comingSoonLabel": {
@@ -52,7 +52,7 @@
     },
     "eachWeekBody": {
       "type": "text",
-      "default": "Sunday Cosmic Forecast \u2014 Your weekly energy reading. Moon phases, planetary shifts, and what they mean for your body and your week ahead.\n\nWednesday Signal Check \u2014 A midweek nervous system check-in. Short, grounding, practical. The pause you did not know you needed.\n\nMonthly Reset Story \u2014 A long-form piece. Real women. Real turning points. Written with care and without filter.\n\nMonthly Contributor Feature \u2014 A guest voice. A coach, therapist, artist, or someone with a story worth hearing."
+      "default": "Sunday Cosmic Forecast — Your weekly energy reading. Moon phases, planetary shifts, and what they mean for your body and your week ahead.\n\nWednesday Signal Check — A midweek nervous system check-in. Short, grounding, practical. The pause you did not know you needed.\n\nMonthly Reset Story — A long-form piece. Real women. Real turning points. Written with care and without filter.\n\nMonthly Contributor Feature — A guest voice. A coach, therapist, artist, or someone with a story worth hearing."
     },
     "voicesTitle": {
       "type": "string",
@@ -88,7 +88,7 @@
     },
     "founderBody": {
       "type": "text",
-      "default": "After the first 500, Reset Letters will cost \u00a37 per month. But if you sign up before launch, you get everything. For ever. No catch."
+      "default": "After the first 500, Reset Letters will cost £7 per month. But if you sign up before launch, you get everything. For ever. No catch."
     },
     "founderBenefits": {
       "type": "text",

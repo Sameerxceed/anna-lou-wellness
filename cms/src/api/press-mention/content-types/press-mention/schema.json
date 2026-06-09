@@ -8,7 +8,7 @@
     "description": "Press logos shown in the 'As seen in' strip on the homepage. Add one entry per publication or retailer (Harrods, Selfridges, The Telegraph, etc.)."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "name": {

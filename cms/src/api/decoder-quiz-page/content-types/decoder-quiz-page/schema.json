@@ -8,7 +8,7 @@
     "description": "Every piece of copy on /free/nervous-system-decoder/quiz, fully CMS-editable. Hero, button labels, the 5 questions and their A/B/C answers, the email gate copy, the 3 result pages, and the practice labels. The only thing in code is the scoring logic (A=Clear, B=Scrambled, C=Faint) and the colour palette per result."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "eyebrow": {

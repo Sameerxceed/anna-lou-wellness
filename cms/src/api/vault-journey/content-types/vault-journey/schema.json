@@ -8,7 +8,7 @@
     "description": "Member-only guided journeys inside the Reset Room vault. Each one can have audio (private podcast) and/or video (Bunny.net Stream) plus a companion PDF."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "name": {

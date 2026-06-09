@@ -8,7 +8,7 @@
     "description": "Sub-page under Shop > Personalised Pieces. All visible copy is editable here."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "kicker": {

@@ -135,7 +135,12 @@ async function seedDecoderQuiz(strapi) {
       );
     } else {
       await strapi.entityService.create('api::decoder-quiz-page.decoder-quiz-page', {
-        data: { questions: QUESTIONS, results: RESULTS },
+        data: {
+          questions: QUESTIONS,
+          results: RESULTS,
+          // Publish immediately since draftAndPublish is on for this singleton.
+          publishedAt: new Date(),
+        },
       });
       strapi.log.info('[seed-decoder-quiz] seeded fresh singleton with questions + results');
     }

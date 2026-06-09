@@ -68,6 +68,9 @@ async function seedArticleCategories(strapi) {
         colour: cat.colour,
         description: cat.description,
         sort_order: (i + 1) * 10,
+        // draftAndPublish is on for editorial content types — publish immediately
+        // so seeded categories are live, not stuck as drafts.
+        publishedAt: new Date(),
       },
     });
     created++;

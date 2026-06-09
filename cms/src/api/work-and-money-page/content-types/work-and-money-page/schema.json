@@ -8,7 +8,7 @@
     "description": "Landing page content for the Work & Money section on the main menu."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "kicker": {

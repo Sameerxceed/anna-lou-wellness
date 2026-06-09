@@ -8,7 +8,7 @@
     "description": "Sub-pages under /experiences (Workshops, Retreats, Corporate Wellbeing, Speaking)."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "title": {
@@ -69,7 +69,7 @@
     "pricePence": {
       "type": "integer",
       "default": 0,
-      "description": "Optional. Price in pence (e.g. 1500 = \u00a315, 20000 = \u00a3200). Leave 0 for 'enquire for price' pages (Corporate Wellbeing, Speaking)."
+      "description": "Optional. Price in pence (e.g. 1500 = £15, 20000 = £200). Leave 0 for 'enquire for price' pages (Corporate Wellbeing, Speaking)."
     },
     "currency": {
       "type": "string",
@@ -79,7 +79,7 @@
     "isRecurring": {
       "type": "boolean",
       "default": false,
-      "description": "Always leave OFF for experience-page items \u2014 they are one-off purchases."
+      "description": "Always leave OFF for experience-page items — they are one-off purchases."
     },
     "mailchimpTag": {
       "type": "string",

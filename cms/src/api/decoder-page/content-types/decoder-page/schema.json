@@ -8,7 +8,7 @@
     "description": "Lead-magnet copy for /free/nervous-system-decoder"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "heroEyebrow": {
@@ -52,7 +52,7 @@
     },
     "whyBody": {
       "type": "text",
-      "default": "The Nervous System Decoder is the first thing offered to anyone who finds Anna Lou Wellness. Free. Always free.\n\nIt explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state, you can use today, anywhere, without equipment.\n\nIt was made free because understanding your inner world is not a luxury. It is the foundation. Without it, nothing else on this site makes sense. With it, everything starts to make sense \u2014 the patterns, the reactions, the relationships, the exhaustion."
+      "default": "The Nervous System Decoder is the first thing offered to anyone who finds Anna Lou Wellness. Free. Always free.\n\nIt explains the three primary states of your inner guidance system in plain language. Helps you identify which state you are in right now. Gives you three immediate practices, one for each state, you can use today, anywhere, without equipment.\n\nIt was made free because understanding your inner world is not a luxury. It is the foundation. Without it, nothing else on this site makes sense. With it, everything starts to make sense — the patterns, the reactions, the relationships, the exhaustion."
     },
     "insideTitle": {
       "type": "string",

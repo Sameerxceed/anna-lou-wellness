@@ -8,7 +8,7 @@
     "description": "Client reviews shown on retreat, workshop, coaching and programme pages. Mix of text quotes and short videos."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "reviewer_name": {
@@ -32,19 +32,25 @@
     "photo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "description": "Optional portrait photo of the client. Shown as a circular/octagonal frame next to the quote on the /testimonials page. Best size 800×800 (square), JPEG, max 500 KB."
     },
     "video": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["videos"],
+      "allowedTypes": [
+        "videos"
+      ],
       "description": "Optional uploaded video testimonial (MP4, under 90 seconds recommended)."
     },
     "video_thumbnail": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "description": "Optional poster image shown before the video plays."
     },
     "youtube_url": {
@@ -53,7 +59,10 @@
     },
     "display_style": {
       "type": "enumeration",
-      "enum": ["card", "banner"],
+      "enum": [
+        "card",
+        "banner"
+      ],
       "default": "card",
       "description": "How this testimonial renders on the dedicated /testimonials page. 'card' = standard 3-column grid item. 'banner' = full-width prominent block between rows (use for your strongest testimonials, 1 in every 6-10 entries)."
     },

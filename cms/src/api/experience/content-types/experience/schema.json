@@ -8,7 +8,7 @@
     "description": "Retreats, workshops, corporate wellbeing, speaking engagements"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "name": {

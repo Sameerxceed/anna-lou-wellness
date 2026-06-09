@@ -8,7 +8,7 @@
     "description": "Hero copy at the top of /practitioners. The practitioner cards themselves live in the Practitioner collection."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "kicker": {

@@ -8,7 +8,7 @@
     "description": "Hero copy + intro paragraph for the dedicated /testimonials page. The actual testimonial cards on the page come from the Testimonial / Review collection — flag is_active and set display_style there."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "kicker": {

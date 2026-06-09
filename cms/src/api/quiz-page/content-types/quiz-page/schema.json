@@ -8,7 +8,7 @@
     "description": "The /the-work/quiz page. Hero copy + 6 result blurbs are editable here. The 5 questions and scoring weights stay in code (technical content that doesn't change often)."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "eyebrow": {

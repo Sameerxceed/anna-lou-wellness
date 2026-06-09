@@ -8,7 +8,7 @@
     "description": "1:1 coaching session types: Reset Sessions, Founder Reset, Dating Reset, Nervous System Reset"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "name": {

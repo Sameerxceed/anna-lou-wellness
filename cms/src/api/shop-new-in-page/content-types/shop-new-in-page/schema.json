@@ -8,7 +8,7 @@
     "description": "Sub-page under Shop > New In. All visible copy is editable here so Anna can change the landing without touching code."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "kicker": {

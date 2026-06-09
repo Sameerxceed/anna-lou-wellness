@@ -8,7 +8,7 @@
     "description": "Trusted practitioners Anna recommends — therapists, coaches, healers, and bodyworkers in her circle. Shown on the /practitioners page as a 3-column grid with occasional full-width banner cards. Same layout pattern as /testimonials so Anna edits them the same way."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "name": {
@@ -27,7 +27,9 @@
     "portrait": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "description": "Portrait photo of the practitioner. Square works best (800×800), or portrait orientation. JPEG, max 500 KB."
     },
     "website_url": {
@@ -48,7 +50,10 @@
     },
     "display_style": {
       "type": "enumeration",
-      "enum": ["card", "banner"],
+      "enum": [
+        "card",
+        "banner"
+      ],
       "default": "card",
       "description": "How this practitioner renders on the /practitioners page. 'card' = standard 3-column grid item. 'banner' = full-width prominent block between rows (use sparingly for featured practitioners, 1 in every 6-10 entries)."
     },

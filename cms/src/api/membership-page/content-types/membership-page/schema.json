@@ -8,7 +8,7 @@
     "description": "Copy for the /community/membership page (the secondary Reset Room sales page). The main sales page is /community/reset-room; this is the simpler 'subpage' version linked from Community."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "kicker": {

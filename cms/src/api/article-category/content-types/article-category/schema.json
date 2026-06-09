@@ -4,11 +4,11 @@
   "info": {
     "singularName": "article-category",
     "pluralName": "article-categories",
-    "displayName": "Story \u00b7 Category",
+    "displayName": "Story · Category",
     "description": "Categories for editorial articles: Reset Stories sub-cats, Life sub-cats, Love sub-cats, Work sub-cats"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "name": {

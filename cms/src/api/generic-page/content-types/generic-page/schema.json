@@ -8,7 +8,7 @@
     "description": "Use this to create any new standalone page on the site. Each entry's `slug` becomes the URL. Example: slug 'mission' → page lives at /mission. Use for Privacy, Terms, Mission, Cookies, About sub-pages, or any one-off page that needs a hero + body + optional CTA. Once created, link it from the Footer's Legal Links (Footer single-type) by putting the slug with a leading slash in the Href field, e.g. '/mission'."
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "title": {

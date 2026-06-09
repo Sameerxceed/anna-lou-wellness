@@ -8,7 +8,7 @@
     "description": "About page content"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "attributes": {
     "kicker": {
