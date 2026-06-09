@@ -163,6 +163,7 @@ export default function QuickPhotoEditor() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Record<string, { kind: 'ok' | 'err'; msg: string }>>({});
+  const [debugErrors, setDebugErrors] = useState<string[]>([]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -247,6 +248,7 @@ export default function QuickPhotoEditor() {
       // eslint-disable-next-line no-console
       console.warn('[QuickPhotos] errors during load:', errors);
     }
+    setDebugErrors(errors);
     setRows(out);
     setLoading(false);
   }, []);
@@ -305,7 +307,23 @@ export default function QuickPhotoEditor() {
       </p>
 
       {loading && <div style={styles.spinner}>Loading photos…</div>}
-      {!loading && rows.length === 0 && <div style={styles.empty}>No photos found.</div>}
+      {!loading && rows.length === 0 && (
+        <div style={styles.empty}>
+          <p style={{ marginBottom: 12 }}>No photos found.</p>
+          {debugErrors.length > 0 ? (
+            <details style={{ textAlign: 'left', maxWidth: 720, margin: '0 auto', fontSize: 12, color: '#B72B1A', fontStyle: 'normal' }}>
+              <summary style={{ cursor: 'pointer', marginBottom: 8 }}>Show {debugErrors.length} error(s) from loading</summary>
+              <ul style={{ paddingLeft: 18, lineHeight: 1.6 }}>
+                {debugErrors.map((e, i) => <li key={i}><code style={{ background: '#F6F6F9', padding: '1px 4px' }}>{e}</code></li>)}
+              </ul>
+            </details>
+          ) : (
+            <p style={{ fontSize: 12, color: '#666687', fontStyle: 'normal' }}>
+              All catalogue fetches returned successfully but no image fields were detected. Try opening an entry directly in the Content Manager to confirm the schema is what we expect.
+            </p>
+          )}
+        </div>
+      )}
 
       {Object.entries(byGroup).map(([group, items]) => (
         <section key={group} style={styles.section}>
