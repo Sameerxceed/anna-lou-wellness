@@ -31,6 +31,7 @@ import QuickEditDashboardPage from './extensions/QuickEditDashboardPage';
 import RelatedItemsPanel from './extensions/RelatedItemsPanel';
 import GenerateSeoPanel from './extensions/GenerateSeoPanel';
 import ViewLivePanel from './extensions/ViewLivePanel';
+import QuickPhotoEditor from './extensions/QuickPhotoEditor';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -47,6 +48,21 @@ const QuickEditMenuIcon = () => (
     aria-hidden="true"
   >
     📋
+  </span>
+);
+
+const QuickPhotoMenuIcon = () => (
+  <span
+    style={{
+      fontSize: 18,
+      lineHeight: 1,
+      display: 'inline-block',
+      width: 20,
+      textAlign: 'center',
+    }}
+    aria-hidden="true"
+  >
+    📷
   </span>
 );
 
@@ -209,6 +225,13 @@ const bootstrap = (app: StrapiApp) => {
       icon: QuickEditMenuIcon,
       intlLabel: { id: 'alw.menu.quick-edit', defaultMessage: 'Quick Edit' },
       Component: async () => ({ default: QuickEditDashboardPage }),
+      permissions: [],
+    });
+    appAny.addMenuLink?.({
+      to: '/alw-quick-photos',
+      icon: QuickPhotoMenuIcon,
+      intlLabel: { id: 'alw.menu.quick-photos', defaultMessage: 'Quick Photos' },
+      Component: async () => ({ default: QuickPhotoEditor }),
       permissions: [],
     });
   } catch (err) {

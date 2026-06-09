@@ -1950,7 +1950,104 @@ After you've cloned and published a page, the URL exists but no menu item points
 
 Saves go live in 1–2 seconds. The menu updates everywhere on the site.
 
-### 16.22 What's coming next
+### 16.22 Draft / Publish — your new safety net
+
+Every page, programme, practitioner, testimonial, FAQ, and editorial entry in your CMS now has a **draft mode**. Saving no longer makes the change live immediately.
+
+#### How it changes your flow
+
+**Before** (until 9 Jun 2026):
+1. Edit a field → Save → live in 2 seconds. Mistake = mistake.
+
+**Now**:
+1. Edit a field → **Save** → the change is stored as a draft. **Live site shows the previous version, untouched.**
+2. Open the live page in another tab (or use **View Live page →** button — see 16.23) to preview
+3. When happy → **Publish** (blue button, top-right of the edit form). Live in 1–2 seconds.
+
+#### Reverting a mistake
+
+You have three options:
+
+1. **Discard changes** (best) — top-right of the edit form, near Publish, there's a discard button. Wipes the draft back to whatever the live version says.
+2. **Just don't publish** — the draft sits there until you do something with it. Live site stays as it was.
+3. **Edit it back** — if you've already published a bad change, edit again to fix and re-publish. (For real disasters, Sameer can restore from the previous day's database backup — see 16.27.)
+
+#### What now requires a Publish tap
+
+Anything in: Programmes, Practitioners, Testimonials, Articles, FAQ, all the page singletons (Homepage, About, Community, Reset Room, all section landing pages, Decoder, Quiz, all the shop pages), Experiences, Page Builder pages, Navigation, Footer.
+
+What does NOT need Publish: Orders, Cart, Coupon entries, customer records, shop product catalogue (still live-on-save because these are transactional).
+
+#### Mobile-specific note
+
+On your phone, the Publish button is at the top-right of the edit form. Sometimes it scrolls off-screen if the form is long — pinch to zoom out, or scroll up.
+
+### 16.23 View live page (one tap from any edit screen)
+
+Every entry in your CMS now has a **green "View live page →" button** in the right sidebar.
+
+#### What it does
+
+Tap the button → opens the page the entry powers in a new tab. For example:
+- Editing **Homepage** singleton → opens `https://annalouwellness.com/`
+- Editing **REGULATED** programme → opens `https://annalouwellness.com/the-work/regulated`
+- Editing **Sarah Hughes** practitioner → opens `https://annalouwellness.com/practitioners`
+
+Keep that tab open. Edit + save + publish in the CMS tab → swipe back to the live tab → pull to refresh → see your change in seconds.
+
+#### Mobile workflow
+
+The Apple tab switcher (long-press the tab icon at the bottom of Safari) makes flipping between CMS and live page instant. Two-tab workflow > side-by-side preview on a 6-inch screen.
+
+### 16.24 Quick Photo Editor — replace any hero image in 2 taps
+
+New **Quick Photos** item in the CMS sidebar (camera icon). One page showing every hero / portrait / featured photo across your site as thumbnails.
+
+#### What it covers
+
+- Every singleton page hero (Homepage, About, Community, Reset Room, Testimonials, Practitioners, Reset Letters, Decoder, Experiences landing)
+- Every Programme hero
+- Every Experience event hero
+- Every Practitioner portrait
+- Every Testimonial photo
+- Every Page Builder page hero
+
+If a hero is set, you see the thumbnail. If it's empty, you see "No image set."
+
+#### How to swap a photo
+
+1. CMS → sidebar → **Quick Photos**
+2. Find the thumbnail you want to replace
+3. Tap **Replace** (or **Upload** if it's empty)
+4. Pick a photo from your phone
+5. ~3-second upload → thumbnail updates in place
+6. Open the entry (tap the entry name) and tap **Publish** to push the new photo live
+
+That's 4 taps total (5 if you count Publish) vs ~10 taps the old way.
+
+#### Limitations
+
+- Quick Photos only shows the **main hero/portrait** field for each entry. If a page has multiple image fields (like Homepage has 4), they all appear as separate rows. But specialised fields (like a programme's "alternate image for retreats listing") aren't shown — for those, open the entry the normal way.
+- After replace, the change is a **draft**. You still need to open the entry and tap Publish to make it live (the new safety net from 16.22 applies here too).
+
+### 16.25 iOS Shortcut for fastest photo uploads
+
+The fastest possible mobile upload workflow: take a photo → tap Share → tap **Upload to ALW CMS** → done. ~5 seconds end-to-end.
+
+Setup instructions for this live in `Docs/IOS_SHORTCUT_UPLOAD.md` — Sameer will walk you through it once. After the one-time setup, every future upload is a one-tap operation from the iPhone share sheet.
+
+This is a pure **upload accelerator** — it lands the photo in your Media Library. To then attach it to a specific page, use **Quick Photos** (16.24) or the normal edit-the-entry flow.
+
+### 16.26 Tap the image, not the field — the hidden Replace shortcut
+
+When you're inside an entry's edit form (like editing the Homepage) and want to swap a photo that's already set:
+
+❌ **Don't** tap the field name or label.
+✅ **DO** tap the image thumbnail itself. A modal opens with a **Replace media** button — one tap, pick new photo, done.
+
+Saves 2 taps every time.
+
+### 16.27 What's coming next
 
 The manual is now substantially complete for v1.3. Possible future additions based on Anna's feedback:
 - Screenshots inside each section (currently text-only — Anna may want visual reference)
