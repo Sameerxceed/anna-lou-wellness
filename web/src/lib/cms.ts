@@ -1099,6 +1099,78 @@ export async function getTestimonialsPage(): Promise<TestimonialsPage> {
   }
 }
 
+// ═══ PRACTITIONERS ═══
+
+export interface Practitioner {
+  id: number;
+  name: string;
+  role: string;
+  bio: string;
+  portraitUrl: string;
+  websiteUrl: string;
+  instagramHandle: string;
+  email: string;
+  location: string;
+  displayStyle: 'card' | 'banner';
+  sortOrder: number;
+}
+
+export async function getPractitioners(): Promise<Practitioner[]> {
+  try {
+    const { data } = await fetchAPI('/practitioners', {
+      populate: '*',
+      sort: 'sort_order:asc,name:asc',
+      'filters[is_active][$eq]': 'true',
+      'pagination[limit]': '100',
+    });
+    if (!data?.length) return [];
+    return data.map((d: any) => ({
+      id: d.id,
+      name: d.name || '',
+      role: d.role || '',
+      bio: d.bio || '',
+      portraitUrl: mediaUrl(d.portrait),
+      websiteUrl: d.website_url || '',
+      instagramHandle: (d.instagram_handle || '').replace(/^@/, ''),
+      email: d.email || '',
+      location: d.location || '',
+      displayStyle: d.display_style === 'banner' ? 'banner' : 'card',
+      sortOrder: d.sort_order ?? 100,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export interface PractitionersPage {
+  kicker: string;
+  title: string;
+  tagline: string;
+  kickerColour: string;
+}
+
+const PRACTITIONERS_PAGE_FALLBACK: PractitionersPage = {
+  kicker: 'Trusted Circle',
+  title: 'Practitioners I trust.',
+  tagline: "A small, hand-picked circle of therapists, coaches, bodyworkers, and healers I send my clients to when the work needs to go somewhere I don't.",
+  kickerColour: '#6E3A5A',
+};
+
+export async function getPractitionersPage(): Promise<PractitionersPage> {
+  try {
+    const { data: d } = await fetchAPI('/practitioners-page');
+    if (!d) return PRACTITIONERS_PAGE_FALLBACK;
+    return {
+      kicker: d.kicker || PRACTITIONERS_PAGE_FALLBACK.kicker,
+      title: d.title || PRACTITIONERS_PAGE_FALLBACK.title,
+      tagline: d.tagline || PRACTITIONERS_PAGE_FALLBACK.tagline,
+      kickerColour: d.kickerColour || PRACTITIONERS_PAGE_FALLBACK.kickerColour,
+    };
+  } catch {
+    return PRACTITIONERS_PAGE_FALLBACK;
+  }
+}
+
 // ═══ MANTRAS ═══
 
 export interface Mantra {

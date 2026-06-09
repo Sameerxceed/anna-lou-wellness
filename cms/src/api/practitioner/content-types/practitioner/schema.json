@@ -1,0 +1,66 @@
+{
+  "kind": "collectionType",
+  "collectionName": "practitioners",
+  "info": {
+    "singularName": "practitioner",
+    "pluralName": "practitioners",
+    "displayName": "Practitioner",
+    "description": "Trusted practitioners Anna recommends — therapists, coaches, healers, and bodyworkers in her circle. Shown on the /practitioners page as a 3-column grid with occasional full-width banner cards. Same layout pattern as /testimonials so Anna edits them the same way."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "description": "Practitioner's full name. Example: 'Sarah Hughes'."
+    },
+    "role": {
+      "type": "string",
+      "description": "Their professional title or specialism. Example: 'Somatic Therapist', 'EMDR Practitioner', 'Acupuncturist'. Keep tight — 1-4 words."
+    },
+    "bio": {
+      "type": "text",
+      "description": "Short description of who they are and what they do. 1-3 sentences. Use plain text — paragraph breaks (blank line) work if you need them."
+    },
+    "portrait": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Portrait photo of the practitioner. Square works best (800×800), or portrait orientation. JPEG, max 500 KB."
+    },
+    "website_url": {
+      "type": "string",
+      "description": "Their professional website. The whole card on /practitioners links here when clicked. Use the full URL: https://example.com"
+    },
+    "instagram_handle": {
+      "type": "string",
+      "description": "Optional. Just the handle without the @ — e.g. 'sarahhughes_therapist'. Shown as a small Instagram link under their bio."
+    },
+    "email": {
+      "type": "string",
+      "description": "Optional contact email. Shown as a 'Get in touch' link if provided. Leave blank to hide."
+    },
+    "location": {
+      "type": "string",
+      "description": "Optional. Where they're based or where they work. Example: 'London, in-person + online' or 'Online only'."
+    },
+    "display_style": {
+      "type": "enumeration",
+      "enum": ["card", "banner"],
+      "default": "card",
+      "description": "How this practitioner renders on the /practitioners page. 'card' = standard 3-column grid item. 'banner' = full-width prominent block between rows (use sparingly for featured practitioners, 1 in every 6-10 entries)."
+    },
+    "sort_order": {
+      "type": "integer",
+      "default": 100,
+      "description": "Lower numbers show first. Default 100. Use 10, 20, 30… if you want fine control."
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Untick to hide this practitioner from the live site without deleting them."
+    }
+  }
+}

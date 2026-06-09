@@ -1,0 +1,43 @@
+{
+  "kind": "singleType",
+  "collectionName": "practitioners_pages",
+  "info": {
+    "singularName": "practitioners-page",
+    "pluralName": "practitioners-pages",
+    "displayName": "Practitioners (Page)",
+    "description": "Hero copy at the top of /practitioners. The practitioner cards themselves live in the Practitioner collection."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "kicker": {
+      "type": "string",
+      "default": "Trusted Circle",
+      "description": "Small uppercase label above the title."
+    },
+    "kickerColour": {
+      "type": "string",
+      "default": "#6E3A5A",
+      "description": "Hex colour for the kicker. Default plum (#6E3A5A)."
+    },
+    "title": {
+      "type": "string",
+      "default": "Practitioners I trust.",
+      "description": "Main heading. Italic in design — written as one short sentence."
+    },
+    "tagline": {
+      "type": "text",
+      "default": "A small, hand-picked circle of therapists, coaches, bodyworkers, and healers I send my clients to when the work needs to go somewhere I don't.",
+      "description": "Short intro paragraph under the title. 1-3 sentences."
+    },
+    "seoTitle": {
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page title."
+    },
+    "seoDescription": {
+      "type": "text",
+      "description": "Short summary for Google + AI search engines. ~155 chars."
+    }
+  }
+}

@@ -182,6 +182,7 @@ export const navigation: NavItem[] = [
     children: [
       { label: "Anna's Story", href: "/about" },
       { label: "Client Stories", href: "/testimonials" },
+      { label: "Practitioners", href: "/practitioners" },
       { label: "Press", href: "/about/press" },
       { label: "Work With Me", href: "/about/partnerships" },
       { label: "Contact", href: "/contact" },

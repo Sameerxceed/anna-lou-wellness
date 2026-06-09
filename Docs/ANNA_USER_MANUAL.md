@@ -1881,7 +1881,76 @@ Edits go live in 1–2 seconds — no waiting for a rebuild.
 - **Don't change the slug** after the page is live and shared — the URL will break for anyone with the old link
 - **Don't paste invalid hex codes** (e.g. `#GGGGGG`) — the colour will silently default to white
 
-### 16.20 What's coming next
+### 16.20 Practitioners — your trusted circle directory
+
+`/practitioners` is a dedicated page that mirrors the look of `/testimonials` — a 3-column grid of practitioner cards, with occasional full-width "banner" entries between rows for featured names. Same workflow you already know from testimonials.
+
+#### Adding a practitioner
+
+1. CMS → **Practitioner** (in the sidebar list of collections)
+2. **Create new entry**
+3. Fill in:
+   - **Name** — full name. Required.
+   - **Role** — short specialism, e.g. "Somatic Therapist", "EMDR Practitioner". 1–4 words.
+   - **Bio** — 1–3 sentences. Plain text.
+   - **Portrait** — square photo (~800×800), JPEG, max 500 KB.
+   - **Website URL** — full URL `https://...`. Clicking the card sends visitors here.
+   - **Instagram handle** — just the handle, no @. Optional.
+   - **Email** — optional. Currently shown as a "Get in touch" if you fill it.
+   - **Location** — e.g. "London, in-person + online" or "Online only". Optional.
+   - **Display style** — leave **card** for normal entries. Pick **banner** for 1 in every 6–10 entries to feature them prominently (same as how it works for testimonials).
+   - **Sort order** — lower numbers show first. Default 100. Use 10, 20, 30… if you want fine control.
+   - **Is active** — leave on. Untick to hide from the live site without deleting.
+4. Save
+
+#### Editing the hero copy
+
+CMS → **Practitioners (Page)** singleton → edit kicker, title, tagline. Saves go live in 1–2 seconds.
+
+#### Where it's linked
+
+About menu → **Practitioners** (next to Client Stories).
+
+### 16.21 Duplicating an existing page to create a new one
+
+You don't have to build pages from scratch — Strapi has a built-in **Clone** feature that works for almost every collection (Page Builder pages, programmes, practitioners, testimonials, articles, experiences, the lot).
+
+#### How to clone
+
+1. CMS → open the collection of the entry you want to duplicate (e.g. **Page (build your own)** or **Work · Programme**)
+2. In the list view, find the entry's row
+3. Click the **⋮ (three dots)** at the right-hand end of that row
+4. Pick **Clone**
+5. Strapi opens a new draft pre-filled with everything from the original — sections, images, style, links, the lot
+6. Change the **Title** + **Slug** to something unique (otherwise the URL will clash with the original)
+7. Tweak whatever's different (copy, hero image, sections you want to add or remove)
+8. **Save** → **Publish**
+
+The clone goes live at its own URL. The original is untouched.
+
+#### When to use this
+
+- **New sales page for a different programme** → clone REGULATED, swap the copy, change the buy-programme section's slug
+- **New retreat or workshop landing page** → clone the closest existing one, change details
+- **Seasonal variant of an existing page** ("Summer Reset Day" from an existing "Reset Day" template)
+- **A/B testing different page layouts** → clone, edit one, see which feels better
+
+#### Adding the new page to a menu
+
+After you've cloned and published a page, the URL exists but no menu item points to it yet. To add to nav:
+
+1. CMS → **Navigation** singleton (in the sidebar list of single types)
+2. Find the menu group you want to add to — e.g. "Work with Anna" or "About" — and scroll to its **Children** list
+3. Click **+ Add another to Children**
+4. Fill in:
+   - **Label** — the text shown in the menu (e.g. "Houseboat Reset Day")
+   - **Href** — the URL of your new page (e.g. `/p/houseboat-reset-day` for a Page Builder page, or `/the-work/your-slug` for a programme)
+5. Drag the new item to where you want it in the order (within that menu group)
+6. Save
+
+Saves go live in 1–2 seconds. The menu updates everywhere on the site.
+
+### 16.22 What's coming next
 
 The manual is now substantially complete for v1.3. Possible future additions based on Anna's feedback:
 - Screenshots inside each section (currently text-only — Anna may want visual reference)

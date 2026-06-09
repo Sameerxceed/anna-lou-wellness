@@ -76,6 +76,8 @@ module.exports = {
         'api::cosmic-forecast.cosmic-forecast',
         'api::experience.experience',
         'api::testimonial.testimonial',
+        'api::practitioner.practitioner',
+        'api::practitioners-page.practitioners-page',
         'api::press-mention.press-mention',
         'api::certification.certification',
         'api::event.event',
