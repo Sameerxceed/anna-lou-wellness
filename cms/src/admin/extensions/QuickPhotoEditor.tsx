@@ -314,25 +314,18 @@ export default function QuickPhotoEditor() {
       {loading && <div style={styles.spinner}>Loading photos…</div>}
       {!loading && rows.length === 0 && (
         <div style={styles.empty}>
-          <p style={{ marginBottom: 12 }}>No photos found.</p>
-          <p style={{ fontSize: 12, color: '#666687', fontStyle: 'normal', marginBottom: 12 }}>
-            <strong>Admin token lookup:</strong> <code style={{ background: '#F6F6F9', padding: '1px 4px' }}>{getAdminToken().foundAt}</code>
+          <p style={{ marginBottom: 16, fontStyle: 'normal', color: '#32324D' }}>
+            <strong>Coming soon.</strong>
           </p>
-          {debugErrors.length > 0 ? (
-            <details style={{ textAlign: 'left', maxWidth: 720, margin: '0 auto', fontSize: 12, color: '#B72B1A', fontStyle: 'normal' }} open>
-              <summary style={{ cursor: 'pointer', marginBottom: 8 }}>Show {debugErrors.length} error(s) from loading</summary>
-              <ul style={{ paddingLeft: 18, lineHeight: 1.6 }}>
-                {debugErrors.map((e, i) => <li key={i}><code style={{ background: '#F6F6F9', padding: '1px 4px' }}>{e}</code></li>)}
-              </ul>
-              <p style={{ marginTop: 12, color: '#666687', fontStyle: 'italic' }}>
-                If you see 401 errors above, the admin auth token isn't being sent. Sameer needs to check the token lookup pattern.
-              </p>
-            </details>
-          ) : (
-            <p style={{ fontSize: 12, color: '#666687', fontStyle: 'normal' }}>
-              All catalogue fetches returned successfully but no image fields were detected.
-            </p>
-          )}
+          <p style={{ fontSize: 13, color: '#666687', fontStyle: 'normal', maxWidth: 560, margin: '0 auto', lineHeight: 1.6 }}>
+            This page is being rebuilt to work with Strapi 5&rsquo;s authentication system. For now, replace photos the normal way:
+          </p>
+          <ol style={{ textAlign: 'left', maxWidth: 480, margin: '16px auto', fontSize: 13, color: '#666687', fontStyle: 'normal', lineHeight: 1.7 }}>
+            <li>Open the page you want (Homepage, a programme, a practitioner, etc.) from the sidebar</li>
+            <li>Tap directly on the existing image thumbnail (not the field label)</li>
+            <li>Tap <strong>Replace media</strong> in the modal that opens</li>
+            <li>Pick the new photo, then tap <strong>Publish</strong></li>
+          </ol>
         </div>
       )}
 
