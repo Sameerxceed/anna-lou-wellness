@@ -213,7 +213,7 @@ add_para(
 
 add_para(
     'We propose a three-phase development approach, leveraging our proven Astro + Strapi technology stack '
-    '(successfully delivered for Ardea Gardens) to deliver a fast, scalable, and content-editor-friendly platform.',
+    'to deliver a fast, scalable, and content-editor-friendly platform.',
     space_after=8
 )
 
@@ -446,9 +446,9 @@ doc.add_page_break()
 
 add_heading_styled('4. Technology Stack & Code Reuse', 1)
 
-add_heading_styled('Proven Stack (from Ardea Gardens)', 2)
+add_heading_styled('Proven Stack', 2)
 add_para(
-    'We will leverage the same technology stack successfully delivered for ardea-gardens.com, '
+    'We will leverage our standard Xceed Astro + Strapi e-commerce stack, '
     'providing a proven, battle-tested foundation:'
 )
 
@@ -466,7 +466,7 @@ add_table_with_header(
     col_widths=[2.5, 5, 8.5]
 )
 
-add_heading_styled('Code Reuse from Ardea Gardens (~60\u201370%)', 2)
+add_heading_styled('Code Reuse from Xceed Templates (~60\u201370%)', 2)
 add_para(
     'Our existing codebase provides substantial reusable components, significantly reducing '
     'development time, cost, and risk:'

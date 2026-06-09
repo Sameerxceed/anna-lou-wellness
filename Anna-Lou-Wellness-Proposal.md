@@ -12,7 +12,7 @@ This proposal outlines the complete rebuild of **annalouwellness.com** as a stor
 
 The design will be **magazine-like with a rustic/retro editorial aesthetic** — warm, textured, emotionally resonant — inspired by the clarity of thejamiesea.com but differentiated through the Reset Stories narrative engine and a curated symbolic shop.
 
-We propose a **three-phase development** approach, leveraging our proven Astro + Strapi technology stack (successfully delivered for Ardea Gardens) to deliver a fast, scalable, and content-editor-friendly platform.
+We propose a **three-phase development** approach, leveraging our proven Astro + Strapi technology stack to deliver a fast, scalable, and content-editor-friendly platform.
 
 ---
 
@@ -170,8 +170,8 @@ UK-based female founders, entrepreneurs, and leaders (30s–40s). High-achieving
 
 ## 4. TECHNOLOGY STACK & CODE REUSE
 
-### Proven Stack (from Ardea Gardens)
-We will reuse the same technology stack successfully delivered for ardea-gardens.com:
+### Proven Stack
+We will reuse our standard Xceed e-commerce + editorial technology stack:
 
 | Layer | Technology | Why |
 |-------|-----------|-----|
@@ -183,7 +183,7 @@ We will reuse the same technology stack successfully delivered for ardea-gardens
 | **Hosting** | Vercel (frontend) + Railway (CMS) | Auto-deploy, CDN, low cost (~$6/month) |
 | **Email** | Resend | Transactional emails, community notifications |
 
-### Code Reuse from Ardea Gardens
+### Code Reuse from Xceed Templates
 
 We estimate **60–70% code reuse** from the existing codebase, significantly reducing development time and risk:
 

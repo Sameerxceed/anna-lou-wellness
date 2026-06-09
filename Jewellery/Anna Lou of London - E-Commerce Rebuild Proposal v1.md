@@ -35,7 +35,7 @@ Despite a strong brand and product range, the site has experienced a **~70% decl
 
 This proposal outlines a complete rebuild of the e-commerce frontend using the same proven ReactJS + Strapi technology stack being used for annalouwellness.com. Both sites will share a single CMS backend, eliminating Shopify fees entirely and giving Anna full control over design, SEO, speed, and the customer journey.
 
-The rebuild leverages Xceed's existing e-commerce system (built and proven for Ardea Gardens), which includes full product management, cart, checkout, Stripe payments, order management, shipping, tax, coupons, reviews, and customer profiles — all ready to deploy.
+The rebuild leverages Xceed's existing e-commerce system, which includes full product management, cart, checkout, Stripe payments, order management, shipping, tax, coupons, reviews, and customer profiles — all ready to deploy.
 
 ---
 
