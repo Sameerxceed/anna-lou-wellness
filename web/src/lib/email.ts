@@ -12,9 +12,14 @@
  *                        hello@annalouwellness.com.
  */
 
+import type { EmailTemplate } from './strapi-admin';
+import { fetchEmailTemplate } from './strapi-admin';
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const EMAIL_FROM = process.env.EMAIL_FROM || 'Anna Lou Wellness <onboarding@resend.dev>';
 const OWNER_EMAIL = process.env.OWNER_EMAIL || 'hello@annalouwellness.com';
+const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://staging.annalouwellness.com';
+const ADMIN_URL = process.env.ADMIN_URL || 'https://cms.annalouwellness.com/admin';
 
 type SendArgs = { to: string; subject: string; html: string; text?: string; replyTo?: string };
 
@@ -247,5 +252,244 @@ export async function sendOwnerOrderNotification(input: OwnerNotifyInput): Promi
     html,
     text,
     replyTo: input.customer_email,
+  });
+}
+
+// ─── Generic template-driven email (lifecycle stages) ───
+// Pulls subject + body copy from Strapi's Email Template collection (Anna
+// edits these). Falls back gracefully if a template is missing or disabled.
+
+type OrderLike = {
+  order_number: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string | null;
+  shipping_address: string;
+  items?: any;
+  subtotal?: number;
+  shipping_cost?: number;
+  discount_amount?: number;
+  total: number;
+  tracking_number?: string | null;
+  tracking_url?: string | null;
+  shipping_carrier?: string | null;
+  cancellation_reason?: string | null;
+  refund_amount?: number | null;
+  payment_method?: string;
+};
+
+type ReturnRequestLike = {
+  reason?: string;
+  notes?: string;
+};
+
+type MergeContext = {
+  order: OrderLike;
+  returnRequest?: ReturnRequestLike | null;
+};
+
+function mergeTags(input: string | undefined | null, ctx: MergeContext): string {
+  if (!input) return '';
+  const { order, returnRequest } = ctx;
+  const replacements: Record<string, string> = {
+    order_number: order.order_number || '',
+    customer_name: order.customer_name || 'there',
+    customer_email: order.customer_email || '',
+    total: (Number(order.total) || 0).toFixed(2),
+    shipping_address: order.shipping_address || '',
+    tracking_number: order.tracking_number || '',
+    tracking_url: order.tracking_url || '',
+    shipping_carrier: order.shipping_carrier || 'our courier',
+    cancellation_reason: order.cancellation_reason || '',
+    refund_amount: order.refund_amount != null ? Number(order.refund_amount).toFixed(2) : (Number(order.total) || 0).toFixed(2),
+    return_reason: returnRequest?.reason ? returnRequest.reason.replace(/_/g, ' ') : '',
+    return_notes: returnRequest?.notes || '',
+    site_url: PUBLIC_SITE_URL,
+    admin_url: ADMIN_URL,
+  };
+  return input.replace(/\{\{\s*(\w+)\s*\}\}/g, (_match, key) => replacements[key] ?? '');
+}
+
+function richtextToHtml(input: string | undefined | null, ctx: MergeContext): string {
+  const merged = mergeTags(input, ctx);
+  if (!merged.trim()) return '';
+  // Strapi richtext is markdown-lite. Treat each blank-line-separated chunk
+  // as a paragraph; convert single newlines inside a chunk to <br>.
+  const paragraphs = merged.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  return paragraphs.map((p) => `<p style="font-family:'Lora',Georgia,serif;font-size:15px;color:#3D3D3A;line-height:1.7;margin:0 0 14px;">${escape(p).replace(/\n/g, '<br>')}</p>`).join('');
+}
+
+function richtextToText(input: string | undefined | null, ctx: MergeContext): string {
+  return mergeTags(input, ctx);
+}
+
+function bankDetailsHtml(order: OrderLike): string {
+  return `<div style="background:#f5f0e8;padding:18px 20px;margin:0 0 20px;border:1px solid #ece6dc;">
+    <p style="font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#6E3A5A;margin:0 0 10px;">Bank transfer details</p>
+    <p style="font-family:'Lora',Georgia,serif;font-size:14px;color:#3D3D3A;margin:0 0 10px;line-height:1.6;">
+      Please transfer <strong>${money(order.total)}</strong> using your order number <strong>${escape(order.order_number)}</strong> as the reference.
+    </p>
+    <table style="font-family:'Lora',Georgia,serif;font-size:14px;color:#3D3D3A;line-height:1.8;border-collapse:collapse;">
+      <tr><td><strong>Account name:</strong></td><td style="padding-left:12px;">Anna Lou Wellness</td></tr>
+      <tr><td><strong>Sort code:</strong></td><td style="padding-left:12px;">XX-XX-XX</td></tr>
+      <tr><td><strong>Account number:</strong></td><td style="padding-left:12px;">XXXXXXXX</td></tr>
+      <tr><td><strong>IBAN:</strong></td><td style="padding-left:12px;">GB00 XXXX XXXX XXXX XXXX XX</td></tr>
+      <tr><td><strong>Reference:</strong></td><td style="padding-left:12px;">${escape(order.order_number)}</td></tr>
+    </table>
+  </div>`;
+}
+
+function orderSummaryHtml(order: OrderLike): string {
+  const items: OrderEmailItem[] = Array.isArray(order.items) ? order.items as OrderEmailItem[] : [];
+  if (items.length === 0) return '';
+  const totals = totalsBlock({
+    order_number: order.order_number,
+    payment_method: (order.payment_method === 'bank_transfer' ? 'bank_transfer' : 'stripe'),
+    customer_name: order.customer_name,
+    customer_email: order.customer_email,
+    shipping_address: order.shipping_address,
+    items,
+    subtotal: Number(order.subtotal || 0),
+    shipping_cost: Number(order.shipping_cost || 0),
+    discount_amount: Number(order.discount_amount || 0),
+    gift_wrap_amount: 0,
+    total: Number(order.total || 0),
+  });
+  return `${itemsTable(items)}${totals}`;
+}
+
+function shippingAddressHtml(order: OrderLike): string {
+  if (!order.shipping_address) return '';
+  return `<p style="font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#6e6a62;margin:24px 0 6px;">Shipping to</p>
+    <p style="font-family:'Lora',Georgia,serif;font-size:14px;color:#3D3D3A;line-height:1.6;white-space:pre-line;margin:0;">${escape(order.shipping_address)}</p>`;
+}
+
+function ctaButtonHtml(label: string, url: string): string {
+  if (!label.trim() || !url.trim()) return '';
+  return `<p style="margin:24px 0 8px;">
+    <a href="${escape(url)}" style="display:inline-block;padding:12px 22px;background:#6E3A5A;color:#fff;text-decoration:none;font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;">${escape(label)}</a>
+  </p>`;
+}
+
+function renderTemplateHtml(template: EmailTemplate, ctx: MergeContext): string {
+  const introHtml = richtextToHtml(template.intro, ctx);
+  const outroHtml = richtextToHtml(template.outro, ctx);
+  const bankHtml = template.include_bank_details ? bankDetailsHtml(ctx.order) : '';
+  const summaryHtml = template.include_order_summary ? orderSummaryHtml(ctx.order) : '';
+  const addressHtml = template.include_shipping_address ? shippingAddressHtml(ctx.order) : '';
+  const ctaLabel = mergeTags(template.cta_label, ctx);
+  const ctaUrl = mergeTags(template.cta_url, ctx);
+  const ctaHtml = ctaButtonHtml(ctaLabel, ctaUrl);
+  const heading = mergeTags(template.name, ctx);
+  const preheader = mergeTags(template.preheader, ctx);
+  const preheaderHidden = preheader
+    ? `<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;color:transparent;">${escape(preheader)}</div>`
+    : '';
+
+  return `<!doctype html>
+<html><body style="margin:0;padding:0;background:#fafaf7;">
+  ${preheaderHidden}
+  <table role="presentation" style="width:100%;border-collapse:collapse;background:#fafaf7;padding:30px 20px;">
+    <tr><td align="center">
+      <table role="presentation" style="width:100%;max-width:600px;background:#fff;border-collapse:collapse;">
+        <tr><td style="padding:32px 32px 24px;border-bottom:1px solid #ece6dc;">
+          <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;color:#1a1a18;margin:0;letter-spacing:0.02em;">Anna Lou Wellness</h1>
+        </td></tr>
+        <tr><td style="padding:28px 32px;">
+          <p style="font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#c4704a;margin:0 0 6px;">${escape(heading)}</p>
+          <p style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#1a1a18;margin:0 0 18px;">Order ${escape(ctx.order.order_number)}</p>
+          ${introHtml}
+          ${bankHtml}
+          ${summaryHtml}
+          ${addressHtml}
+          ${outroHtml}
+          ${ctaHtml}
+        </td></tr>
+        <tr><td style="padding:24px 32px;background:#f5f0e8;font-family:'Lora',Georgia,serif;font-size:13px;color:#6e6a62;line-height:1.6;">
+          Questions? Reply to this email — we read every message.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
+function renderTemplateText(template: EmailTemplate, ctx: MergeContext): string {
+  const introText = richtextToText(template.intro, ctx);
+  const outroText = richtextToText(template.outro, ctx);
+  const order = ctx.order;
+  const items: OrderEmailItem[] = Array.isArray(order.items) ? order.items as OrderEmailItem[] : [];
+  const lines: string[] = [
+    mergeTags(template.name, ctx),
+    `Order ${order.order_number}`,
+    '',
+    introText,
+    '',
+  ];
+  if (template.include_bank_details) {
+    lines.push(
+      'Bank transfer details:',
+      `  Amount: ${money(order.total)}`,
+      `  Reference: ${order.order_number}`,
+      `  Account name: Anna Lou Wellness`,
+      `  Sort code: XX-XX-XX`,
+      `  Account number: XXXXXXXX`,
+      `  IBAN: GB00 XXXX XXXX XXXX XXXX XX`,
+      '',
+    );
+  }
+  if (template.include_order_summary && items.length > 0) {
+    lines.push('Items:');
+    items.forEach((i) => lines.push(`  ${i.name} x${i.qty}  ${money(i.price * i.qty)}`));
+    lines.push('');
+    lines.push(`Subtotal: ${money(Number(order.subtotal || 0))}`);
+    if (Number(order.discount_amount || 0) > 0) lines.push(`Discount: -${money(Number(order.discount_amount))}`);
+    lines.push(`Shipping: ${Number(order.shipping_cost || 0) > 0 ? money(Number(order.shipping_cost)) : 'Free'}`);
+    lines.push(`Total: ${money(Number(order.total))}`);
+    lines.push('');
+  }
+  if (template.include_shipping_address && order.shipping_address) {
+    lines.push('Shipping to:', order.shipping_address, '');
+  }
+  lines.push(outroText);
+  const ctaLabel = mergeTags(template.cta_label, ctx);
+  const ctaUrl = mergeTags(template.cta_url, ctx);
+  if (ctaLabel && ctaUrl) {
+    lines.push('', `${ctaLabel}: ${ctaUrl}`);
+  }
+  return lines.join('\n');
+}
+
+/**
+ * Send an email built from a CMS-edited template. Returns { ok: false } and
+ * logs if the template is missing or disabled — never throws.
+ */
+export async function sendFromTemplate(
+  templateKey: string,
+  ctx: MergeContext,
+): Promise<{ ok: boolean; error?: string }> {
+  const template = await fetchEmailTemplate(templateKey);
+  if (!template) {
+    console.warn(`[email] template "${templateKey}" not found — skipped`);
+    return { ok: false, error: 'template_not_found' };
+  }
+  if (!template.enabled) {
+    console.info(`[email] template "${templateKey}" disabled in CMS — skipped`);
+    return { ok: false, error: 'template_disabled' };
+  }
+  const to = template.audience === 'admin' ? OWNER_EMAIL : ctx.order.customer_email;
+  if (!to) {
+    console.warn(`[email] template "${templateKey}" has no recipient`);
+    return { ok: false, error: 'no_recipient' };
+  }
+  const subject = mergeTags(template.subject, ctx) || `Order ${ctx.order.order_number}`;
+  const html = renderTemplateHtml(template, ctx);
+  const text = renderTemplateText(template, ctx);
+  return send({
+    to,
+    subject,
+    html,
+    text,
+    replyTo: template.audience === 'admin' ? ctx.order.customer_email : OWNER_EMAIL,
   });
 }

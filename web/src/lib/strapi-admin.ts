@@ -397,7 +397,7 @@ export async function fetchOrder(documentId: string): Promise<StrapiOrder | null
  * idempotency — Stripe can retry webhook delivery, so we must not create the
  * same order twice for the same order_number.
  */
-export async function fetchOrderByNumber(orderNumber: string): Promise<StrapiOrder | null> {
+export async function fetchOrderByNumber(orderNumber: string): Promise<any | null> {
   const url = new URL(`${STRAPI_URL}/api/orders`);
   url.searchParams.set('filters[order_number][$eq]', orderNumber);
   url.searchParams.set('pagination[limit]', '1');
@@ -405,7 +405,59 @@ export async function fetchOrderByNumber(orderNumber: string): Promise<StrapiOrd
   if (!res.ok) throw new Error(`fetchOrderByNumber ${res.status}: ${await res.text()}`);
   const json = await res.json();
   const data = Array.isArray(json?.data) ? json.data : [];
-  return data.length > 0 ? (data[0] as StrapiOrder) : null;
+  return data.length > 0 ? data[0] : null;
+}
+
+/**
+ * Fetch an email template by its key. Used by /api/order-event to render
+ * lifecycle emails using copy Anna can edit in the CMS.
+ */
+export type EmailTemplate = {
+  key: string;
+  name: string;
+  enabled: boolean;
+  audience: 'customer' | 'admin';
+  subject: string;
+  preheader?: string;
+  intro?: string;
+  outro?: string;
+  cta_label?: string;
+  cta_url?: string;
+  include_order_summary: boolean;
+  include_bank_details: boolean;
+  include_shipping_address: boolean;
+};
+
+export async function fetchEmailTemplate(key: string): Promise<EmailTemplate | null> {
+  const url = new URL(`${STRAPI_URL}/api/email-templates`);
+  url.searchParams.set('filters[key][$eq]', key);
+  url.searchParams.set('pagination[limit]', '1');
+  const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+  if (!res.ok) {
+    console.warn(`[strapi-admin] fetchEmailTemplate ${key} ${res.status}: ${await res.text()}`);
+    return null;
+  }
+  const json = await res.json();
+  const data = Array.isArray(json?.data) ? json.data : [];
+  return data.length > 0 ? (data[0] as EmailTemplate) : null;
+}
+
+/**
+ * Fetch the latest return request for a given order_number. Used by the
+ * lifecycle email helpers so the email body can include the return reason
+ * + notes from the request the customer just submitted.
+ */
+export async function fetchLatestReturnRequest(orderNumber: string): Promise<any | null> {
+  const url = new URL(`${STRAPI_URL}/api/return-requests`);
+  url.searchParams.set('filters[order][order_number][$eq]', orderNumber);
+  url.searchParams.set('sort', 'createdAt:desc');
+  url.searchParams.set('pagination[limit]', '1');
+  url.searchParams.set('populate', 'order');
+  const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+  if (!res.ok) return null;
+  const json = await res.json();
+  const data = Array.isArray(json?.data) ? json.data : [];
+  return data.length > 0 ? data[0] : null;
 }
 
 /**

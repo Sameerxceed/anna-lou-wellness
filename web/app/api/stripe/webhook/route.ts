@@ -14,7 +14,7 @@ import {
   createOrder,
 } from '@/lib/strapi-admin';
 import { incrementCouponUsage } from '@/lib/strapi-coupon';
-import { sendOrderConfirmation, sendOwnerOrderNotification } from '@/lib/email';
+import { sendFromTemplate } from '@/lib/email';
 
 /**
  * Stripe webhook handler.
@@ -223,31 +223,25 @@ async function handleShopOrderCreate(event: StripeEvent, orderNumber: string, em
     console.error(`[stripe webhook] Shop Customers tag failed for ${email}:`, tagResult.error);
   }
 
-  // Customer confirmation + owner notification. Best-effort.
-  sendOrderConfirmation({
+  // Customer confirmation + owner notification — copy comes from the Email
+  // Template collection in Strapi (Anna edits without touching code).
+  const orderForEmail = {
     order_number: orderNumber,
-    payment_method: 'stripe',
-    customer_name: md.customer_name || 'Customer',
-    customer_email: email,
-    shipping_address: md.shipping_address || '',
-    items,
-    subtotal,
-    shipping_cost,
-    discount_amount,
-    gift_wrap_amount: giftWrapAmount,
-    total,
-  }).catch((e) => console.warn(`[stripe webhook] customer email failed:`, e?.message));
-
-  sendOwnerOrderNotification({
-    order_number: orderNumber,
-    payment_method: 'stripe',
     customer_name: md.customer_name || 'Customer',
     customer_email: email,
     customer_phone: md.customer_phone || undefined,
     shipping_address: md.shipping_address || '',
     items,
+    subtotal,
+    shipping_cost,
+    discount_amount,
     total,
-  }).catch((e) => console.warn(`[stripe webhook] owner email failed:`, e?.message));
+    payment_method: 'stripe' as const,
+  };
+  sendFromTemplate('order_paid', { order: orderForEmail })
+    .catch((e) => console.warn(`[stripe webhook] customer email failed:`, e?.message));
+  sendFromTemplate('admin_new_order', { order: orderForEmail })
+    .catch((e) => console.warn(`[stripe webhook] owner email failed:`, e?.message));
 }
 
 /**

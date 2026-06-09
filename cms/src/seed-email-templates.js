@@ -1,0 +1,196 @@
+'use strict';
+
+/**
+ * Seed default email templates. Runs from bootstrap — idempotent.
+ *
+ * Only creates rows that don't exist. NEVER overwrites Anna's edits.
+ * Anna can untick `enabled` to stop any email from being sent.
+ *
+ * Merge tags supported in subject / preheader / intro / outro / cta_url:
+ *   {{order_number}}, {{customer_name}}, {{total}}, {{shipping_address}},
+ *   {{tracking_number}}, {{tracking_url}}, {{shipping_carrier}},
+ *   {{cancellation_reason}}, {{refund_amount}}, {{return_reason}},
+ *   {{return_notes}}, {{site_url}}, {{admin_url}}
+ */
+
+const DEFAULTS = [
+  {
+    key: 'order_paid',
+    name: 'Order placed — paid by card',
+    when_it_fires: 'A customer pays by card via Stripe and Stripe confirms the payment.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Order confirmed — {{order_number}}',
+    preheader: 'Your payment has been received. Your order is on its way to being prepared.',
+    intro: 'Thank you, {{customer_name}}. Your payment has been received and your order is confirmed. We will email you again when it ships.',
+    outro: 'Questions? Reply to this email — we read every message.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: true,
+    include_bank_details: false,
+    include_shipping_address: true,
+  },
+  {
+    key: 'order_bank_transfer',
+    name: 'Order placed — awaiting bank transfer',
+    when_it_fires: 'A customer chooses Bank Transfer at checkout. Confirmation is sent immediately with bank details. The order stays "pending" until you mark it paid in Strapi.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Order received — {{order_number}} (awaiting bank transfer)',
+    preheader: 'Please transfer the amount below using your order number as the reference.',
+    intro: 'Thank you, {{customer_name}}. We have received your order and it is waiting on your bank transfer. Your order will be confirmed and dispatched once payment lands in our account.',
+    outro: 'Questions about the transfer? Reply to this email and we will get back to you.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: true,
+    include_bank_details: true,
+    include_shipping_address: true,
+  },
+  {
+    key: 'order_shipped',
+    name: 'Order shipped',
+    when_it_fires: 'You change an order\'s status to "shipped" in Strapi. Tip: fill in tracking_number, tracking_url, and shipping_carrier BEFORE saving — they get included in this email.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Your order is on its way — {{order_number}}',
+    preheader: 'We have just handed your parcel to {{shipping_carrier}}.',
+    intro: 'Good news, {{customer_name}} — your order is on its way. {{shipping_carrier}} are looking after the delivery and your tracking reference is {{tracking_number}}.',
+    outro: 'Most parcels arrive within 3–5 working days. If you have any questions, just reply to this email.',
+    cta_label: 'Track your parcel',
+    cta_url: '{{tracking_url}}',
+    include_order_summary: true,
+    include_bank_details: false,
+    include_shipping_address: true,
+  },
+  {
+    key: 'order_completed',
+    name: 'Order completed (delivered)',
+    when_it_fires: 'You change an order\'s status to "completed" in Strapi — usually when you know the parcel has been delivered. Gentle review request.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Hope you are enjoying your order — {{order_number}}',
+    preheader: 'A quick favour: would you share a few words?',
+    intro: 'Hi {{customer_name}}, we hope your order arrived safely and you are enjoying it. Every piece is made with care and your honest words help us keep getting better — and help others find us.',
+    outro: 'No pressure at all. With love, Anna ×',
+    cta_label: 'Leave a review',
+    cta_url: '{{site_url}}/testimonials#leave',
+    include_order_summary: true,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'order_cancelled',
+    name: 'Order cancelled',
+    when_it_fires: 'You change an order\'s status to "cancelled". The reason you put in "cancellation_reason" is included in the email so the customer knows what happened.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Your order has been cancelled — {{order_number}}',
+    preheader: 'Details and next steps below.',
+    intro: 'Hi {{customer_name}}, we are writing to let you know that your order {{order_number}} has been cancelled. {{cancellation_reason}}',
+    outro: 'If your card was charged, the refund will appear on your statement within 5–10 working days. For bank transfer orders no money was taken. If anything is unclear, please reply to this email.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: true,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'order_refunded',
+    name: 'Order refunded',
+    when_it_fires: 'You change an order\'s status to "refunded". The refund_amount field is included in the email.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Your refund has been processed — {{order_number}}',
+    preheader: 'Refund of £{{refund_amount}} is on its way.',
+    intro: 'Hi {{customer_name}}, your refund of £{{refund_amount}} for order {{order_number}} has been processed.',
+    outro: 'Card refunds usually appear on your statement within 5–10 working days. If you paid by bank transfer, the funds will be returned to the original account.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'return_requested_customer',
+    name: 'Return requested — confirmation to customer',
+    when_it_fires: 'A customer submits a return request. They get this acknowledgement immediately.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'We have received your return request — {{order_number}}',
+    preheader: 'We will be in touch shortly with the next steps.',
+    intro: 'Hi {{customer_name}}, we have received your request to return part or all of order {{order_number}}. Reason: {{return_reason}}.',
+    outro: 'We will review and reply within 1–2 working days with instructions for shipping the items back. No need to do anything for now.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'return_approved',
+    name: 'Return approved — shipping instructions',
+    when_it_fires: 'You change a return-request\'s status to "approved". Put the shipping instructions in the return-request\'s "notes" field BEFORE saving — they get included in this email.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Your return is approved — here is how to ship it back',
+    preheader: 'Shipping instructions inside.',
+    intro: 'Hi {{customer_name}}, your return for order {{order_number}} has been approved. Please follow the instructions below to ship the items back.',
+    outro: '{{return_notes}}\n\nOnce we receive and inspect the items, your refund will be processed within 3 working days. Reply to this email if you have any questions.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'admin_new_order',
+    name: 'New order — notification to you',
+    when_it_fires: 'Every time a new order is placed (paid or bank transfer pending). Goes to OWNER_EMAIL.',
+    audience: 'admin',
+    enabled: true,
+    subject: '[New order] {{order_number}} · £{{total}}',
+    preheader: '',
+    intro: 'A new order has been placed.',
+    outro: 'View it in the Strapi admin to mark it shipped / completed.',
+    cta_label: 'Open in Strapi',
+    cta_url: '{{admin_url}}',
+    include_order_summary: true,
+    include_bank_details: false,
+    include_shipping_address: true,
+  },
+  {
+    key: 'admin_return_requested',
+    name: 'Return requested — notification to you',
+    when_it_fires: 'A customer submits a return request. Goes to OWNER_EMAIL so you can review and approve / reject.',
+    audience: 'admin',
+    enabled: true,
+    subject: '[Return requested] {{order_number}}',
+    preheader: '',
+    intro: 'A customer has requested to return items from order {{order_number}}. Reason: {{return_reason}}.',
+    outro: 'Open the return request in Strapi to review and approve / reject.',
+    cta_label: 'Open return request',
+    cta_url: '{{admin_url}}',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+];
+
+async function seedEmailTemplates(strapi) {
+  for (const tpl of DEFAULTS) {
+    try {
+      const existing = await strapi.documents('api::email-template.email-template').findFirst({
+        filters: { key: tpl.key },
+      });
+      if (existing) continue;
+      await strapi.documents('api::email-template.email-template').create({
+        data: tpl,
+      });
+      strapi.log.info(`[email-template] seeded ${tpl.key}`);
+    } catch (err) {
+      strapi.log.warn(`[email-template] seed ${tpl.key} failed: ${err.message}`);
+    }
+  }
+}
+
+module.exports = { seedEmailTemplates, DEFAULTS };

@@ -7,7 +7,7 @@ import {
 } from '@/lib/strapi-admin';
 import { fetchCouponByCode, validateCoupon, incrementCouponUsage } from '@/lib/strapi-coupon';
 import { getShopSettings } from '@/lib/cms';
-import { sendOrderConfirmation, sendOwnerOrderNotification } from '@/lib/email';
+import { sendFromTemplate } from '@/lib/email';
 
 /**
  * Shop checkout endpoint.
@@ -264,30 +264,25 @@ export async function POST(req: NextRequest) {
     }
 
     // Fire-and-forget customer + owner emails; never block the response.
-    sendOrderConfirmation({
+    // Both pull subject + body copy from the Email Template collection in
+    // Strapi so Anna can edit wording without touching code.
+    const orderForEmail = {
       order_number: orderNumber,
-      payment_method: 'bank_transfer',
-      customer_name,
-      customer_email,
-      shipping_address,
-      items: orderItems,
-      subtotal,
-      shipping_cost,
-      discount_amount,
-      gift_wrap_amount: giftWrapPence / 100,
-      total,
-    }).catch((e) => console.warn('[checkout] customer email send failed:', e?.message));
-
-    sendOwnerOrderNotification({
-      order_number: orderNumber,
-      payment_method: 'bank_transfer',
       customer_name,
       customer_email,
       customer_phone,
       shipping_address,
       items: orderItems,
+      subtotal,
+      shipping_cost,
+      discount_amount,
       total,
-    }).catch((e) => console.warn('[checkout] owner email send failed:', e?.message));
+      payment_method: 'bank_transfer' as const,
+    };
+    sendFromTemplate('order_bank_transfer', { order: orderForEmail })
+      .catch((e) => console.warn('[checkout] customer email send failed:', e?.message));
+    sendFromTemplate('admin_new_order', { order: orderForEmail })
+      .catch((e) => console.warn('[checkout] owner email send failed:', e?.message));
 
     return NextResponse.json({
       ok: true,

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "return-request",
     "pluralName": "return-requests",
-    "displayName": "zz \u00b7 Return Request (unused)"
+    "displayName": "Shop · Return Request"
   },
   "options": {
     "draftAndPublish": false
@@ -23,7 +23,8 @@
     },
     "items": {
       "type": "json",
-      "required": true
+      "required": true,
+      "description": "List of items being returned (auto-populated from the order)."
     },
     "status": {
       "type": "enumeration",
@@ -34,7 +35,8 @@
         "refunded",
         "rejected"
       ],
-      "default": "requested"
+      "default": "requested",
+      "description": "requested → customer just asked. approved → you said yes, here's how to ship it. received → parcel arrived. refunded → money returned. rejected → return not accepted."
     },
     "reason": {
       "type": "enumeration",
@@ -48,7 +50,8 @@
       "required": true
     },
     "notes": {
-      "type": "text"
+      "type": "text",
+      "description": "Free-text notes — instructions to customer when approved, or reason when rejected."
     },
     "refund_amount": {
       "type": "decimal"
@@ -59,14 +62,6 @@
         "original_payment",
         "store_credit"
       ]
-    }
-  },
-  "pluginOptions": {
-    "content-manager": {
-      "visible": false
-    },
-    "content-type-builder": {
-      "visible": false
     }
   }
 }

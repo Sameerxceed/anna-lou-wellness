@@ -226,6 +226,14 @@ module.exports = {
       strapi.log.warn('[seed-faqs] failed:', err.message);
     }
 
+    // ═══ Seed transactional email templates (idempotent — never overwrites edits) ═══
+    try {
+      const { seedEmailTemplates } = require('./seed-email-templates');
+      await seedEmailTemplates(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-email-templates] failed:', err.message);
+    }
+
     // ═══ Seed editorial sub-category entries (idempotent — skips existing slugs) ═══
     // Without these, the sub-category URLs in the main nav (e.g.
     // /love-and-relationships/motherhood) fall through to a 404 placeholder

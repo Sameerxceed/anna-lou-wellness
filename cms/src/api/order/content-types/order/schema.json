@@ -105,6 +105,32 @@
     "notes": {
       "type": "text"
     },
+    "tracking_number": {
+      "type": "string",
+      "description": "Carrier tracking reference. Filled in when marking the order shipped."
+    },
+    "tracking_url": {
+      "type": "string",
+      "description": "Direct link the customer can click to track their parcel."
+    },
+    "shipping_carrier": {
+      "type": "string",
+      "description": "Royal Mail, DPD, Evri, etc. Appears in the shipping confirmation email."
+    },
+    "shipped_at": {
+      "type": "datetime"
+    },
+    "cancellation_reason": {
+      "type": "text",
+      "description": "Short reason shown to the customer when an order is cancelled."
+    },
+    "refund_amount": {
+      "type": "decimal",
+      "description": "Amount refunded to the customer. Auto-filled from Stripe for card refunds."
+    },
+    "refunded_at": {
+      "type": "datetime"
+    },
     "return_requests": {
       "type": "relation",
       "relation": "oneToMany",
