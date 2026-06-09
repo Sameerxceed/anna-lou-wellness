@@ -125,6 +125,26 @@ export type StripeCoupon = {
   name: string | null;
 };
 
+export type StripeRefund = {
+  id: string;
+  amount: number;
+  currency: string;
+  status: 'pending' | 'succeeded' | 'failed' | 'canceled' | 'requires_action';
+  payment_intent: string | null;
+  charge: string | null;
+  reason: string | null;
+  failure_reason: string | null;
+};
+
+export type StripePaymentIntent = {
+  id: string;
+  amount: number;
+  amount_received: number;
+  currency: string;
+  status: string;
+  latest_charge: string | null;
+};
+
 export const stripe = {
   checkout: {
     sessions: {
@@ -152,6 +172,20 @@ export const stripe = {
   coupons: {
     create: (payload: Record<string, any>) =>
       stripeRequest<StripeCoupon>('POST', '/coupons', payload),
+  },
+  refunds: {
+    /**
+     * Create a refund. Pass payment_intent OR charge. amount in pence/cents
+     * (omit for full refund). reason: 'duplicate' | 'fraudulent' | 'requested_by_customer'.
+     */
+    create: (payload: Record<string, any>) =>
+      stripeRequest<StripeRefund>('POST', '/refunds', payload),
+    retrieve: (id: string) =>
+      stripeRequest<StripeRefund>('GET', `/refunds/${encodeURIComponent(id)}`),
+  },
+  paymentIntents: {
+    retrieve: (id: string) =>
+      stripeRequest<StripePaymentIntent>('GET', `/payment_intents/${encodeURIComponent(id)}`),
   },
   webhooks: {
     /**

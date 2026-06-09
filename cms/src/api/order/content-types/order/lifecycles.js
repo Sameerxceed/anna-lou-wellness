@@ -15,15 +15,15 @@
  * Strapi and Next.js (set in Coolify env on both apps).
  */
 
-async function dispatchOrderEvent(strapi, payload) {
+async function dispatchToWeb(strapi, path, payload) {
   const url = process.env.PUBLIC_SITE_URL || process.env.WEB_PUBLIC_URL;
   const secret = process.env.ORDER_EVENT_SECRET;
   if (!url || !secret) {
-    strapi.log.info('[order lifecycle] PUBLIC_SITE_URL or ORDER_EVENT_SECRET not set — email skipped');
+    strapi.log.info(`[order lifecycle] PUBLIC_SITE_URL or ORDER_EVENT_SECRET not set — ${path} skipped`);
     return;
   }
   try {
-    const res = await fetch(`${url}/api/order-event`, {
+    const res = await fetch(`${url}${path}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,18 +33,19 @@ async function dispatchOrderEvent(strapi, payload) {
     });
     if (!res.ok) {
       const body = await res.text().catch(() => '');
-      strapi.log.warn(`[order lifecycle] webhook ${res.status}: ${body.slice(0, 200)}`);
+      strapi.log.warn(`[order lifecycle] ${path} ${res.status}: ${body.slice(0, 200)}`);
     }
   } catch (err) {
-    strapi.log.warn(`[order lifecycle] webhook failed: ${err.message}`);
+    strapi.log.warn(`[order lifecycle] ${path} failed: ${err.message}`);
   }
 }
 
-const TRANSITION_EMAILS = {
+// Status transitions that send an email but DO NOT trigger a Stripe refund.
+// Refunds are handled separately via /api/order-refund (Stripe + email together).
+const EMAIL_ONLY_TRANSITIONS = {
   shipped: 'order_shipped',
   completed: 'order_completed',
   cancelled: 'order_cancelled',
-  refunded: 'order_refunded',
 };
 
 module.exports = {
@@ -69,11 +70,21 @@ module.exports = {
     const newStatus = result?.status;
     if (!previousStatus || !newStatus || previousStatus === newStatus) return;
 
-    const templateKey = TRANSITION_EMAILS[newStatus];
-    if (!templateKey) return; // pending / paid changes aren't triggered here
+    // Refund branch — fire Stripe refund (if applicable) AND customer email.
+    if (newStatus === 'refunded') {
+      dispatchToWeb(strapi, '/api/order-refund', {
+        order_number: result.order_number,
+        reason: 'requested_by_customer',
+        trigger: 'status_change',
+      }).catch(() => {});
+      return;
+    }
 
-    // Don't wait — never block the admin save on an email round-trip.
-    dispatchOrderEvent(strapi, {
+    // Email-only branch — shipped / completed / cancelled.
+    const templateKey = EMAIL_ONLY_TRANSITIONS[newStatus];
+    if (!templateKey) return;
+
+    dispatchToWeb(strapi, '/api/order-event', {
       template_key: templateKey,
       order_number: result.order_number,
       previous_status: previousStatus,

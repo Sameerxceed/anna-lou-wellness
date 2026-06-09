@@ -126,10 +126,14 @@
     },
     "refund_amount": {
       "type": "decimal",
-      "description": "Amount refunded to the customer. Auto-filled from Stripe for card refunds."
+      "description": "Amount refunded to the customer. Leave blank for a full refund of the order total. Auto-filled after the Stripe refund call succeeds."
     },
     "refunded_at": {
       "type": "datetime"
+    },
+    "stripe_refund_id": {
+      "type": "string",
+      "description": "Stripe refund ID (re_xxx). Auto-filled when status is set to refunded — proves the money went back. If present, prevents double-refunds."
     },
     "return_requests": {
       "type": "relation",

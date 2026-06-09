@@ -82,15 +82,71 @@ module.exports = {
     const previousStatus = state?.previousStatus;
     const newStatus = result?.status;
     if (!previousStatus || !newStatus || previousStatus === newStatus) return;
-    if (newStatus !== 'approved') return; // only the approval transition fires an email
 
     const orderNumber = await resolveOrderNumber(strapi, result);
     if (!orderNumber) return;
 
-    dispatchOrderEvent(strapi, {
-      template_key: 'return_approved',
-      order_number: orderNumber,
-      return_request_id: result.documentId || String(result.id),
-    }).catch(() => {});
+    // Approval → send the "here's how to ship it back" email.
+    if (newStatus === 'approved') {
+      dispatchOrderEvent(strapi, {
+        template_key: 'return_approved',
+        order_number: orderNumber,
+        return_request_id: result.documentId || String(result.id),
+      }).catch(() => {});
+      return;
+    }
+
+    // Refund → trigger Stripe refund on the parent order for return.refund_amount
+    // (partial refund) and send the customer the refunded email. The parent
+    // order's status flips to 'refunded' as well so Anna sees it in her list.
+    if (newStatus === 'refunded') {
+      const amount = Number(result.refund_amount) || null;
+      const url = process.env.PUBLIC_SITE_URL || process.env.WEB_PUBLIC_URL;
+      const secret = process.env.ORDER_EVENT_SECRET;
+      if (!url || !secret) {
+        strapi.log.info('[return-request lifecycle] PUBLIC_SITE_URL or ORDER_EVENT_SECRET not set — refund skipped');
+        return;
+      }
+      try {
+        const refundRes = await fetch(`${url}/api/order-refund`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-order-event-secret': secret,
+          },
+          body: JSON.stringify({
+            order_number: orderNumber,
+            reason: 'requested_by_customer',
+            trigger: 'return_request',
+            ...(amount ? { amount } : {}),
+          }),
+        });
+        if (!refundRes.ok) {
+          const body = await refundRes.text().catch(() => '');
+          strapi.log.warn(`[return-request lifecycle] refund webhook ${refundRes.status}: ${body.slice(0, 200)}`);
+        } else {
+          // Flip the parent order to 'refunded' so Anna sees the linkage in her order list.
+          // (This will re-fire the Order's afterUpdate, but its refund branch checks
+          // stripe_refund_id and short-circuits — no double-charge.)
+          try {
+            const full = await strapi.documents('api::return-request.return-request').findOne({
+              documentId: result.documentId,
+              populate: ['order'],
+            });
+            const orderDocId = full?.order?.documentId;
+            if (orderDocId) {
+              await strapi.documents('api::order.order').update({
+                documentId: orderDocId,
+                data: { status: 'refunded' },
+              });
+            }
+          } catch (err) {
+            strapi.log.warn(`[return-request lifecycle] could not flip parent order status: ${err.message}`);
+          }
+        }
+      } catch (err) {
+        strapi.log.warn(`[return-request lifecycle] refund webhook failed: ${err.message}`);
+      }
+    }
   },
 };

@@ -473,6 +473,42 @@ export async function markOrderPaid(documentId: string, stripePaymentId: string)
 }
 
 /**
+ * Stamp refund details on an order after a Stripe refund succeeds. Sets
+ * stripe_refund_id (prevents double-refunds), refund_amount (if not already
+ * filled by Anna), and refunded_at. Does NOT change status — the status
+ * transition that triggered the refund already moved it to 'refunded'.
+ */
+export async function stampOrderRefund(
+  documentId: string,
+  args: { stripe_refund_id: string; refund_amount: number; refunded_at?: string },
+): Promise<void> {
+  const data: Record<string, any> = {
+    stripe_refund_id: args.stripe_refund_id,
+    refund_amount: args.refund_amount,
+    refunded_at: args.refunded_at || new Date().toISOString(),
+  };
+  const res = await fetch(`${STRAPI_URL}/api/orders/${encodeURIComponent(documentId)}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ data }),
+  });
+  if (!res.ok) throw new Error(`stampOrderRefund ${res.status}: ${await res.text()}`);
+}
+
+/**
+ * Update an order's status. Used by the refund flow when a return-request
+ * is marked refunded — the parent order should also flip to 'refunded'.
+ */
+export async function updateOrderStatus(documentId: string, status: string): Promise<void> {
+  const res = await fetch(`${STRAPI_URL}/api/orders/${encodeURIComponent(documentId)}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ data: { status } }),
+  });
+  if (!res.ok) throw new Error(`updateOrderStatus ${res.status}: ${await res.text()}`);
+}
+
+/**
  * Decrement stock on a product by `qty`. Best-effort — logs warning on failure
  * rather than throwing so a stock-update bug never blocks order completion.
  */
