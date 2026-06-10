@@ -5,7 +5,7 @@
     "singularName": "experience-page",
     "pluralName": "experience-pages",
     "displayName": "Experiences · Sub-page",
-    "description": "Sub-pages under /experiences (Workshops, Retreats, Corporate Wellbeing, Speaking)."
+    "description": "Sub-pages under /experiences (Workshops, Retreats, Corporate Wellbeing, Speaking). PAGE LAYOUT, top to bottom: 1) Hero band — kicker + title + tagline on the LEFT, heroImage on the RIGHT. 2) Body band — intro paragraphs, full width. 3) Cards band — secondaryList becomes a grid of 4 cards. 4) Reviews. 5) Enquiry form. 6) FAQ. 7) Upsells. After editing, click 'View live page →' (green button, right sidebar) to see the result."
   },
   "options": {
     "draftAndPublish": true
@@ -14,7 +14,7 @@
     "title": {
       "type": "string",
       "required": true,
-      "description": "Page heading (e.g. 'Workshops', 'Retreats', 'Corporate Wellbeing.', 'Speaking.')."
+      "description": "HERO TITLE — large heading on the LEFT side of the top hero band (e.g. 'Corporate Wellbeing.')."
     },
     "slug": {
       "type": "uid",
@@ -25,7 +25,7 @@
     "kicker": {
       "type": "string",
       "default": "Experiences",
-      "description": "Small uppercase label above the title."
+      "description": "Small uppercase label ABOVE the hero title. Default 'Experiences'."
     },
     "kickerColour": {
       "type": "string",
@@ -34,11 +34,11 @@
     },
     "eyebrow": {
       "type": "string",
-      "description": "Optional small uppercase text above the title (e.g. 'Experiences · For teams' on Corporate Wellbeing). Leave blank to skip."
+      "description": "Alternative kicker text — overrides 'kicker' when filled (e.g. 'Experiences · For teams'). Leave blank to use 'kicker' instead."
     },
     "tagline": {
       "type": "string",
-      "description": "Optional italic single-line tagline under the title (e.g. 'Nervous system work that actually changes how people show up.'). Leave blank to skip."
+      "description": "ITALIC TAGLINE — single line shown UNDER the hero title (e.g. 'Nervous system work that actually changes how people show up.'). Leave blank to skip."
     },
     "heroImage": {
       "type": "media",
@@ -46,16 +46,16 @@
       "allowedTypes": [
         "images"
       ],
-      "description": "Main image at the top of the page."
+      "description": "HERO IMAGE — large image on the RIGHT side of the top hero band, beside the title. Portrait orientation works best (4:5 ratio, ~800×1000px). If empty, a stock image is used so the page never looks broken."
     },
     "intro": {
       "type": "text",
-      "description": "Main body. Separate paragraphs with a BLANK LINE between them."
+      "description": "BODY PARAGRAPHS — appears in the white band below the hero. Separate paragraphs with a BLANK LINE between them. Each blank line creates a new paragraph."
     },
     "ctaLabel": {
       "type": "string",
       "default": "View upcoming",
-      "description": "Optional button text."
+      "description": "Optional button text (rarely visible on these pages)."
     },
     "ctaUrl": {
       "type": "string",
@@ -64,7 +64,7 @@
     },
     "secondaryList": {
       "type": "text",
-      "description": "Optional. For pages with a list of cards (Corporate 'Formats' grid, Speaking 'Talks' list, etc.). One item per line. Format: 'Title|Body description'. Example: '90-minute session|A single workshop. Online or in person.'. Leave blank if not needed."
+      "description": "CARDS GRID — becomes a 4-column grid of cards in the cream band below the body. Use for Corporate 'Formats', Speaking 'Talks' etc. ONE CARD PER LINE. Format: 'Title|Body description'. Example: '90-minute session|A single workshop. Online or in person.'. Leave blank to hide the entire cards band."
     },
     "pricePence": {
       "type": "integer",
@@ -83,7 +83,7 @@
     },
     "mailchimpTag": {
       "type": "string",
-      "description": "Tag attached on successful payment. Examples: 'Workshop Buyers'. Leave blank for non-purchasable pages."
+      "description": "Mailchimp tag attached on successful payment. Example: 'Workshop Buyers'. Leave blank for non-purchasable pages."
     },
     "grantsResetRoomAccess": {
       "type": "boolean",
@@ -92,18 +92,18 @@
     },
     "seoTitle": {
       "type": "string",
-      "description": "Optional SEO override."
+      "description": "LEAVE BLANK — the system auto-fills with a Google-search-style title on save. Only fill in if you want to override."
     },
     "seoDescription": {
       "type": "text",
-      "description": "Optional SEO description for Google."
+      "description": "LEAVE BLANK — auto-fills on save in 'what someone would Google' style. Only fill in if you want to override."
     },
     "upsells": {
       "type": "component",
       "repeatable": true,
       "component": "shared.upsell-reference",
       "max": 3,
-      "description": "Up to 3 'next step' cards shown at the bottom. Anna's 8 Jun mapping — e.g. Workshops page shows Reset Room + The Reset; Corporate Workshops shows nothing (leave empty)."
+      "description": "BOTTOM 'WHERE NEXT' SECTION — up to 3 cards shown at the bottom suggesting next steps. e.g. Workshops shows Reset Room + The Reset; Corporate Workshops shows nothing (leave empty)."
     }
   }
 }

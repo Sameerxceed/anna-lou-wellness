@@ -3,53 +3,62 @@
   "info": {
     "displayName": "Hero Section",
     "icon": "picture",
-    "description": "Full-width hero with title, image/video, and CTA"
+    "description": "The big banner at the TOP of any Page Builder page. Title + subtitle + image/video + 1-2 buttons. Image (or video) fills the background, text sits on top with a dark overlay so it stays readable."
   },
   "attributes": {
     "title": {
       "type": "string",
-      "required": true
+      "required": true,
+      "description": "BIG HERO HEADLINE — the largest text on the page, top centre. Keep under ~8 words. Example: 'REGULATED.', 'Welcome to The Houseboat.'"
     },
     "subtitle": {
-      "type": "string"
+      "type": "string",
+      "description": "Single italic line BELOW the title. Example: 'A new pay-what-you-feel course.', 'For founders. For mothers. For you.'. Leave blank to hide."
     },
     "image": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "description": "BACKGROUND IMAGE — fills the entire hero band, behind the text. Landscape orientation works best (16:9, at least 1600×900px). Will be auto-darkened by the overlay so text stays readable."
     },
     "video": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
         "videos"
-      ]
+      ],
+      "description": "OPTIONAL background video — autoplays muted, loops. If both image and video are uploaded, video wins. Keep under 10MB for fast loading."
     },
     "cta_text": {
-      "type": "string"
+      "type": "string",
+      "description": "PRIMARY BUTTON text (the bigger one, brand colour). Example: 'Join the course', 'Pay what you feel'. Leave blank to hide button."
     },
     "cta_link": {
-      "type": "string"
+      "type": "string",
+      "description": "Where the primary button goes. Example: '#pricing' (scrolls to a section on the same page), '/the-work/regulated/buy', or a full URL like 'https://buy.stripe.com/...'."
     },
     "cta_secondary_text": {
-      "type": "string"
+      "type": "string",
+      "description": "SECONDARY BUTTON text (smaller, outlined). Example: 'Read the story', 'Watch the trailer'. Leave blank to show only one button (or zero)."
     },
     "cta_secondary_link": {
-      "type": "string"
+      "type": "string",
+      "description": "Where the secondary button goes."
     },
     "overlay_opacity": {
       "type": "integer",
       "default": 40,
       "min": 0,
-      "max": 100
+      "max": 100,
+      "description": "Darkness of the overlay on top of the background image (0 = no overlay, 100 = fully black). Default 40. Increase if your image is very bright and text is hard to read; decrease if image is dark already."
     },
     "style": {
       "type": "component",
       "repeatable": false,
       "component": "shared.section-style",
-      "description": "Optional background colour, text colour, padding, alignment, max width, and background image for this section. Leave any field blank to use defaults."
+      "description": "Optional advanced styling (background colour if no image, text colour, padding, alignment). Leave blank for sensible defaults."
     }
   }
 }
