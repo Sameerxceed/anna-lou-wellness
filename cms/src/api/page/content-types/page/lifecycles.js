@@ -12,6 +12,9 @@
  */
 
 const { notifyRevalidate } = require('../../../../utils/revalidate');
+const autoSeo = require('../../../../utils/auto-seo');
+
+const SEO_FIELDS = { nameFields: ['title', 'name'], bodyFields: ['intro', 'description', 'body', 'sections'] };
 
 function pathsFromEvent(event) {
   const data = (event && event.result) || (event && event.params && event.params.data) || {};
@@ -23,12 +26,13 @@ function pathsFromEvent(event) {
   return paths;
 }
 
-async function run(event) {
+async function run(event, withSeo) {
+  if (withSeo) autoSeo.runAfter(event, 'api::page.page', SEO_FIELDS);
   await notifyRevalidate(global.strapi, pathsFromEvent(event));
 }
 
 module.exports = {
-  afterCreate: run,
-  afterUpdate: run,
-  afterDelete: run,
+  afterCreate: (e) => run(e, true),
+  afterUpdate: (e) => run(e, true),
+  afterDelete: (e) => run(e, false),
 };

@@ -34,6 +34,10 @@ const SECTION_PATHS = {
 };
 
 const { notifyRevalidate } = require('../../../../utils/revalidate');
+const autoSeo = require('../../../../utils/auto-seo');
+
+// Field map for auto-SEO. Article uses title + intro/body for the prompt.
+const SEO_FIELDS = { nameFields: ['title', 'name'], bodyFields: ['intro', 'body', 'description', 'excerpt'] };
 
 // Given an Article event, compute every public path that should refresh.
 // Always includes homepage and section landing. Includes article detail
@@ -64,10 +68,12 @@ async function pathsForArticle(strapi, article) {
 
 module.exports = {
   async afterCreate(event) {
+    autoSeo.runAfter(event, 'api::article.article', SEO_FIELDS);
     const paths = await pathsForArticle(strapi, event.result);
     await notifyRevalidate(strapi, paths);
   },
   async afterUpdate(event) {
+    autoSeo.runAfter(event, 'api::article.article', SEO_FIELDS);
     const paths = await pathsForArticle(strapi, event.result);
     await notifyRevalidate(strapi, paths);
   },

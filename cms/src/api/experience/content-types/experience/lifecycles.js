@@ -17,6 +17,9 @@
  */
 
 const { notifyRevalidate } = require('../../../../utils/revalidate');
+const autoSeo = require('../../../../utils/auto-seo');
+
+const SEO_FIELDS = { nameFields: ['name', 'title'], bodyFields: ['description', 'tagline', 'priceLabel', 'location'] };
 
 const TYPE_PATHS = {
   retreat: '/experiences/retreats',
@@ -35,9 +38,11 @@ function pathsForExperience(experience) {
 
 module.exports = {
   async afterCreate(event) {
+    autoSeo.runAfter(event, 'api::experience.experience', SEO_FIELDS);
     await notifyRevalidate(strapi, pathsForExperience(event.result));
   },
   async afterUpdate(event) {
+    autoSeo.runAfter(event, 'api::experience.experience', SEO_FIELDS);
     await notifyRevalidate(strapi, pathsForExperience(event.result));
   },
   async afterDelete(event) {

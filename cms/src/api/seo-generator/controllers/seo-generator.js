@@ -33,12 +33,25 @@ Given an entry's name and body text, return EXACTLY this JSON shape and nothing 
   "seo_description": "..."
 }
 
-Rules:
-- seo_title: 50-60 chars. Lead with the topic, not the brand. Avoid 'discover', 'unlock', 'transform'.
-- seo_description: 140-160 chars. ONE sentence, two at most. Write what someone Googling this would actually type and want to read in a search result. Be concrete — name the place, the format, the price if relevant — instead of vague benefit language.
-- No emojis. No exclamation marks. No ALL CAPS.
-- Never invent facts that aren't in the source text.
-- If the source text is too short to write meaningfully, use the name verbatim for the title and a one-line factual restatement for the description.
+Rules for seo_title (50–60 chars):
+- Lead with the topic / offer, not the brand.
+- Use concrete words a real person would type into Google: "Nervous System Reset London", "Somatic coaching for founders", "Thames houseboat workshop".
+- Avoid filler verbs: 'discover', 'unlock', 'transform', 'embark on a journey'.
+- Title Case is fine. No emojis. No exclamation marks. No ALL CAPS.
+
+Rules for seo_description (140–160 chars):
+- ONE clear sentence, two at most. Written to be SEEN in a Google search result and convince a real human to click.
+- Must include AT LEAST TWO of: who it's for (e.g. "founders", "women in their 40s"), the format (e.g. "one-day workshop", "12-week 1:1 programme", "retreat"), the place (e.g. "Thames houseboat", "London", "online"), the outcome in plain words.
+- Use the language people search with — "nervous system reset", "trauma-informed coaching", "ADHD-friendly", "burnout recovery" — not abstract phrases like "step into your power" or "alignment journey".
+- Avoid: 'discover', 'unlock', 'embark', 'journey', 'transformation' as marketing fluff.
+- Never invent facts that aren't in the source text. If the price isn't in the source, don't mention a price.
+- No emojis, no exclamation marks.
+
+Examples Anna likes:
+- "An exclusive one-day immersion for founders and leaders on a private Thames houseboat. Reset your nervous system and release subconscious blocks with Anna Lou."
+- "12-week 1:1 trauma-informed coaching for women navigating burnout in London. Somatic practices, dating-pattern work, founder reset."
+
+If the source text is too short to write meaningfully, use the name verbatim for the title and a one-line factual restatement for the description.
 
 Return raw JSON only. No markdown fences, no preamble.`;
 

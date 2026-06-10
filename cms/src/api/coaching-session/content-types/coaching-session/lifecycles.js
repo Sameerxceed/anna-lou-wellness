@@ -1,6 +1,9 @@
 'use strict';
 
 const { notifyRevalidate } = require('../../../../utils/revalidate');
+const autoSeo = require('../../../../utils/auto-seo');
+
+const SEO_FIELDS = { nameFields: ['name'], bodyFields: ['description', 'tagline', 'duration', 'price_label'] };
 
 function pathsFor(session) {
   const paths = ['/', '/the-work', '/the-work/sessions'];
@@ -9,7 +12,13 @@ function pathsFor(session) {
 }
 
 module.exports = {
-  async afterCreate(event) { await notifyRevalidate(strapi, pathsFor(event.result)); },
-  async afterUpdate(event) { await notifyRevalidate(strapi, pathsFor(event.result)); },
+  async afterCreate(event) {
+    autoSeo.runAfter(event, 'api::coaching-session.coaching-session', SEO_FIELDS);
+    await notifyRevalidate(strapi, pathsFor(event.result));
+  },
+  async afterUpdate(event) {
+    autoSeo.runAfter(event, 'api::coaching-session.coaching-session', SEO_FIELDS);
+    await notifyRevalidate(strapi, pathsFor(event.result));
+  },
   async afterDelete(event) { await notifyRevalidate(strapi, pathsFor(event.result)); },
 };
