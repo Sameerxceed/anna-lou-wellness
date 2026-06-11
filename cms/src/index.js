@@ -9,26 +9,13 @@
  */
 
 module.exports = {
-  register({ strapi }) {
-    // Register the BetterDateInput custom field on the SERVER side. The
-    // admin-side registration in cms/src/admin/app.tsx handles the React
-    // component used to render the input. The server-side registration
-    // here is what tells Strapi the field exists at all — without it,
-    // schemas that declare "customField": "plugin::global.alw-date" fail
-    // schema validation at boot, taking the whole CMS down (503).
-    //
-    // The 'type' field determines the underlying DB column type. Keeping
-    // it as 'date' means existing date columns remain unchanged — only
-    // the admin input UI is replaced.
-    try {
-      strapi.customFields.register({
-        name: 'alw-date',
-        plugin: 'global',
-        type: 'date',
-      });
-    } catch (err) {
-      strapi.log.warn(`[ALW] custom field alw-date register failed: ${err.message}`);
-    }
+  register(/* { strapi } */) {
+    // BetterDateInput custom field attempt was reverted 11 Jun PM — schemas
+    // are back on the native 'date' type. The custom-field API path in
+    // Strapi v5 needs more research (the 'plugin: \"global\"' approach
+    // crashed boot). Component still lives in cms/src/admin/extensions/
+    // BetterDateInput.tsx if we revisit. Date picker workaround for Anna
+    // for now: type the date as YYYY-MM-DD directly.
   },
 
   async bootstrap({ strapi }) {

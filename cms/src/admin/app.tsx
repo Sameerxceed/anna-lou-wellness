@@ -33,7 +33,8 @@ import AutoSeoStatusPanel from './extensions/AutoSeoStatusPanel';
 import ViewLivePanel from './extensions/ViewLivePanel';
 import QuickPhotoEditor from './extensions/QuickPhotoEditor';
 import SeoFilesPage from './extensions/SeoFilesPage';
-import BetterDateInput from './extensions/BetterDateInput';
+// BetterDateInput import removed — custom field registration reverted (see register hook in src/index.js for context).
+// Component file kept at './extensions/BetterDateInput' for future attempt.
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -132,33 +133,10 @@ const bootstrap = (app: StrapiApp) => {
     document.title = 'Anna Lou Wellness CMS';
   }
 
-  // Custom date field — replaces Strapi v5's built-in date picker (broken
-  // on Safari iOS, Anna's daily driver) with a native HTML5 <input type="date">
-  // that uses the OS-level date picker reliably on every browser. Adds a
-  // "Today" quick-set button. See extensions/BetterDateInput.tsx for the
-  // component. Schemas use it via "type": "customField", "customField":
-  // "plugin::global.alw-date".
-  try {
-    (app as any).customFields?.register({
-      name: 'alw-date',
-      pluginId: 'global',
-      type: 'date',
-      intlLabel: {
-        id: 'alw.customField.date.label',
-        defaultMessage: 'Date',
-      },
-      intlDescription: {
-        id: 'alw.customField.date.description',
-        defaultMessage: 'Pick a date or type DD/MM/YYYY — works reliably on every browser.',
-      },
-      components: {
-        Input: async () => ({ default: BetterDateInput }),
-      },
-    });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('[ALW admin] BetterDateInput custom field registration failed:', err);
-  }
+  // BetterDateInput custom field registration was reverted — the Strapi v5
+  // customFields API needs more research. Schemas use native 'date' type
+  // again. Component file kept at extensions/BetterDateInput.tsx for the
+  // next attempt.
 
   // Auto-redirect /admin (or /admin/ trailing slash) to /admin/alw-quick-edit
   // so Anna lands directly on her Quick Edit dashboard after login instead of

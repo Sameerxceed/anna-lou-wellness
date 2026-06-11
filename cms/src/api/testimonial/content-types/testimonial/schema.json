@@ -67,8 +67,7 @@
       "description": "How this testimonial renders on the dedicated /testimonials page. 'card' = standard 3-column grid item. 'banner' = full-width prominent block between rows (use for your strongest testimonials, 1 in every 6-10 entries)."
     },
     "date": {
-      "type": "customField",
-      "customField": "plugin::global.alw-date",
+      "type": "date",
       "description": "When the review was given (sort by recency)."
     },
     "tags": {
