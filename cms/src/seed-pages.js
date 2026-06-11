@@ -487,7 +487,7 @@ async function seedPages(strapi) {
         href: '/the-work',
         colour: '#F280AA',
         children: [
-          { __component: 'nav.child-link', label: 'Take the Quiz', href: '/the-work/quiz' },
+          { __component: 'nav.child-link', label: 'Nervous System Decoder', href: '/free/nervous-system-decoder' },
           { __component: 'nav.child-link', label: 'The Reset · 6 weeks', href: '/the-work/the-reset' },
           { __component: 'nav.child-link', label: 'Signal · 12 weeks', href: '/the-work/signal' },
           { __component: 'nav.child-link', label: 'Signal & Build · Founders', href: '/the-work/signal-and-build' },
@@ -530,6 +530,7 @@ async function seedPages(strapi) {
         children: [
           { __component: 'nav.child-link', label: "Anna's Story", href: '/about' },
           { __component: 'nav.child-link', label: 'Press', href: '/about/press' },
+          { __component: 'nav.child-link', label: 'Practitioners', href: '/practitioners' },
           { __component: 'nav.child-link', label: 'Work With Me', href: '/about/partnerships' },
           { __component: 'nav.child-link', label: 'Contact', href: '/contact' },
         ],

@@ -41,9 +41,15 @@ export function parseSecondaryList(raw: string | undefined): { title: string; bo
 
 export async function getExperienceBySlug(slug: string): Promise<ExperiencePageCMS | null> {
   try {
+    // Strapi v5 quirk: combining `populate=*` with `populate[upsells][populate]=*`
+    // silently returns ZERO data. Use the explicit hierarchical syntax for both
+    // top-level media + the nested image inside upsells. Confirmed working
+    // 11 Jun after Anna's "Continue your journey upsells aren't showing on the
+    // Retreats page" report — root cause was this query collision dropping
+    // every experience-page entry from the response.
     const { data } = await fetchAPI('/experience-pages', {
       'filters[slug][$eq]': slug,
-      populate: '*',
+      'populate[heroImage]': 'true',
       'populate[upsells][populate]': '*',
     });
     if (Array.isArray(data) && data.length > 0) return data[0] as ExperiencePageCMS;
