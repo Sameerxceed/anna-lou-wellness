@@ -113,13 +113,23 @@ quote(d, "Should show a blog post from 6 different categories. The featured one 
 
 h3(d, "Status")
 para(d, "Partially done. I rebuilt the homepage on 8 Jun to use Cup-of-Jo style cards on mobile — bigger images, bigger text, less clutter (commit reference: e6f71cd). If you're still seeing tiny text, you may be on an older cached version. Hard-refresh and tell me if it's still small.")
-para(d, "What I am NOT yet doing is the 6-category magazine grid you describe — 'one featured top-left per category × 6 categories' — that's a separate layout job I will do this week. ~2 hours of build.")
+para(d, "The 6-category magazine grid you describe is the bigger job. I have NOT started it because I want to be sure I build the right thing — there are a few design calls only you can make.")
 
-h3(d, "What I'll change")
-bullet(d, "Strip the long body copy off the homepage (move to a Mission / About page).")
-bullet(d, "Build 6 distinct category bands. Each shows: one featured article (large, top-left) + 3 smaller cards from that category.")
-bullet(d, "Card structure: image, category label, headline, preview text, Read More.")
-bullet(d, "Pure CMS — you'll be able to swap which categories appear via Strapi.")
+h3(d, "5 quick questions I need from you before I build it")
+para(d, "Sameer has sent these on WhatsApp. Reply with answers next to each number (1: …, 2: …) and I'll start the build the same day:")
+numbered(d, "Cup-of-Jo layout on MOBILE only, or BOTH mobile and desktop? (Your note mentioned tiny mobile text, but also said the layout should be Cup-of-Jo from the start — want to confirm scope.)")
+numbered(d, "Which 6 of your 22 sub-categories do you want on the homepage? Pick six, or say 'just pick' and I'll choose sensible defaults you can change later in Strapi.")
+numbered(d, "Where does the existing homepage body copy go? (Move to an About page / move to footer / delete / other.)")
+numbered(d, "Keep or drop each of: Featured Products strip · Testimonials strip · Press mentions strip · Certifications? (Cup-of-Jo is pure magazine; ALW is part-magazine, part-shop, part-service — your call.)")
+numbered(d, "One BIG featured article above the 6 bands, or jump straight into the bands?")
+
+h3(d, "Once you've answered — what I'll build")
+bullet(d, "Strip the long body copy off the homepage (per your section 3 answer).")
+bullet(d, "Build the category bands. Each: one featured article (large, top-left) + 3 smaller cards from that category.")
+bullet(d, "Card structure: image, category label, headline, preview text, Read More — exactly the Cup-of-Jo pattern you described.")
+bullet(d, "Pure CMS — you'll be able to swap which categories appear via Strapi (no code change needed).")
+bullet(d, "Auto-hide a band if a category has zero articles — page never looks broken.")
+para(d, "Build time once unblocked: about 2 hours.", italic=True, colour=MUTE)
 
 # ─── 2. Events: Returning Circle ───
 h1(d, "2. Events page — Returning Circle (2 locations weekly)")
