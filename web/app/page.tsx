@@ -540,10 +540,13 @@ const homepageStyles = `
 .hp-editorial-sections { background:#FFF0D2; padding:1.5rem 2rem; }
 .hp-editorial-header { max-width:1200px; margin:0 auto 1rem; }
 .hp-editorial-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
-.hp-editorial-tile { background:rgba(255,255,255,0.7); backdrop-filter:blur(8px); border-radius:8px; padding:1.5rem; cursor:pointer; transition:all 0.3s; border:1px solid rgba(255,255,255,0.5); text-decoration:none; }
-.hp-editorial-tile:hover { transform:translateY(-3px); box-shadow:0 8px 25px rgba(0,0,0,0.06); background:#fff; }
-.hp-editorial-tile h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:0.82rem; margin-bottom:0.4rem; }
-.hp-editorial-tile p { font-family:'EB Garamond',Georgia,serif; font-size:0.85rem; color:#8C8880; line-height:1.5; }
+/* Cup-of-Jo legibility pass (11 Jun): fully opaque card background, darker body text,
+   bigger heading + body sizes. Old setup (rgba white + mid-grey body #8C8880 on cream
+   #FFF0D2) failed WCAG AA contrast and Anna flagged it as hard to read on mobile. */
+.hp-editorial-tile { background:#fff; border-radius:8px; padding:1.5rem; cursor:pointer; transition:all 0.3s; border:1px solid rgba(0,0,0,0.04); text-decoration:none; }
+.hp-editorial-tile:hover { transform:translateY(-3px); box-shadow:0 8px 25px rgba(0,0,0,0.08); }
+.hp-editorial-tile h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:500; font-size:1.05rem; margin-bottom:0.5rem; letter-spacing:0.01em; }
+.hp-editorial-tile p { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.6; }
 
 /* ═══ EXPERIENCES ═══ */
 .hp-experiences { background:#fff; padding:1.5rem 2rem; }
@@ -642,6 +645,14 @@ const homepageStyles = `
   .article-card-title { font-size:1.25rem; line-height:1.3; margin-bottom:0.6rem; }
   .article-card-excerpt { font-size:1rem; line-height:1.65; margin-bottom:0.8rem; -webkit-line-clamp:3; }
   .article-card-readmore { font-size:0.7rem; letter-spacing:0.18em; }
+
+  /* Editorial tiles (Life / Love / Work cards) — mobile sizes bumped further
+     per Anna's 11 Jun feedback comparing to Cup of Jo. Heading bigger, body
+     readable size, generous padding. */
+  .hp-editorial-tile { padding:1.6rem 1.4rem; }
+  .hp-editorial-tile h3 { font-size:1.25rem; margin-bottom:0.55rem; }
+  .hp-editorial-tile p { font-size:1.05rem; line-height:1.6; }
+  .hp-kicker { font-size:0.78rem; letter-spacing:0.22em; }
 }
 @media (max-width:480px) {
   /* Portrait images that get height-clamped on mobile shrink in width too
