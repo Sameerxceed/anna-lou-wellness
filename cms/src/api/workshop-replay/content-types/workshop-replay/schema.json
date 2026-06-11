@@ -35,7 +35,8 @@
       "default": "Workshop"
     },
     "recorded_date": {
-      "type": "date",
+      "type": "customField",
+      "customField": "global::alw-date",
       "required": true,
       "description": "When this was recorded. Sorted newest-first on the replays page."
     },

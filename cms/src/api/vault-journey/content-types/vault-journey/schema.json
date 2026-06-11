@@ -84,7 +84,8 @@
       "description": "Full description / 'About this journey' content shown below the player."
     },
     "recorded_date": {
-      "type": "date",
+      "type": "customField",
+      "customField": "global::alw-date",
       "description": "When this journey was recorded (optional, shown in metadata)."
     },
     "sort_order": {

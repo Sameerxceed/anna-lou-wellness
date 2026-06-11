@@ -12,7 +12,8 @@
   },
   "attributes": {
     "week_of": {
-      "type": "date",
+      "type": "customField",
+      "customField": "global::alw-date",
       "required": true
     },
     "title": {

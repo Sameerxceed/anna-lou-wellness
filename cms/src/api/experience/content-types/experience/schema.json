@@ -34,7 +34,8 @@
       "type": "richtext"
     },
     "date": {
-      "type": "date",
+      "type": "customField",
+      "customField": "global::alw-date",
       "description": "Click the month name at top of the picker to jump months/years. Use the < > arrows to step one month at a time. Leave empty for evergreen items (no fixed date)."
     },
     "location": {

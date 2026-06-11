@@ -33,8 +33,7 @@ import AutoSeoStatusPanel from './extensions/AutoSeoStatusPanel';
 import ViewLivePanel from './extensions/ViewLivePanel';
 import QuickPhotoEditor from './extensions/QuickPhotoEditor';
 import SeoFilesPage from './extensions/SeoFilesPage';
-// BetterDateInput import removed — custom field registration reverted (see register hook in src/index.js for context).
-// Component file kept at './extensions/BetterDateInput' for future attempt.
+import BetterDateInput from './extensions/BetterDateInput';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -133,10 +132,33 @@ const bootstrap = (app: StrapiApp) => {
     document.title = 'Anna Lou Wellness CMS';
   }
 
-  // BetterDateInput custom field registration was reverted — the Strapi v5
-  // customFields API needs more research. Schemas use native 'date' type
-  // again. Component file kept at extensions/BetterDateInput.tsx for the
-  // next attempt.
+  // BetterDateInput app-level custom field. Per Strapi v5 docs, app-level
+  // fields (registered here, not in a plugin) DO NOT specify pluginId —
+  // omitting it puts the field in the 'global' namespace which schemas
+  // reference as `global::alw-date`. The matching server-side
+  // strapi.customFields.register({ name: 'alw-date', type: 'date' }) call
+  // in src/index.js register() is what actually surfaces the field to
+  // Strapi's schema validator — without it the CMS won't boot.
+  try {
+    (app as any).customFields?.register({
+      name: 'alw-date',
+      type: 'date',
+      intlLabel: {
+        id: 'alw.customField.date.label',
+        defaultMessage: 'Date',
+      },
+      intlDescription: {
+        id: 'alw.customField.date.description',
+        defaultMessage: 'Native date picker — works reliably on every browser including Safari iOS.',
+      },
+      components: {
+        Input: async () => ({ default: BetterDateInput }),
+      },
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] BetterDateInput custom field registration failed:', err);
+  }
 
   // Auto-redirect /admin (or /admin/ trailing slash) to /admin/alw-quick-edit
   // so Anna lands directly on her Quick Edit dashboard after login instead of
