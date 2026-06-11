@@ -209,26 +209,33 @@
    untouched per her instruction (size only). Uses !important sparingly to
    override component-level inline styles that set values below the floor. */
 
-/* Desktop floor: body text never below 1rem (16px) */
-.hp-body,
-.hp-featured-excerpt,
-.hp-portrait-body,
-.hp-newsletter-body,
-.hp-quote-text,
-.article-card-excerpt,
-.section-body,
-.editorial-text,
-.about-body,
-.com-body,
-.com-intro,
-.work-body,
-.work-intro,
-.sub-content p,
-.upcoming-desc,
-.exp-body-text,
-.cw-body-text,
-.prog-body-text {
-  font-size: max(1rem, 16px);
+/* Desktop bump (≥901px): body text bumped to 1.08rem (17.3px).
+   Uses !important to override inline <style> in page.tsx (e.g. article-card-excerpt
+   was 0.85rem hardcoded) and section components. Anna's instruction was
+   "across the website all over pages on desktop and mobile" — earlier I scoped
+   only to mobile, this corrects that. */
+@media (min-width: 901px) {
+  .hp-body,
+  .hp-featured-excerpt,
+  .hp-portrait-body,
+  .hp-newsletter-body,
+  .hp-quote-text,
+  .article-card-excerpt,
+  .section-body,
+  .editorial-text,
+  .about-body,
+  .com-body,
+  .com-intro,
+  .work-body,
+  .work-intro,
+  .sub-content p,
+  .upcoming-desc,
+  .exp-body-text,
+  .cw-body-text,
+  .prog-body-text {
+    font-size: 1.08rem !important;
+    line-height: 1.7;
+  }
 }
 
 /* Italic captions / hooks / inline editorial — was 0.75-0.82rem, too small */
@@ -241,7 +248,7 @@
 .hp-featured-meta,
 .hp-media-meta,
 .hp-newsletter-small {
-  font-size: 0.82rem;
+  font-size: 0.85rem !important;
 }
 
 /* ─── Mobile bump — applies under 900px, additional under 500px ─── */
