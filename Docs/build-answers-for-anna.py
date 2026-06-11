@@ -168,15 +168,21 @@ quote(d, "This events page shouldn't have an add to cart or book a call to find 
 quote(d, "On the Align and Amplify product page I see the page preview after you click save however there is no proper sales page with the sales content.")
 quote(d, "May I suggest… Instead of you may also like — And add other services")
 
-h3(d, "Status")
-para(d, "These are real, valid concerns. Not yet fixed — this is on this week's list.")
+h3(d, "Status — DONE (Thursday afternoon)")
+para(d, "Shipped. There is now ONE proper sales page per Experience entry, with full sales content and a Book button on it. Anna no longer needs the Product entry as a duplicate.")
 
-h3(d, "What I'll do")
-numbered(d, "MERGE the event page with the sales content. One Align & Amplify page that has hero + dates + 'what's included' + price + Book Now button, all on one URL. No second product page redirect.")
-numbered(d, "REPLACE the 'You may also like' product upsell with a SERVICES upsell on event/coaching pages. Products only see product upsells (relevant for jewellery); services see service upsells (relevant for coaching).")
+h3(d, "What changed")
+bullet(d, "New page at /experiences/<slug> for every Experience entry. e.g. /experiences/align-and-amplify. Renders: hero image + title + date + location + price, full description (your sales copy), Book Now button, reviews, FAQ, and 'where next' upsell cards.")
+bullet(d, "Listing cards on /experiences and the sub-pages (/experiences/workshops etc.) now click through to this new detail page instead of jumping straight to Calendly. Customers see your sales copy first, decide, then book.")
+bullet(d, "If you've set a booking_url (Calendly) on an experience, there's an extra 'Book directly →' button next to 'Read more →' on the listing card for power users who want to skip the sales page.")
+bullet(d, "Replaced 'You may also like' with the upsell field you already control. For each experience, edit the upsells field to choose related SERVICES (not products) — that's now what shows at the bottom of each sales page. Products only get product upsells (jewellery), services only get service upsells.")
 
-h3(d, "For now (until I ship the fix)")
-para(d, "If you want Align & Amplify visible immediately: paste your existing sales copy into the event page's main 'description' or 'intro' field. It'll render below the hero. Not pretty but functional.")
+h3(d, "What you need to do")
+numbered(d, "Open the Align & Amplify entry (Strapi → Experiences · Event → Align & Amplify).")
+numbered(d, "Confirm the description field has your full sales copy. If not, paste it in. Separate paragraphs with a BLANK LINE between them.")
+numbered(d, "Scroll to the 'upsells' field. Add 2-3 related services (e.g. Reset Room, REGULATED, 1:1 Sessions) as 'where next' cards. Leave empty if you don't want any.")
+numbered(d, "Save. Visit https://staging.annalouwellness.com/experiences/align-and-amplify to see the live page.")
+numbered(d, "Optional: delete the duplicate Align & Amplify Product entry from the Shop collection (it's no longer needed).")
 
 # ─── 5. SEO ───
 h1(d, "5. SEO — automate it!")
@@ -211,15 +217,16 @@ callout(d, "Try it:", "Open ANY new article → save without filling SEO → the
 h1(d, "6. Date picker — can't see months ahead")
 quote(d, "On the Align & Amplify workshop I was trying to change the date but can't see the months ahead to be able to choose a date.")
 
-h3(d, "Status")
-para(d, "This is a Strapi v5 admin bug — the date picker doesn't always render the 'next month' arrow on certain browsers (especially Safari on iPhone). I'm looking at a workaround.")
+h3(d, "Status — DONE (Thursday afternoon)")
+para(d, "Replaced Strapi's broken date picker with your phone's native one. On iPhone, tapping a date field now opens the iOS wheel picker (years/months scroll reliably). On desktop, it's the browser's own calendar with proper month/year navigation.")
 
-h3(d, "Today's workaround — type the date directly")
-para(d, "Most date fields in Strapi accept typed input. Try this instead of clicking the calendar:")
-numbered(d, "Tap into the date field.")
-numbered(d, "Type the date in DD/MM/YYYY format, e.g. 15/07/2026.")
-numbered(d, "Tab out. The field accepts it.")
-para(d, "If the picker still won't go forward by tapping, this works around it entirely.")
+h3(d, "What changed")
+bullet(d, "Every date field across the site (events, retreats, workshops, cosmic forecasts, testimonials, vault journeys, workshop replays) now uses the native date picker.")
+bullet(d, "Added a 'Today' quick-set button so if you're scheduling for now, you can skip the picker entirely.")
+bullet(d, "Added a 'Clear' button next to the date so you can blank out a date easily.")
+bullet(d, "You can still type the date manually as YYYY-MM-DD or DD/MM/YYYY in any browser if you prefer.")
+
+para(d, "No setup needed on your side. Open the Align & Amplify entry and the date field — you'll see the new picker.")
 
 # ─── 7. Booking URL ───
 h1(d, "7. Booking URL — what to put there")
@@ -363,9 +370,13 @@ h3(d, "PAUSED — waiting on your reply")
 bullet(d, "Homepage Cup-of-Jo 6-category magazine grid. I have 5 questions in your inbox to nail down the scope before I build. Quick reply unblocks ~3 hours of work.")
 bullet(d, "If we are following Aneeza's full sitemap proposal — that affects the homepage build. Question 7 covers this.")
 
+h3(d, "DONE Thursday afternoon — also live")
+bullet(d, "Merged Align & Amplify event + sales into one page at /experiences/align-and-amplify. Same pattern for every Experience entry.")
+bullet(d, "Service upsells on event pages — the upsells field on each Experience entry now controls cross-promotion. Anna picks which services to show.")
+bullet(d, "New native date picker across every date field — replaces the broken Strapi v5 one.")
+
 h3(d, "NEXT — I will start when homepage is unblocked")
-bullet(d, "Merge Align & Amplify event page with sales content (one URL, not two).")
-bullet(d, "Replace 'You may also like' product upsells with service upsells on coaching / event pages.")
+bullet(d, "Homepage 6-category magazine grid (waiting on the 5 questions in section 1).")
 
 h3(d, "BLOCKED — I need a screenshot or error message from you")
 bullet(d, "Bulk image upload failure — what error does Strapi show, how many images, which browser?")
