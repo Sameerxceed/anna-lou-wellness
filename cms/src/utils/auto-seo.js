@@ -184,7 +184,12 @@ function firstKey(obj, candidates) {
 function runAfter(event, uid, opts = {}) {
   const strapi = global.strapi;
   if (!strapi) return;
-  setImmediate(async () => {
+  // CRITICAL: do NOT use setImmediate here. Strapi v5 fires lifecycle hooks
+  // WITHIN the open Knex transaction; setImmediate runs in the same tick as
+  // the commit, so any DB write we do races with the closing transaction
+  // and throws "Transaction query already complete". A short setTimeout
+  // (500ms) defers our work past the transaction close + connection release.
+  setTimeout(async () => {
     try {
       const result = event?.result;
       if (!result) return;
@@ -227,15 +232,36 @@ function runAfter(event, uid, opts = {}) {
       if (!descHit) patch[descKey] = generated.seoDescription;
       if (Object.keys(patch).length === 0) return;
 
-      await strapi.documents(uid).update({
-        documentId,
-        data: patch,
-      });
+      // Update both DRAFT and PUBLISHED status so the new SEO copy is on
+      // whichever version is live. Strapi v5 docs API needs `status` set
+      // explicitly when draftAndPublish is enabled — without it, the update
+      // only writes to the draft and the published page sees stale SEO.
+      try {
+        await strapi.documents(uid).update({
+          documentId,
+          data: patch,
+          status: 'draft',
+        });
+      } catch (err) {
+        strapi.log.warn(`[auto-seo] ${uid}/${documentId} draft update: ${err.message}`);
+      }
+      try {
+        await strapi.documents(uid).update({
+          documentId,
+          data: patch,
+          status: 'published',
+        });
+      } catch (err) {
+        // Published may not exist yet for fresh drafts — that's fine.
+        if (!String(err.message).includes('not found')) {
+          strapi.log.warn(`[auto-seo] ${uid}/${documentId} published update: ${err.message}`);
+        }
+      }
       strapi.log.info(`[auto-seo] ${uid}/${documentId} filled SEO fields`);
     } catch (err) {
       strapi.log.warn(`[auto-seo] unexpected: ${err.message}`);
     }
-  });
+  }, 500);
 }
 
 module.exports = { runAfter };
