@@ -29,7 +29,7 @@ import SectionFilterPills from './extensions/SectionFilterPills';
 import QuickEditDashboard from './extensions/QuickEditDashboard';
 import QuickEditDashboardPage from './extensions/QuickEditDashboardPage';
 import RelatedItemsPanel from './extensions/RelatedItemsPanel';
-import GenerateSeoPanel from './extensions/GenerateSeoPanel';
+import AutoSeoStatusPanel from './extensions/AutoSeoStatusPanel';
 import ViewLivePanel from './extensions/ViewLivePanel';
 import QuickPhotoEditor from './extensions/QuickPhotoEditor';
 import SeoFilesPage from './extensions/SeoFilesPage';
@@ -203,20 +203,19 @@ const bootstrap = (app: StrapiApp) => {
     console.warn('[ALW admin] ViewLivePanel injection failed:', err);
   }
 
-  // Inject "Generate SEO" panel into the right sidebar of every edit view.
-  // Reads the entry's title + body, calls /api/seo-generator/generate (Claude),
-  // shows back an SEO title + description with copy-to-clipboard buttons that
-  // Anna pastes into the seo_title / seo_description fields below.
-  // Replaces the bad seeded "One-day immersion in Anna's CODES framework..."
-  // style descriptions Anna flagged in her 5 Jun feedback.
+  // Auto SEO status panel — replaces the old "Generate SEO" button which
+  // was broken on Strapi v5 (httpOnly cookie admin auth). Auto-SEO now fires
+  // on every Save via cms/src/utils/auto-seo.js. This panel tells Anna the
+  // workflow + auto-refreshes 10s after she saves so she sees the SEO copy
+  // populate without having to manually F5.
   try {
     app.getPlugin('content-manager')?.injectComponent('editView', 'right-links', {
-      name: 'GenerateSeoPanel',
-      Component: GenerateSeoPanel,
+      name: 'AutoSeoStatusPanel',
+      Component: AutoSeoStatusPanel,
     });
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn('[ALW admin] GenerateSeoPanel injection failed:', err);
+    console.warn('[ALW admin] AutoSeoStatusPanel injection failed:', err);
   }
 
   // Quick Edit dashboard — register as a sidebar menu link so it's always

@@ -103,7 +103,7 @@
     },
     "seo_description": {
       "type": "text",
-      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Use the 'Generate SEO' button if available, then edit."
+      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Fills in automatically when you Save — leave blank unless you want to override"
     }
   }
 }
