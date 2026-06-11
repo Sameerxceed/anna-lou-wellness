@@ -95,7 +95,7 @@ r = title.add_run("Anna Lou Wellness"); r.bold = True; r.font.size = Pt(26); r.f
 sub = d.add_paragraph(); sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r = sub.add_run("Answers to your 10 June notes"); r.italic = True; r.font.size = Pt(16); r.font.color.rgb = DARK
 ver = d.add_paragraph(); ver.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = ver.add_run("From Sameer  ·  10 June 2026"); r.font.size = Pt(10); r.font.color.rgb = MUTE
+r = ver.add_run("From Sameer  ·  v2 updated 10 June 2026"); r.font.size = Pt(10); r.font.color.rgb = MUTE
 d.add_paragraph()
 
 para(d,
@@ -202,7 +202,7 @@ para(d, "If the picker still won't go forward by tapping, this works around it e
 h1(d, "7. Booking URL — what to put there")
 quote(d, "And there's no booking url in there so people can't purchase. And I wouldn't know what to put there.")
 
-h3(d, "Status — Calendly integration shipped today")
+h3(d, "Status — Calendly integration is live")
 para(d, "Any Strapi entry with a 'booking_url' or 'ctaUrl' field can now hold a Calendly link. Paste the link in, and when a customer clicks the Book button on the live site, Calendly opens as a popup right on your page — they pick a time, confirm, and Calendly emails them. They never leave the site.")
 
 h3(d, "What to do")
@@ -321,15 +321,35 @@ h3(d, "I'll add field labels next")
 para(d, "Right now field labels say things like 'image_1' which doesn't tell you what image goes where. I'll relabel them this week to say 'Hero image — large photo at top, behind the title' etc. Just need ~30 min.")
 callout(d, "View Live", "If you save a draft and click 'View live page →' (green button, right sidebar) you can see exactly which image landed in which spot. Easiest way to learn the mapping until I add the labels.")
 
-# ─── Closing ───
-h1(d, "What I'm doing this week — in order")
-numbered(d, "TODAY: ship automatic SEO (done) + Calendly integration (done) + this answers doc (done).")
-numbered(d, "Homepage 6-category magazine grid (~2 hours).")
-numbered(d, "Merge Align & Amplify event page with sales content (~1.5h).")
-numbered(d, "Replace product upsells with service upsells on coaching/event pages (~1h).")
-numbered(d, "Relabel REGULATED page image fields with plain English (~30 min).")
-numbered(d, "Diagnose Corporate Wellbeing page rendering.")
-numbered(d, "Investigate bulk image upload failures (once you've sent the error details).")
+# ─── Closing — status by item ───
+h1(d, "Status of the week's items — as of this update")
+
+para(d, "Where each open item stands right now:")
+
+h3(d, "DONE today")
+bullet(d, "Automatic SEO on every save (Article, Programme, Experience, Coaching Session, Generic Page, Page Builder pages).")
+bullet(d, "Better Google-style SEO description prompt (uses your own example as the gold standard).")
+bullet(d, "Calendly popup integration on every Book button — paste the link in booking_url, popup opens.")
+bullet(d, "This answers document.")
+bullet(d, "Corporate Wellbeing diagnosis — root cause: hero_image is empty in the CMS. Upload an image to the Corporate Wellbeing entry and the page will look right.")
+bullet(d, "Hero section + Experience sub-page field labels rewritten with plain-English position cues (TOP-LEFT, RIGHT, BACKGROUND IMAGE etc).")
+
+h3(d, "PAUSED — waiting on your reply")
+bullet(d, "Homepage Cup-of-Jo 6-category magazine grid. I have 5 questions in your inbox to nail down the scope before I build. Quick reply unblocks ~3 hours of work.")
+bullet(d, "If we are following Aneeza's full sitemap proposal — that affects the homepage build. Question 7 covers this.")
+
+h3(d, "NEXT — I will start when homepage is unblocked")
+bullet(d, "Merge Align & Amplify event page with sales content (one URL, not two).")
+bullet(d, "Replace 'You may also like' product upsells with service upsells on coaching / event pages.")
+
+h3(d, "BLOCKED — I need a screenshot or error message from you")
+bullet(d, "Bulk image upload failure — what error does Strapi show, how many images, which browser?")
+bullet(d, "FAQ page error — which FAQ, which page, screenshot of the error.")
+
+h3(d, "Your turn — three quick tasks (5 minutes total)")
+numbered(d, "Upload a hero image to the Corporate Wellbeing entry (Strapi → Experiences · Sub-page → Corporate Wellbeing → heroImage field).")
+numbered(d, "Reply to the 5 (or 6) questions about the homepage rebuild.")
+numbered(d, "When the FAQ or bulk upload errors next happen, screenshot and send.")
 
 para(d, "Anything I've misread or missed — reply with screenshots. The fewer questions you have to ask twice, the faster I can ship.",
      italic=True)
