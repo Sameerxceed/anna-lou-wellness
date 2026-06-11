@@ -95,7 +95,7 @@ r = title.add_run("Anna Lou Wellness"); r.bold = True; r.font.size = Pt(26); r.f
 sub = d.add_paragraph(); sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r = sub.add_run("Answers to your 10 June notes"); r.italic = True; r.font.size = Pt(16); r.font.color.rgb = DARK
 ver = d.add_paragraph(); ver.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = ver.add_run("From Sameer  ·  v2 updated 10 June 2026"); r.font.size = Pt(10); r.font.color.rgb = MUTE
+r = ver.add_run("From Sameer  ·  v3 updated Thursday 11 June 2026"); r.font.size = Pt(10); r.font.color.rgb = MUTE
 d.add_paragraph()
 
 para(d,
@@ -173,16 +173,29 @@ h1(d, "5. SEO — automate it!")
 quote(d, "Can it not automatically fill it in what it thinks? AI should be doing this part so. Don't need to enter it each time on each page.")
 quote(d, "It's also pulling a SEO description which isn't suitable for SEO and not what people would write in google or a llm.")
 
-h3(d, "Status — shipped today")
-para(d, "Done as of today's deploy. Two changes:")
-numbered(d, "AUTOMATIC SEO generation. When you save ANY entry (Article, Programme, Experience, Coaching Session, Generic Page, Page Builder page) and the seo_title / seo_description are blank, the system calls Claude in the background and fills them in. You don't have to click anything. Takes 2-3 seconds; you can keep working.")
+h3(d, "Status — live and tested")
+para(d, "Two changes shipped and verified working on staging:")
+numbered(d, "AUTOMATIC SEO generation. When you save ANY entry (Article, Programme, Experience, Coaching Session, Generic Page, Page Builder page) and the seo_title / seo_description are blank, the system calls Claude in the background and fills them in. You don't have to click anything. Takes 5–10 seconds — the right-sidebar 'Auto SEO' panel will auto-refresh the page for you so you see the new copy without manually F5-ing.")
 numbered(d, "BETTER prompts. I rewrote the instructions Claude follows so descriptions sound like what real people Google. Less 'transformation journey' and more 'Nervous System Reset workshop for founders, Thames houseboat'. I used your own example as the gold standard.")
+
+para(d, "Sample output from a real article in your CMS:")
+para(d, "Title: 'I worked so hard not to feel overwhelmed. So why am I still holding everything?'", italic=True, colour=MUTE)
+para(d, "→ Auto-generated SEO title: 'Still Holding Everything Even After the Work?'", italic=True, colour=MUTE)
+para(d, "→ Auto-generated SEO description: 'A personal essay for women who've done the nervous system work but still carry the emotional load. On the difference between coping well and truly letting go.'", italic=True, colour=MUTE)
 
 h3(d, "What you still control")
 bullet(d, "If you've already filled in seo_title or seo_description manually, the system never overwrites you — your words always win.")
-bullet(d, "You can still click the 'Generate SEO' button on any entry to manually regenerate if you don't like what was filled in.")
 bullet(d, "After it auto-fills, you can edit further — your edits stick.")
-callout(d, "Try it:", "Open ANY published entry → clear seo_title and seo_description → save → wait 5 seconds → refresh the entry → both fields should be filled in with cleaner copy.")
+bullet(d, "If you don't like what Claude wrote, clear both SEO fields and save again — it will rewrite.")
+
+h3(d, "Existing articles (the catch-up question)")
+para(d, "The auto-fill only fires on save going forward. Your existing articles (80 of them on staging right now, mostly with empty SEO) won't get filled automatically.")
+para(d, "Two options for them:")
+bullet(d, "Option A: I run a one-off backfill script that processes all 80 articles + all programmes / experiences / pages in one go. Takes about 10 minutes, fills every empty SEO field across the site. Your manual edits are skipped (never overwritten). I'd recommend this — it's a 'set everything up cleanly' operation.")
+bullet(d, "Option B: You touch each article one by one over time. The next time you edit any article, auto-fill kicks in.")
+para(d, "Reply and tell me 'run the backfill' if you want option A.")
+
+callout(d, "Try it:", "Open ANY new article → save without filling SEO → the sidebar shows 'Auto-refresh in 10s' → page reloads → seo_title and seo_description are filled with clean copy.")
 
 # ─── 6. Date picker ───
 h1(d, "6. Date picker — can't see months ahead")
@@ -326,13 +339,15 @@ h1(d, "Status of the week's items — as of this update")
 
 para(d, "Where each open item stands right now:")
 
-h3(d, "DONE today")
-bullet(d, "Automatic SEO on every save (Article, Programme, Experience, Coaching Session, Generic Page, Page Builder pages).")
+h3(d, "DONE — live + tested")
+bullet(d, "Automatic SEO on every save (Article, Programme, Experience, Coaching Session, Generic Page, Page Builder pages). Verified working on two real articles in your CMS as of Thursday 11 Jun.")
+bullet(d, "Auto-refresh status panel in the right sidebar of every edit page — shows 'Auto-refresh in 10s' after you save so you see the new SEO copy without manually refreshing.")
 bullet(d, "Better Google-style SEO description prompt (uses your own example as the gold standard).")
 bullet(d, "Calendly popup integration on every Book button — paste the link in booking_url, popup opens.")
 bullet(d, "This answers document.")
 bullet(d, "Corporate Wellbeing diagnosis — root cause: hero_image is empty in the CMS. Upload an image to the Corporate Wellbeing entry and the page will look right.")
 bullet(d, "Hero section + Experience sub-page field labels rewritten with plain-English position cues (TOP-LEFT, RIGHT, BACKGROUND IMAGE etc).")
+bullet(d, "Old 'Generate SEO' button removed (it was broken). Replaced with the auto-refresh status panel — same job, no clicks needed.")
 
 h3(d, "PAUSED — waiting on your reply")
 bullet(d, "Homepage Cup-of-Jo 6-category magazine grid. I have 5 questions in your inbox to nail down the scope before I build. Quick reply unblocks ~3 hours of work.")
@@ -346,9 +361,10 @@ h3(d, "BLOCKED — I need a screenshot or error message from you")
 bullet(d, "Bulk image upload failure — what error does Strapi show, how many images, which browser?")
 bullet(d, "FAQ page error — which FAQ, which page, screenshot of the error.")
 
-h3(d, "Your turn — three quick tasks (5 minutes total)")
+h3(d, "Your turn — four quick tasks (10 minutes total)")
 numbered(d, "Upload a hero image to the Corporate Wellbeing entry (Strapi → Experiences · Sub-page → Corporate Wellbeing → heroImage field).")
-numbered(d, "Reply to the 5 (or 6) questions about the homepage rebuild.")
+numbered(d, "Reply to the 5 (or 6) questions about the homepage rebuild — Sameer is waiting on these to build it.")
+numbered(d, "Reply with 'run the backfill' if you want me to fill SEO on all 80 existing articles (and programmes, experiences, pages) in one go.")
 numbered(d, "When the FAQ or bulk upload errors next happen, screenshot and send.")
 
 para(d, "Anything I've misread or missed — reply with screenshots. The fewer questions you have to ask twice, the faster I can ship.",
