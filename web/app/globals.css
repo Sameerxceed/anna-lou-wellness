@@ -202,3 +202,114 @@
     color: #231F20;
   }
 }
+
+/* ═══ TYPOGRAPHY READABILITY PASS — Anna's 11 Jun feedback ═══
+   "the font needs to be bigger... they are small and not readable easily."
+   Site-wide minimum sizes for body text + bumped sizes on mobile. Colours
+   untouched per her instruction (size only). Uses !important sparingly to
+   override component-level inline styles that set values below the floor. */
+
+/* Desktop floor: body text never below 1rem (16px) */
+.hp-body,
+.hp-featured-excerpt,
+.hp-portrait-body,
+.hp-newsletter-body,
+.hp-quote-text,
+.article-card-excerpt,
+.section-body,
+.editorial-text,
+.about-body,
+.com-body,
+.com-intro,
+.work-body,
+.work-intro,
+.sub-content p,
+.upcoming-desc,
+.exp-body-text,
+.cw-body-text,
+.prog-body-text {
+  font-size: max(1rem, 16px);
+}
+
+/* Italic captions / hooks / inline editorial — was 0.75-0.82rem, too small */
+.editorial-inside,
+.product-hook {
+  font-size: 0.95rem !important;
+}
+
+/* Meta lines (author + date strips) — was 0.72rem; bump for desktop legibility */
+.hp-featured-meta,
+.hp-media-meta,
+.hp-newsletter-small {
+  font-size: 0.82rem;
+}
+
+/* ─── Mobile bump — applies under 900px, additional under 500px ─── */
+@media (max-width: 900px) {
+  /* Body text on mobile bumps to 1.05rem (16.8px) */
+  .hp-body,
+  .hp-featured-excerpt,
+  .hp-portrait-body,
+  .hp-newsletter-body,
+  .hp-quote-text,
+  .article-card-excerpt,
+  .section-body,
+  .editorial-text,
+  .about-body,
+  .com-body,
+  .com-intro,
+  .work-body,
+  .work-intro,
+  .sub-content p,
+  .upcoming-desc,
+  .exp-body-text,
+  .cw-body-text,
+  .prog-body-text {
+    font-size: 1.05rem !important;
+    line-height: 1.65;
+  }
+
+  /* Italic captions / hooks bump to 1rem on mobile */
+  .editorial-inside,
+  .product-hook {
+    font-size: 1rem !important;
+  }
+
+  /* Meta strips bump to 0.88rem on mobile */
+  .hp-featured-meta,
+  .hp-media-meta,
+  .hp-newsletter-small {
+    font-size: 0.88rem !important;
+  }
+
+  /* Section headings — bump slightly so the visual hierarchy holds */
+  .hp-section-title,
+  .section-heading {
+    font-size: clamp(1.55rem, 5vw, 2rem) !important;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 500px) {
+  /* On very small phones, body text minimum bumps to 1.08rem (17.3px) */
+  .hp-body,
+  .hp-featured-excerpt,
+  .hp-portrait-body,
+  .hp-newsletter-body,
+  .hp-quote-text,
+  .article-card-excerpt,
+  .section-body,
+  .editorial-text,
+  .about-body,
+  .com-body,
+  .com-intro,
+  .work-body,
+  .work-intro,
+  .sub-content p,
+  .upcoming-desc,
+  .exp-body-text,
+  .cw-body-text,
+  .prog-body-text {
+    font-size: 1.08rem !important;
+  }
+}
