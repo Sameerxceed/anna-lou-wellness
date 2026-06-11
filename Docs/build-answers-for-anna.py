@@ -217,16 +217,15 @@ callout(d, "Try it:", "Open ANY new article → save without filling SEO → the
 h1(d, "6. Date picker — can't see months ahead")
 quote(d, "On the Align & Amplify workshop I was trying to change the date but can't see the months ahead to be able to choose a date.")
 
-h3(d, "Status — DONE (Thursday afternoon)")
-para(d, "Replaced Strapi's broken date picker with your phone's native one. On iPhone, tapping a date field now opens the iOS wheel picker (years/months scroll reliably). On desktop, it's the browser's own calendar with proper month/year navigation.")
+h3(d, "Status — partial. The picker is a real Strapi v5 bug; proper fix coming in a follow-up.")
+para(d, "I attempted a proper replacement (native iOS / desktop date picker) but the Strapi v5 custom-field API took the CMS down at boot, so I had to revert. The picker itself is now back to the standard Strapi one until I figure out the right plumbing.")
 
-h3(d, "What changed")
-bullet(d, "Every date field across the site (events, retreats, workshops, cosmic forecasts, testimonials, vault journeys, workshop replays) now uses the native date picker.")
-bullet(d, "Added a 'Today' quick-set button so if you're scheduling for now, you can skip the picker entirely.")
-bullet(d, "Added a 'Clear' button next to the date so you can blank out a date easily.")
-bullet(d, "You can still type the date manually as YYYY-MM-DD or DD/MM/YYYY in any browser if you prefer.")
-
-para(d, "No setup needed on your side. Open the Align & Amplify entry and the date field — you'll see the new picker.")
+h3(d, "Workaround for now — type the date directly")
+para(d, "Strapi date fields accept typed input even when the calendar misbehaves:")
+numbered(d, "Tap into the date field.")
+numbered(d, "Type the date as YYYY-MM-DD, e.g. 2026-11-15.")
+numbered(d, "Tab out. The field accepts it.")
+para(d, "Works on every browser; sidesteps the broken picker completely.")
 
 # ─── 7. Booking URL ───
 h1(d, "7. Booking URL — what to put there")
@@ -373,7 +372,6 @@ bullet(d, "If we are following Aneeza's full sitemap proposal — that affects t
 h3(d, "DONE Thursday afternoon — also live")
 bullet(d, "Merged Align & Amplify event + sales into one page at /experiences/align-and-amplify. Same pattern for every Experience entry.")
 bullet(d, "Service upsells on event pages — the upsells field on each Experience entry now controls cross-promotion. Anna picks which services to show.")
-bullet(d, "New native date picker across every date field — replaces the broken Strapi v5 one.")
 
 h3(d, "NEXT — I will start when homepage is unblocked")
 bullet(d, "Homepage 6-category magazine grid (waiting on the 5 questions in section 1).")
