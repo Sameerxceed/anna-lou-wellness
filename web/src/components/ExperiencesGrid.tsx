@@ -13,7 +13,6 @@
  */
 
 import { useMemo, useState } from 'react';
-import { isCalendlyUrl, openCalendlyPopup } from './BookingButton';
 import Link from 'next/link';
 import { getStockImage } from '@/data/stock-images';
 
@@ -98,22 +97,15 @@ export default function ExperiencesGrid({ items }: { items: ExperienceCard[] }) 
           {filtered.map((item) => {
             const meta = TYPE_META[item.type];
             const img = item.heroImage || getStockImage('experiences', item.slug);
-            const href = item.bookingUrl || meta.href;
-            const isExternal = /^https?:\/\//i.test(href);
-            const useCalendly = isCalendlyUrl(href);
-            const cardProps: Record<string, any> = useCalendly
-              ? {
-                  href,
-                  onClick: async (e: React.MouseEvent) => {
-                    e.preventDefault();
-                    const opened = await openCalendlyPopup(href);
-                    if (!opened) window.open(href, '_blank', 'noopener,noreferrer');
-                  },
-                }
-              : isExternal
-                ? { href, target: '_blank' as const, rel: 'noopener' }
-                : { href };
-            const Tag = (isExternal || useCalendly ? 'a' : Link) as React.ElementType;
+            // Card click goes to the dedicated detail page for the experience —
+            // /experiences/[slug] — which renders the full sales content + the
+            // booking button. Anna's 10 Jun feedback was that the listing card
+            // jumping straight to a Calendly link skipped all the sales copy.
+            // Power users who want to book direct can still use a Book button
+            // inside the detail page (which respects e.bookingUrl).
+            const href = `/experiences/${item.slug}`;
+            const cardProps: Record<string, any> = { href };
+            const Tag = Link as React.ElementType;
             return (
               <Tag key={item.id} className="xg-card" {...cardProps}>
                 <div className="xg-card-img" style={{ backgroundImage: `url('${img}')` }}>

@@ -33,6 +33,10 @@ function pathsForExperience(experience) {
   if (!experience) return paths;
   const subPath = TYPE_PATHS[experience.type];
   if (subPath) paths.push(subPath);
+  // Each Experience now has its own /experiences/[slug] sales/booking page
+  // (added 11 Jun in response to Anna's 10 Jun feedback). Refresh it on
+  // every save so price / date / sales copy changes go live in 1-2 seconds.
+  if (experience.slug) paths.push(`/experiences/${experience.slug}`);
   return paths;
 }
 

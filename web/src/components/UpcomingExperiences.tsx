@@ -47,18 +47,40 @@ export default function UpcomingExperiences({ items, accentColour, emptyLabel }:
               {upcoming.map((e, i) => (
                 <article key={e.slug} className={`upcoming-card reveal${i > 0 ? ` rd${Math.min(i, 4)}` : ''}`}>
                   <p className="upcoming-date" style={{ color: accentColour }}>{formatDate(e.date)}</p>
-                  <h3 className="upcoming-name">{e.name}</h3>
+                  <h3 className="upcoming-name">
+                    <a href={`/experiences/${e.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                      {e.name}
+                    </a>
+                  </h3>
                   {e.location && <p className="upcoming-loc">{e.location}</p>}
                   {e.priceLabel && <p className="upcoming-price">{e.priceLabel}</p>}
                   {e.description && (
                     <p className="upcoming-desc">{e.description.split('\n\n')[0]}</p>
                   )}
-                  <BookingButton
-                    url={e.bookingUrl || `/contact?subject=${encodeURIComponent('Booking enquiry — ' + e.name)}`}
-                    label={`${e.bookingUrl ? 'Book this place' : 'Enquire'} →`}
-                    className="upcoming-cta"
-                    style={{ color: accentColour, borderColor: accentColour }}
-                  />
+                  {/*
+                    Two-button row: primary opens the dedicated sales/booking
+                    page (/experiences/[slug]) which has full sales content +
+                    booking button. Secondary opens the direct booking URL if
+                    Anna set one (Calendly etc.) for power users who want to
+                    skip the sales page.
+                  */}
+                  <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
+                    <a
+                      href={`/experiences/${e.slug}`}
+                      className="upcoming-cta"
+                      style={{ color: accentColour, borderColor: accentColour }}
+                    >
+                      Read more →
+                    </a>
+                    {e.bookingUrl ? (
+                      <BookingButton
+                        url={e.bookingUrl}
+                        label="Book directly →"
+                        className="upcoming-cta"
+                        style={{ color: accentColour, borderColor: accentColour, opacity: 0.85 }}
+                      />
+                    ) : null}
+                  </div>
                 </article>
               ))}
             </div>

@@ -964,6 +964,15 @@ export interface Experience {
   heroImage: string;
   isUpcoming: boolean;
   bookingUrl: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  upsells?: Array<{
+    label?: string;
+    link?: string;
+    eyebrow?: string;
+    blurb?: string;
+    image?: { url?: string } | null;
+  }>;
 }
 
 export async function getExperiences(type?: string): Promise<Experience[]> {
@@ -991,6 +1000,18 @@ export async function getExperiences(type?: string): Promise<Experience[]> {
       heroImage: mediaUrl(d.hero_image),
       isUpcoming: d.is_upcoming !== false,
       bookingUrl: d.booking_url || '',
+      seoTitle: d.seo_title || '',
+      seoDescription: d.seo_description || '',
+      // Upsells — Anna's per-experience "where next" cards. Used by the
+      // experience detail page (/experiences/[slug]) to render service
+      // upsells instead of automatic product upsells (her 10 Jun ask).
+      upsells: Array.isArray(d.upsells) ? d.upsells.map((u: any) => ({
+        label: u.label || '',
+        link: u.link || '',
+        eyebrow: u.eyebrow || '',
+        blurb: u.blurb || '',
+        image: u.image ? { url: mediaUrl(u.image) } : null,
+      })) : [],
     }));
   } catch {
     return [];
