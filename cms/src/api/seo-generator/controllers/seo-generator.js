@@ -137,6 +137,143 @@ async function callClaude(name, description, hints) {
   return { seoTitle, seoDescription };
 }
 
+// In-memory progress state for the bulk backfill job. Reset on each new run.
+// Survives across HTTP calls because the controller module is cached by Node's
+// require system for the lifetime of the Strapi process.
+const backfillState = {
+  status: 'idle', // 'idle' | 'running' | 'done' | 'error'
+  startedAt: null,
+  finishedAt: null,
+  current: '',
+  processed: 0,
+  updated: 0,
+  skipped: 0,
+  errors: 0,
+  lastLog: [],
+  errorMessage: '',
+};
+
+const BACKFILL_CT = [
+  { uid: 'api::article.article', nameFields: ['title', 'name'], bodyFields: ['intro', 'body', 'description', 'excerpt'] },
+  { uid: 'api::programme.programme', nameFields: ['title'], bodyFields: ['tagline', 'intro', 'whatsIncludedItems', 'approachBody', 'outcomesBody'] },
+  { uid: 'api::experience.experience', nameFields: ['name', 'title'], bodyFields: ['description', 'tagline', 'priceLabel', 'location'] },
+  { uid: 'api::coaching-session.coaching-session', nameFields: ['name'], bodyFields: ['description', 'tagline', 'duration', 'price_label'] },
+  { uid: 'api::generic-page.generic-page', nameFields: ['title', 'name'], bodyFields: ['intro', 'body', 'description', 'content'] },
+  { uid: 'api::page.page', nameFields: ['title', 'name'], bodyFields: ['intro', 'description', 'body', 'sections'] },
+];
+
+const SEO_TITLE_CANDIDATES = ['seo_title', 'seoTitle'];
+const SEO_DESCRIPTION_CANDIDATES = ['seo_description', 'seoDescription'];
+
+function firstFilledStr(obj, candidates) {
+  for (const k of candidates) {
+    const v = obj?.[k];
+    if (typeof v === 'string' && v.trim()) return { key: k, value: v.trim() };
+    if (v && Array.isArray(v) && v.length > 0) return { key: k, value: flattenContent(v) };
+    if (v && typeof v === 'object') {
+      const flat = flattenContent(v);
+      if (flat.trim()) return { key: k, value: flat };
+    }
+  }
+  return null;
+}
+
+function firstKey(obj, candidates) {
+  for (const k of candidates) {
+    if (obj && Object.prototype.hasOwnProperty.call(obj, k)) return k;
+  }
+  return candidates[0];
+}
+
+function pushLog(line) {
+  backfillState.lastLog.push(line);
+  if (backfillState.lastLog.length > 50) backfillState.lastLog.shift();
+}
+
+function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+
+async function runBackfill() {
+  try {
+    for (const ct of BACKFILL_CT) {
+      strapi.log.info(`[backfill-seo] processing ${ct.uid}`);
+      pushLog(`Processing ${ct.uid}`);
+      let entries;
+      try {
+        entries = await strapi.documents(ct.uid).findMany({ pagination: { pageSize: 500 }, status: 'published' });
+      } catch (err) {
+        strapi.log.warn(`[backfill-seo] ${ct.uid}: findMany failed: ${err.message}`);
+        pushLog(`  findMany failed: ${err.message}`);
+        continue;
+      }
+
+      for (const entry of entries) {
+        const documentId = entry.documentId;
+        if (!documentId) { backfillState.skipped++; continue; }
+        const label = entry.title || entry.name || documentId;
+        backfillState.current = label;
+        backfillState.processed++;
+
+        const titleHit = firstFilledStr(entry, SEO_TITLE_CANDIDATES);
+        const descHit = firstFilledStr(entry, SEO_DESCRIPTION_CANDIDATES);
+        if (titleHit && descHit) { backfillState.skipped++; continue; }
+
+        const nameSource = firstFilledStr(entry, ct.nameFields);
+        if (!nameSource?.value) { backfillState.skipped++; continue; }
+
+        const bodyChunks = [];
+        for (const f of ct.bodyFields) {
+          const hit = firstFilledStr(entry, [f]);
+          if (hit?.value) bodyChunks.push(hit.value);
+        }
+        const bodyText = bodyChunks.join('\n\n').slice(0, 4000);
+
+        let generated;
+        try {
+          generated = await callClaude(nameSource.value, bodyText, {});
+        } catch (err) {
+          strapi.log.warn(`[backfill-seo] FAIL ${label}: ${err.message}`);
+          pushLog(`  FAIL ${label}: ${err.message}`);
+          backfillState.errors++;
+          await sleep(700);
+          continue;
+        }
+
+        const patch = {};
+        const titleKey = firstKey(entry, SEO_TITLE_CANDIDATES);
+        const descKey = firstKey(entry, SEO_DESCRIPTION_CANDIDATES);
+        if (!titleHit) patch[titleKey] = generated.seoTitle;
+        if (!descHit) patch[descKey] = generated.seoDescription;
+
+        try {
+          await strapi.documents(ct.uid).update({ documentId, data: patch, status: 'draft' });
+        } catch (err) {
+          strapi.log.warn(`[backfill-seo] draft write fail ${label}: ${err.message}`);
+        }
+        try {
+          await strapi.documents(ct.uid).update({ documentId, data: patch, status: 'published' });
+        } catch (err) {
+          if (!String(err.message).includes('not found')) {
+            strapi.log.warn(`[backfill-seo] published write fail ${label}: ${err.message}`);
+          }
+        }
+        strapi.log.info(`[backfill-seo] OK ${label}`);
+        pushLog(`  OK ${label}`);
+        backfillState.updated++;
+        await sleep(700);
+      }
+    }
+    backfillState.status = 'done';
+    backfillState.finishedAt = new Date().toISOString();
+    backfillState.current = '';
+    strapi.log.info(`[backfill-seo] done. updated=${backfillState.updated} skipped=${backfillState.skipped} errors=${backfillState.errors}`);
+  } catch (err) {
+    backfillState.status = 'error';
+    backfillState.errorMessage = err.message;
+    backfillState.finishedAt = new Date().toISOString();
+    strapi.log.error(`[backfill-seo] fatal: ${err.message}`);
+  }
+}
+
 module.exports = {
   async generate(ctx) {
     const body = ctx.request.body || {};
@@ -156,5 +293,33 @@ module.exports = {
       ctx.status = 502;
       ctx.body = { ok: false, error: err.message };
     }
+  },
+
+  async backfillStart(ctx) {
+    if (backfillState.status === 'running') {
+      ctx.body = { ok: false, error: 'A backfill is already running', state: backfillState };
+      return;
+    }
+    // Reset state for a fresh run.
+    backfillState.status = 'running';
+    backfillState.startedAt = new Date().toISOString();
+    backfillState.finishedAt = null;
+    backfillState.current = '';
+    backfillState.processed = 0;
+    backfillState.updated = 0;
+    backfillState.skipped = 0;
+    backfillState.errors = 0;
+    backfillState.lastLog = [];
+    backfillState.errorMessage = '';
+
+    // Kick off in background. Don't await — return immediately so the
+    // HTTP request doesn't hang. Errors land in backfillState.errorMessage.
+    setImmediate(() => { runBackfill().catch((e) => strapi.log.error('[backfill-seo] uncaught', e)); });
+
+    ctx.body = { ok: true, status: 'started' };
+  },
+
+  async backfillStatus(ctx) {
+    ctx.body = { ok: true, state: backfillState };
   },
 };

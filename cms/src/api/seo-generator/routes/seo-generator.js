@@ -21,5 +21,23 @@ module.exports = {
         policies: ['admin::isAuthenticatedAdmin'],
       },
     },
+    {
+      method: 'POST',
+      path: '/seo-generator/backfill-start',
+      handler: 'seo-generator.backfillStart',
+      config: {
+        auth: false,
+        policies: ['admin::isAuthenticatedAdmin'],
+      },
+    },
+    {
+      method: 'GET',
+      path: '/seo-generator/backfill-status',
+      handler: 'seo-generator.backfillStatus',
+      config: {
+        auth: false,
+        policies: ['admin::isAuthenticatedAdmin'],
+      },
+    },
   ],
 };

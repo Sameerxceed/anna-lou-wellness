@@ -33,6 +33,7 @@ import AutoSeoStatusPanel from './extensions/AutoSeoStatusPanel';
 import ViewLivePanel from './extensions/ViewLivePanel';
 import QuickPhotoEditor from './extensions/QuickPhotoEditor';
 import SeoFilesPage from './extensions/SeoFilesPage';
+import SiteUrlsPage from './extensions/SiteUrlsPage';
 import BetterDateInput from './extensions/BetterDateInput';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
@@ -80,6 +81,21 @@ const SeoFilesMenuIcon = () => (
     aria-hidden="true"
   >
     🤖
+  </span>
+);
+
+const SiteUrlsMenuIcon = () => (
+  <span
+    style={{
+      fontSize: 18,
+      lineHeight: 1,
+      display: 'inline-block',
+      width: 20,
+      textAlign: 'center',
+    }}
+    aria-hidden="true"
+  >
+    🔗
   </span>
 );
 
@@ -283,6 +299,13 @@ const bootstrap = (app: StrapiApp) => {
       icon: SeoFilesMenuIcon,
       intlLabel: { id: 'alw.menu.seo-files', defaultMessage: 'SEO & AI Files' },
       Component: async () => ({ default: SeoFilesPage }),
+      permissions: [],
+    });
+    appAny.addMenuLink?.({
+      to: '/alw-site-urls',
+      icon: SiteUrlsMenuIcon,
+      intlLabel: { id: 'alw.menu.site-urls', defaultMessage: 'Site URLs' },
+      Component: async () => ({ default: SiteUrlsPage }),
       permissions: [],
     });
   } catch (err) {

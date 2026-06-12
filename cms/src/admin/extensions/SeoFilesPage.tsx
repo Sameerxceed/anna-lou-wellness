@@ -8,7 +8,7 @@
  * cookie issue that's blocking Quick Photos). Just static links + copy.
  */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // The public site URL. Mirrors the same heuristic as ViewLivePanel —
 // on production-cms hosting the new site lives at staging.<apex> until
@@ -143,8 +143,78 @@ const styles = {
   noFile: { fontSize: 12, color: '#8C8880', fontStyle: 'italic' as const } as React.CSSProperties,
 };
 
+// Backfill state polled from /api/seo-generator/backfill-status. credentials:include
+// sends the httpOnly admin cookie automatically — Strapi v5 dropped Bearer-token
+// support in localStorage.
+type BackfillState = {
+  status: 'idle' | 'running' | 'done' | 'error';
+  startedAt: string | null;
+  finishedAt: string | null;
+  current: string;
+  processed: number;
+  updated: number;
+  skipped: number;
+  errors: number;
+  lastLog: string[];
+  errorMessage: string;
+};
+
 export default function SeoFilesPage() {
   const [copied, setCopied] = useState<string | null>(null);
+  const [backfill, setBackfill] = useState<BackfillState | null>(null);
+  const [starting, setStarting] = useState(false);
+  const [triggerError, setTriggerError] = useState<string | null>(null);
+  const pollRef = useRef<number | null>(null);
+
+  const fetchStatus = async () => {
+    try {
+      const res = await fetch('/api/seo-generator/backfill-status', { credentials: 'include' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.state) setBackfill(data.state);
+    } catch {
+      // network blip — keep polling
+    }
+  };
+
+  // On mount, fetch once to know if a backfill is already running.
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+  // Poll every 2s while running.
+  useEffect(() => {
+    if (backfill?.status === 'running') {
+      pollRef.current = window.setInterval(fetchStatus, 2000);
+      return () => {
+        if (pollRef.current !== null) window.clearInterval(pollRef.current);
+      };
+    }
+    return undefined;
+  }, [backfill?.status]);
+
+  const startBackfill = async () => {
+    setTriggerError(null);
+    setStarting(true);
+    try {
+      const res = await fetch('/api/seo-generator/backfill-start', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(`HTTP ${res.status}: ${txt.slice(0, 200)}`);
+      }
+      // Force an immediate status fetch so the UI shows running state right away.
+      await fetchStatus();
+    } catch (err: any) {
+      setTriggerError(err?.message || 'Failed to start');
+    } finally {
+      setStarting(false);
+    }
+  };
 
   const copyUrl = async (url: string) => {
     try {
@@ -154,12 +224,92 @@ export default function SeoFilesPage() {
     } catch {/* ignore */}
   };
 
+  const running = backfill?.status === 'running';
+
   return (
     <div style={styles.page}>
       <h1 style={styles.h1}>SEO &amp; AI files</h1>
       <p style={styles.intro}>
         Everything your site exposes to Google, ChatGPT, Perplexity, Gemini, and the shopping engines. Tap <strong>View</strong> to open any file in a new tab and see exactly what they read. These files update automatically as you publish content — there is nothing here for you to maintain manually.
       </p>
+
+      {/* Bulk SEO backfill panel */}
+      <section style={{ background: '#fff', border: '1px solid #DCDCE4', borderRadius: 6, padding: 18, marginBottom: 28 }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: 22, color: '#231F20', margin: '0 0 6px' }}>Bulk fill missing SEO</h2>
+        <p style={{ fontSize: 13, color: '#666687', lineHeight: 1.55, margin: '0 0 12px' }}>
+          Scans Articles, Programmes, Experiences, Coaching Sessions, Generic Pages, and Page Builder entries.
+          Anything missing both SEO title and description gets one written by Claude using the entry's name + body text.
+          Entries with SEO already filled are <strong>never overwritten</strong>. Takes ~1 second per entry.
+        </p>
+
+        {triggerError && (
+          <div style={{ padding: '10px 12px', background: '#FFF0F0', border: '1px solid #FFB3B3', color: '#B33A3A', fontSize: 12, marginBottom: 10, borderRadius: 4 }}>
+            {triggerError}
+          </div>
+        )}
+
+        {!backfill || backfill.status === 'idle' ? (
+          <button
+            type="button"
+            onClick={startBackfill}
+            disabled={starting}
+            style={{
+              padding: '10px 18px', background: starting ? '#c8c4bc' : '#6E3A5A', color: '#fff',
+              border: 'none', borderRadius: 3, fontSize: 12, fontWeight: 600, letterSpacing: '0.1em',
+              textTransform: 'uppercase', cursor: starting ? 'wait' : 'pointer',
+            }}
+          >
+            {starting ? 'Starting...' : 'Run bulk SEO backfill'}
+          </button>
+        ) : (
+          <div>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 10, fontSize: 13, color: '#3D3D3A' }}>
+              <span><strong>Status:</strong> {backfill.status}</span>
+              <span><strong>Processed:</strong> {backfill.processed}</span>
+              <span><strong>Filled:</strong> {backfill.updated}</span>
+              <span><strong>Skipped:</strong> {backfill.skipped}</span>
+              <span><strong>Errors:</strong> {backfill.errors}</span>
+            </div>
+            {running && backfill.current && (
+              <p style={{ fontSize: 12, color: '#6E3A5A', margin: '0 0 8px', fontStyle: 'italic' }}>
+                Currently: {backfill.current}
+              </p>
+            )}
+            {backfill.status === 'done' && (
+              <p style={{ fontSize: 12, color: '#0A7A3B', margin: '0 0 8px' }}>
+                Finished. {backfill.updated} entries filled, {backfill.skipped} already had SEO, {backfill.errors} errors.
+              </p>
+            )}
+            {backfill.status === 'error' && backfill.errorMessage && (
+              <p style={{ fontSize: 12, color: '#B33A3A', margin: '0 0 8px' }}>
+                {backfill.errorMessage}
+              </p>
+            )}
+            {backfill.lastLog && backfill.lastLog.length > 0 && (
+              <details style={{ marginTop: 8 }}>
+                <summary style={{ fontSize: 12, color: '#666687', cursor: 'pointer' }}>Recent activity ({backfill.lastLog.length})</summary>
+                <pre style={{ fontSize: 11, background: '#F6F6F9', padding: 10, borderRadius: 3, maxHeight: 200, overflow: 'auto', margin: '8px 0 0' }}>
+                  {backfill.lastLog.join('\n')}
+                </pre>
+              </details>
+            )}
+            {!running && (
+              <button
+                type="button"
+                onClick={startBackfill}
+                disabled={starting}
+                style={{
+                  marginTop: 10, padding: '8px 14px', background: '#fff', color: '#6E3A5A',
+                  border: '1px solid #6E3A5A', borderRadius: 3, fontSize: 11, fontWeight: 600,
+                  letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
+                }}
+              >
+                Run again
+              </button>
+            )}
+          </div>
+        )}
+      </section>
 
       {GROUPS.map((group) => (
         <section key={group.groupTitle} style={styles.groupSection}>

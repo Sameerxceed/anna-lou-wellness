@@ -9,43 +9,24 @@
  * thumbnail (~2 taps).
  *
  * For collections (programmes, practitioners, experiences) we fetch
- * every entry and list one row per entry. Filtered to active + listed
- * via the same admin token pattern as the other extensions.
+ * every entry and list one row per entry.
+ *
+ * AUTH: Strapi v5 moved the admin JWT off localStorage and into an
+ * httpOnly cookie. The old Bearer-token approach 401d. We now use
+ * `credentials: 'include'` on every fetch so the cookie is sent
+ * automatically. The admin content-manager and upload endpoints
+ * accept the cookie via the admin session middleware.
  */
 
 import { useEffect, useState, useCallback } from 'react';
 
-// ─── Auth helpers (same shape as the other panels) ────────────────────────
-
-function getAdminToken(): { token: string | null; foundAt: string } {
-  const read = (s: Storage | undefined, k: string): string | null => {
-    if (!s) return null;
-    const raw = s.getItem(k);
-    if (!raw) return null;
-    try { const p = JSON.parse(raw); if (typeof p === 'string') return p; } catch { /* raw */ }
-    return raw;
-  };
-  // Strapi versions disagree on the JWT storage key. Try every common one.
-  // 'jwtToken' is the v5 default; the others are v3/v4 holdovers.
-  for (const k of ['jwtToken', 'strapi-jwt-token', 'jwt', 'strapi_admin_jwt']) {
-    const fromSession = read(typeof sessionStorage !== 'undefined' ? sessionStorage : undefined, k);
-    if (fromSession) return { token: fromSession, foundAt: `sessionStorage["${k}"]` };
-    const fromLocal = read(typeof localStorage !== 'undefined' ? localStorage : undefined, k);
-    if (fromLocal) return { token: fromLocal, foundAt: `localStorage["${k}"]` };
-  }
-  // Last resort: surface every key so we can see what Strapi actually stores
-  const sessionKeys = typeof sessionStorage !== 'undefined' ? Object.keys(sessionStorage) : [];
-  const localKeys = typeof localStorage !== 'undefined' ? Object.keys(localStorage) : [];
-  return { token: null, foundAt: `(no token found — session keys: [${sessionKeys.join(', ')}], local keys: [${localKeys.join(', ')}])` };
-}
+// ─── Auth helpers ──────────────────────────────────────────────────────────
+// Strapi v5 admin auth uses an httpOnly cookie. We don't touch tokens —
+// `credentials: 'include'` ensures the cookie is sent on every request.
 
 async function adminFetch(path: string, init?: RequestInit) {
-  const { token } = getAdminToken();
-  const headers: Record<string, string> = { ...(init?.headers as Record<string, string> | undefined) };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetch(path, { ...init, headers, credentials: 'include' });
+  const res = await fetch(path, { ...init, credentials: 'include' });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  // Some endpoints return no body
   const text = await res.text();
   return text ? JSON.parse(text) : null;
 }
@@ -275,10 +256,10 @@ export default function QuickPhotoEditor() {
       form.append('ref', row.uid);
       form.append('refId', row.documentId);
       form.append('field', row.fieldName);
-      const { token } = getAdminToken();
+      // Strapi v5 admin cookie ships with credentials: 'include'.
+      // Don't set Content-Type — browser sets multipart boundary automatically.
       const res = await fetch('/api/upload', {
         method: 'POST',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
         credentials: 'include',
         body: form,
       });
@@ -314,18 +295,20 @@ export default function QuickPhotoEditor() {
       {loading && <div style={styles.spinner}>Loading photos…</div>}
       {!loading && rows.length === 0 && (
         <div style={styles.empty}>
-          <p style={{ marginBottom: 16, fontStyle: 'normal', color: '#32324D' }}>
-            <strong>Coming soon.</strong>
+          <p style={{ marginBottom: 12, fontStyle: 'normal', color: '#32324D' }}>
+            <strong>No photos loaded yet.</strong>
           </p>
           <p style={{ fontSize: 13, color: '#666687', fontStyle: 'normal', maxWidth: 560, margin: '0 auto', lineHeight: 1.6 }}>
-            This page is being rebuilt to work with Strapi 5&rsquo;s authentication system. For now, replace photos the normal way:
+            If this keeps showing, you may need to refresh and ensure you're still logged in. If still empty, open browser console and look for [QuickPhotos] errors.
           </p>
-          <ol style={{ textAlign: 'left', maxWidth: 480, margin: '16px auto', fontSize: 13, color: '#666687', fontStyle: 'normal', lineHeight: 1.7 }}>
-            <li>Open the page you want (Homepage, a programme, a practitioner, etc.) from the sidebar</li>
-            <li>Tap directly on the existing image thumbnail (not the field label)</li>
-            <li>Tap <strong>Replace media</strong> in the modal that opens</li>
-            <li>Pick the new photo, then tap <strong>Publish</strong></li>
-          </ol>
+          {debugErrors.length > 0 && (
+            <details style={{ marginTop: 16, textAlign: 'left' as const, maxWidth: 560, margin: '16px auto 0' }}>
+              <summary style={{ fontSize: 12, color: '#666687', cursor: 'pointer' }}>Debug ({debugErrors.length} errors)</summary>
+              <pre style={{ fontSize: 11, background: '#F6F6F9', padding: 10, borderRadius: 3, maxHeight: 200, overflow: 'auto', marginTop: 8 }}>
+                {debugErrors.join('\n')}
+              </pre>
+            </details>
+          )}
         </div>
       )}
 
