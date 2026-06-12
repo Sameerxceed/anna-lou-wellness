@@ -260,7 +260,7 @@ const navStyles = `
 .top-strip-text {
   font-family: Mulish, system-ui, sans-serif;
   font-weight: 500;
-  font-size: 0.58rem;
+  font-size: 0.72rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   /* WCAG AA contrast: #8C8880 on #F5F3EF failed (~3.0:1).
@@ -318,7 +318,7 @@ const navStyles = `
 .nav-item > a {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.62rem;
+  font-size: 0.78rem;
   letter-spacing: 0.035em;
   text-transform: uppercase;
   padding: 0.5rem 0.3rem;
@@ -358,10 +358,10 @@ const navStyles = `
 .nav-item.nav-item-dismiss .nav-dropdown { display: none !important; }
 .nav-dropdown a {
   display: block;
-  padding: 0.45rem 1.2rem;
+  padding: 0.5rem 1.2rem;
   font-family: 'EB Garamond', Georgia, serif;
   font-weight: 400;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #3D3D3A;
   text-decoration: none;
   white-space: nowrap;
@@ -381,7 +381,7 @@ const navStyles = `
 .nav-action-btn {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.48rem;
+  font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #3D3D3A;
@@ -406,7 +406,7 @@ const navStyles = `
   background: #F280AA;
   color: #fff;
   border-radius: 10px;
-  font-size: 0.55rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -491,7 +491,7 @@ const navStyles = `
 .mobile-grid a {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   color: #3D3D3A;
   text-decoration: none;
   padding: 0.55rem 0;
@@ -508,7 +508,7 @@ const navStyles = `
 .mobile-btn {
   font-family: Mulish, sans-serif;
   font-weight: 400;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 0.7rem 2rem;
@@ -529,12 +529,14 @@ const navStyles = `
    page level. Nav must never push beyond viewport width. */
 #mainNav { overflow-x: clip; }
 
-/* Min viewport for full nav (9 items + logo + login + cart) is ~1280px CSS pixels.
-   That covers HP ProBook 14" at 125% Windows scaling (1536 effective), MacBook Pro
-   14" at default (1512 effective), and Dell XPS 13 (1536 effective).
-   Below 1280 (iPad landscape ~1180, MacBook Air 13" default 1280-borderline)
-   we go hamburger. */
-@media (max-width: 1279px) {
+/* Min viewport for full nav (9 items + logo + login + cart).
+   After 12 Jun font bump (nav items 0.62 -> 0.78rem, ~26% wider per item),
+   the horizontal real estate needed grew. Raised breakpoint from 1279px
+   to 1339px to keep the full nav from cramming. Still covers HP ProBook
+   14" at 125% (1536 eff), MacBook Pro 14" default (1512 eff), Dell XPS 13
+   (1536 eff). MacBook Air 13" default (1280 eff) now goes hamburger — fine
+   since the bigger font would not have fit anyway. */
+@media (max-width: 1339px) {
   .nav-left, .nav-right { display: none; }
   .nav-right-wrap { gap: 0; }
   .nav-row {
@@ -549,7 +551,7 @@ const navStyles = `
 }
 @media (max-width: 480px) {
   .nav-logo-img { height: 48px; }
-  .top-strip-text { font-size: 0.45rem; letter-spacing: 0.15em; }
+  .top-strip-text { font-size: 0.6rem; letter-spacing: 0.15em; }
 }
 
 /* Wider viewports get more breathing room between menu names.

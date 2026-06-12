@@ -14,6 +14,16 @@
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
+    /* Site-wide readability bump — Anna's 11-12 Jun feedback.
+       Default browser root is 16px. Bumping to 17.5px cascades to every
+       rem-based size in the codebase: body text, nav labels, kickers,
+       eyebrows, buttons, dropdowns, forms. ~9.4% bump uniformly.
+       Mobile reduced slightly to keep aggressive existing mobile rules
+       (.hp-body etc. at 1.05rem) from feeling oversized on small screens. */
+    font-size: 17.5px;
+  }
+  @media (max-width: 900px) {
+    html { font-size: 17px; }
   }
   body {
     @apply font-body text-ink bg-warm-neutral overflow-x-hidden;
@@ -209,33 +219,12 @@
    untouched per her instruction (size only). Uses !important sparingly to
    override component-level inline styles that set values below the floor. */
 
-/* Desktop bump (≥901px): body text bumped to 1.08rem (17.3px).
-   Uses !important to override inline <style> in page.tsx (e.g. article-card-excerpt
-   was 0.85rem hardcoded) and section components. Anna's instruction was
-   "across the website all over pages on desktop and mobile" — earlier I scoped
-   only to mobile, this corrects that. */
-@media (min-width: 901px) {
-  .hp-body,
-  .hp-featured-excerpt,
-  .hp-portrait-body,
-  .hp-newsletter-body,
-  .hp-quote-text,
-  .article-card-excerpt,
-  .section-body,
-  .editorial-text,
-  .about-body,
-  .com-body,
-  .com-intro,
-  .work-body,
-  .work-intro,
-  .sub-content p,
-  .upcoming-desc,
-  .exp-body-text,
-  .cw-body-text,
-  .prog-body-text {
-    font-size: 1.08rem !important;
-    line-height: 1.7;
-  }
+/* Article card excerpts on the homepage are inline-styled at 0.85rem in
+   page.tsx — even with the 17.5px root that's only ~14.9px. Bump those
+   specifically with !important to beat the inline rule. */
+.article-card-excerpt {
+  font-size: 1rem !important;
+  line-height: 1.65;
 }
 
 /* Italic captions / hooks / inline editorial — was 0.75-0.82rem, too small */
@@ -244,7 +233,8 @@
   font-size: 0.95rem !important;
 }
 
-/* Meta lines (author + date strips) — was 0.72rem; bump for desktop legibility */
+/* Meta lines (author + date strips) — was 0.72rem; bump to keep legible
+   against the body text after the root bump */
 .hp-featured-meta,
 .hp-media-meta,
 .hp-newsletter-small {

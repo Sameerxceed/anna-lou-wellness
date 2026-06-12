@@ -131,14 +131,14 @@ const footerStyles = `
 .footer-social-icon { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; color:rgba(245,243,239,0.45); transition:color 0.3s, background 0.3s; text-decoration:none; }
 .footer-social-icon:hover { color:#FFD07A; background:rgba(255,255,255,0.04); }
 .footer-tier3 { display:flex; justify-content:center; gap:1.2rem; flex-wrap:wrap; margin-bottom:0.8rem; }
-.footer-tier3 a { font-family:'EB Garamond',Georgia,serif; font-size:0.72rem; letter-spacing:0.04em; color:rgba(245,243,239,0.2); transition:color 0.3s; text-decoration:none; }
+.footer-tier3 a { font-family:'EB Garamond',Georgia,serif; font-size:0.82rem; letter-spacing:0.04em; color:rgba(245,243,239,0.2); transition:color 0.3s; text-decoration:none; }
 .footer-tier3 a:hover { color:rgba(245,243,239,0.5); }
 .footer-substack { text-align:center; margin-bottom:1rem; }
-.footer-substack a { font-family:Mulish,sans-serif; font-weight:400; font-size:0.7rem; letter-spacing:0.04em; color:rgba(245,243,239,0.4); padding:0.5rem 1.2rem; border:1px solid rgba(245,243,239,0.1); border-radius:3px; transition:all 0.3s; text-decoration:none; }
+.footer-substack a { font-family:Mulish,sans-serif; font-weight:400; font-size:0.82rem; letter-spacing:0.04em; color:rgba(245,243,239,0.4); padding:0.5rem 1.2rem; border:1px solid rgba(245,243,239,0.1); border-radius:3px; transition:all 0.3s; text-decoration:none; }
 .footer-substack a:hover { border-color:#6E3A5A; color:#6E3A5A; }
 .footer-bottom { text-align:center; padding-top:1.5rem; border-top:1px solid rgba(245,243,239,0.04); }
-.footer-address { font-family:Mulish,sans-serif; font-size:0.6rem; letter-spacing:0.08em; color:rgba(245,243,239,0.25); margin-bottom:0.3rem; }
-.footer-copy { font-family:Mulish,sans-serif; font-size:0.55rem; letter-spacing:0.06em; color:rgba(245,243,239,0.15); }
+.footer-address { font-family:Mulish,sans-serif; font-size:0.78rem; letter-spacing:0.08em; color:rgba(245,243,239,0.25); margin-bottom:0.3rem; }
+.footer-copy { font-family:Mulish,sans-serif; font-size:0.72rem; letter-spacing:0.06em; color:rgba(245,243,239,0.15); }
 @media (max-width:900px) {
   .footer-tier1 { flex-direction:column; align-items:center; gap:0.5rem; }
   .footer-socials { gap:0.6rem; }
