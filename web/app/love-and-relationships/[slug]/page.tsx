@@ -1,8 +1,9 @@
-import { Metadata } from 'next';
+﻿import { Metadata } from 'next';
 import Link from 'next/link';
 import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage } from '@/data/stock-images';
 import Paywall from '@/components/Paywall';
 import { previewBody } from '@/lib/article-utils';
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (article) {
-    const title = article.seoTitle || `${article.title} — Love & Relationships`;
+    const title = article.seoTitle || `${article.title} â€” Love & Relationships`;
     const description = article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`;
     return {
       title,
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   const category = await getArticleCategoryBySlug(slug, 'love-and-relationships');
   if (category) {
-    const title = `${category.name} — Love & Relationships`;
+    const title = `${category.name} â€” Love & Relationships`;
     return {
       title,
       description: category.description || `Stories about ${category.name}.`,
@@ -66,7 +67,7 @@ export default async function ArticlePage({ params }: PageProps) {
       }));
       return (
         <EditorialFeed
-          kicker={`Love & Relationships · ${category.name}`}
+          kicker={`Love & Relationships Â· ${category.name}`}
           kickerColour={category.colour}
           title={category.name}
           intro={category.description || ''}
@@ -88,7 +89,7 @@ export default async function ArticlePage({ params }: PageProps) {
           <div className="article-inner">
             <nav className="article-breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
-              <span className="article-breadcrumb-sep">›</span>
+              <span className="article-breadcrumb-sep">â€º</span>
               <Link href="/love-and-relationships">Love & Relationships</Link>
             </nav>
             <p className="article-kicker" style={{ color: '#F280AA' }}>Love & Relationships</p>
@@ -114,7 +115,7 @@ export default async function ArticlePage({ params }: PageProps) {
         <div className="article-inner">
           <nav className="article-breadcrumb" aria-label="Breadcrumb">
             <Link href="/">Home</Link>
-            <span className="article-breadcrumb-sep">›</span>
+            <span className="article-breadcrumb-sep">â€º</span>
             <Link href="/love-and-relationships">Love & Relationships</Link>
           </nav>
           <p className="article-kicker" style={{ color: accentForText(article.category?.colour || '#F280AA') }}>
@@ -123,7 +124,7 @@ export default async function ArticlePage({ params }: PageProps) {
           <h1 className="article-title">{article.title}</h1>
           <p className="article-meta">
             By {article.author} &middot; {article.readingTime}
-            {!article.isFree && <span className="article-paid-badge">Paid · Subscribers only</span>}
+            {!article.isFree && <span className="article-paid-badge">Paid Â· Subscribers only</span>}
             {article.substackUrl && (
               <>
                 {' '}&middot;{' '}
@@ -169,6 +170,7 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
         </div>
       </article>
+      <UpsellBlock items={article.upsells as unknown as UpsellItem[]} title="Where next." kicker="Continue exploring" />
     </>
   );
 }

@@ -717,6 +717,7 @@ export interface Article {
   seoDescription: string;
   publishedAt: string;
   shopTags: ArticleShopTag[];
+  upsells: UpsellRef[];
 }
 
 export interface ArticleCategory {
@@ -767,6 +768,15 @@ function mapArticle(d: any): Article {
             fitMode: t.fit_mode === 'contain' ? 'contain' : 'cover',
           }))
       : [],
+    upsells: Array.isArray(d.upsells)
+      ? d.upsells.map((u: any) => ({
+          label: u.label || '',
+          link: u.link || '',
+          eyebrow: u.eyebrow || '',
+          blurb: u.blurb || '',
+          image: u.image && u.image.url ? { url: mediaUrl(u.image) } : null,
+        }))
+      : [],
   };
 }
 
@@ -814,6 +824,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       'populate[category]': 'true',
       'populate[shop_tags][populate][image]': 'true',
       'populate[shop_tags][populate][product]': 'true',
+      'populate[upsells][populate]': '*',
       'filters[slug][$eq]': slug,
     });
     if (!data?.length) return null;
@@ -1526,6 +1537,7 @@ export interface AboutPage {
   portrait: string;
   pressLogos: { name: string; logo?: string }[];
   certifications: { name: string; colour: string; badge?: string }[];
+  upsells: UpsellRef[];
 }
 
 export async function getAboutPage(): Promise<AboutPage> {
@@ -1539,11 +1551,13 @@ export async function getAboutPage(): Promise<AboutPage> {
     portrait: '',
     pressLogos: [],
     certifications: [],
+    upsells: [],
   };
 
   try {
     const { data: d } = await fetchAPI('/about-page', { populate: '*' });
     if (!d) return fallback;
+    const upsells = await getUpsellsForSingleton('/about-page');
     return {
       kicker: d.kicker || fallback.kicker,
       title: d.title || fallback.title,
@@ -1562,6 +1576,7 @@ export async function getAboutPage(): Promise<AboutPage> {
             badge: mediaUrl(c?.badge) || undefined,
           }))
         : fallback.certifications,
+      upsells,
     };
   } catch {
     return fallback;
@@ -1586,6 +1601,7 @@ export interface CommunityPage {
   eventsDescription: string;
   resourcesTitle: string;
   resourcesDescription: string;
+  upsells: UpsellRef[];
 }
 
 export async function getCommunityPage(): Promise<CommunityPage> {
@@ -1605,11 +1621,13 @@ export async function getCommunityPage(): Promise<CommunityPage> {
     eventsDescription: '',
     resourcesTitle: 'Resource Library',
     resourcesDescription: '',
+    upsells: [],
   };
 
   try {
     const { data: d } = await fetchAPI('/community-page', { populate: '*' });
     if (!d) return fallback;
+    const upsells = await getUpsellsForSingleton('/community-page');
     return {
       kicker: d.kicker || fallback.kicker,
       title: d.title || fallback.title,
@@ -1630,6 +1648,7 @@ export async function getCommunityPage(): Promise<CommunityPage> {
       eventsDescription: d.events_description || fallback.eventsDescription,
       resourcesTitle: d.resources_title || fallback.resourcesTitle,
       resourcesDescription: d.resources_description || fallback.resourcesDescription,
+      upsells,
     };
   } catch {
     return fallback;

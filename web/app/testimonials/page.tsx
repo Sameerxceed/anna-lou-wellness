@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getTestimonials, getTestimonialsPage, getFAQs, type Testimonial } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getTestimonialsPage();
@@ -106,6 +107,7 @@ export default async function TestimonialsPage() {
       )}
 
       <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#fff" />
+    <UpsellBlockForSingleton endpoint="/testimonials-page" />
     </>
   );
 }

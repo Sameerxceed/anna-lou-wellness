@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage } from '@/data/stock-images';
 import Paywall from '@/components/Paywall';
 import { previewBody } from '@/lib/article-utils';
@@ -177,6 +178,7 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
         </div>
       </article>
+      <UpsellBlock items={article.upsells as unknown as UpsellItem[]} title="Where next." kicker="Continue exploring" />
     </>
   );
 }

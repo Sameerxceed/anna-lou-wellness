@@ -1,5 +1,6 @@
 import { fetchAPI } from '@/lib/strapi';
 import ResetLettersSignupForm from './ResetLettersSignupForm';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
   const v = cms?.[key];
@@ -131,6 +132,7 @@ export default async function ResetLettersPage() {
           <p className="rl-copyright">&copy; {new Date().getFullYear()} Anna Lou Wellness</p>
         </footer>
       </div>
+    <UpsellBlockForSingleton endpoint="/reset-letters-page" />
     </>
   );
 }

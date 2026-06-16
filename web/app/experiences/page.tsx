@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getExperiences, getExperiencesLandingPage } from '@/lib/cms';
 import ExperiencesGrid, { type ExperienceCard } from '@/components/ExperiencesGrid';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const revalidate = 3600;
 
@@ -60,6 +61,7 @@ export default async function ExperiencesPage() {
 
       {/* One-page visual grid of every Experience with filter pills */}
       <ExperiencesGrid items={items} />
+    <UpsellBlockForSingleton endpoint="/experiences-landing-page" />
     </>
   );
 }

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getAboutPage, getFAQs } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
 import { BreadcrumbSchema } from '@/components/StructuredData';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const revalidate = 3600;
 
@@ -134,6 +135,7 @@ export default async function AboutPage() {
       </section>
 
       <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
+    <UpsellBlockForSingleton endpoint="/about-page" />
     </>
   );
 }

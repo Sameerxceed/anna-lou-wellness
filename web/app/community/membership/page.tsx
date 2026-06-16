@@ -3,6 +3,7 @@ import Link from 'next/link';
 import JoinResetRoomButton from '@/components/JoinResetRoomButton';
 import FAQAccordion from '@/components/FAQAccordion';
 import { getMembershipPage, getFAQs } from '@/lib/cms';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const metadata: Metadata = {
   title: 'The Reset Room',
@@ -65,6 +66,7 @@ export default async function MembershipPage() {
         </div>
       </article>
       <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
+    <UpsellBlockForSingleton endpoint="/membership-page" />
     </>
   );
 }

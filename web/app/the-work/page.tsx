@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getCoachingSessions, getFAQs, getWorkWithAnnaPage } from '@/lib/cms';
 import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import FAQAccordion from '@/components/FAQAccordion';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const metadata: Metadata = {
   title: 'Work with Anna',
@@ -140,6 +141,7 @@ export default async function TheWorkPage() {
         <p className="work-body" style={{ maxWidth: '550px', margin: '0 auto 1.5rem', textAlign: 'center' }}>Five short questions to read where your inner guidance system is right now — and a practice you can use today.</p>
         <Link href="/free/nervous-system-decoder" className="work-download-btn">Begin the Decoder <span>&rarr;</span></Link>
       </section>
+    <UpsellBlockForSingleton endpoint="/work-with-anna-page" />
     </>
   );
 }

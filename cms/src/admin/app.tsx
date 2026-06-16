@@ -35,6 +35,7 @@ import QuickPhotoEditor from './extensions/QuickPhotoEditor';
 import SeoFilesPage from './extensions/SeoFilesPage';
 import SiteUrlsPage from './extensions/SiteUrlsPage';
 import BetterDateInput from './extensions/BetterDateInput';
+import LinkPickerInput from './extensions/LinkPickerInput';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -174,6 +175,31 @@ const bootstrap = (app: StrapiApp) => {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('[ALW admin] BetterDateInput custom field registration failed:', err);
+  }
+
+  // LinkPickerInput app-level custom field. Searchable dropdown of every
+  // public URL (driven by /api/internal-routes/list). Use anywhere Anna
+  // needs to pick a destination instead of typing one. Underlying column
+  // is a regular string.
+  try {
+    (app as any).customFields?.register({
+      name: 'alw-link-picker',
+      type: 'string',
+      intlLabel: {
+        id: 'alw.customField.link.label',
+        defaultMessage: 'Link',
+      },
+      intlDescription: {
+        id: 'alw.customField.link.description',
+        defaultMessage: 'Type to search every page on your site, or paste a custom URL (e.g. Calendly).',
+      },
+      components: {
+        Input: async () => ({ default: LinkPickerInput }),
+      },
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] LinkPickerInput custom field registration failed:', err);
   }
 
   // Auto-redirect /admin (or /admin/ trailing slash) to /admin/alw-quick-edit

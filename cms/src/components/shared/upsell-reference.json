@@ -13,9 +13,10 @@
       "description": "Card title. Example: 'The Reset Room' or 'Signal & Build'."
     },
     "link": {
-      "type": "string",
+      "type": "customField",
+      "customField": "global::alw-link-picker",
       "required": true,
-      "description": "Where the card takes people. Use an internal path like /the-work/regulated or a full URL."
+      "description": "Click and start typing a page name (e.g. 'Reset', 'Practitioners'). Or paste an external URL like a Calendly link."
     },
     "eyebrow": {
       "type": "string",

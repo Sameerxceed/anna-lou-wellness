@@ -4,6 +4,7 @@ import FAQAccordion from '@/components/FAQAccordion';
 import { getContactInfo, getFAQs } from '@/lib/cms';
 import { getGenericPageBySlug } from '@/lib/generic-page';
 import { BreadcrumbSchema } from '@/components/StructuredData';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -72,6 +73,7 @@ export default async function ContactPage() {
       </section>
 
       <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
+    <UpsellBlockForSingleton endpoint="/contact-page" />
     </>
   );
 }

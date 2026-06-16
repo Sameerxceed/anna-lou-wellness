@@ -28,6 +28,19 @@ module.exports = {
     } catch (err) {
       strapi.log.warn(`[ALW] custom field alw-date register failed: ${err.message}`);
     }
+
+    // App-level custom field: alw-link-picker. Stores a URL string but
+    // renders as a searchable dropdown of every page on the site (driven
+    // by /api/internal-routes/list). Anna picks instead of typing.
+    // Underlying column is a regular string — same as a normal text field.
+    try {
+      strapi.customFields.register({
+        name: 'alw-link-picker',
+        type: 'string',
+      });
+    } catch (err) {
+      strapi.log.warn(`[ALW] custom field alw-link-picker register failed: ${err.message}`);
+    }
   },
 
   async bootstrap({ strapi }) {

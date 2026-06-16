@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getCommunityPage } from '@/lib/cms';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const revalidate = 3600;
 
@@ -101,6 +102,7 @@ export default async function CommunityPage() {
           </Link>
         </div>
       </section>
+    <UpsellBlockForSingleton endpoint="/community-page" />
     </>
   );
 }

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getProducts, getShopCategoryTree, getSectionLandingPage, getFAQs } from '@/lib/cms';
 import ShopGrid from './ShopGrid';
 import FAQAccordion from '@/components/FAQAccordion';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const metadata: Metadata = {
   title: 'Shop',
@@ -56,6 +57,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       </section>
 
       <FAQAccordion faqs={faqs} accentColour="#5DCAA5" background="#F5F3EF" />
+    <UpsellBlockForSingleton endpoint="/shop-page" />
     </>
   );
 }

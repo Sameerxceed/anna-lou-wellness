@@ -5,6 +5,7 @@ import { getStockImage } from '@/data/stock-images';
 import { getCommunityEventBySlug } from '@/lib/generic-page';
 import { getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const metadata: Metadata = {
   title: 'The Returning Circle | Weekly Donation-Based Circle',
@@ -114,6 +115,7 @@ export default async function CirclePage() {
       </section>
 
       <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
+    <UpsellBlockForSingleton endpoint="/community-event-page" />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
 import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 import DecoderQuizClient, {
   type DecoderQuestion,
   type DecoderQuizCopy,
@@ -124,6 +125,7 @@ export default async function DecoderPage() {
       />
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Free Decoder', href: '/free/nervous-system-decoder' }]} />
       <DecoderQuizClient copy={copy} questions={questions} results={results} />
+    <UpsellBlockForSingleton endpoint="/decoder-page" />
     </>
   );
 }

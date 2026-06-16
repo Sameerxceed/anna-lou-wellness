@@ -3,6 +3,7 @@ import Link from 'next/link';
 import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getCoachingSessions, getSessionsHubPage, getFAQs } from '@/lib/cms';
+import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const metadata: Metadata = {
   title: '1:1 Reset Sessions | Single Somatic Coaching Sessions',
@@ -80,6 +81,7 @@ export default async function SessionsHubPage() {
       </section>
 
       <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#fff" />
+    <UpsellBlockForSingleton endpoint="/sessions-hub-page" />
     </>
   );
 }
