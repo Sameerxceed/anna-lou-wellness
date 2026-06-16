@@ -8,6 +8,7 @@ import {
   getPressMentions,
   getCertifications,
 } from '@/lib/cms';
+import DecoderQuizPopup from '@/components/DecoderQuizPopup';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
 import { mediaUrl } from '@/lib/strapi';
 import { accentForText } from '@/lib/colours';
@@ -442,6 +443,7 @@ export default async function HomePage() {
       </section>
 
       <style dangerouslySetInnerHTML={{ __html: homepageStyles }} />
+      <DecoderQuizPopup />
     </>
   );
 }
