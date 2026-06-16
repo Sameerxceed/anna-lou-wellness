@@ -1,6 +1,6 @@
 # Anna Lou Wellness — User Manual
 
-**Version 1.5 — Updated 1 June 2026**
+**Version 1.6 — Updated 16 June 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -2144,6 +2144,110 @@ The manual is now substantially complete for v1.4. Possible additions based on w
 - A printable 1-page emergency cheatsheet for the launch day.
 
 Tell Sameer if any of those would help.
+
+---
+
+## 17. Recent additions (mid-June 2026)
+
+A summary of the new features landed on 12–16 June. Each is also covered above where it touches an existing section.
+
+### 17.1 Site URLs lookup (sidebar)
+
+A new sidebar item called **Site URLs**. Click it and you'll see every page on the site, grouped by section (Top-level pages, Work with Anna, Experiences, Community, Editorial, Shop), with a Copy button next to each URL.
+
+Use this when:
+- You're editing **Navigation** and need to add an item — copy the path from here instead of typing it.
+- You're writing a Mailchimp email and need the full URL of a programme or article.
+- You're posting to social and want to link a specific page.
+
+There are two Copy buttons per row:
+- **Copy path** gives you `/the-work/signal` — what Navigation expects.
+- **Copy full** gives you `https://staging.annalouwellness.com/the-work/signal` — what you want for emails and social.
+
+There's also a search box at the top — type any word from a page name (e.g. "reset") to filter.
+
+### 17.2 Bulk fill missing SEO (sidebar → SEO & AI Files)
+
+The **SEO & AI Files** page now has a panel at the top called **Bulk fill missing SEO**.
+
+What it does: in one click, walks every Article, Programme, Experience, Coaching Session, Generic Page, and Page Builder entry and writes an SEO title + SEO description for any entry where both fields are empty.
+
+Click **Run bulk SEO backfill**. The panel shows live progress (processed / filled / skipped / errors). Takes around 1 minute per 60 entries.
+
+**Never overwrites entries you've already edited.** If you've written or edited an SEO title or description, the script leaves it alone.
+
+You can run it again whenever you add a batch of new articles — it'll only touch the new empties.
+
+### 17.3 Searchable URL picker on Upsells
+
+The **Upsells** field now appears on almost every page entry (Homepage, About, Community, Reset Letters, every programme, every experience, every article, etc.). Each upsell card has:
+- **Label** — what shows on the card
+- **Link** — where it takes people. This is now a **searchable dropdown** of every URL on the site. Click it, start typing a page name, click to set. Or paste an external URL like a Calendly link if you want.
+- **Eyebrow** — small uppercase tag like "Next step" or "Continue"
+- **Blurb** — one-line description
+- **Image** — optional thumbnail
+
+Add up to 3 cards per page. Leave the field empty to hide the upsell block entirely.
+
+The cards render at the bottom of the page as a "Where next · Continue exploring" section.
+
+### 17.4 Practitioner enquiry form (/practitioners)
+
+A new "Apply to be listed" CTA on the Practitioners page. When a wellness professional fills it in:
+1. They become a Mailchimp contact tagged "Practitioner Enquiry".
+2. You receive an email with their details (name, email, phone, practice, message).
+3. The Customer Journey wired to "Practitioner Enquiry" fires (if you've set one up — see §8).
+
+The email template Anna receives lives in **Email Templates → admin_practitioner_enquiry**. Edit the subject or body there if you want.
+
+### 17.5 Quick Photo Editor (sidebar → Quick Photos)
+
+This page lists every hero/portrait image across the site as a thumbnail with a **Replace** button — you can swap a photo without navigating into the entry. After uploading, open the entry the normal way and click **Publish** to push the change live.
+
+Previously this page showed "Coming soon". As of 16 Jun it works.
+
+### 17.6 Event cards with hero images (Retreats / Workshops / etc.)
+
+The "Upcoming dates" section on /experiences/retreats, /experiences/workshops etc. now leads with the event's hero image. To make a card look its best:
+- Upload a landscape JPG to the event's `hero_image` field (1600×1000px+).
+- Fill in `name`, `date`, `location`, `price_label`, `description`, and `booking_url`.
+
+If you leave hero_image blank the card shows a placeholder. The date appears as a coloured pill overlaid on the image.
+
+### 17.7 FAQ added to 6 more pages
+
+The FAQ system now supports per-page Q&A on these pages in addition to the existing 18:
+- /practitioners
+- /the-work/regulated
+- /reset-stories, /life, /love-and-relationships, /work-and-money (the four editorial section landings)
+
+To add FAQs: open **FAQ · Per Page** → +Create → set `page` to the new option from the dropdown → write question + answer → Save & Publish.
+
+### 17.8 Field help text everywhere
+
+72 fields across 38 collections now have plain-English help text shown beneath the input. Look out for:
+- **SEO title / SEO description** — examples of what to write, with a note that they auto-fill on Save.
+- **Slug** — explanation that lowercase + hyphens-not-spaces is required, with auto-fill from name.
+- **Hero image** — recommended dimensions (e.g. 1600×1000px landscape).
+- **Booking URL** — note that Calendly links open as a popup, others open normally.
+- **mailchimpTag** — must match exactly the trigger tag on the Customer Journey.
+- **Kicker / eyebrow** — keep to 1–3 uppercase words.
+
+### 17.9 Sidebar collection renames (Experiences)
+
+Two collections got clearer names to avoid confusion:
+- **Experiences · Event** → **Experiences · Event Bookings** — for specific events with dates (Align & Amplify, scheduled retreats, named workshops).
+- **Experiences · Sub-page** → **Experiences · Category Pages** — for the 4 main landing pages (Retreats, Workshops, Corporate Wellbeing, Speaking).
+
+Description text on each cross-references the other, so when you open one you know where to find the other if it's not what you wanted.
+
+### 17.10 Site-wide font bump
+
+Everything on the public site is now ~10% bigger after Anna's "I can't read the small text" feedback. Top nav, body copy, footer, kickers, eyebrows — all proportionally larger. No colour or layout changes, just size.
+
+### 17.11 Decoder quiz popup on homepage
+
+10 seconds after a visitor lands on the homepage, a small modal appears promoting the Nervous System Decoder quiz with a CTA. Dismissible (X / Esc / click outside) and won't reappear for 7 days once closed. Headline/body/timing are constants in code — tell Sameer if you want them moved to CMS-editable fields.
 
 ---
 
