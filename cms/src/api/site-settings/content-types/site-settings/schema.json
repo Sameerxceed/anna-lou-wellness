@@ -209,7 +209,8 @@
     },
     "contact_email": {
       "type": "string",
-      "default": "hello@annalouwellness.com"
+      "default": "hello@annalouwellness.com",
+      "description": "Email address. Format: name@domain.com — no spaces, must include the @ and the dot."
     },
     "address": {
       "type": "text",

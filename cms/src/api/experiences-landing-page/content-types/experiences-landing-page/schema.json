@@ -13,11 +13,13 @@
   "attributes": {
     "kicker": {
       "type": "string",
-      "default": "Experiences"
+      "default": "Experiences",
+      "description": "Small uppercase label that sits ABOVE the main heading. Keep it short — 1 to 3 words. Examples: 'For founders', 'A note from Anna', 'New series'."
     },
     "kicker_colour": {
       "type": "string",
-      "default": "#7BAFDD"
+      "default": "#7BAFDD",
+      "description": "Hex colour for the kicker / accent. Format: #6E3A5A (the # then 6 letters/numbers). Anna's brand palette: Plum #6E3A5A, Terracotta #C4704A, Honey #FFD07A, Pink #F280AA, Sage #5DCAA5."
     },
     "title": {
       "type": "string",
@@ -25,7 +27,8 @@
     },
     "intro": {
       "type": "text",
-      "default": "Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself."
+      "default": "Group sessions held on the houseboat at Taggs Island, online, and in corporate spaces. A few times a year, a small group comes to the island for a full reset day. Water outside, no agenda, just space to come back to yourself.",
+      "description": "One short paragraph that sits under the main heading. 2-3 sentences max. Tells the reader what this page or item IS in their language, not yours."
     },
     "categories": {
       "type": "component",

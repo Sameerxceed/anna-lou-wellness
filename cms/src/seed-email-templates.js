@@ -7,10 +7,16 @@
  * Anna can untick `enabled` to stop any email from being sent.
  *
  * Merge tags supported in subject / preheader / intro / outro / cta_url:
- *   {{order_number}}, {{customer_name}}, {{total}}, {{shipping_address}},
- *   {{tracking_number}}, {{tracking_url}}, {{shipping_carrier}},
- *   {{cancellation_reason}}, {{refund_amount}}, {{return_reason}},
- *   {{return_notes}}, {{site_url}}, {{admin_url}}
+ *   Order: {{order_number}}, {{customer_name}}, {{total}}, {{shipping_address}},
+ *          {{tracking_number}}, {{tracking_url}}, {{shipping_carrier}},
+ *          {{cancellation_reason}}, {{refund_amount}}, {{return_reason}},
+ *          {{return_notes}}
+ *   Account: {{first_name}}, {{customer_email}}, {{set_password_url}},
+ *            {{reset_password_url}}
+ *   Lead (practitioner enquiry etc.): {{lead_first_name}}, {{lead_email}},
+ *          {{lead_phone}}, {{lead_practice}}, {{lead_message}},
+ *          {{lead_tag}}, {{lead_type}}, {{lead_submitted_at}}
+ *   Constants: {{site_url}}, {{admin_url}}
  */
 
 const DEFAULTS = [
@@ -186,6 +192,22 @@ const DEFAULTS = [
     outro: 'You can always reset your password later from the sign-in page if you forget it.',
     cta_label: 'Set your password',
     cta_url: '{{set_password_url}}',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'admin_practitioner_enquiry',
+    name: 'New practitioner enquiry — notification to you',
+    when_it_fires: 'A wellness professional submits the "Apply to be listed" form on /practitioners. Goes to OWNER_EMAIL with the practitioner\'s contact details.',
+    audience: 'admin',
+    enabled: true,
+    subject: '[Practitioner enquiry] {{lead_first_name}} - {{lead_email}}',
+    preheader: 'A new practitioner has applied to be listed in your directory.',
+    intro: 'A new practitioner enquiry has come in.\n\nName: {{lead_first_name}}\nEmail: {{lead_email}}\nPhone: {{lead_phone}}\nPractice: {{lead_practice}}\n\nMessage:\n{{lead_message}}',
+    outro: 'Submitted at {{lead_submitted_at}}. Reply directly to {{lead_email}} to start the conversation, or open Mailchimp to see them tagged as "Practitioner Enquiry".',
+    cta_label: '',
+    cta_url: '',
     include_order_summary: false,
     include_bank_details: false,
     include_shipping_address: false,

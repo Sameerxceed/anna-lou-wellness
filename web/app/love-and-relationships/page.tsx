@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
+import { getArticles, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Love & Relationships',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LoveAndRelationshipsPage() {
-  const [articles, categories, page] = await Promise.all([
+  const [articles, categories, page, faqs] = await Promise.all([
     getArticles('love-and-relationships'),
     getArticleCategories('love-and-relationships'),
     getSectionLandingPage('/love-and-relationships-page', {
@@ -22,6 +23,7 @@ export default async function LoveAndRelationshipsPage() {
       heroImage: '',
       kickerColour: '#F280AA',
     }),
+    getFAQs({ page: 'love-and-relationships' }).catch(() => []),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -41,16 +43,19 @@ export default async function LoveAndRelationshipsPage() {
   }));
 
   return (
-    <EditorialFeed
-      kicker={page.kicker}
-      kickerColour={page.kickerColour}
-      title={page.title}
-      intro={page.intro}
-      articles={feedArticles}
-      sectionHref="/love-and-relationships"
-      subcategories={subcategories}
-      stockCategory="love-and-relationships"
-      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Love & Relationships' }}
-    />
+    <>
+      <EditorialFeed
+        kicker={page.kicker}
+        kickerColour={page.kickerColour}
+        title={page.title}
+        intro={page.intro}
+        articles={feedArticles}
+        sectionHref="/love-and-relationships"
+        subcategories={subcategories}
+        stockCategory="love-and-relationships"
+        breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Love & Relationships' }}
+      />
+      <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#F5F3EF" />
+    </>
   );
 }

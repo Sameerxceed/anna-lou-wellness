@@ -290,17 +290,29 @@ type AccountLike = {
   reset_password_url?: string | null;
 };
 
+type LeadLike = {
+  type?: string;
+  tag?: string;
+  email?: string;
+  first_name?: string;
+  phone?: string;
+  practice?: string;
+  message?: string;
+  submitted_at?: string;
+};
+
 type MergeContext = {
   order?: OrderLike | null;
   returnRequest?: ReturnRequestLike | null;
   account?: AccountLike | null;
+  lead?: LeadLike | null;
 };
 
 function mergeTags(input: string | undefined | null, ctx: MergeContext): string {
   if (!input) return '';
-  const { order, returnRequest, account } = ctx;
-  const customerName = order?.customer_name || account?.first_name || 'there';
-  const customerEmail = order?.customer_email || account?.email || '';
+  const { order, returnRequest, account, lead } = ctx;
+  const customerName = order?.customer_name || account?.first_name || lead?.first_name || 'there';
+  const customerEmail = order?.customer_email || account?.email || lead?.email || '';
   const replacements: Record<string, string> = {
     // Order context — empty strings when there's no order (account-only emails)
     order_number: order?.order_number || '',
@@ -320,9 +332,18 @@ function mergeTags(input: string | undefined | null, ctx: MergeContext): string 
     return_reason: returnRequest?.reason ? returnRequest.reason.replace(/_/g, ' ') : '',
     return_notes: returnRequest?.notes || '',
     // Account context
-    first_name: account?.first_name || customerName,
+    first_name: account?.first_name || lead?.first_name || customerName,
     set_password_url: account?.set_password_url || '',
     reset_password_url: account?.reset_password_url || account?.set_password_url || '',
+    // Lead context (admin enquiry notifications)
+    lead_type: lead?.type || '',
+    lead_tag: lead?.tag || '',
+    lead_email: lead?.email || '',
+    lead_first_name: lead?.first_name || '',
+    lead_phone: lead?.phone || '',
+    lead_practice: lead?.practice || '',
+    lead_message: lead?.message || '',
+    lead_submitted_at: lead?.submitted_at || '',
     // Constants
     site_url: PUBLIC_SITE_URL,
     admin_url: ADMIN_URL,

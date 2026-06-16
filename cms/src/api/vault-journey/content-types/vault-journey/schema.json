@@ -18,7 +18,8 @@
     "slug": {
       "type": "uid",
       "targetField": "name",
-      "required": true
+      "required": true,
+      "description": "URL path after the slash. Lowercase, hyphens-not-spaces, no punctuation. Auto-fills from the name/title — only edit if you want to change the URL."
     },
     "description": {
       "type": "text",

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
+import { getArticles, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Life',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LifePage() {
-  const [articles, categories, page] = await Promise.all([
+  const [articles, categories, page, faqs] = await Promise.all([
     getArticles('life'),
     getArticleCategories('life'),
     getSectionLandingPage('/life-page', {
@@ -22,6 +23,7 @@ export default async function LifePage() {
       heroImage: '',
       kickerColour: '#FAA21B',
     }),
+    getFAQs({ page: 'life' }).catch(() => []),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -41,16 +43,19 @@ export default async function LifePage() {
   }));
 
   return (
-    <EditorialFeed
-      kicker={page.kicker}
-      kickerColour={page.kickerColour}
-      title={page.title}
-      intro={page.intro}
-      articles={feedArticles}
-      sectionHref="/life"
-      subcategories={subcategories}
-      stockCategory="life"
-      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Life' }}
-    />
+    <>
+      <EditorialFeed
+        kicker={page.kicker}
+        kickerColour={page.kickerColour}
+        title={page.title}
+        intro={page.intro}
+        articles={feedArticles}
+        sectionHref="/life"
+        subcategories={subcategories}
+        stockCategory="life"
+        breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Life' }}
+      />
+      <FAQAccordion faqs={faqs} accentColour="#FAA21B" background="#F5F3EF" />
+    </>
   );
 }

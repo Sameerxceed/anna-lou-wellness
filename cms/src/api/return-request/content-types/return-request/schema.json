@@ -14,7 +14,8 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::order.order",
-      "inversedBy": "return_requests"
+      "inversedBy": "return_requests",
+      "description": "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
     },
     "customer": {
       "type": "relation",

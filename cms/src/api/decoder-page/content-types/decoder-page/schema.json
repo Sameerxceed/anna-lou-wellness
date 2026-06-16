@@ -44,7 +44,8 @@
       "multiple": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "description": "Cover image — shown as the card thumbnail when this entry appears in lists and social previews. Landscape JPG, at least 1200x800px."
     },
     "whyTitle": {
       "type": "string",

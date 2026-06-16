@@ -18,7 +18,8 @@
     "slug": {
       "type": "uid",
       "targetField": "title",
-      "required": true
+      "required": true,
+      "description": "URL path after the slash. Lowercase, hyphens-not-spaces, no punctuation. Auto-fills from the name/title — only edit if you want to change the URL."
     },
     "excerpt": {
       "type": "text"
@@ -31,7 +32,8 @@
       "multiple": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "description": "Top banner photo for this page. Use a landscape JPG at least 1600x1000px. Smaller images will stretch and look blurry on big screens. PNG / HEIC work but JPG is half the file size."
     },
     "category": {
       "type": "relation",
@@ -41,10 +43,12 @@
     },
     "author": {
       "type": "string",
-      "default": "Anna Lou"
+      "default": "Anna Lou",
+      "description": "Who wrote this. Free text. Defaults to 'Anna Lou' if blank."
     },
     "reading_time": {
-      "type": "string"
+      "type": "string",
+      "description": "Reading time label. Free text. Examples: '5 min read', '10 min', 'Quick read'."
     },
     "is_featured": {
       "type": "boolean",

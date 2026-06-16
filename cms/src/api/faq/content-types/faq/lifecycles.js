@@ -26,6 +26,12 @@ const pageToPath = {
   'testimonials': '/testimonials',
   'ask-anna': '/ask-anna',
   'decoder': '/free/nervous-system-decoder',
+  'practitioners': '/practitioners',
+  'regulated': '/the-work/regulated',
+  'reset-stories': '/reset-stories',
+  'life': '/life',
+  'love-and-relationships': '/love-and-relationships',
+  'work-and-money': '/work-and-money',
 };
 
 function pathFor(entry) {

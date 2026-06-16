@@ -51,11 +51,13 @@
     },
     "cta_label": {
       "type": "string",
-      "default": "Browse personalised"
+      "default": "Browse personalised",
+      "description": "Button text. Keep it short and action-oriented. Examples: 'Book your place', 'Read more', 'Apply now'. Avoid filler like 'Click here'."
     },
     "cta_url": {
       "type": "string",
-      "default": "/shop"
+      "default": "/shop",
+      "description": "Where the button takes people. Paste the full URL including https://. Calendly links open as a popup so visitors stay on your site (e.g. https://calendly.com/anna/discovery-call). Stripe checkout or internal pages open normally. Leave blank to hide the button."
     },
     "inspiration_label": {
       "type": "string",

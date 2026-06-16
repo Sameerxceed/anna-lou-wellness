@@ -66,7 +66,8 @@
       "multiple": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "description": "Top banner photo for this page. Use a landscape JPG at least 1600x1000px. Smaller images will stretch and look blurry on big screens. PNG / HEIC work but JPG is half the file size."
     },
     "seo_title": {
       "type": "string",

@@ -18,7 +18,8 @@
     "slug": {
       "type": "uid",
       "targetField": "name",
-      "required": true
+      "required": true,
+      "description": "URL path after the slash. Lowercase, hyphens-not-spaces, no punctuation. Auto-fills from the name/title — only edit if you want to change the URL."
     },
     "section": {
       "type": "enumeration",
@@ -39,7 +40,8 @@
     },
     "sort_order": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "description": "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
     },
     "articles": {
       "type": "relation",

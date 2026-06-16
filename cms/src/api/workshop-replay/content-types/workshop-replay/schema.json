@@ -18,7 +18,8 @@
     "slug": {
       "type": "uid",
       "targetField": "title",
-      "required": true
+      "required": true,
+      "description": "URL path after the slash. Lowercase, hyphens-not-spaces, no punctuation. Auto-fills from the name/title — only edit if you want to change the URL."
     },
     "description": {
       "type": "text",
@@ -69,7 +70,8 @@
     },
     "is_active": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "description": "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you're drafting privately."
     }
   }
 }

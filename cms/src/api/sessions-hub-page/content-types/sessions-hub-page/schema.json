@@ -27,7 +27,8 @@
     },
     "intro": {
       "type": "text",
-      "default": "Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation."
+      "default": "Not every piece of work needs a twelve-week container. Sometimes you need a focused conversation with someone who can hold the shape of what you are navigating, and help you put it down. A Reset Session is that conversation.",
+      "description": "One short paragraph that sits under the main heading. 2-3 sentences max. Tells the reader what this page or item IS in their language, not yours."
     },
     "seo_title": {
       "type": "string",

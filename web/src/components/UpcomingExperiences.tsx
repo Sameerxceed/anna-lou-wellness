@@ -46,40 +46,58 @@ export default function UpcomingExperiences({ items, accentColour, emptyLabel }:
             <div className="upcoming-grid">
               {upcoming.map((e, i) => (
                 <article key={e.slug} className={`upcoming-card reveal${i > 0 ? ` rd${Math.min(i, 4)}` : ''}`}>
-                  <p className="upcoming-date" style={{ color: accentColour }}>{formatDate(e.date)}</p>
-                  <h3 className="upcoming-name">
-                    <a href={`/experiences/${e.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                      {e.name}
-                    </a>
-                  </h3>
-                  {e.location && <p className="upcoming-loc">{e.location}</p>}
-                  {e.priceLabel && <p className="upcoming-price">{e.priceLabel}</p>}
-                  {e.description && (
-                    <p className="upcoming-desc">{e.description.split('\n\n')[0]}</p>
-                  )}
-                  {/*
-                    Two-button row: primary opens the dedicated sales/booking
-                    page (/experiences/[slug]) which has full sales content +
-                    booking button. Secondary opens the direct booking URL if
-                    Anna set one (Calendly etc.) for power users who want to
-                    skip the sales page.
-                  */}
-                  <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
-                    <a
-                      href={`/experiences/${e.slug}`}
-                      className="upcoming-cta"
-                      style={{ color: accentColour, borderColor: accentColour }}
-                    >
-                      Read more →
-                    </a>
-                    {e.bookingUrl ? (
-                      <BookingButton
-                        url={e.bookingUrl}
-                        label="Book directly →"
+                  <a
+                    href={`/experiences/${e.slug}`}
+                    className="upcoming-card-image"
+                    style={{
+                      backgroundImage: e.heroImage ? `url('${e.heroImage}')` : undefined,
+                      backgroundColor: e.heroImage ? undefined : '#EDE8DF',
+                    }}
+                    aria-label={e.name}
+                  >
+                    {e.date && (
+                      <span className="upcoming-date-pill" style={{ background: accentColour }}>
+                        {formatDate(e.date)}
+                      </span>
+                    )}
+                    {!e.heroImage && <span className="upcoming-card-image-placeholder">Add a hero image in CMS</span>}
+                  </a>
+                  <div className="upcoming-card-body">
+                    <h3 className="upcoming-name">
+                      <a href={`/experiences/${e.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                        {e.name}
+                      </a>
+                    </h3>
+                    {(e.location || e.priceLabel) && (
+                      <p className="upcoming-meta">
+                        {e.location && <span>{e.location}</span>}
+                        {e.location && e.priceLabel && <span className="upcoming-meta-dot"> · </span>}
+                        {e.priceLabel && <span>{e.priceLabel}</span>}
+                      </p>
+                    )}
+                    {e.description && (
+                      <p className="upcoming-desc">{e.description.split('\n\n')[0]}</p>
+                    )}
+                    {/* Two-button row: primary opens the dedicated sales/booking
+                        page (/experiences/[slug]). Secondary opens the direct
+                        booking URL if Anna set one (Calendly etc.). */}
+                    <div className="upcoming-actions">
+                      <a
+                        href={`/experiences/${e.slug}`}
                         className="upcoming-cta"
-                        style={{ color: accentColour, borderColor: accentColour, opacity: 0.85 }}
-                      />
-                    ) : null}
+                        style={{ color: accentColour, borderColor: accentColour }}
+                      >
+                        Read more &rarr;
+                      </a>
+                      {e.bookingUrl ? (
+                        <BookingButton
+                          url={e.bookingUrl}
+                          label="Book directly →"
+                          className="upcoming-cta"
+                          style={{ color: accentColour, borderColor: accentColour, opacity: 0.85 }}
+                        />
+                      ) : null}
+                    </div>
                   </div>
                 </article>
               ))}
@@ -101,20 +119,29 @@ const upcomingStyles = `
 .upcoming-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.5rem; }
 .upcoming-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:clamp(1.4rem,2.5vw,1.8rem); color:#231F20; line-height:1.2; margin-bottom:1.2rem; letter-spacing:0.02em; }
 .upcoming-empty { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1rem; color:#3D3D3A; }
-.upcoming-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1rem; }
-.upcoming-card { background:#fff; border-radius:8px; padding:1.5rem; transition:all 0.3s; display:flex; flex-direction:column; }
-.upcoming-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.06); }
-.upcoming-date { font-family:Mulish,sans-serif; font-weight:600; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.4rem; }
-.upcoming-name { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:1.05rem; color:#231F20; line-height:1.3; margin-bottom:0.4rem; }
-.upcoming-loc { font-family:Mulish,sans-serif; font-size:0.7rem; color:#5D5A52; letter-spacing:0.04em; margin-bottom:0.3rem; }
-.upcoming-price { font-family:Mulish,sans-serif; font-weight:600; font-size:0.72rem; color:#231F20; letter-spacing:0.04em; margin-bottom:0.6rem; }
-.upcoming-desc { font-family:'EB Garamond',Georgia,serif; font-size:0.88rem; color:#3D3D3A; line-height:1.6; margin-bottom:1rem; flex:1; }
-.upcoming-cta { font-family:Mulish,sans-serif; font-weight:600; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.7rem 1.1rem; border:1px solid; border-radius:3px; align-self:flex-start; text-decoration:none; transition:all 0.3s; }
-.upcoming-cta:hover { background:#231F20; color:#fff; border-color:#231F20; }
+.upcoming-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; margin-bottom:1rem; }
+.upcoming-card { background:#fff; border-radius:8px; padding:0; transition:all 0.3s; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+.upcoming-card:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.08); }
+
+.upcoming-card-image { display:block; position:relative; aspect-ratio:4/3; background-size:cover; background-position:center; background-color:#EDE8DF; text-decoration:none; }
+.upcoming-card-image-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:Mulish,sans-serif; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(0,0,0,0.25); text-align:center; padding:1rem; }
+.upcoming-date-pill { position:absolute; top:14px; left:14px; color:#F5F3EF; font-family:Mulish,sans-serif; font-weight:600; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.45rem 0.85rem; border-radius:3px; backdrop-filter:blur(4px); }
+
+.upcoming-card-body { padding:1.2rem 1.4rem 1.4rem; display:flex; flex-direction:column; flex:1; }
+.upcoming-name { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:1.25rem; color:#231F20; line-height:1.3; margin:0 0 0.4rem; }
+.upcoming-meta { font-family:Mulish,sans-serif; font-size:0.72rem; color:#5D5A52; letter-spacing:0.04em; margin:0 0 0.6rem; }
+.upcoming-meta-dot { color:rgba(0,0,0,0.3); }
+.upcoming-desc { font-family:'EB Garamond',Georgia,serif; font-size:0.95rem; color:#3D3D3A; line-height:1.6; margin:0 0 1rem; flex:1; }
+.upcoming-actions { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:auto; }
+.upcoming-cta { font-family:Mulish,sans-serif; font-weight:600; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.7rem 1.1rem; border:1px solid; border-radius:3px; align-self:flex-start; text-decoration:none; transition:all 0.3s; }
+.upcoming-cta:hover { background:#231F20; color:#fff !important; border-color:#231F20 !important; }
 .upcoming-note { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:0.85rem; color:#5D5A52; text-align:center; margin-top:0.8rem; }
 
 @media (max-width:900px) {
   .upcoming-wrap { padding:1.5rem 1.2rem 2rem; }
-  .upcoming-grid { grid-template-columns:1fr; }
+  .upcoming-grid { grid-template-columns:1fr; gap:1.2rem; }
+}
+@media (min-width:901px) and (max-width:1100px) {
+  .upcoming-grid { grid-template-columns:repeat(2,1fr); }
 }
 `;

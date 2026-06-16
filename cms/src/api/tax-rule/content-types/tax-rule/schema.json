@@ -4,7 +4,7 @@
   "info": {
     "singularName": "tax-rule",
     "pluralName": "tax-rules",
-    "displayName": "zz \u00b7 Tax Rule (unused)"
+    "displayName": "zz · Tax Rule (unused)"
   },
   "options": {
     "draftAndPublish": false
@@ -35,7 +35,8 @@
     },
     "is_active": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "description": "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you're drafting privately."
     }
   },
   "pluginOptions": {

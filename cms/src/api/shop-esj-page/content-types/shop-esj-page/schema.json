@@ -13,11 +13,13 @@
   "attributes": {
     "kicker": {
       "type": "string",
-      "default": "Shop"
+      "default": "Shop",
+      "description": "Small uppercase label that sits ABOVE the main heading. Keep it short — 1 to 3 words. Examples: 'For founders', 'A note from Anna', 'New series'."
     },
     "kicker_colour": {
       "type": "string",
-      "default": "#5DCAA5"
+      "default": "#5DCAA5",
+      "description": "Hex colour for the kicker / accent. Format: #6E3A5A (the # then 6 letters/numbers). Anna's brand palette: Plum #6E3A5A, Terracotta #C4704A, Honey #FFD07A, Pink #F280AA, Sage #5DCAA5."
     },
     "title": {
       "type": "string",
@@ -49,11 +51,13 @@
     },
     "cta_label": {
       "type": "string",
-      "default": "Browse ESJ collection"
+      "default": "Browse ESJ collection",
+      "description": "Button text. Keep it short and action-oriented. Examples: 'Book your place', 'Read more', 'Apply now'. Avoid filler like 'Click here'."
     },
     "cta_url": {
       "type": "string",
-      "default": "/shop"
+      "default": "/shop",
+      "description": "Where the button takes people. Paste the full URL including https://. Calendly links open as a popup so visitors stay on your site (e.g. https://calendly.com/anna/discovery-call). Stripe checkout or internal pages open normally. Leave blank to hide the button."
     },
     "seo_title": {
       "type": "string",

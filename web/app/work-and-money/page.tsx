@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
+import { getArticles, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Work & Money',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function WorkAndMoneyPage() {
-  const [articles, categories, page] = await Promise.all([
+  const [articles, categories, page, faqs] = await Promise.all([
     getArticles('work-and-money'),
     getArticleCategories('work-and-money'),
     getSectionLandingPage('/work-and-money-page', {
@@ -22,6 +23,7 @@ export default async function WorkAndMoneyPage() {
       heroImage: '',
       kickerColour: '#FFD07A',
     }),
+    getFAQs({ page: 'work-and-money' }).catch(() => []),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -41,16 +43,19 @@ export default async function WorkAndMoneyPage() {
   }));
 
   return (
-    <EditorialFeed
-      kicker={page.kicker}
-      kickerColour={page.kickerColour}
-      title={page.title}
-      intro={page.intro}
-      articles={feedArticles}
-      sectionHref="/work-and-money"
-      subcategories={subcategories}
-      stockCategory="work-and-money"
-      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Work & Money' }}
-    />
+    <>
+      <EditorialFeed
+        kicker={page.kicker}
+        kickerColour={page.kickerColour}
+        title={page.title}
+        intro={page.intro}
+        articles={feedArticles}
+        sectionHref="/work-and-money"
+        subcategories={subcategories}
+        stockCategory="work-and-money"
+        breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Work & Money' }}
+      />
+      <FAQAccordion faqs={faqs} accentColour="#FFD07A" background="#F5F3EF" />
+    </>
   );
 }

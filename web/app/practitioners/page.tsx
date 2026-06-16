@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getPractitioners, getPractitionersPage, getFAQs, type Practitioner } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
+import PractitionerEnquiryButton from '@/components/PractitionerEnquiryButton';
 import { BreadcrumbSchema } from '@/components/StructuredData';
 
 export const revalidate = 3600;
@@ -84,6 +85,7 @@ export default async function PractitionersPage() {
         </section>
       )}
 
+      <PractitionerEnquiryButton accentColour="#6E3A5A" />
       <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#fff" />
     </>
   );

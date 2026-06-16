@@ -13,7 +13,8 @@
   "attributes": {
     "kicker": {
       "type": "string",
-      "default": "About"
+      "default": "About",
+      "description": "Small uppercase label that sits ABOVE the main heading. Keep it short — 1 to 3 words. Examples: 'For founders', 'A note from Anna', 'New series'."
     },
     "title": {
       "type": "string",

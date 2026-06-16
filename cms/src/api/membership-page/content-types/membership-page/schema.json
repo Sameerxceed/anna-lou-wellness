@@ -13,7 +13,8 @@
   "attributes": {
     "kicker": {
       "type": "string",
-      "default": "Community"
+      "default": "Community",
+      "description": "Small uppercase label that sits ABOVE the main heading. Keep it short — 1 to 3 words. Examples: 'For founders', 'A note from Anna', 'New series'."
     },
     "title": {
       "type": "string",
@@ -25,7 +26,8 @@
     },
     "price_label": {
       "type": "string",
-      "default": "£25 per month"
+      "default": "£25 per month",
+      "description": "Free-text price label shown to customers. Use this when you want to add nuance ('£49 / month', 'From £200', 'Investment by enquiry'). For straight one-off prices use the Price field too."
     },
     "includes_label": {
       "type": "string",
@@ -41,7 +43,8 @@
     },
     "cta_label": {
       "type": "string",
-      "default": "Join the Reset Room"
+      "default": "Join the Reset Room",
+      "description": "Button text. Keep it short and action-oriented. Examples: 'Book your place', 'Read more', 'Apply now'. Avoid filler like 'Click here'."
     }
   }
 }

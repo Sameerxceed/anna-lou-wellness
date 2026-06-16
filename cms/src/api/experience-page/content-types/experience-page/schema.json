@@ -4,8 +4,8 @@
   "info": {
     "singularName": "experience-page",
     "pluralName": "experience-pages",
-    "displayName": "Experiences · Sub-page",
-    "description": "Sub-pages under /experiences (Workshops, Retreats, Corporate Wellbeing, Speaking). PAGE LAYOUT, top to bottom: 1) Hero band — kicker + title + tagline on the LEFT, heroImage on the RIGHT. 2) Body band — intro paragraphs, full width. 3) Cards band — secondaryList becomes a grid of 4 cards. 4) Reviews. 5) Enquiry form. 6) FAQ. 7) Upsells. After editing, click 'View live page →' (green button, right sidebar) to see the result."
+    "displayName": "Experiences · Category Pages",
+    "description": "Editorial CATEGORY landing pages under /experiences — only 4 entries (Workshops, Retreats, Corporate Wellbeing, Speaking). For specific events like Align & Amplify or named retreat dates, see the separate collection 'Experiences · Event Bookings'. PAGE LAYOUT, top to bottom: 1) Hero band — kicker + title + tagline on the LEFT, heroImage on the RIGHT. 2) Body band — intro paragraphs, full width. 3) Cards band — secondaryList becomes a grid of 4 cards. 4) Reviews. 5) Enquiry form. 6) FAQ. 7) Upsells. After editing, click 'View live page →' (green button, right sidebar) to see the result."
   },
   "options": {
     "draftAndPublish": true

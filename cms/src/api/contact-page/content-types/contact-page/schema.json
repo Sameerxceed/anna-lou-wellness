@@ -11,10 +11,12 @@
   },
   "attributes": {
     "email": {
-      "type": "string"
+      "type": "string",
+      "description": "Email address. Format: name@domain.com — no spaces, must include the @ and the dot."
     },
     "phone": {
-      "type": "string"
+      "type": "string",
+      "description": "Phone number. International format preferred. Example: +44 7700 900000"
     },
     "address": {
       "type": "text"

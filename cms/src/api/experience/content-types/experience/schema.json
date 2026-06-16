@@ -4,8 +4,8 @@
   "info": {
     "singularName": "experience",
     "pluralName": "experiences",
-    "displayName": "Experiences · Event",
-    "description": "Retreats, workshops, corporate wellbeing, speaking engagements"
+    "displayName": "Experiences · Event Bookings",
+    "description": "Individual events with dates and booking links. Examples: Align & Amplify, scheduled retreats, one-off workshops, named speaking dates. Use search here to find a specific event. The four CATEGORY LANDING pages (Retreats, Workshops, Corporate Wellbeing, Speaking) live in a separate collection called 'Experiences · Sub-page'."
   },
   "options": {
     "draftAndPublish": true
@@ -18,7 +18,8 @@
     "slug": {
       "type": "uid",
       "targetField": "name",
-      "required": true
+      "required": true,
+      "description": "URL path after the slash. Lowercase, hyphens-not-spaces, no punctuation. Auto-fills from the name/title — only edit if you want to change the URL."
     },
     "type": {
       "type": "enumeration",
@@ -42,17 +43,20 @@
       "type": "string"
     },
     "price": {
-      "type": "decimal"
+      "type": "decimal",
+      "description": "Amount in GBP (pounds and pence). Just the number — no currency symbol, no commas. Example: 49.99"
     },
     "price_label": {
-      "type": "string"
+      "type": "string",
+      "description": "Free-text price label shown to customers. Use this when you want to add nuance ('£49 / month', 'From £200', 'Investment by enquiry'). For straight one-off prices use the Price field too."
     },
     "hero_image": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "description": "Top banner photo for this page. Use a landscape JPG at least 1600x1000px. Smaller images will stretch and look blurry on big screens. PNG / HEIC work but JPG is half the file size."
     },
     "is_upcoming": {
       "type": "boolean",
@@ -64,11 +68,13 @@
     },
     "is_active": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "description": "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you're drafting privately."
     },
     "sort_order": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "description": "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
     },
     "seo_title": {
       "type": "string",

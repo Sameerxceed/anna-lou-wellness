@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { subscribeAndTag } from '@/lib/mailchimp';
+import { sendFromTemplate } from '@/lib/email';
 
 /**
  * Generic lead-capture endpoint for every EnquiryForm on the site.
@@ -35,6 +36,14 @@ const KNOWN_TYPES: Record<string, string> = {
   'one-day': 'One Day Enquiry',
   'speaking': 'Speaking Enquiry',
   'corporate': 'Corporate Wellbeing Enquiry',
+  'practitioner-enquiry': 'Practitioner Enquiry',
+};
+
+// Lead types that should ALSO send an immediate admin notification email
+// (in addition to the Mailchimp tag). Picks a template key from the
+// email-template collection. Anna edits the subject + body there.
+const ADMIN_EMAIL_TEMPLATES: Record<string, string> = {
+  'practitioner-enquiry': 'admin_practitioner_enquiry',
 };
 
 function humaniseType(type: string): string {
@@ -95,7 +104,28 @@ export async function POST(
     console.warn(`[lead/${cleanType}] mailchimp error for ${email}:`, result.error);
     // Don't fail the user-facing request — Anna can still see the lead in
     // Mailchimp activity log even if tagging hiccuped. Log for ops triage.
-    return NextResponse.json({ ok: true, warning: 'partial' });
+  }
+
+  // If this lead type warrants an admin email, fire it. Lead details ride
+  // along on the `lead` merge context so the template can render them.
+  const adminTemplate = ADMIN_EMAIL_TEMPLATES[cleanType];
+  if (adminTemplate) {
+    const phone = typeof body.phone === 'string' ? body.phone.trim()
+      : typeof body.tel === 'string' ? body.tel.trim() : '';
+    const practice = typeof body.practice === 'string' ? body.practice.trim() : '';
+    const message = typeof body.message === 'string' ? body.message.trim() : '';
+    sendFromTemplate(adminTemplate, {
+      lead: {
+        type: cleanType,
+        tag,
+        email,
+        first_name: firstName || '(not provided)',
+        phone: phone || '(not provided)',
+        practice: practice || '(not provided)',
+        message: message || '(none)',
+        submitted_at: new Date().toISOString(),
+      },
+    }).catch((e) => console.warn(`[lead/${cleanType}] admin email failed:`, e?.message));
   }
 
   return NextResponse.json({ ok: true, type: cleanType, tag });

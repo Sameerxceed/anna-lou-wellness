@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
-import { getArticles, getArticleCategories, getSectionLandingPage } from '@/lib/cms';
+import FAQAccordion from '@/components/FAQAccordion';
+import { getArticles, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Reset Stories',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ResetStoriesPage() {
-  const [articles, categories, page] = await Promise.all([
+  const [articles, categories, page, faqs] = await Promise.all([
     getArticles('reset-stories'),
     getArticleCategories('reset-stories'),
     getSectionLandingPage('/reset-stories-page', {
@@ -22,6 +23,7 @@ export default async function ResetStoriesPage() {
       heroImage: '',
       kickerColour: '#6E3A5A',
     }),
+    getFAQs({ page: 'reset-stories' }).catch(() => []),
   ]);
 
   const feedArticles = articles.map(a => ({
@@ -41,16 +43,19 @@ export default async function ResetStoriesPage() {
   }));
 
   return (
-    <EditorialFeed
-      kicker={page.kicker}
-      kickerColour={page.kickerColour}
-      title={page.title}
-      intro={page.intro}
-      articles={feedArticles}
-      sectionHref="/reset-stories"
-      subcategories={subcategories}
-      stockCategory="reset-stories"
-      breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Reset Stories' }}
-    />
+    <>
+      <EditorialFeed
+        kicker={page.kicker}
+        kickerColour={page.kickerColour}
+        title={page.title}
+        intro={page.intro}
+        articles={feedArticles}
+        sectionHref="/reset-stories"
+        subcategories={subcategories}
+        stockCategory="reset-stories"
+        breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Reset Stories' }}
+      />
+      <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#F5F3EF" />
+    </>
   );
 }

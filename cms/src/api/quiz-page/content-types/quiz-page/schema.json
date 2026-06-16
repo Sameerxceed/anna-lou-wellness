@@ -13,7 +13,8 @@
   "attributes": {
     "eyebrow": {
       "type": "string",
-      "default": "What do you need right now?"
+      "default": "What do you need right now?",
+      "description": "Small uppercase label that sits ABOVE the main heading. Keep it short — 1 to 3 words. Examples: 'For founders', 'A note from Anna', 'New series'."
     },
     "title": {
       "type": "string",
@@ -21,7 +22,8 @@
     },
     "intro": {
       "type": "text",
-      "default": "Five short questions. No personal data, no email required. At the end you get one recommendation tuned to where you actually are right now."
+      "default": "Five short questions. No personal data, no email required. At the end you get one recommendation tuned to where you actually are right now.",
+      "description": "One short paragraph that sits under the main heading. 2-3 sentences max. Tells the reader what this page or item IS in their language, not yours."
     },
     "back_to_label": {
       "type": "string",

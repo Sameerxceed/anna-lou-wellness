@@ -13,7 +13,8 @@
   "attributes": {
     "kicker": {
       "type": "string",
-      "default": "Client Stories"
+      "default": "Client Stories",
+      "description": "Small uppercase label that sits ABOVE the main heading. Keep it short — 1 to 3 words. Examples: 'For founders', 'A note from Anna', 'New series'."
     },
     "title": {
       "type": "string",
@@ -21,11 +22,13 @@
     },
     "tagline": {
       "type": "text",
-      "default": "Honest stories from women who have done the work. Read, watch, and see what shifts when you come home to yourself."
+      "default": "Honest stories from women who have done the work. Read, watch, and see what shifts when you come home to yourself.",
+      "description": "One short paragraph that sits under the main heading. 2-3 sentences max. Tells the reader what this page or item IS in their language, not yours."
     },
     "kicker_colour": {
       "type": "string",
-      "default": "#6E3A5A"
+      "default": "#6E3A5A",
+      "description": "Hex colour for the kicker / accent. Format: #6E3A5A (the # then 6 letters/numbers). Anna's brand palette: Plum #6E3A5A, Terracotta #C4704A, Honey #FFD07A, Pink #F280AA, Sage #5DCAA5."
     },
     "seo_title": {
       "type": "string",

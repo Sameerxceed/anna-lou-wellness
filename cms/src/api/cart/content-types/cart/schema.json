@@ -4,7 +4,7 @@
   "info": {
     "singularName": "cart",
     "pluralName": "carts",
-    "displayName": "zz \u00b7 Cart (auto)"
+    "displayName": "zz · Cart (auto)"
   },
   "options": {
     "draftAndPublish": false
@@ -28,7 +28,8 @@
       "type": "string"
     },
     "email": {
-      "type": "string"
+      "type": "string",
+      "description": "Email address. Format: name@domain.com — no spaces, must include the @ and the dot."
     },
     "last_active": {
       "type": "datetime"
