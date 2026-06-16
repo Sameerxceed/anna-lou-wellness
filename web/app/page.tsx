@@ -8,7 +8,6 @@ import {
   getPressMentions,
   getCertifications,
 } from '@/lib/cms';
-import DecoderQuizPopup from '@/components/DecoderQuizPopup';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
 import { mediaUrl } from '@/lib/strapi';
@@ -452,7 +451,6 @@ export default async function HomePage() {
       />
 
       <style dangerouslySetInnerHTML={{ __html: homepageStyles }} />
-      <DecoderQuizPopup />
     </>
   );
 }

@@ -1,58 +1,76 @@
 'use client';
 
 /**
- * DecoderQuizPopup — fires 10 seconds after page load on the homepage.
+ * DecoderQuizPopup — fires 10 seconds after page load on EVERY page.
  *
- * Behaviour:
- *  - Waits 10s then fades in (don't interrupt initial scroll/scan)
- *  - Dismissible via X button, Escape key, or click on backdrop
- *  - Once dismissed (or CTA clicked), won't show again for 7 days
- *  - localStorage key 'alw-decoder-popup-seen' stores the dismissal timestamp
- *  - Renders nothing on SSR (client-only); never blocks first paint
+ * Mounted from the root layout (app/layout.tsx) so it follows visitors
+ * who navigate away from the homepage before the 10s timer fires.
  *
- * If you want to A/B different timings or copy, the constants below are
- * the levers. For full CMS editability later, move these into the
- * Homepage singleton in Strapi.
+ * Suppression logic (revised 16 Jun after user feedback):
+ *  - DISMISSED: once the visitor closes the popup, suppress it for the
+ *    rest of THIS BROWSER SESSION only (sessionStorage). When they
+ *    close the tab/browser and reopen, the popup shows again.
+ *  - CTA CLICKED: once they actually click through to the quiz, suppress
+ *    for 30 days (localStorage with TTL) — they've engaged, no nag.
+ *  - QUIZ URL: don't show when the visitor is already on the quiz pages.
+ *
+ * Renders nothing on SSR (client-only); never blocks first paint.
  */
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 const POPUP_DELAY_MS = 10_000;
-const SUPPRESS_DAYS = 7;
-const SUPPRESS_KEY = 'alw-decoder-popup-seen';
+const CLICKED_TTL_DAYS = 30;
+const SESSION_KEY = 'alw-decoder-popup-session-dismissed';
+const CLICKED_KEY = 'alw-decoder-popup-clicked-at';
 const QUIZ_URL = '/free/nervous-system-decoder/quiz';
+const QUIZ_PATHS_SUPPRESS = ['/free/nervous-system-decoder'];
 
 const HEADLINE = 'How regulated is your nervous system today?';
 const BODY = 'A 90-second quiz with five questions. Get your Signal reading and the next small step that fits.';
 const CTA = 'Take the quiz';
 const DISMISS_LABEL = 'Maybe later';
 
-function isRecentlyDismissed(): boolean {
+function isSuppressedThisSession(): boolean {
+  if (typeof window === 'undefined') return true;
+  try { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+  catch { return false; }
+}
+
+function isRecentlyClicked(): boolean {
   if (typeof window === 'undefined') return true;
   try {
-    const raw = localStorage.getItem(SUPPRESS_KEY);
+    const raw = localStorage.getItem(CLICKED_KEY);
     if (!raw) return false;
     const ts = Number(raw);
     if (!Number.isFinite(ts)) return false;
-    const ageMs = Date.now() - ts;
-    return ageMs < SUPPRESS_DAYS * 24 * 60 * 60 * 1000;
-  } catch {
-    return false;
-  }
+    return Date.now() - ts < CLICKED_TTL_DAYS * 24 * 60 * 60 * 1000;
+  } catch { return false; }
 }
 
-function recordDismissal() {
-  try { localStorage.setItem(SUPPRESS_KEY, String(Date.now())); } catch { /* ignore */ }
+function recordSessionDismissal() {
+  try { sessionStorage.setItem(SESSION_KEY, '1'); } catch { /* ignore */ }
+}
+
+function recordCtaClick() {
+  // Setting both means future sessions ALSO skip for 30 days.
+  try { localStorage.setItem(CLICKED_KEY, String(Date.now())); } catch { /* ignore */ }
+  recordSessionDismissal();
 }
 
 export default function DecoderQuizPopup() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (isRecentlyDismissed()) return;
+    // Don't show on the decoder pages themselves — they ARE the destination.
+    if (pathname && QUIZ_PATHS_SUPPRESS.some((p) => pathname.startsWith(p))) return;
+    if (isSuppressedThisSession()) return;
+    if (isRecentlyClicked()) return;
     const timer = setTimeout(() => setVisible(true), POPUP_DELAY_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!visible) return;
@@ -62,12 +80,12 @@ export default function DecoderQuizPopup() {
   }, [visible]);
 
   const close = () => {
-    recordDismissal();
+    recordSessionDismissal();
     setVisible(false);
   };
 
   const handleCta = () => {
-    recordDismissal();
+    recordCtaClick();
     // Let the <a> navigate normally — don't preventDefault.
   };
 

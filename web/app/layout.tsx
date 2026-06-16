@@ -8,6 +8,7 @@ import BackToTop from '@/components/BackToTop';
 import ScrollReveal from '@/components/ScrollReveal';
 import Toast from '@/components/Toast';
 import FloatingAskAnna from '@/components/FloatingAskAnna';
+import DecoderQuizPopup from '@/components/DecoderQuizPopup';
 import { WebSiteSchema, PersonSchema, LocalBusinessSchema } from '@/components/StructuredData';
 import Analytics from '@/components/Analytics';
 import './globals.css';
@@ -162,6 +163,7 @@ export default async function RootLayout({
         <ScrollReveal />
         <Toast />
         <FloatingAskAnna />
+        <DecoderQuizPopup />
       </body>
     </html>
   );
