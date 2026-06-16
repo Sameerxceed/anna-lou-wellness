@@ -1585,6 +1585,32 @@ Fields:
 - **Add a new top-level shop category:** Shop Â· Category â†’ + Create â†’ name, leave `parent` blank, tick `is_visible_in_nav` â†’ save. Appears in the Shop dropdown.
 - **Add a sub-category (e.g. new jewellery type):** Shop Â· Category â†’ + Create â†’ name, set `parent` to the top-level category (e.g. "Jewellery") â†’ save. Appears under that parent in the dropdown.
 
+#### Testing a checkout end-to-end (staging only)
+
+Stripe is currently in TEST MODE on staging. No real money moves. Use Stripe's official test card numbers in the checkout form — these only work on staging, and only in test mode.
+
+| Card number | Behaviour | Use for |
+|---|---|---|
+| `4242 4242 4242 4242` | Always succeeds | Normal checkout, see the full happy path: thank-you page → email → order in Strapi |
+| `4000 0000 0000 9995` | Always fails (insufficient funds) | See how a failed payment looks |
+| `4000 0025 0000 3155` | Requires 3D Secure step-up | See the bank-verification prompt mid-payment |
+| `4000 0000 0000 0341` | Succeeds, then refund fails | Test refund-error handling |
+
+For ALL test cards:
+- **Expiry:** any future date (e.g. `12/34`)
+- **CVC:** any 3 digits (e.g. `123`)
+- **Postcode:** any UK postcode (e.g. `SW1A 1AA`)
+- **Cardholder name:** anything
+
+**After a successful test order:**
+1. The thank-you page appears within a few seconds.
+2. Three emails fire: `order_paid` to the customer, `shop_account_invite` to a brand-new customer (first order on that email), `admin_new_order` to `OWNER_EMAIL` (currently sameer.vitkar@gmail.com — change to yours later).
+3. The order shows up in CMS → **Shop · Order** with status `paid`. Stock decrements automatically.
+
+**Test the lifecycle emails:** open the order, change status `paid` → `shipped` → `completed` → `refunded`, saving + publishing each transition. Each one triggers a different Resend email to the customer. A refund also auto-fires through Stripe (test charge gets reversed).
+
+**Going live:** once your real Stripe account is bank-verified and the live keys are set in Coolify env vars, the same code switches to real payments. The test cards stop working — you'd use real card numbers and real money would move. Sameer handles the live-key swap; you don't need to touch anything.
+
 ### 16.14 The FAQ system (per-page FAQs)
 
 Every meaningful page on the site has an FAQ accordion at the bottom â€” programme pages, experience pages, shop, about, contact, etc. The questions and answers come from a single CMS collection, tagged by page.
