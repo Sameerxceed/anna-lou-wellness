@@ -1,80 +1,81 @@
-{
-  "kind": "collectionType",
-  "collectionName": "faqs",
-  "info": {
-    "singularName": "faq",
-    "pluralName": "faqs",
-    "displayName": "FAQ · Per Page",
-    "description": "Frequently asked questions. Each entry binds to one page (e.g. The Reset, Retreats, Reset Room). Auto-renders as accordion on the page + JSON-LD schema for AI/Google rich snippets."
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "attributes": {
-    "question": {
-      "type": "string",
-      "required": true
-    },
-    "answer": {
-      "type": "richtext",
-      "required": true
-    },
-    "page": {
-      "type": "enumeration",
-      "enum": [
-        "the-reset",
-        "signal",
-        "signal-and-build",
-        "one-day",
-        "signal-collective",
-        "sessions",
-        "recovery",
-        "quiz",
-        "the-work",
-        "retreats",
-        "workshops",
-        "corporate-wellbeing",
-        "speaking",
-        "reset-room",
-        "the-returning-circle",
-        "membership",
-        "events",
-        "resources",
-        "shop",
-        "about",
-        "contact",
-        "testimonials",
-        "ask-anna",
-        "decoder",
-        "practitioners",
-        "regulated",
-        "reset-stories",
-        "life",
-        "love-and-relationships",
-        "work-and-money",
-        "general"
-      ],
-      "default": "general"
-    },
-    "category": {
-      "type": "enumeration",
-      "enum": [
-        "coaching",
-        "shop",
-        "membership",
-        "experiences",
-        "general"
-      ]
-    },
-    "sort_order": {
-      "type": "integer",
-      "default": 0,
-      "description": "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
-    },
-    "is_active": {
-      "type": "boolean",
-      "default": true,
-      "description": "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you're drafting privately."
-    }
-  }
+﻿{
+    "kind":  "collectionType",
+    "collectionName":  "faqs",
+    "info":  {
+                 "singularName":  "faq",
+                 "pluralName":  "faqs",
+                 "displayName":  "FAQ Â· Per Page",
+                 "description":  "Frequently asked questions. Each entry binds to one page (e.g. The Reset, Retreats, Reset Room). Auto-renders as accordion on the page + JSON-LD schema for AI/Google rich snippets."
+             },
+    "options":  {
+                    "draftAndPublish":  true
+                },
+    "attributes":  {
+                       "question":  {
+                                        "type":  "string",
+                                        "required":  true
+                                    },
+                       "answer":  {
+                                      "type":  "richtext",
+                                      "required":  true
+                                  },
+                       "page":  {
+                                    "type":  "enumeration",
+                                    "enum":  [
+                                                 "the-reset",
+                                                 "signal",
+                                                 "signal-and-build",
+                                                 "one-day",
+                                                 "signal-collective",
+                                                 "sessions",
+                                                 "recovery",
+                                                 "quiz",
+                                                 "the-work",
+                                                 "retreats",
+                                                 "workshops",
+                                                 "corporate-wellbeing",
+                                                 "speaking",
+                                                 "reset-room",
+                                                 "the-returning-circle",
+                                                 "membership",
+                                                 "events",
+                                                 "resources",
+                                                 "shop",
+                                                 "about",
+                                                 "contact",
+                                                 "testimonials",
+                                                 "ask-anna",
+                                                 "decoder",
+                                                 "practitioners",
+                                                 "regulated",
+                                                 "reset-stories",
+                                                 "life",
+                                                 "love-and-relationships",
+                                                 "work-and-money",
+                                                 "general"
+                                             ],
+                                    "default":  "general"
+                                },
+                       "category":  {
+                                        "type":  "enumeration",
+                                        "enum":  [
+                                                     "coaching",
+                                                     "shop",
+                                                     "membership",
+                                                     "experiences",
+                                                     "general"
+                                                 ]
+                                    },
+                       "sort_order":  {
+                                          "type":  "integer",
+                                          "default":  0,
+                                          "description":  "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
+                                      },
+                       "is_active":  {
+                                         "type":  "boolean",
+                                         "default":  true,
+                                         "description":  "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you\u0027re drafting privately."
+                                     }
+                   }
 }
+

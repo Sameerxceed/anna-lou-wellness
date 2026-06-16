@@ -1,57 +1,58 @@
-{
-  "kind": "collectionType",
-  "collectionName": "certifications",
-  "info": {
-    "singularName": "certification",
-    "pluralName": "certifications",
-    "displayName": "Trust · Certification Badge",
-    "description": "Professional accreditation badges shown in the 'Certified' strip on the homepage (ICF, CPD, TRE, etc.)."
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "attributes": {
-    "name": {
-      "type": "string",
-      "required": true,
-      "description": "Short name shown on the badge — e.g. 'ICF', 'CPD', 'TRE®'."
-    },
-    "label": {
-      "type": "string",
-      "required": true,
-      "description": "Sub-label under the name — e.g. 'Accredited', 'Certified', 'Provider'."
-    },
-    "colour": {
-      "type": "string",
-      "default": "#231F20",
-      "description": "Badge border + text colour as a hex value (e.g. #1a5276 navy, #c0392b red, #27ae60 green). Defaults to ink black."
-    },
-    "url": {
-      "type": "string",
-      "description": "Optional link to the certifying body's verification page."
-    },
-    "logo": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ],
-      "description": "Optional image badge. If uploaded, replaces the styled text badge."
-    },
-    "is_homepage_featured": {
-      "type": "boolean",
-      "default": true,
-      "description": "Show in the 'Certified' strip on the homepage."
-    },
-    "is_active": {
-      "type": "boolean",
-      "default": true,
-      "description": "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you're drafting privately."
-    },
-    "sort_order": {
-      "type": "integer",
-      "default": 0,
-      "description": "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
-    }
-  }
+﻿{
+    "kind":  "collectionType",
+    "collectionName":  "certifications",
+    "info":  {
+                 "singularName":  "certification",
+                 "pluralName":  "certifications",
+                 "displayName":  "Trust Â· Certification Badge",
+                 "description":  "Professional accreditation badges shown in the \u0027Certified\u0027 strip on the homepage (ICF, CPD, TRE, etc.)."
+             },
+    "options":  {
+                    "draftAndPublish":  true
+                },
+    "attributes":  {
+                       "name":  {
+                                    "type":  "string",
+                                    "required":  true,
+                                    "description":  "Short name shown on the badge â€” e.g. \u0027ICF\u0027, \u0027CPD\u0027, \u0027TREÂ®\u0027."
+                                },
+                       "label":  {
+                                     "type":  "string",
+                                     "required":  true,
+                                     "description":  "Sub-label under the name â€” e.g. \u0027Accredited\u0027, \u0027Certified\u0027, \u0027Provider\u0027."
+                                 },
+                       "colour":  {
+                                      "type":  "string",
+                                      "default":  "#231F20",
+                                      "description":  "Badge border + text colour as a hex value (e.g. #1a5276 navy, #c0392b red, #27ae60 green). Defaults to ink black."
+                                  },
+                       "url":  {
+                                   "type":  "string",
+                                   "description":  "Optional link to the certifying body\u0027s verification page."
+                               },
+                       "logo":  {
+                                    "type":  "media",
+                                    "multiple":  false,
+                                    "allowedTypes":  [
+                                                         "images"
+                                                     ],
+                                    "description":  "Optional image badge. If uploaded, replaces the styled text badge."
+                                },
+                       "is_homepage_featured":  {
+                                                    "type":  "boolean",
+                                                    "default":  true,
+                                                    "description":  "Show in the \u0027Certified\u0027 strip on the homepage."
+                                                },
+                       "is_active":  {
+                                         "type":  "boolean",
+                                         "default":  true,
+                                         "description":  "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you\u0027re drafting privately."
+                                     },
+                       "sort_order":  {
+                                          "type":  "integer",
+                                          "default":  0,
+                                          "description":  "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
+                                      }
+                   }
 }
+

@@ -45,6 +45,13 @@
     "seo_description": {
       "type": "text",
       "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Fills in automatically when you Save — leave blank unless you want to override"
+    },
+    "upsells": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.upsell-reference",
+      "max": 3,
+      "description": "Up to 3 'next step' cards shown at the bottom of this page. Each card has an image + label + short blurb + link. Leave empty to hide the upsell block entirely. Example use: on the About page, point to the Reset Room and Reset Letters."
     }
   }
 }

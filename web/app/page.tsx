@@ -9,6 +9,7 @@ import {
   getCertifications,
 } from '@/lib/cms';
 import DecoderQuizPopup from '@/components/DecoderQuizPopup';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
 import { mediaUrl } from '@/lib/strapi';
 import { accentForText } from '@/lib/colours';
@@ -441,6 +442,14 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+
+      {/* Per-page upsells — Anna controls these in Strapi via Homepage → Upsells.
+          Up to 3 cards (image + label + blurb + link). Hidden when empty. */}
+      <UpsellBlock
+        items={(cms?.upsells as UpsellItem[] | undefined) || []}
+        title="Where next."
+        kicker="Continue exploring"
+      />
 
       <style dangerouslySetInnerHTML={{ __html: homepageStyles }} />
       <DecoderQuizPopup />

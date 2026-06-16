@@ -1,41 +1,42 @@
-{
-  "kind": "collectionType",
-  "collectionName": "team_members",
-  "info": {
-    "singularName": "team-member",
-    "pluralName": "team-members",
-    "displayName": "Team · Member"
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "attributes": {
-    "name": {
-      "type": "string",
-      "required": true
-    },
-    "role": {
-      "type": "string",
-      "required": true
-    },
-    "biography": {
-      "type": "richtext"
-    },
-    "portrait": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
-    "website_url": {
-      "type": "string",
-      "description": "Full URL including https://. Opens in a new tab so visitors don't lose your site. Example: https://annalouoflondon.com/products/silver-necklace"
-    },
-    "sort_order": {
-      "type": "integer",
-      "default": 0,
-      "description": "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
-    }
-  }
+﻿{
+    "kind":  "collectionType",
+    "collectionName":  "team_members",
+    "info":  {
+                 "singularName":  "team-member",
+                 "pluralName":  "team-members",
+                 "displayName":  "Team Â· Member"
+             },
+    "options":  {
+                    "draftAndPublish":  true
+                },
+    "attributes":  {
+                       "name":  {
+                                    "type":  "string",
+                                    "required":  true
+                                },
+                       "role":  {
+                                    "type":  "string",
+                                    "required":  true
+                                },
+                       "biography":  {
+                                         "type":  "richtext"
+                                     },
+                       "portrait":  {
+                                        "type":  "media",
+                                        "multiple":  false,
+                                        "allowedTypes":  [
+                                                             "images"
+                                                         ]
+                                    },
+                       "website_url":  {
+                                           "type":  "string",
+                                           "description":  "Full URL including https://. Opens in a new tab so visitors don\u0027t lose your site. Example: https://annalouoflondon.com/products/silver-necklace"
+                                       },
+                       "sort_order":  {
+                                          "type":  "integer",
+                                          "default":  0,
+                                          "description":  "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
+                                      }
+                   }
 }
+

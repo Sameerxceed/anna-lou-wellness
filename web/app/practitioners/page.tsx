@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getPractitioners, getPractitionersPage, getFAQs, type Practitioner } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
 import PractitionerEnquiryButton from '@/components/PractitionerEnquiryButton';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { BreadcrumbSchema } from '@/components/StructuredData';
 
 export const revalidate = 3600;
@@ -87,6 +88,7 @@ export default async function PractitionersPage() {
 
       <PractitionerEnquiryButton accentColour="#6E3A5A" />
       <FAQAccordion faqs={faqs} accentColour="#6E3A5A" background="#fff" />
+      <UpsellBlock items={page.upsells as unknown as UpsellItem[]} title="Where next." kicker="Continue exploring" />
     </>
   );
 }

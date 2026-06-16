@@ -1,72 +1,73 @@
-{
-  "kind": "collectionType",
-  "collectionName": "community_event_pages",
-  "info": {
-    "singularName": "community-event-page",
-    "pluralName": "community-event-pages",
-    "displayName": "Community Event",
-    "description": "Sub-pages under /community (Returning Circle, Events)."
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "attributes": {
-    "title": {
-      "type": "string",
-      "required": true,
-      "description": "Page heading."
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "title",
-      "required": true,
-      "description": "URL slug. Must match the route: 'the-returning-circle', 'events'."
-    },
-    "kicker": {
-      "type": "string",
-      "default": "Community",
-      "description": "Small uppercase label above the title."
-    },
-    "kickerColour": {
-      "type": "string",
-      "default": "#5DCAA5",
-      "description": "Hex colour for the kicker. Default mint #5DCAA5."
-    },
-    "heroImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ],
-      "description": "Main image at the top of the page."
-    },
-    "intro": {
-      "type": "text",
-      "description": "Main body. Separate paragraphs with a BLANK LINE between them."
-    },
-    "sessions": {
-      "type": "component",
-      "repeatable": true,
-      "component": "sections.session-slot",
-      "description": "Recurring sessions to list on this page (Returning Circle and similar). Add one entry per location/time — e.g. one for Taggs Island, one for Zoom. Order matters: top entry shows first. Leave empty to fall back to the page's hardcoded copy."
-    },
-    "ctaLabel": {
-      "type": "string",
-      "default": "Join the Circle",
-      "description": "Optional button text."
-    },
-    "ctaUrl": {
-      "type": "string",
-      "default": "/contact",
-      "description": "Optional button link."
-    },
-    "seoTitle": {
-      "type": "string",
-      "description": "Optional SEO override."
-    },
-    "seoDescription": {
-      "type": "text",
-      "description": "Optional SEO description for Google."
-    }
-  }
+﻿{
+    "kind":  "collectionType",
+    "collectionName":  "community_event_pages",
+    "info":  {
+                 "singularName":  "community-event-page",
+                 "pluralName":  "community-event-pages",
+                 "displayName":  "Community Event",
+                 "description":  "Sub-pages under /community (Returning Circle, Events)."
+             },
+    "options":  {
+                    "draftAndPublish":  true
+                },
+    "attributes":  {
+                       "title":  {
+                                     "type":  "string",
+                                     "required":  true,
+                                     "description":  "Page heading."
+                                 },
+                       "slug":  {
+                                    "type":  "uid",
+                                    "targetField":  "title",
+                                    "required":  true,
+                                    "description":  "URL slug. Must match the route: \u0027the-returning-circle\u0027, \u0027events\u0027."
+                                },
+                       "kicker":  {
+                                      "type":  "string",
+                                      "default":  "Community",
+                                      "description":  "Small uppercase label above the title."
+                                  },
+                       "kickerColour":  {
+                                            "type":  "string",
+                                            "default":  "#5DCAA5",
+                                            "description":  "Hex colour for the kicker. Default mint #5DCAA5."
+                                        },
+                       "heroImage":  {
+                                         "type":  "media",
+                                         "multiple":  false,
+                                         "allowedTypes":  [
+                                                              "images"
+                                                          ],
+                                         "description":  "Main image at the top of the page."
+                                     },
+                       "intro":  {
+                                     "type":  "text",
+                                     "description":  "Main body. Separate paragraphs with a BLANK LINE between them."
+                                 },
+                       "sessions":  {
+                                        "type":  "component",
+                                        "repeatable":  true,
+                                        "component":  "sections.session-slot",
+                                        "description":  "Recurring sessions to list on this page (Returning Circle and similar). Add one entry per location/time â€” e.g. one for Taggs Island, one for Zoom. Order matters: top entry shows first. Leave empty to fall back to the page\u0027s hardcoded copy."
+                                    },
+                       "ctaLabel":  {
+                                        "type":  "string",
+                                        "default":  "Join the Circle",
+                                        "description":  "Optional button text."
+                                    },
+                       "ctaUrl":  {
+                                      "type":  "string",
+                                      "default":  "/contact",
+                                      "description":  "Optional button link."
+                                  },
+                       "seoTitle":  {
+                                        "type":  "string",
+                                        "description":  "Optional SEO override."
+                                    },
+                       "seoDescription":  {
+                                              "type":  "text",
+                                              "description":  "Optional SEO description for Google."
+                                          }
+                   }
 }
+

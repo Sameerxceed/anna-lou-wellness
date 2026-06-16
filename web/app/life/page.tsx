@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
 import FAQAccordion from '@/components/FAQAccordion';
+import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getArticles, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
 
 export const metadata: Metadata = {
@@ -56,6 +57,7 @@ export default async function LifePage() {
         breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Life' }}
       />
       <FAQAccordion faqs={faqs} accentColour="#FAA21B" background="#F5F3EF" />
+      <UpsellBlock items={page.upsells as unknown as UpsellItem[]} title="Where next." kicker="Continue exploring" />
     </>
   );
 }

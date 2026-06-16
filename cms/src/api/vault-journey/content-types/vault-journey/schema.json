@@ -1,111 +1,112 @@
-{
-  "kind": "collectionType",
-  "collectionName": "vault_journeys",
-  "info": {
-    "singularName": "vault-journey",
-    "pluralName": "vault-journeys",
-    "displayName": "Reset Room · Vault Journey",
-    "description": "Member-only guided journeys inside the Reset Room vault. Each one can have audio (private podcast) and/or video (Bunny.net Stream) plus a companion PDF."
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "attributes": {
-    "name": {
-      "type": "string",
-      "required": true
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "name",
-      "required": true,
-      "description": "URL path after the slash. Lowercase, hyphens-not-spaces, no punctuation. Auto-fills from the name/title — only edit if you want to change the URL."
-    },
-    "description": {
-      "type": "text",
-      "description": "Short description shown on the vault grid card. 1-2 sentences."
-    },
-    "kind": {
-      "type": "enumeration",
-      "enum": [
-        "Foundational journey",
-        "Daily practice",
-        "Somatic release",
-        "Clarity practice",
-        "Reset journey",
-        "Pattern work",
-        "Founding signature",
-        "E-book",
-        "Audio meditation",
-        "Workbook",
-        "Other"
-      ],
-      "default": "Foundational journey",
-      "description": "Acts like folders on the live Vault page — members can filter by this. Use 'Audio meditation' or 'E-book' or 'Workbook' for those formats; use one of the journey types for guided journeys."
-    },
-    "tone_colour": {
-      "type": "string",
-      "default": "#F280AA",
-      "description": "Accent colour for the card border + filter. Use one of the brand hex values (e.g. #F280AA pink, #FFD07A yellow, #7BAFDD blue, #5DCAA5 green, #FAA21B amber, #6E3A5A plum, #A67C3A bronze)."
-    },
-    "duration": {
-      "type": "string",
-      "description": "Free-text duration, e.g. '12 min' or '20 mins'."
-    },
-    "audio_file": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "audios"
-      ],
-      "description": "The MP3 for this journey. Pushed to the private podcast feed; members can also download directly."
-    },
-    "video_url": {
-      "type": "string",
-      "description": "Bunny.net Stream embed URL (or any iframe-embeddable URL). Optional — leave blank for audio-only journeys."
-    },
-    "video_thumbnail": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ],
-      "description": "Poster image for the video player. Best size 1280x720 (16:9 landscape), JPEG, max 500 KB."
-    },
-    "companion_pdf": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "files"
-      ],
-      "description": "Optional downloadable PDF (workbook, reflection prompts, notes)."
-    },
-    "body": {
-      "type": "richtext",
-      "description": "Full description / 'About this journey' content shown below the player."
-    },
-    "recorded_date": {
-      "type": "customField",
-      "customField": "global::alw-date",
-      "description": "When this journey was recorded (optional, shown in metadata)."
-    },
-    "sort_order": {
-      "type": "integer",
-      "default": 0,
-      "description": "Lower numbers appear first in the vault grid. Use to surface foundational journeys."
-    },
-    "is_active": {
-      "type": "boolean",
-      "default": true,
-      "description": "Untick to hide from the vault without deleting."
-    },
-    "seo_title": {
-      "type": "string",
-      "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
-    },
-    "seo_description": {
-      "type": "text",
-      "description": "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Fills in automatically when you Save — leave blank unless you want to override"
-    }
-  }
+﻿{
+    "kind":  "collectionType",
+    "collectionName":  "vault_journeys",
+    "info":  {
+                 "singularName":  "vault-journey",
+                 "pluralName":  "vault-journeys",
+                 "displayName":  "Reset Room Â· Vault Journey",
+                 "description":  "Member-only guided journeys inside the Reset Room vault. Each one can have audio (private podcast) and/or video (Bunny.net Stream) plus a companion PDF."
+             },
+    "options":  {
+                    "draftAndPublish":  true
+                },
+    "attributes":  {
+                       "name":  {
+                                    "type":  "string",
+                                    "required":  true
+                                },
+                       "slug":  {
+                                    "type":  "uid",
+                                    "targetField":  "name",
+                                    "required":  true,
+                                    "description":  "URL path after the slash. Lowercase, hyphens-not-spaces, no punctuation. Auto-fills from the name/title â€” only edit if you want to change the URL."
+                                },
+                       "description":  {
+                                           "type":  "text",
+                                           "description":  "Short description shown on the vault grid card. 1-2 sentences."
+                                       },
+                       "kind":  {
+                                    "type":  "enumeration",
+                                    "enum":  [
+                                                 "Foundational journey",
+                                                 "Daily practice",
+                                                 "Somatic release",
+                                                 "Clarity practice",
+                                                 "Reset journey",
+                                                 "Pattern work",
+                                                 "Founding signature",
+                                                 "E-book",
+                                                 "Audio meditation",
+                                                 "Workbook",
+                                                 "Other"
+                                             ],
+                                    "default":  "Foundational journey",
+                                    "description":  "Acts like folders on the live Vault page â€” members can filter by this. Use \u0027Audio meditation\u0027 or \u0027E-book\u0027 or \u0027Workbook\u0027 for those formats; use one of the journey types for guided journeys."
+                                },
+                       "tone_colour":  {
+                                           "type":  "string",
+                                           "default":  "#F280AA",
+                                           "description":  "Accent colour for the card border + filter. Use one of the brand hex values (e.g. #F280AA pink, #FFD07A yellow, #7BAFDD blue, #5DCAA5 green, #FAA21B amber, #6E3A5A plum, #A67C3A bronze)."
+                                       },
+                       "duration":  {
+                                        "type":  "string",
+                                        "description":  "Free-text duration, e.g. \u002712 min\u0027 or \u002720 mins\u0027."
+                                    },
+                       "audio_file":  {
+                                          "type":  "media",
+                                          "multiple":  false,
+                                          "allowedTypes":  [
+                                                               "audios"
+                                                           ],
+                                          "description":  "The MP3 for this journey. Pushed to the private podcast feed; members can also download directly."
+                                      },
+                       "video_url":  {
+                                         "type":  "string",
+                                         "description":  "Bunny.net Stream embed URL (or any iframe-embeddable URL). Optional â€” leave blank for audio-only journeys."
+                                     },
+                       "video_thumbnail":  {
+                                               "type":  "media",
+                                               "multiple":  false,
+                                               "allowedTypes":  [
+                                                                    "images"
+                                                                ],
+                                               "description":  "Poster image for the video player. Best size 1280x720 (16:9 landscape), JPEG, max 500 KB."
+                                           },
+                       "companion_pdf":  {
+                                             "type":  "media",
+                                             "multiple":  false,
+                                             "allowedTypes":  [
+                                                                  "files"
+                                                              ],
+                                             "description":  "Optional downloadable PDF (workbook, reflection prompts, notes)."
+                                         },
+                       "body":  {
+                                    "type":  "richtext",
+                                    "description":  "Full description / \u0027About this journey\u0027 content shown below the player."
+                                },
+                       "recorded_date":  {
+                                             "type":  "customField",
+                                             "customField":  "global::alw-date",
+                                             "description":  "When this journey was recorded (optional, shown in metadata)."
+                                         },
+                       "sort_order":  {
+                                          "type":  "integer",
+                                          "default":  0,
+                                          "description":  "Lower numbers appear first in the vault grid. Use to surface foundational journeys."
+                                      },
+                       "is_active":  {
+                                         "type":  "boolean",
+                                         "default":  true,
+                                         "description":  "Untick to hide from the vault without deleting."
+                                     },
+                       "seo_title":  {
+                                         "type":  "string",
+                                         "description":  "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."
+                                     },
+                       "seo_description":  {
+                                               "type":  "text",
+                                               "description":  "Short summary for Google and ChatGPT (1-2 sentences, ~155 chars). Write what someone searching for this would actually type. Fills in automatically when you Save â€” leave blank unless you want to override"
+                                           }
+                   }
 }
+

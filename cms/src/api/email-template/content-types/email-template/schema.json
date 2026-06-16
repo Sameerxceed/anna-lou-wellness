@@ -1,85 +1,86 @@
-{
-  "kind": "collectionType",
-  "collectionName": "email_templates",
-  "info": {
-    "singularName": "email-template",
-    "pluralName": "email-templates",
-    "displayName": "Email Template",
-    "description": "One row per transactional email the site sends. Edit the wording without touching code. Use {{order_number}}, {{customer_name}}, {{total}}, {{tracking_number}}, {{tracking_url}}, {{refund_amount}}, {{cancellation_reason}}, {{site_url}} anywhere in subject / preheader / intro / outro / CTA — they get filled in at send time."
-  },
-  "options": {
-    "draftAndPublish": false
-  },
-  "attributes": {
-    "key": {
-      "type": "string",
-      "required": true,
-      "unique": true,
-      "description": "Internal identifier — do NOT change this. Tied to the code that fires this email."
-    },
-    "name": {
-      "type": "string",
-      "required": true,
-      "description": "Human label so you can find this email in the list."
-    },
-    "when_it_fires": {
-      "type": "text",
-      "description": "Plain-English description of when this email is sent — written for you, not the system."
-    },
-    "enabled": {
-      "type": "boolean",
-      "default": true,
-      "description": "Untick to stop this email from being sent (e.g. if you'd rather handle a stage manually)."
-    },
-    "audience": {
-      "type": "enumeration",
-      "enum": [
-        "customer",
-        "admin"
-      ],
-      "default": "customer",
-      "required": true,
-      "description": "customer → goes to the buyer. admin → goes to you (set OWNER_EMAIL env var)."
-    },
-    "subject": {
-      "type": "string",
-      "required": true,
-      "description": "Email subject line. Supports {{merge_tags}}."
-    },
-    "preheader": {
-      "type": "string",
-      "description": "Short preview text shown in the inbox under the subject. Keep it under 100 chars."
-    },
-    "intro": {
-      "type": "richtext",
-      "description": "First paragraph(s) shown above the order summary block."
-    },
-    "outro": {
-      "type": "richtext",
-      "description": "Closing paragraph(s) shown below the order summary block."
-    },
-    "cta_label": {
-      "type": "string",
-      "description": "Optional button text under the outro (e.g. 'Track your parcel', 'Leave a review')."
-    },
-    "cta_url": {
-      "type": "string",
-      "description": "Where the button links to. Supports {{tracking_url}}, {{site_url}}, etc."
-    },
-    "include_order_summary": {
-      "type": "boolean",
-      "default": true,
-      "description": "Show the itemised list + totals table from the order."
-    },
-    "include_bank_details": {
-      "type": "boolean",
-      "default": false,
-      "description": "Show the bank transfer details block (only relevant for the bank-transfer-placed email)."
-    },
-    "include_shipping_address": {
-      "type": "boolean",
-      "default": true,
-      "description": "Show the delivery address block."
-    }
-  }
+﻿{
+    "kind":  "collectionType",
+    "collectionName":  "email_templates",
+    "info":  {
+                 "singularName":  "email-template",
+                 "pluralName":  "email-templates",
+                 "displayName":  "Email Template",
+                 "description":  "One row per transactional email the site sends. Edit the wording without touching code. Use {{order_number}}, {{customer_name}}, {{total}}, {{tracking_number}}, {{tracking_url}}, {{refund_amount}}, {{cancellation_reason}}, {{site_url}} anywhere in subject / preheader / intro / outro / CTA â€” they get filled in at send time."
+             },
+    "options":  {
+                    "draftAndPublish":  false
+                },
+    "attributes":  {
+                       "key":  {
+                                   "type":  "string",
+                                   "required":  true,
+                                   "unique":  true,
+                                   "description":  "Internal identifier â€” do NOT change this. Tied to the code that fires this email."
+                               },
+                       "name":  {
+                                    "type":  "string",
+                                    "required":  true,
+                                    "description":  "Human label so you can find this email in the list."
+                                },
+                       "when_it_fires":  {
+                                             "type":  "text",
+                                             "description":  "Plain-English description of when this email is sent â€” written for you, not the system."
+                                         },
+                       "enabled":  {
+                                       "type":  "boolean",
+                                       "default":  true,
+                                       "description":  "Untick to stop this email from being sent (e.g. if you\u0027d rather handle a stage manually)."
+                                   },
+                       "audience":  {
+                                        "type":  "enumeration",
+                                        "enum":  [
+                                                     "customer",
+                                                     "admin"
+                                                 ],
+                                        "default":  "customer",
+                                        "required":  true,
+                                        "description":  "customer â†’ goes to the buyer. admin â†’ goes to you (set OWNER_EMAIL env var)."
+                                    },
+                       "subject":  {
+                                       "type":  "string",
+                                       "required":  true,
+                                       "description":  "Email subject line. Supports {{merge_tags}}."
+                                   },
+                       "preheader":  {
+                                         "type":  "string",
+                                         "description":  "Short preview text shown in the inbox under the subject. Keep it under 100 chars."
+                                     },
+                       "intro":  {
+                                     "type":  "richtext",
+                                     "description":  "First paragraph(s) shown above the order summary block."
+                                 },
+                       "outro":  {
+                                     "type":  "richtext",
+                                     "description":  "Closing paragraph(s) shown below the order summary block."
+                                 },
+                       "cta_label":  {
+                                         "type":  "string",
+                                         "description":  "Optional button text under the outro (e.g. \u0027Track your parcel\u0027, \u0027Leave a review\u0027)."
+                                     },
+                       "cta_url":  {
+                                       "type":  "string",
+                                       "description":  "Where the button links to. Supports {{tracking_url}}, {{site_url}}, etc."
+                                   },
+                       "include_order_summary":  {
+                                                     "type":  "boolean",
+                                                     "default":  true,
+                                                     "description":  "Show the itemised list + totals table from the order."
+                                                 },
+                       "include_bank_details":  {
+                                                    "type":  "boolean",
+                                                    "default":  false,
+                                                    "description":  "Show the bank transfer details block (only relevant for the bank-transfer-placed email)."
+                                                },
+                       "include_shipping_address":  {
+                                                        "type":  "boolean",
+                                                        "default":  true,
+                                                        "description":  "Show the delivery address block."
+                                                    }
+                   }
 }
+

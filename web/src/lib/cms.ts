@@ -43,10 +43,48 @@ export type HomepageData = Record<string, unknown> & {
 export async function getHomepage(): Promise<HomepageData | null> {
   try {
     const { data: d } = await fetchAPI('/homepage', { populate: '*' });
-    return (d as HomepageData) || null;
+    if (!d) return null;
+    // Second fetch with deep populate just for upsells (Strapi v5 won't
+    // deep-populate the nested image when combined with `populate=*`).
+    const upsells = await getUpsellsForSingleton('/homepage');
+    return { ...(d as HomepageData), upsells };
   } catch {
     return null;
   }
+}
+
+// ═══ UPSELLS HELPER ═══
+// Strapi v5 silent-failure: combining `populate=*` with a hierarchical
+// sub-populate (`populate[upsells][populate]=*`) returns ZERO data. So
+// for any singleton that uses `populate=*` for its main fetch, we do a
+// SECOND lightweight fetch that only asks for the upsells with their
+// images, and merge it back.
+//
+// Use this from any singleton loader where you want UpsellBlock to work.
+// Returns [] on any error so the page doesn't crash if there are no upsells.
+export async function getUpsellsForSingleton(path: string): Promise<UpsellRef[]> {
+  try {
+    const { data } = await fetchAPI(path, { 'populate[upsells][populate]': '*' });
+    const arr = (data as { upsells?: unknown })?.upsells;
+    if (!Array.isArray(arr)) return [];
+    return arr.map((u: any) => ({
+      label: u.label || '',
+      link: u.link || '',
+      eyebrow: u.eyebrow || '',
+      blurb: u.blurb || '',
+      image: u.image && u.image.url ? { url: mediaUrl(u.image) } : null,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export interface UpsellRef {
+  label: string;
+  link: string;
+  eyebrow: string;
+  blurb: string;
+  image: { url: string } | null;
 }
 
 // ═══ PRODUCTS ═══
@@ -422,24 +460,27 @@ export interface SectionLandingPage {
   intro: string;
   heroImage: string;
   kickerColour: string;
+  upsells: UpsellRef[];
 }
 
 export async function getSectionLandingPage(
   endpoint: string,
-  fallback: SectionLandingPage,
+  fallback: Omit<SectionLandingPage, 'upsells'>,
 ): Promise<SectionLandingPage> {
   try {
     const { data: d } = await fetchAPI(endpoint, { populate: '*' });
-    if (!d) return fallback;
+    if (!d) return { ...fallback, upsells: [] };
+    const upsells = await getUpsellsForSingleton(endpoint);
     return {
       kicker: (d as any).kicker || fallback.kicker,
       title: (d as any).title || fallback.title,
       intro: (d as any).intro || fallback.intro,
       heroImage: mediaUrl((d as any).hero_image, 'large') || fallback.heroImage,
       kickerColour: (d as any).kicker_colour || fallback.kickerColour,
+      upsells,
     };
   } catch {
-    return fallback;
+    return { ...fallback, upsells: [] };
   }
 }
 
@@ -1168,6 +1209,7 @@ export interface PractitionersPage {
   title: string;
   tagline: string;
   kickerColour: string;
+  upsells: UpsellRef[];
 }
 
 const PRACTITIONERS_PAGE_FALLBACK: PractitionersPage = {
@@ -1175,17 +1217,20 @@ const PRACTITIONERS_PAGE_FALLBACK: PractitionersPage = {
   title: 'Practitioners I trust.',
   tagline: "A small, hand-picked circle of therapists, coaches, bodyworkers, and healers I send my clients to when the work needs to go somewhere I don't.",
   kickerColour: '#6E3A5A',
+  upsells: [],
 };
 
 export async function getPractitionersPage(): Promise<PractitionersPage> {
   try {
     const { data: d } = await fetchAPI('/practitioners-page');
     if (!d) return PRACTITIONERS_PAGE_FALLBACK;
+    const upsells = await getUpsellsForSingleton('/practitioners-page');
     return {
       kicker: d.kicker || PRACTITIONERS_PAGE_FALLBACK.kicker,
       title: d.title || PRACTITIONERS_PAGE_FALLBACK.title,
       tagline: d.tagline || PRACTITIONERS_PAGE_FALLBACK.tagline,
       kickerColour: d.kickerColour || PRACTITIONERS_PAGE_FALLBACK.kickerColour,
+      upsells,
     };
   } catch {
     return PRACTITIONERS_PAGE_FALLBACK;

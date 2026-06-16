@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product-category",
     "pluralName": "product-categories",
-    "displayName": "Shop \u00b7 Category",
+    "displayName": "Shop · Category",
     "description": "Categories for items sold in the shop (jewellery, crystals, sage, gifts). Top-level categories appear as the shop nav. Use 'parent' to create sub-categories like Bracelets under Jewellery."
   },
   "options": {
@@ -55,6 +55,13 @@
       "relation": "oneToMany",
       "target": "api::product.product",
       "mappedBy": "category"
+    },
+    "upsells": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.upsell-reference",
+      "max": 3,
+      "description": "Up to 3 'next step' cards shown at the bottom of this page. Each card has an image + label + short blurb + link. Leave empty to hide the upsell block entirely. Example use: on the About page, point to the Reset Room and Reset Letters."
     }
   }
 }
