@@ -127,7 +127,12 @@ export default async function EditorialFeed({
               }}
             />
             <div className="reveal rd1">
-              <p className="feed-article-cat" style={{ color: accentForText(articles[0].categoryColour) }}>{articles[0].category}</p>
+              {/* Sub-category badge intentionally removed 19 Jun — Anna's
+                  feedback was the "Holding Everything / Strong One / Signal
+                  vs Noise" labels confused customers. The section name is
+                  already established by the page itself (this component
+                  only renders inside section landings / article details),
+                  so the sub-category was visual noise. */}
               <h2 className="feed-featured-title">{articles[0].title}</h2>
               <p className="feed-featured-date">{articles[0].date}</p>
               <p className="feed-featured-excerpt">{articles[0].excerpt}</p>
@@ -156,7 +161,6 @@ export default async function EditorialFeed({
                   {article.isFree === false && <span className="feed-card-paid">Paid</span>}
                 </div>
                 <div className="feed-card-body">
-                  <p className="feed-article-cat" style={{ color: accentForText(article.categoryColour) }}>{article.category}</p>
                   <h3 className="feed-card-title">{article.title}</h3>
                   <p className="feed-card-date">{article.date}</p>
                 </div>

@@ -127,7 +127,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <Link href="/reset-stories">Reset Stories</Link>
           </nav>
           <p className="article-kicker" style={{ color: accentForText(article.category?.colour) }}>
-            {article.category?.name || 'Reset Stories'}
+            Reset Stories
           </p>
           <h1 className="article-title">{article.title}</h1>
           <p className="article-meta">

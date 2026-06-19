@@ -1,4 +1,4 @@
-﻿import { Metadata } from 'next';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
@@ -118,8 +118,8 @@ export default async function ArticlePage({ params }: PageProps) {
             <span className="article-breadcrumb-sep">â€º</span>
             <Link href="/love-and-relationships">Love & Relationships</Link>
           </nav>
-          <p className="article-kicker" style={{ color: accentForText(article.category?.colour || '#F280AA') }}>
-            {article.category?.name || 'Love & Relationships'}
+          <p className="article-kicker" style={{ color: accentForText(article.category?.colour) }}>
+            Love & Relationships
           </p>
           <h1 className="article-title">{article.title}</h1>
           <p className="article-meta">

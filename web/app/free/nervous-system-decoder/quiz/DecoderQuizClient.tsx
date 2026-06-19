@@ -319,12 +319,17 @@ export default function DecoderQuizClient({ copy, questions, results }: Props) {
             )}
             {winnerState === 'clear' && (
               <div className="dq-result-cta">
+                {/* Fallback was '/community/reset-room' — Anna's 19 Jun feedback:
+                    too aggressive an upsell as the FIRST post-quiz step.
+                    Now defaults to the Decoder landing so Clear visitors stay
+                    in the free-resource flow. Anna can override per-result via
+                    Strapi → Decoder Quiz Page → results.ctaUrl / ctaLabel. */}
                 <Link
-                  href={result.ctaUrl || '/community/reset-room'}
+                  href={result.ctaUrl || '/free/nervous-system-decoder'}
                   className="dq-btn dq-btn-primary"
                   style={{ background: theme.accent, borderColor: theme.accent }}
                 >
-                  {result.ctaLabel || 'Step inside The Reset Room'} &rarr;
+                  {result.ctaLabel || 'Get your free Nervous System Decoder'} &rarr;
                 </Link>
               </div>
             )}

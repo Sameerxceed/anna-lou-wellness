@@ -21,6 +21,17 @@ const sectionPaths: Record<string, string> = {
   'work-and-money': '/work-and-money',
 };
 
+// Display name per section — shown as the card badge on the homepage
+// INSTEAD of the sub-category name (Holding Everything / Strong One /
+// Signal vs Noise / etc.) which Anna flagged 19 Jun as confusing for
+// customers. Section gives the reader the bigger orientation.
+const sectionDisplayNames: Record<string, string> = {
+  'reset-stories': 'Reset Stories',
+  'life': 'Life',
+  'love-and-relationships': 'Love & Relationships',
+  'work-and-money': 'Work & Money',
+};
+
 // Pull a string field from Strapi homepage with fallback. Empty/null/undefined → fallback.
 const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
   const v = cms?.[key];
@@ -150,7 +161,7 @@ export default async function HomePage() {
                   style={{ backgroundImage: `url(${article.heroImage || getStockImage(stockCategoryForSection(article.category?.section || 'reset-stories'), article.slug)})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                 />
                 <div className="article-card-body">
-                  <p className="article-card-cat" style={{ color: accentForText(article.category?.colour) }}>{article.category?.name || 'Stories'}</p>
+                  <p className="article-card-cat" style={{ color: accentForText(article.category?.colour) }}>{sectionDisplayNames[section] || 'Stories'}</p>
                   <h3 className="article-card-title">{article.title}</h3>
                   {article.excerpt && <p className="article-card-excerpt">{article.excerpt}</p>}
                   <span className="article-card-readmore">Read more <span aria-hidden>&rarr;</span></span>

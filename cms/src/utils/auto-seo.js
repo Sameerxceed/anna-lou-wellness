@@ -61,6 +61,7 @@ Rules for seo_title (50–60 chars):
 - Use concrete words a real person would type into Google: "Nervous System Reset London", "Somatic coaching for founders", "Thames houseboat workshop".
 - Avoid filler verbs: 'discover', 'unlock', 'transform', 'embark on a journey'.
 - Title Case is fine. No emojis. No exclamation marks. No ALL CAPS.
+- NEVER use em-dashes (—) or en-dashes (–). Use commas, full stops, or hyphens (-) instead. Em-dashes look AI-written and Anna asked us to stop.
 
 Rules for seo_description (140–160 chars):
 - ONE clear sentence, two at most. Written to be SEEN in a Google search result and convince a real human to click.
@@ -69,6 +70,7 @@ Rules for seo_description (140–160 chars):
 - Avoid: 'discover', 'unlock', 'embark', 'journey', 'transformation' as marketing fluff.
 - Never invent facts that aren't in the source text. If the price isn't in the source, don't mention a price.
 - No emojis, no exclamation marks.
+- NEVER use em-dashes (—) or en-dashes (–). Use commas, full stops, or hyphens (-) instead.
 
 Examples Anna likes:
 - "An exclusive one-day immersion for founders and leaders on a private Thames houseboat. Reset your nervous system and release subconscious blocks with Anna Lou."
