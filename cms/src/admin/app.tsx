@@ -38,6 +38,8 @@ import BetterDateInput from './extensions/BetterDateInput';
 import LinkPickerInput from './extensions/LinkPickerInput';
 import ManualHelpPage from './extensions/ManualHelpPage';
 import HelpFab from './extensions/HelpFab';
+import * as React from 'react';
+import { createRoot } from 'react-dom/client';
 
 // Sidebar icon for the Quick Edit menu link. Strapi expects a React
 // component for the `icon` field — inline emoji wrapped in a span works
@@ -159,30 +161,27 @@ const bootstrap = (app: StrapiApp) => {
   // Stamp a console marker so we know our customizations loaded.
   // If admin breaks, the missing log narrows the diagnosis.
   // eslint-disable-next-line no-console
-  console.info('[ALW admin] Customizations loaded · v0.8 (Help FAB + Ask page active)');
+  console.info('[ALW admin] Customizations loaded · v0.9 (Help FAB static-mount)');
 
   // ═══ Floating Help FAB ═══
-  // Mount our HelpFab React tree into a portal div on document.body so it
-  // floats above every admin page (Quick Edit, Content Manager, Settings,
-  // edit views). The FAB itself hides on /auth/ login pages. Survives
-  // SPA route changes because it lives outside Strapi's React tree.
+  // Mount HelpFab into a portal div on document.body so it floats above
+  // every admin page (Quick Edit, Content Manager, Settings, edit views).
+  // The FAB hides itself on /auth/ login pages. Survives Strapi SPA route
+  // changes because it lives outside Strapi's React tree.
+  //
+  // STATIC imports (not dynamic) because Strapi v5's Vite build was not
+  // resolving `import('react-dom/client')` reliably — the chunk loaded
+  // but `createRoot` was sometimes undefined. Static imports are bundled
+  // up front and always available.
   try {
     if (typeof document !== 'undefined' && !document.getElementById('alw-help-fab-root')) {
       const mount = document.createElement('div');
       mount.id = 'alw-help-fab-root';
       document.body.appendChild(mount);
-      // Lazy-load ReactDOM client so the import doesn't slow boot.
-      import('react-dom/client')
-        .then(({ createRoot }) => {
-          import('react').then((ReactMod) => {
-            const root = createRoot(mount);
-            root.render(ReactMod.createElement(HelpFab));
-          });
-        })
-        .catch((err) => {
-          // eslint-disable-next-line no-console
-          console.warn('[ALW admin] HelpFab mount failed:', err);
-        });
+      const root = createRoot(mount);
+      root.render(React.createElement(HelpFab));
+      // eslint-disable-next-line no-console
+      console.info('[ALW admin] HelpFab mounted');
     }
   } catch (err) {
     // eslint-disable-next-line no-console
