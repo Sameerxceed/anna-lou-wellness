@@ -593,10 +593,10 @@ Sidebar â†’ **Media Library**. Everything you've uploaded across all pages 
 
 Drag-and-drop files into the upload zone, or click **Add new assets**.
 
-- Image formats: JPG, PNG, WebP, GIF, SVG
+- File formats: JPG, PNG, WebP, GIF, SVG, HEIC (iPhone photos â€” converted to JPG automatically)
 - PDF and audio files supported (for downloads like the Decoder)
-- Max file size: 10 MB per file
-- **Upload 10 photos at a time, not more.** Bigger batches (20+) hit "Bad Gateway" / "Unexpected token 'B'" errors because each photo is rotated and pushed to Cloudinary one-by-one and the request times out. Ten at a time is the safe cap. Close the dialog after each batch, then drop the next 10 — the Media Library keeps you in the same folder so it's quick.
+- Max file size: **100 MB per file**. The server automatically compresses every photo to 2400 px wide at high quality on upload â€” so you can drop a 30 MB iPhone Pro photo and it lands as ~500 KB. **You do not need to compress images before uploading.**
+- **Upload 10 photos at a time, not more.** Bigger batches (20+) hit "Bad Gateway" errors because each photo is processed one-by-one and the request times out. Ten at a time is the safe cap. Close the dialog after each batch, then drop the next 10 â€” the Media Library keeps you in the same folder so it's quick.
 - Recommended image dimensions:
   - Hero images: 1600 Ã— 1200 px minimum
   - Article body images: 1200 Ã— 800 px
@@ -725,15 +725,44 @@ The `PREVIEW_SECRET` env var got out of sync between Strapi and the website, OR 
 
 ### Image upload failing
 
-- **"Bad Gateway" / "Unexpected token 'B'" errors when uploading lots of photos at once?** You uploaded more than ~10 at a time. The server processes each photo (rotate + Cloudinary push) before the proxy gives up. **Upload in batches of 10 max.** Close the dialog, drop the next 10, repeat.
-- File too big? Compress with something like Squoosh.app first.
-- Wrong format? Stick to JPG/PNG/WebP/SVG.
-- Try again after a minute (sometimes Cloudinary is slow).
+- **"Bad Gateway" / "Unexpected token 'B'" errors when uploading lots of photos at once?** You uploaded more than ~10 at a time. The server processes each photo (rotate + compress + Cloudinary push) one-by-one and the request times out beyond ~10. **Upload in batches of 10 max.** Close the dialog, drop the next 10, repeat.
+- **File over 100 MB?** That's the hard cap. Genuinely huge files (RAW exports, long videos) won't fit. For videos, upload to YouTube or Vimeo and embed instead.
+- **Wrong format?** Stick to JPG / PNG / WebP / SVG / HEIC for images, PDF / MP4 / MP3 for documents and media.
+- **Image processing failure** (rare): try uploading the file again. The server compresses on receipt â€” if Sharp crashes on a corrupt file, retrying usually works. If not, open the file in any photo editor and "Save as JPG" to clean the file headers.
 - If persistent: ping Sameer.
+
+### "There are validation errors in your document. Please fix them before saving."
+
+Strapi shows this generic banner when ANY required field is empty or invalid. It does not tell you which field. Scroll the whole page slowly â€” the broken field has a red border + a small red error message underneath.
+
+**Common culprits on Articles:**
+- A **Shop tags** row was added but no image is attached. Either attach an image to the row, or delete the empty row using the trash icon on the right.
+- `title` or `slug` is blank. Slug auto-fills from title, so make sure title is set first.
+
+**Common culprits on Shop products:**
+- `name`, `slug`, or `price` is blank â€” these are the only three required fields. Everything else is optional.
+
+**Common culprits on Programmes / Experiences / Pages:**
+- `title` or `slug` blank.
+- Required component fields â€” e.g. a "Section" row inside a Page Builder block that needs at least one item.
+
+**Trick to find it fast:** open the in-CMS **Help Â· Ask** chat (bottom-right) and type "validation error" + which page you're editing â€” it can usually point you at the field.
 
 ### "Save" button greyed out
 
 You probably have a required field empty. Look for red borders or asterisks. Fill them in.
+
+### Image uploaded but not showing in the field
+
+Three things to check, in order:
+
+1. **Did you upload from INSIDE the field, or via the sidebar Media Library?** The image field needs you to click the image slot on the row, then "Add new assets", upload, tick the file, "Finish". If you uploaded via the sidebar Media Library separately, the file is in the library but **not linked to the field**. Go back to the row â†’ click the slot â†’ Browse tab â†’ find the file â†’ tick it.
+2. **File size.** Over **10 MB**, Strapi accepts the upload start but silently fails. iPhone photos are usually fine (5-7 MB). RAW exports from Photoshop can go over. Compress at [squoosh.app](https://squoosh.app) first if in doubt.
+3. **Strapi v5 UI quirk.** Sometimes the upload completes server-side but the form panel doesn't refresh. **Save the entry, hard-refresh (Ctrl+Shift+R), reopen** â€” the image usually appears. If it does, it was a render glitch, not a real failure.
+
+**Diagnostic:** go to **Media Library** in the left sidebar.
+- File is there â†’ case #1 (uploaded but not attached). Re-attach from the field.
+- File is NOT there â†’ upload actually failed. Compress and retry.
 
 ### I saved a change but the website hasn't updated
 
@@ -1352,7 +1381,7 @@ This is the editorial collection. Every Reset Story, Life piece, Love & Relation
 | `is_homepage_pinned` | Tick to lock this article into one of the 3 homepage cards |
 | `homepage_pin_order` | Among pinned articles, lower number = earlier (1 = leftmost) |
 | `is_free` | Tick = full article shows on the website. Untick = paywall + Substack-only |
-| `substack_canonical_url` | If the article also lives on Substack, paste the Substack URL here. Adds a "Read on Substack â†’" link and sets the SEO canonical |
+| `substack_canonical_url` | If the article also lives on Substack, paste the Substack URL here. Adds a "Read on Substack â†’" link and sets the SEO canonical. **Auto-fills when an article is pulled from Substack via the hourly RSS cron** â€” you only need to paste manually for articles you wrote in the CMS first, then later published on Substack. |
 | `related_products` | Optional. Link to Shop products to make a "Shop the story" section |
 | `shop_tags` | Repeatable. Each tag is a photo + product link with a hover caption ("Anna is wearing the [piece]"). Use only when a product is central to the story |
 | `seo_title` + `seo_description` | Optional SEO overrides |

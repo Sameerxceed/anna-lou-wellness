@@ -1,10 +1,12 @@
 module.exports = ({ env }) => ({
   upload: {
     config: {
-      // 50MB ceiling — iPhone HEIC photos run 20-30MB; large workshop hero
-      // shots and short MP4s sometimes hit 40MB. Anything bigger is almost
-      // certainly an accident and should be flagged before upload.
-      sizeLimit: 50 * 1024 * 1024,
+      // 100MB ceiling — gives headroom for iPhone Pro RAW (40-70MB), short MP4
+      // workshop clips, and high-res Photoshop exports. The image-resize
+      // middleware (src/middlewares/image-resize.js) compresses everything
+      // post-upload to 2400px wide @ q82, so storage cost stays low even with
+      // big inputs. Anna doesn't need to compress before upload — server does it.
+      sizeLimit: 100 * 1024 * 1024,
       breakpoints: {
         xlarge: 1920,
         large: 1200,

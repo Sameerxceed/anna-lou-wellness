@@ -88,9 +88,16 @@ async function processOne(file, strapi) {
       pipeline = pipeline.webp({ quality: JPEG_QUALITY });
     }
 
+    const inputSize = input.length;
     const output = await pipeline.withMetadata({ orientation: 1 }).toBuffer();
     await fs.writeFile(inputPath, output);
     file.size = output.length;
+    // Log compression result so we can see in Coolify what Anna's uploads
+    // are actually doing. Helps diagnose "image didn't upload" complaints.
+    const inMb = (inputSize / 1024 / 1024).toFixed(2);
+    const outMb = (output.length / 1024 / 1024).toFixed(2);
+    const ratio = inputSize > 0 ? Math.round((1 - output.length / inputSize) * 100) : 0;
+    strapi.log.info(`[image-resize] ${original}: ${inMb}MB -> ${outMb}MB (-${ratio}%)`);
   } catch (err) {
     strapi.log.warn(`[image-resize] Skipped ${original}: ${err.message}`);
   }
