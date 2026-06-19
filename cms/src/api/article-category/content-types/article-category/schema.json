@@ -48,7 +48,13 @@
                                         "relation":  "oneToMany",
                                         "target":  "api::article.article",
                                         "mappedBy":  "category"
-                                    }
+                                    },
+                       "additional_articles":  {
+                                                   "type":  "relation",
+                                                   "relation":  "manyToMany",
+                                                   "target":  "api::article.article",
+                                                   "mappedBy":  "additional_categories"
+                                               }
                    }
 }
 

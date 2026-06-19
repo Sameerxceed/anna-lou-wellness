@@ -1328,6 +1328,8 @@ When you edit an Article, the **Category** dropdown shows every editorial catego
 
 **Moving an article from one section to another:** Just change the Category. The section (Work & Money, Love & Relationships, etc.) lives ON the category, not on the article — so swapping the category automatically moves the article into the new section, with the right nav colour and URL. No extra fields to update.
 
+**Putting one article in multiple categories:** Use the **Additional categories** field (right below the main Category dropdown). Pick the primary category in the top field — that one sets the URL and breadcrumb — then tick any number of EXTRA categories below. The article appears on the primary section/category page AND on every additional section/category page you tagged. Example: a piece primarily about "Career and Direction" that's also relevant to "Burnout and Nervous System" — set Career as primary, add Burnout in Additional. It shows on both feeds, but the URL stays `/work-and-money/career-and-direction/...`.
+
 ### 16.10 Articles (write, format, publish)
 
 This is the editorial collection. Every Reset Story, Life piece, Love & Relationships, Work & Money article is one entry in this collection.

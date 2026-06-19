@@ -789,7 +789,11 @@ export async function getArticles(section?: string): Promise<Article[]> {
       'pagination[limit]': '100',
     };
     if (section) {
-      params['filters[category][section][$eq]'] = section;
+      // $or: include articles whose PRIMARY category sits in this section,
+      // OR whose ADDITIONAL_CATEGORIES include any category in this section.
+      // Lets Anna cross-list one article on multiple section pages.
+      params['filters[$or][0][category][section][$eq]'] = section;
+      params['filters[$or][1][additional_categories][section][$eq]'] = section;
     }
     const { data } = await fetchAPI('/articles', params);
     if (!data?.length) return fallbackArticles;
@@ -863,7 +867,9 @@ export async function getArticlesByCategorySlug(categorySlug: string): Promise<A
     const { data } = await fetchAPI('/articles', {
       'populate': '*',
       'sort': 'publishedAt:desc',
-      'filters[category][slug][$eq]': categorySlug,
+      // $or: primary category slug match OR any additional_categories slug match.
+      'filters[$or][0][category][slug][$eq]': categorySlug,
+      'filters[$or][1][additional_categories][slug][$eq]': categorySlug,
       'pagination[limit]': '100',
     });
     if (!data?.length) return [];

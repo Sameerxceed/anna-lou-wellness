@@ -40,29 +40,50 @@ const autoSeo = require('../../../../utils/auto-seo');
 const SEO_FIELDS = { nameFields: ['title', 'name'], bodyFields: ['intro', 'body', 'description', 'excerpt'] };
 
 // Given an Article event, compute every public path that should refresh.
-// Always includes homepage and section landing. Includes article detail
-// when slug + section are known.
+// Always includes homepage. Adds the primary category's section landing
+// + article detail page. Also adds section + category pages for every
+// entry in additional_categories, so a cross-listed article surfaces on
+// each section/category feed it has been tagged into.
 async function pathsForArticle(strapi, article) {
   const paths = ['/'];
   if (!article) return paths;
-  // Article may not have category populated in the event payload — fetch it.
-  let sectionSlug = null;
-  if (article.category?.section) {
-    sectionSlug = article.category.section;
-  } else if (article.id) {
+
+  // Refetch with category + additional_categories populated. Event payload
+  // rarely carries either relation.
+  let primary = article.category || null;
+  let extras = Array.isArray(article.additional_categories) ? article.additional_categories : null;
+  if (article.documentId && (!primary || !extras)) {
     try {
       const fresh = await strapi.documents('api::article.article').findOne({
         documentId: article.documentId,
-        populate: { category: true },
+        populate: { category: true, additional_categories: true },
       });
-      sectionSlug = fresh?.category?.section || null;
+      primary = fresh?.category || primary;
+      extras = Array.isArray(fresh?.additional_categories) ? fresh.additional_categories : (extras || []);
     } catch { /* swallow */ }
   }
-  const sectionPath = SECTION_PATHS[sectionSlug];
-  if (sectionPath) {
-    paths.push(sectionPath);
-    if (article.slug) paths.push(`${sectionPath}/${article.slug}`);
+  if (!Array.isArray(extras)) extras = [];
+
+  const primarySectionPath = SECTION_PATHS[primary?.section];
+  if (primarySectionPath) {
+    paths.push(primarySectionPath);
+    if (article.slug) paths.push(`${primarySectionPath}/${article.slug}`);
+    if (primary?.slug) {
+      const catPath = `${primarySectionPath}/${primary.slug}`;
+      if (!paths.includes(catPath)) paths.push(catPath);
+    }
   }
+
+  for (const extra of extras) {
+    const extraSectionPath = SECTION_PATHS[extra?.section];
+    if (!extraSectionPath) continue;
+    if (!paths.includes(extraSectionPath)) paths.push(extraSectionPath);
+    if (extra?.slug) {
+      const extraCatPath = `${extraSectionPath}/${extra.slug}`;
+      if (!paths.includes(extraCatPath)) paths.push(extraCatPath);
+    }
+  }
+
   return paths;
 }
 

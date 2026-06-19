@@ -39,7 +39,15 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::article-category.article-category",
-      "inversedBy": "articles"
+      "inversedBy": "articles",
+      "description": "PRIMARY category. Determines the article URL (e.g. /work-and-money/founder-reset/{slug}) and the breadcrumb. Pick ONE."
+    },
+    "additional_categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article-category.article-category",
+      "inversedBy": "additional_articles",
+      "description": "Optional extras. Cross-list this article on OTHER section/category pages without changing its URL. Example: a piece primarily about Career and Direction that also belongs in Burnout and Nervous System — add the second category here and it will appear on both feeds."
     },
     "author": {
       "type": "string",
