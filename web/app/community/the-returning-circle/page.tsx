@@ -39,7 +39,7 @@ export default async function CirclePage() {
 
       <section className="rc-body">
         <div className="rc-body-inner">
-          <p className="rc-body-text">Every Wednesday evening Anna holds a circle. Hybrid. In person on the houseboat at Taggs Island for those who can travel. Live on Zoom for everyone else.</p>
+          <p className="rc-body-text">Anna holds the Returning Circle weekly, sometimes more than once a week at different locations. The current times and places are listed below. Hybrid by default — in person where you can, on Zoom when you can't.</p>
           <p className="rc-body-text"><strong>What it is:</strong> a room. People who are honest. No advice. No fixing. No cross-talk. Just being in the presence of other humans who are willing to say what is actually going on.</p>
           <p className="rc-body-text"><strong>What it is not:</strong> therapy, a support group, a workshop, or anything with a curriculum. There is no programme. There is no progression. You come when you need to. You stop when you are done.</p>
           <p className="rc-body-text">Most people who come for the first time look nervous. By the end of the evening something in them has settled. Not because anything dramatic happened. Because they were in a room where they did not have to perform. That sounds like nothing. It is actually everything.</p>
@@ -49,43 +49,50 @@ export default async function CirclePage() {
 
       <section className="rc-details">
         <div className="rc-details-inner">
-          <p className="rc-section-label">How it runs</p>
+          <p className="rc-section-label">Where + when</p>
           {(() => {
             const cmsAny = cms as Record<string, unknown> | null;
             const rawSessions = cmsAny?.sessions;
             const sessions = Array.isArray(rawSessions) ? (rawSessions as Array<Record<string, unknown>>) : [];
+            // Card grid for >=1 session — Anna runs multiple per week at
+            // different locations (Taggs Island + Battersea etc.). Each
+            // session is its own card. Notes appear below the card.
             if (sessions.length > 0) {
               return (
-                <ul className="rc-sessions">
-                  {sessions.map((s, i) => {
-                    const day = (s.day_of_week as string) || '';
-                    const time = (s.time as string) || '';
-                    const loc = (s.location_label as string) || '';
-                    const locUrl = (s.location_url as string) || '';
-                    const notes = (s.notes as string) || '';
-                    return (
-                      <li key={i} className="rc-session">
-                        <p className="rc-session-when">{[day, time].filter(Boolean).join(', ')}</p>
-                        {loc && (
-                          locUrl
-                            ? <a href={locUrl} target="_blank" rel="noopener" className="rc-session-loc">{loc}</a>
-                            : <p className="rc-session-loc">{loc}</p>
-                        )}
-                        {notes && <p className="rc-session-notes">{notes}</p>}
-                      </li>
-                    );
-                  })}
-                  <li>Donation-based. Pay what feels right when you book</li>
-                  <li>Replays kept inside the Reset Room library</li>
-                </ul>
+                <>
+                  <div className="rc-session-grid">
+                    {sessions.map((s, i) => {
+                      const day = (s.day_of_week as string) || '';
+                      const time = (s.time as string) || '';
+                      const loc = (s.location_label as string) || '';
+                      const locUrl = (s.location_url as string) || '';
+                      const notes = (s.notes as string) || '';
+                      return (
+                        <article key={i} className="rc-session-card">
+                          <p className="rc-session-card-day">{day || 'Weekly'}</p>
+                          {time && <p className="rc-session-card-time">{time}</p>}
+                          {loc && (
+                            locUrl
+                              ? <a href={locUrl} target="_blank" rel="noopener" className="rc-session-card-loc">{loc} &nearr;</a>
+                              : <p className="rc-session-card-loc">{loc}</p>
+                          )}
+                          {notes && <p className="rc-session-card-notes">{notes}</p>}
+                        </article>
+                      );
+                    })}
+                  </div>
+                  <p className="rc-session-extra">Donation-based. Pay what feels right when you book. Replays kept inside the Reset Room library.</p>
+                </>
               );
             }
+            // Fallback when CMS has no sessions filled — show generic notice
+            // pointing Anna (and visitors) at the booking form below.
             return (
               <ul>
-                <li>Weekly, Wednesdays, 7.30pm to 8.45pm UK</li>
-                <li>Hybrid. In person on the houseboat at Taggs Island, or on Zoom</li>
+                <li>Hybrid — in person at Taggs Island, or live on Zoom</li>
                 <li>Donation-based. Pay what feels right when you book</li>
                 <li>Replays kept inside the Reset Room library</li>
+                <li><em>Anna sets the next weekly dates in Strapi → Community Event → The Returning Circle → Sessions.</em></li>
               </ul>
             );
           })()}
@@ -139,12 +146,18 @@ const pageStyles = `
 .rc-details li { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.7; color: #3D3D3A; padding: 0.5rem 0 0.5rem 1.5rem; position: relative; border-bottom: 1px solid rgba(0,0,0,0.06); }
 .rc-details li:last-child { border-bottom: none; }
 .rc-details li::before { content: '+'; position: absolute; left: 0; color: #5DCAA5; font-weight: 700; }
-.rc-sessions .rc-session { padding: 0.8rem 0 0.8rem 1.5rem; }
-.rc-session-when { font-family: 'Work Sans', sans-serif; font-weight: 500; font-size: 0.95rem; color: #231F20; margin-bottom: 0.2rem; }
-.rc-session-loc { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; color: #3D3D3A; }
-a.rc-session-loc { color: #6E3A5A; text-decoration: underline; text-underline-offset: 2px; }
-a.rc-session-loc:hover { color: #5A2E4A; }
-.rc-session-notes { font-family: 'EB Garamond', Georgia, serif; font-size: 0.92rem; color: #5D5A52; font-style: italic; margin-top: 0.25rem; }
+/* Side-by-side session cards. Each session = one location/time. */
+.rc-session-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 0.4rem 0 1rem; }
+.rc-session-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 6px; padding: 1.2rem 1.3rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s; }
+.rc-session-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+.rc-session-card-day { font-family: 'Work Sans', sans-serif; font-weight: 500; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: #5DCAA5; margin: 0 0 0.4rem; }
+.rc-session-card-time { font-family: 'Work Sans', sans-serif; font-weight: 500; font-size: 1.2rem; color: #231F20; margin: 0 0 0.5rem; line-height: 1.2; }
+.rc-session-card-loc { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; color: #3D3D3A; display: block; margin: 0 0 0.4rem; }
+a.rc-session-card-loc { color: #6E3A5A; text-decoration: underline; text-underline-offset: 2px; }
+a.rc-session-card-loc:hover { color: #5A2E4A; }
+.rc-session-card-notes { font-family: 'EB Garamond', Georgia, serif; font-size: 0.92rem; color: #5D5A52; font-style: italic; margin: 0.4rem 0 0; line-height: 1.55; }
+.rc-session-extra { font-family: 'EB Garamond', Georgia, serif; font-size: 0.95rem; color: #5D5A52; font-style: italic; margin: 1.2rem 0 0; text-align: center; }
+@media (max-width: 600px) { .rc-session-grid { grid-template-columns: 1fr; } }
 
 .rc-rsvp { background: #fff; padding: 3rem 2rem 4rem; }
 .rc-rsvp-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 3rem; align-items: start; }

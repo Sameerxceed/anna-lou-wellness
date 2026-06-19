@@ -143,6 +143,15 @@ export async function POST(req: NextRequest) {
   if (!mailchimp.ok) console.warn('[reset-letters subscribe] Mailchimp error:', mailchimp.error);
   if (!substack.ok) console.warn('[reset-letters subscribe] Substack error:', substack.error);
 
+  // Origin attribution — captured client-side from ?utm_source=...
+  // Adds a SECOND tag like "Origin: substack" so Anna can fork the
+  // welcome journey for Substack-arrival visitors.
+  const utmSource = typeof body?.utm_source === 'string' ? body.utm_source.trim().toLowerCase() : '';
+  if (mailchimp.ok && utmSource && /^[a-z0-9_-]{1,40}$/.test(utmSource)) {
+    const { addTag } = await import('@/lib/mailchimp');
+    addTag(email, `Origin: ${utmSource}`).catch((e) => console.warn('[reset-letters subscribe] origin tag failed:', e?.message));
+  }
+
   if (mailchimp.ok) {
     return NextResponse.json({
       ok: true,

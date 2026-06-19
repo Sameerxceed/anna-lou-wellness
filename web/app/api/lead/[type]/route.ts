@@ -106,6 +106,17 @@ export async function POST(
     // Mailchimp activity log even if tagging hiccuped. Log for ops triage.
   }
 
+  // Origin attribution tag (Substack / Instagram / etc.). Captured
+  // client-side from ?utm_source=... and passed in the form body.
+  // Adds a SECOND tag like "Origin: substack" so Anna can build
+  // Substack-specific Journeys without affecting the main type tag.
+  const utmSource = typeof body.utm_source === 'string' ? body.utm_source.trim().toLowerCase() : '';
+  if (utmSource && /^[a-z0-9_-]{1,40}$/.test(utmSource)) {
+    const originTag = `Origin: ${utmSource}`;
+    const { addTag } = await import('@/lib/mailchimp');
+    addTag(email, originTag).catch((e) => console.warn(`[lead/${cleanType}] origin tag failed: ${e?.message}`));
+  }
+
   // If this lead type warrants an admin email, fire it. Lead details ride
   // along on the `lead` merge context so the template can render them.
   const adminTemplate = ADMIN_EMAIL_TEMPLATES[cleanType];

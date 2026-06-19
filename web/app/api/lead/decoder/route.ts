@@ -152,5 +152,12 @@ export async function POST(req: NextRequest) {
     }, { status: 502 });
   }
 
+  // Origin attribution — captured client-side from ?utm_source=...
+  const utmSource = typeof body?.utm_source === 'string' ? body.utm_source.trim().toLowerCase() : '';
+  if (utmSource && /^[a-z0-9_-]{1,40}$/.test(utmSource)) {
+    const { addTag } = await import('@/lib/mailchimp');
+    addTag(email, `Origin: ${utmSource}`).catch((e) => console.warn('[decoder signup] origin tag failed:', e?.message));
+  }
+
   return NextResponse.json({ ok: true });
 }

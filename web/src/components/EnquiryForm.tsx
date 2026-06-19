@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
+import { getStoredUtmSource } from '@/lib/utm';
 
 export interface EnquiryField {
   name: string;
@@ -46,10 +47,16 @@ export default function EnquiryForm({
     try {
       // Real Mailchimp/CRM wiring lands once API key is configured.
       // For now, log to /api/lead/* (or quietly succeed if endpoint not implemented).
+      // Include utm_source if this visit came from a tagged share link
+      // (e.g. ?utm_source=substack on the inbound URL). The server tags
+      // the contact with "Origin: <source>" so Anna can build per-source
+      // Mailchimp Customer Journeys.
+      const utmSource = getStoredUtmSource();
+      const payload = utmSource ? { ...values, utm_source: utmSource } : values;
       await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       }).catch(() => null);
       trackEvent('generate_lead', { method: 'enquiry_form', endpoint, value: 0, currency: 'GBP' }, 'Lead');
       setDone(true);

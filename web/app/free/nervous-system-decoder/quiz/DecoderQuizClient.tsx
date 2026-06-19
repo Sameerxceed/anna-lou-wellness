@@ -18,6 +18,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { getStoredUtmSource } from '@/lib/utm';
 
 export type DecoderState = 'clear' | 'scrambled' | 'faint';
 
@@ -143,6 +144,7 @@ export default function DecoderQuizClient({ copy, questions, results }: Props) {
     setSubmitError('');
     setSubmitting(true);
     try {
+      const utmSource = getStoredUtmSource();
       const res = await fetch('/api/lead/decoder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -152,6 +154,7 @@ export default function DecoderQuizClient({ copy, questions, results }: Props) {
           source: 'decoder-quiz',
           result: winnerState,
           resultTag: tag,
+          ...(utmSource ? { utm_source: utmSource } : {}),
         }),
       });
       const data = await res.json().catch(() => ({}));

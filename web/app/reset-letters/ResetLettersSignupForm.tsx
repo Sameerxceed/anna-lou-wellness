@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import TurnstileWidget from '@/components/TurnstileWidget';
 import { trackEvent } from '@/lib/analytics';
+import { getStoredUtmSource } from '@/lib/utm';
 
 export default function ResetLettersSignupForm({
   buttonLabel,
@@ -28,10 +29,15 @@ export default function ResetLettersSignupForm({
     setError('');
     setSubmitting(true);
     try {
+      const utmSource = getStoredUtmSource();
       const res = await fetch('/api/subscribe-reset-letters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, turnstileToken: captchaToken }),
+        body: JSON.stringify({
+          email,
+          turnstileToken: captchaToken,
+          ...(utmSource ? { utm_source: utmSource } : {}),
+        }),
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));

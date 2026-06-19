@@ -143,3 +143,46 @@ export async function subscribeAndTag(
   }
   return { ok: true };
 }
+
+/**
+ * Update merge fields on an existing subscriber. PATCH only — does NOT
+ * create the contact if missing (use upsertSubscriber first if unsure).
+ *
+ * Use case: Calendly booking webhook fills EVENT_DATE / EVENT_TIME /
+ * EVENT_NAME / EVENT_LOC so the One Day welcome email can render
+ * personalised details via Mailchimp merge tags {{ EVENT_DATE }} etc.
+ *
+ * Merge field names must already exist in the Mailchimp audience
+ * (Audience -> Settings -> Audience fields and *|MERGE|* tags). Names
+ * are case-sensitive and UPPER_CASE by convention.
+ *
+ * Example:
+ *   await setMergeFields('foo@bar.com', {
+ *     EVENT_DATE: '12 July 2026',
+ *     EVENT_TIME: '10am - 4pm UK',
+ *     EVENT_NAME: 'One Day Intensive',
+ *     EVENT_LOC: 'Taggs Island houseboat',
+ *   });
+ */
+export async function setMergeFields(
+  email: string,
+  fields: Record<string, string>,
+): Promise<MailchimpResult> {
+  const cfg = getConfig();
+  if (!cfg.ok) return { ok: false, error: cfg.error };
+
+  try {
+    const res = await fetch(`${cfg.baseUrl}/lists/${cfg.listId}/members/${subscriberHash(email)}`, {
+      method: 'PATCH',
+      headers: cfg.headers,
+      body: JSON.stringify({ merge_fields: fields }),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      return { ok: false, error: `Mailchimp merge update ${res.status}: ${text.slice(0, 200)}` };
+    }
+    return { ok: true };
+  } catch (err: any) {
+    return { ok: false, error: `Mailchimp merge update fetch failed: ${err?.message}` };
+  }
+}
