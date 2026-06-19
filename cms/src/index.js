@@ -277,6 +277,41 @@ module.exports = {
       strapi.log.warn('[seed-article-categories] failed:', err.message);
     }
 
+    // ═══ One-shot cleanup of orphan article categories ═══
+    // Categories that existed from earlier seeds but are no longer in the
+    // live nav (web/src/data/site.ts). Removing them so Anna's Category
+    // dropdown only shows the 18 categories that actually correspond to
+    // navigable URLs on the public site. Idempotent — delete-if-exists,
+    // safe to leave in place across future redeploys.
+    try {
+      const ORPHAN_SLUGS = [
+        'houseboat-life',
+        'spiritual-hygiene',
+        'decluttering',
+        'educational',
+      ];
+      let removed = 0;
+      for (const slug of ORPHAN_SLUGS) {
+        const matches = await strapi.entityService.findMany(
+          'api::article-category.article-category',
+          { filters: { slug }, limit: 1 },
+        );
+        if (matches && matches.length > 0) {
+          await strapi.entityService.delete(
+            'api::article-category.article-category',
+            matches[0].id,
+          );
+          removed++;
+          strapi.log.info(`[cleanup-orphan-categories] removed "${slug}"`);
+        }
+      }
+      if (removed > 0) {
+        strapi.log.info(`[cleanup-orphan-categories] done — removed ${removed}`);
+      }
+    } catch (err) {
+      strapi.log.warn('[cleanup-orphan-categories] failed:', err.message);
+    }
+
     // ═══ Seed Decoder Quiz singleton (idempotent — skips if results exist) ═══
     // Populates the 3 nervous-system state result blurbs so the live quiz at
     // /free/nervous-system-decoder/quiz works end-to-end on first boot.
