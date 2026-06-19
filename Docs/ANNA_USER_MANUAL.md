@@ -1,6 +1,6 @@
 # Anna Lou Wellness â€” User Manual
 
-**Version 1.6 â€” Updated 16 June 2026**
+**Version 1.7 â€” Updated 19 June 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -2324,6 +2324,73 @@ Everything on the public site is now ~10% bigger after Anna's "I can't read the 
 ### 17.11 Decoder quiz popup on homepage
 
 10 seconds after a visitor lands on the homepage, a small modal appears promoting the Nervous System Decoder quiz with a CTA. Dismissible (X / Esc / click outside) and won't reappear for 7 days once closed. Headline/body/timing are constants in code â€” tell Sameer if you want them moved to CMS-editable fields.
+
+(Updated 19 Jun: the popup now fires on EVERY page after 10 seconds, not just the homepage, so visitors who navigate before the timer fires still see it. Dismissal is now session-scoped, so closing the browser and reopening shows it again. Once they click the CTA the popup is suppressed for 30 days.)
+
+### 17.12 Em-dashes banned in AI
+
+Anna asked for em-dashes (`—`) to never appear in AI-written output. The auto-SEO prompt + bulk SEO backfill prompt + Generate SEO button + Ask Anna chatbot all now have a strict rule against em-dashes; they use commas, full stops, or hyphens (`-`) instead. For old SEO already written with em-dashes, run the bulk backfill button on SEO & AI Files â€” the new prompt regenerates without them.
+
+### 17.13 Article-category labels removed from cards
+
+The sub-category badges on editorial cards (`Holding Everything`, `The Strong One`, `Signal vs Noise` etc.) were confusing visitors who thought they were navigating somewhere new. Removed from:
+
+- Featured-article block on section landings (`/reset-stories`, `/life`, `/love-and-relationships`, `/work-and-money`)
+- Grid cards on those pages
+- Article detail pages (now show the section name `Reset Stories` / `Life` etc. directly as the kicker)
+
+Homepage card badges still appear but now show the **section name** (Reset Stories / Life / Love & Relationships / Work & Money) rather than the sub-category. Useful on the homepage where cards span multiple sections.
+
+### 17.14 Post-quiz CTA fallback changed
+
+The Decoder quiz Clear-result page used to fall back to `Step inside The Reset Room` â†’ `/community/reset-room` if you hadn't filled the CMS-editable copy. Anna said that was too aggressive a first upsell. The fallback is now `Get your free Nervous System Decoder` â†’ `/free/nervous-system-decoder`. Your CMS-set copy (Strapi â†’ Decoder Quiz Page â†’ results) still wins if filled â€” this only affects entries left blank.
+
+### 17.15 Returning Circle 2-location card grid
+
+`/community/the-returning-circle` now renders the recurring sessions as side-by-side cards (one per location/time). Anna does multiple sessions per week at different locations (Taggs Island, etc.) and each one gets its own card.
+
+To set up: CMS â†’ Community Event â†’ The Returning Circle â†’ Sessions â†’ +Add an entry per location. Fields per session:
+
+- **day_of_week**: e.g. `Sundays at 11am` or `Wednesdays`
+- **time**: e.g. `7.30pm to 8.45pm UK`
+- **location_label**: e.g. `In person on the houseboat (Taggs Island)` or `Live on Zoom`
+- **location_url**: optional Google Maps or Zoom link â€” turns the location into a clickable link
+- **notes**: optional one-line extra detail
+
+Cards render as a responsive grid (3-2-1 across desktop/tablet/mobile). Leave the field empty and the page shows a fallback list pointing you back at this CMS field.
+
+### 17.16 Calendly webhook â†’ personalised emails
+
+Your One Day Intensive (and any other Calendly-booked service) email can now render the booking date, time, location, and event name per recipient via Mailchimp merge tags.
+
+One-time setup (do this when you're back):
+
+1. **Calendly â†’ Account â†’ Integrations â†’ Webhooks â†’ Create**. URL: `https://annalouwellness.com/api/calendly/webhook`. Subscribe to `invitee.created`. Copy the signing key.
+2. **Coolify â†’ web app â†’ Environment Variables**. Add `CALENDLY_WEBHOOK_SECRET` with the value from step 1.
+3. **Mailchimp â†’ Audience â†’ Settings â†’ Audience fields and `|MERGE|` tags**. Add 4 text merge fields:
+   - `EVENT_DATE` (e.g. `12 July 2026`)
+   - `EVENT_TIME` (e.g. `10:00 to 16:00 UK`)
+   - `EVENT_NAME` (e.g. `One Day Intensive`)
+   - `EVENT_LOC` (e.g. `Taggs Island houseboat`)
+4. **Mailchimp â†’ Customer Journey â†’ One Day welcome email â†’ Edit body**. Reference `|EVENT_DATE|`, `|EVENT_TIME|`, `|EVENT_NAME|`, `|EVENT_LOC|` anywhere in the body. They fill per-recipient when the email sends.
+
+The webhook also tags the contact based on the Calendly event slug:
+
+- `one-day-intensive` â†’ `One Day Booked`
+- `discovery-call` â†’ `Discovery Booked`
+- `signal-scoping` â†’ `Signal Scoping Booked`
+- `reset-session` â†’ `Reset Session Booked`
+- any other slug â†’ `Calendly Booked`
+
+So whichever Customer Journey you wire to that tag will fire automatically when someone books.
+
+### 17.17 Substack origin tracking (UTM â†’ Mailchimp tag)
+
+When you share a link to your website on Substack, add `?utm_source=substack` to the URL. The website captures that on the visitor's first page load (sessionStorage) and includes it on any form they later submit (Reset Letters signup, Decoder quiz, enquiry forms).
+
+The server then fires a SECOND Mailchimp tag `Origin: substack` alongside the main signup tag. You can build a Customer Journey triggered by `Origin: substack` that sends Substack visitors a slightly different welcome email â€” acknowledging where they came from.
+
+Same pattern works for `?utm_source=instagram`, `?utm_source=podcast`, anything else. The tag is always `Origin: <whatever you put after utm_source=>` (lowercased, hyphens/underscores allowed).
 
 ---
 
