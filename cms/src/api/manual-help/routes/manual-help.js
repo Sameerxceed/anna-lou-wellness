@@ -16,8 +16,10 @@ module.exports = {
       path: '/manual-help/ask',
       handler: 'manual-help.ask',
       config: {
+        // Custom JWT check happens inside the controller because v5's
+        // admin::isAuthenticatedAdmin policy doesn't reliably pick up
+        // the admin cookie on /api/* routes.
         auth: false,
-        policies: ['admin::isAuthenticatedAdmin'],
       },
     },
   ],

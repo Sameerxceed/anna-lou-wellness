@@ -225,15 +225,39 @@ export default function HelpFab() {
     setError(null);
     setLoading(true);
     try {
+      // Strapi v5 admin stores its JWT in sessionStorage / localStorage
+      // under several possible keys depending on build. Grab it and send
+      // as Bearer so the controller can verify even when the httpOnly
+      // cookie isn't included for some reason.
+      const adminJwt =
+        (typeof window !== 'undefined' &&
+          (window.sessionStorage.getItem('jwtToken') ||
+            window.localStorage.getItem('jwtToken') ||
+            (() => {
+              try {
+                const ui = window.sessionStorage.getItem('strapi-userInfo') ||
+                  window.localStorage.getItem('strapi-userInfo');
+                if (ui) return JSON.parse(ui)?.token || '';
+              } catch { /* ignore */ }
+              return '';
+            })())) || '';
+
       const res = await fetch('/api/manual-help/ask', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminJwt ? { Authorization: `Bearer ${adminJwt.replace(/^"|"$/g, '')}` } : {}),
+        },
         body: JSON.stringify({ question: trimmed, history: messages.slice(-8) }),
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
-        throw new Error(j?.error || `HTTP ${res.status}`);
+        const errMsg =
+          typeof j?.error === 'string'
+            ? j.error
+            : j?.error?.message || `HTTP ${res.status}`;
+        throw new Error(errMsg);
       }
       const j = await res.json();
       setMessages([...next, { role: 'assistant', content: j?.answer || '(No answer.)' }]);

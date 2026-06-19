@@ -194,10 +194,26 @@ export default function ManualHelpPage() {
     setLoading(true);
 
     try {
+      const adminJwt =
+        (typeof window !== 'undefined' &&
+          (window.sessionStorage.getItem('jwtToken') ||
+            window.localStorage.getItem('jwtToken') ||
+            (() => {
+              try {
+                const ui = window.sessionStorage.getItem('strapi-userInfo') ||
+                  window.localStorage.getItem('strapi-userInfo');
+                if (ui) return JSON.parse(ui)?.token || '';
+              } catch { /* ignore */ }
+              return '';
+            })())) || '';
+
       const res = await fetch('/api/manual-help/ask', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminJwt ? { Authorization: `Bearer ${adminJwt.replace(/^"|"$/g, '')}` } : {}),
+        },
         body: JSON.stringify({
           question: trimmed,
           history: messages.slice(-8),
@@ -205,7 +221,11 @@ export default function ManualHelpPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data?.error || `HTTP ${res.status}`);
+        const errMsg =
+          typeof data?.error === 'string'
+            ? data.error
+            : data?.error?.message || `HTTP ${res.status}`;
+        throw new Error(errMsg);
       }
       const data = await res.json();
       const answer: string = data?.answer || '(No answer.)';

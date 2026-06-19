@@ -89,8 +89,43 @@ async function callAnthropic({ apiKey, system, messages }) {
   return text || '(No response — try rephrasing.)';
 }
 
+// Verify that the request carries a valid Strapi admin JWT, either via
+// the httpOnly admin cookie ('jwtToken') or via Authorization: Bearer.
+// Returns the decoded payload (admin user id etc.) on success, or null
+// when no/invalid token. We do this manually because Strapi v5's
+// admin::isAuthenticatedAdmin policy is unreliable on /api routes.
+async function verifyAdminJwt(ctx) {
+  const auth = ctx.request.header.authorization || '';
+  const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+  const cookieToken = ctx.cookies?.get('jwtToken') || '';
+  const token = headerToken || cookieToken;
+  if (!token) return null;
+  try {
+    // Strapi v5 exposes the admin token service at strapi.service('admin::token').
+    // Older v5 builds use strapi.admin.services.token. Try both.
+    const tokenSvc =
+      strapi.service?.('admin::token') ||
+      strapi.admin?.services?.token ||
+      null;
+    if (!tokenSvc?.decodeJwtToken) return null;
+    const decoded = tokenSvc.decodeJwtToken(token);
+    // decodeJwtToken returns { payload, isValid } in v5.
+    if (decoded?.isValid && decoded.payload) return decoded.payload;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 module.exports = {
   async ask(ctx) {
+    const adminUser = await verifyAdminJwt(ctx);
+    if (!adminUser) {
+      ctx.status = 401;
+      ctx.body = { error: 'Admin login required. Please log out and back in.' };
+      return;
+    }
+
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       ctx.status = 500;
