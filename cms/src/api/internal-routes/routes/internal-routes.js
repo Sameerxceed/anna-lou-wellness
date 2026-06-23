@@ -17,8 +17,10 @@ module.exports = {
       path: '/internal-routes/list',
       handler: 'internal-routes.list',
       config: {
+        // admin::isAuthenticatedAdmin is unreliable on /api/* routes in
+        // Strapi v5. Controller verifies the admin JWT manually instead
+        // (same approach as /api/manual-help).
         auth: false,
-        policies: ['admin::isAuthenticatedAdmin'],
       },
     },
   ],

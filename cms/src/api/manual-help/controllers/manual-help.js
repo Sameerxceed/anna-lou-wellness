@@ -89,30 +89,52 @@ async function callAnthropic({ apiKey, system, messages }) {
   return text || '(No response — try rephrasing.)';
 }
 
-// Verify that the request carries a valid Strapi admin JWT, either via
-// the httpOnly admin cookie ('jwtToken') or via Authorization: Bearer.
-// Returns the decoded payload (admin user id etc.) on success, or null
-// when no/invalid token. We do this manually because Strapi v5's
-// admin::isAuthenticatedAdmin policy is unreliable on /api routes.
+// Verify that the request carries a valid Strapi admin JWT. We do this
+// manually because Strapi v5's admin::isAuthenticatedAdmin policy is
+// unreliable on /api routes. Checks (in order):
+//   1. Authorization: Bearer <token>
+//   2. Several known cookie names Strapi v5 has shipped under different
+//      builds: jwtToken, strapi_jwt, strapi-jwt
+//   3. (Future) custom secret header for trusted internal callers
 async function verifyAdminJwt(ctx) {
   const auth = ctx.request.header.authorization || '';
   const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-  const cookieToken = ctx.cookies?.get('jwtToken') || '';
+
+  const COOKIE_NAMES = ['jwtToken', 'strapi_jwt', 'strapi-jwt'];
+  let cookieToken = '';
+  for (const name of COOKIE_NAMES) {
+    const val = ctx.cookies?.get(name);
+    if (val) { cookieToken = val; break; }
+  }
+
   const token = headerToken || cookieToken;
+
+  // Diagnostic log so we can see in Coolify what each request actually
+  // carried. Strip after the fix lands.
+  const cookieKeys = (ctx.request.header.cookie || '')
+    .split(';').map((c) => c.trim().split('=')[0]).filter(Boolean);
+  strapi.log.info(
+    `[manual-help] auth probe — bearer:${headerToken ? 'yes' : 'no'} ` +
+    `cookieToken:${cookieToken ? 'yes' : 'no'} cookieKeys:[${cookieKeys.join(',')}]`
+  );
+
   if (!token) return null;
+
   try {
-    // Strapi v5 exposes the admin token service at strapi.service('admin::token').
-    // Older v5 builds use strapi.admin.services.token. Try both.
     const tokenSvc =
       strapi.service?.('admin::token') ||
       strapi.admin?.services?.token ||
       null;
-    if (!tokenSvc?.decodeJwtToken) return null;
+    if (!tokenSvc?.decodeJwtToken) {
+      strapi.log.warn('[manual-help] admin token service not found');
+      return null;
+    }
     const decoded = tokenSvc.decodeJwtToken(token);
-    // decodeJwtToken returns { payload, isValid } in v5.
     if (decoded?.isValid && decoded.payload) return decoded.payload;
+    strapi.log.warn('[manual-help] JWT decode returned invalid');
     return null;
-  } catch {
+  } catch (err) {
+    strapi.log.warn(`[manual-help] JWT decode threw: ${err.message}`);
     return null;
   }
 }

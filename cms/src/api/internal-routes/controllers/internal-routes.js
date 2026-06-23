@@ -111,8 +111,55 @@ async function findAll(uid, fields, filters) {
   }
 }
 
+// Verify the request carries a valid Strapi admin JWT. Checks the
+// Authorization: Bearer header and several known cookie names. Same
+// helper as cms/src/api/manual-help/controllers/manual-help.js — kept
+// inline (not shared) because there are only two callers and a shared
+// utils module would add indirection for negligible gain.
+async function verifyAdminJwt(ctx) {
+  const auth = ctx.request.header.authorization || '';
+  const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+
+  const COOKIE_NAMES = ['jwtToken', 'strapi_jwt', 'strapi-jwt'];
+  let cookieToken = '';
+  for (const name of COOKIE_NAMES) {
+    const val = ctx.cookies?.get(name);
+    if (val) { cookieToken = val; break; }
+  }
+
+  const token = headerToken || cookieToken;
+
+  const cookieKeys = (ctx.request.header.cookie || '')
+    .split(';').map((c) => c.trim().split('=')[0]).filter(Boolean);
+  strapi.log.info(
+    `[internal-routes] auth probe — bearer:${headerToken ? 'yes' : 'no'} ` +
+    `cookieToken:${cookieToken ? 'yes' : 'no'} cookieKeys:[${cookieKeys.join(',')}]`
+  );
+
+  if (!token) return null;
+
+  try {
+    const tokenSvc =
+      strapi.service?.('admin::token') ||
+      strapi.admin?.services?.token ||
+      null;
+    if (!tokenSvc?.decodeJwtToken) return null;
+    const decoded = tokenSvc.decodeJwtToken(token);
+    if (decoded?.isValid && decoded.payload) return decoded.payload;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 module.exports = {
   async list(ctx) {
+    const admin = await verifyAdminJwt(ctx);
+    if (!admin) {
+      ctx.status = 401;
+      ctx.body = { error: 'Admin login required. Please log out and back in.' };
+      return;
+    }
     const groups = STATIC_GROUPS.map((g) => ({ ...g }));
 
     // Programmes -> /the-work/{slug}

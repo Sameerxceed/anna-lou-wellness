@@ -62,7 +62,29 @@ export default function SiteUrlsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/internal-routes/list', { credentials: 'include' });
+      // Grab the admin JWT from whichever storage layer Strapi v5 happens
+      // to use in this build. Belt-and-suspenders alongside credentials:
+      // 'include' so the controller's verifyAdminJwt can find a token via
+      // EITHER the Authorization header OR the cookie.
+      const adminJwt =
+        (typeof window !== 'undefined' &&
+          (window.sessionStorage.getItem('jwtToken') ||
+            window.localStorage.getItem('jwtToken') ||
+            (() => {
+              try {
+                const ui = window.sessionStorage.getItem('strapi-userInfo') ||
+                  window.localStorage.getItem('strapi-userInfo');
+                if (ui) return JSON.parse(ui)?.token || '';
+              } catch { /* ignore */ }
+              return '';
+            })())) || '';
+
+      const res = await fetch('/api/internal-routes/list', {
+        credentials: 'include',
+        headers: adminJwt
+          ? { Authorization: `Bearer ${adminJwt.replace(/^"|"$/g, '')}` }
+          : {},
+      });
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(`HTTP ${res.status}: ${txt.slice(0, 200)}`);
