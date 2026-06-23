@@ -108,16 +108,6 @@ async function verifyAdminJwt(ctx) {
   }
 
   const token = headerToken || cookieToken;
-
-  // Diagnostic log so we can see in Coolify what each request actually
-  // carried. Strip after the fix lands.
-  const cookieKeys = (ctx.request.header.cookie || '')
-    .split(';').map((c) => c.trim().split('=')[0]).filter(Boolean);
-  strapi.log.info(
-    `[manual-help] auth probe — bearer:${headerToken ? 'yes' : 'no'} ` +
-    `cookieToken:${cookieToken ? 'yes' : 'no'} cookieKeys:[${cookieKeys.join(',')}]`
-  );
-
   if (!token) return null;
 
   // Decode directly with jsonwebtoken + admin JWT secret. strapi.service

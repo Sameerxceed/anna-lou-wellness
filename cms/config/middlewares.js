@@ -48,6 +48,9 @@ module.exports = ({ env }) => [
   },
   'global::image-resize',
   'strapi::session',
-  'strapi::favicon',
+  // 'strapi::favicon' removed — koa-favicon spammed 500 ENOENT logs on
+  // every /favicon.ico request because /app/favicon.png doesn't exist in
+  // this build. The admin UI sets its own favicon via the page <head>,
+  // so no functionality is lost.
   'strapi::public',
 ];

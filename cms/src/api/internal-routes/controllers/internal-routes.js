@@ -128,14 +128,6 @@ async function verifyAdminJwt(ctx) {
   }
 
   const token = headerToken || cookieToken;
-
-  const cookieKeys = (ctx.request.header.cookie || '')
-    .split(';').map((c) => c.trim().split('=')[0]).filter(Boolean);
-  strapi.log.info(
-    `[internal-routes] auth probe — bearer:${headerToken ? 'yes' : 'no'} ` +
-    `cookieToken:${cookieToken ? 'yes' : 'no'} cookieKeys:[${cookieKeys.join(',')}]`
-  );
-
   if (!token) return null;
 
   // Direct jsonwebtoken verify — strapi.service('admin::token') returns
