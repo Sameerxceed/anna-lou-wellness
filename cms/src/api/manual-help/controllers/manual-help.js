@@ -120,21 +120,23 @@ async function verifyAdminJwt(ctx) {
 
   if (!token) return null;
 
+  // Decode directly with jsonwebtoken + admin JWT secret. strapi.service
+  // ('admin::token') returns null in this v5 build, so we skip it. The
+  // secret lives at admin.auth.secret in config (set via ADMIN_JWT_SECRET
+  // env var on Coolify) — same secret Strapi itself uses to sign admin
+  // sessions, so anything that decodes here is a real admin login.
   try {
-    const tokenSvc =
-      strapi.service?.('admin::token') ||
-      strapi.admin?.services?.token ||
-      null;
-    if (!tokenSvc?.decodeJwtToken) {
-      strapi.log.warn('[manual-help] admin token service not found');
+    const jwt = require('jsonwebtoken');
+    const secret = strapi.config.get('admin.auth.secret');
+    if (!secret) {
+      strapi.log.warn('[manual-help] admin.auth.secret not configured');
       return null;
     }
-    const decoded = tokenSvc.decodeJwtToken(token);
-    if (decoded?.isValid && decoded.payload) return decoded.payload;
-    strapi.log.warn('[manual-help] JWT decode returned invalid');
+    const payload = jwt.verify(token, secret);
+    if (payload && (payload.id || payload.userId)) return payload;
     return null;
   } catch (err) {
-    strapi.log.warn(`[manual-help] JWT decode threw: ${err.message}`);
+    strapi.log.warn(`[manual-help] JWT verify failed: ${err.message}`);
     return null;
   }
 }

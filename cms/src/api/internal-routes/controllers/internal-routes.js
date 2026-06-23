@@ -138,16 +138,21 @@ async function verifyAdminJwt(ctx) {
 
   if (!token) return null;
 
+  // Direct jsonwebtoken verify — strapi.service('admin::token') returns
+  // null in this v5 build. Uses admin.auth.secret (the same secret Strapi
+  // itself signs admin sessions with).
   try {
-    const tokenSvc =
-      strapi.service?.('admin::token') ||
-      strapi.admin?.services?.token ||
-      null;
-    if (!tokenSvc?.decodeJwtToken) return null;
-    const decoded = tokenSvc.decodeJwtToken(token);
-    if (decoded?.isValid && decoded.payload) return decoded.payload;
+    const jwt = require('jsonwebtoken');
+    const secret = strapi.config.get('admin.auth.secret');
+    if (!secret) {
+      strapi.log.warn('[internal-routes] admin.auth.secret not configured');
+      return null;
+    }
+    const payload = jwt.verify(token, secret);
+    if (payload && (payload.id || payload.userId)) return payload;
     return null;
-  } catch {
+  } catch (err) {
+    strapi.log.warn(`[internal-routes] JWT verify failed: ${err.message}`);
     return null;
   }
 }
