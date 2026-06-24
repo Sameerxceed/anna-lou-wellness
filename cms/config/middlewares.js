@@ -48,9 +48,11 @@ module.exports = ({ env }) => [
   },
   'global::image-resize',
   'strapi::session',
-  // 'strapi::favicon' removed — koa-favicon spammed 500 ENOENT logs on
-  // every /favicon.ico request because /app/favicon.png doesn't exist in
-  // this build. The admin UI sets its own favicon via the page <head>,
-  // so no functionality is lost.
+  // 'strapi::favicon' MUST stay — Strapi v5's middleware validator marks
+  // it as required and refuses to boot without it. Removing this crashed
+  // the container at 04:46 UTC on 24 Jun ("Missing required middlewares
+  // in configuration"). The ENOENT 500 spam from a missing /app/favicon.png
+  // is harmless noise and preferable to a dead CMS.
+  'strapi::favicon',
   'strapi::public',
 ];
