@@ -758,15 +758,23 @@ function mapArticle(d: any): Article {
     publishedAt: d.publishedAt || '',
     shopTags: Array.isArray(d.shop_tags)
       ? d.shop_tags
-          .filter((t: any) => t && t.image)
-          .map((t: any): ArticleShopTag => ({
-            image: mediaUrl(t.image),
-            productSlug: t.product?.slug || null,
-            productName: t.product?.name || null,
-            captionPrefix: t.caption_prefix || 'Anna is wearing the',
-            altText: t.alt_text || t.product?.name || '',
-            fitMode: t.fit_mode === 'contain' ? 'contain' : 'cover',
-          }))
+          // Keep tags that have EITHER an uploaded image OR a linked product
+          // (we can fall back to the product's first image). Drop only the
+          // ones that have neither — nothing to render.
+          .filter((t: any) => t && (t.image || (t.product && Array.isArray(t.product.images) && t.product.images.length > 0)))
+          .map((t: any): ArticleShopTag => {
+            const productFirstImage = t.product && Array.isArray(t.product.images) && t.product.images.length > 0
+              ? t.product.images[0]
+              : null;
+            return {
+              image: t.image ? mediaUrl(t.image) : mediaUrl(productFirstImage),
+              productSlug: t.product?.slug || null,
+              productName: t.product?.name || null,
+              captionPrefix: t.caption_prefix || 'Anna is wearing the',
+              altText: t.alt_text || t.product?.name || '',
+              fitMode: t.fit_mode === 'contain' ? 'contain' : 'cover',
+            };
+          })
       : [],
     upsells: Array.isArray(d.upsells)
       ? d.upsells.map((u: any) => ({
@@ -827,7 +835,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       'populate[hero_image]': 'true',
       'populate[category]': 'true',
       'populate[shop_tags][populate][image]': 'true',
-      'populate[shop_tags][populate][product]': 'true',
+      'populate[shop_tags][populate][product][populate][images]': 'true',
       'populate[upsells][populate]': '*',
       'filters[slug][$eq]': slug,
     });

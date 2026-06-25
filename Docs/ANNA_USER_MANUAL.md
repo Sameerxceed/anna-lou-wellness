@@ -2456,6 +2456,71 @@ Every answer cites the section number from this manual (e.g. "See Â§16.7 Progr
 
 Open it anytime from the left sidebar of the CMS. Type your question, press Enter. Itâ€™s yours alone (each chat is private to your login) and free to use as much as you need.
 
+### 17.19 Shop Tags can reuse the product photo (no fresh upload needed)
+
+When you add a **Shop tag** on an article (the magazine-style "Anna is wearing the..." photo gallery), you can now LEAVE THE IMAGE FIELD EMPTY. If you do, the gallery will automatically use the linked product's main photo from the shop.
+
+**Two ways to use it:**
+
+1. **Same photo as the shop** â€” pick the product from the dropdown, leave image blank. The article shows the catalogue photo with the hover tag "Anna is wearing the Moonstone Necklace" linking to the product. Zero upload work.
+2. **Different photo than the shop** â€” pick the product AND upload your own photo (e.g. you wearing the piece on the houseboat). The article shows YOUR photo with the same hover tag.
+
+Caption prefix defaults to "Anna is wearing the" but you can override per-tag (e.g. "Anna is holding the" for a candle, "Featured: the" for a generic mention).
+
+### 17.20 Upsells worked example â€” how to actually use them
+
+Anna asked for a video call on upsells. Hereâ€™s the short version (the chatbot can also walk you through it live).
+
+**What upsells are:** the 3 cards that appear at the bottom of any page under "Where next Â· Continue exploring". They point readers from the page theyâ€™re on to a related thing you sell. Example: a Breathwork article links to the REGULATED programme, the Reset Room, and a Reset Session.
+
+**Where to find them:** every editable page entry (Homepage, About, Community, every programme, every experience, every article, every Page Builder page) has an **Upsells** field near the bottom. Up to 3 cards.
+
+**To add one upsell card:**
+1. Open the page you want the upsell to appear on (e.g. an article called "Breathwork for Nervous System Reset").
+2. Scroll to the **Upsells** field. Click **+ Add an entry**.
+3. **Eyebrow**: short uppercase tag like "Next step" or "Go deeper".
+4. **Label**: card title. e.g. "REGULATED â€” the nervous system programme".
+5. **Blurb**: one-line description. e.g. "The 10-module donation-only course on regulating your nervous system."
+6. **Link**: click the dropdown, start typing "regulated" or "reset room" or whatever, click the matching page. (No need to type the URL by hand.)
+7. **Image** (optional): a thumbnail. If blank, the card uses a text-only style.
+8. **Save & Publish**.
+
+**Worked example for the breathwork article:**
+- Card 1: Eyebrow "Programme" + Label "REGULATED" + Link /the-work/regulated â€” sells the course.
+- Card 2: Eyebrow "Membership" + Label "Reset Room" + Link /community/reset-room â€” sells the monthly membership.
+- Card 3: Eyebrow "1:1" + Label "Reset Session" + Link /the-work/sessions â€” sells the 90-min coaching session.
+
+Three different price points (course, membership, session), same theme (nervous system).
+
+**Rule of thumb:** match the upsell to the readerâ€™s state of mind on that page. A Breathwork article reader is curious about regulation â€” point them at regulation products. A Money & Worth article reader is thinking about career â€” point them at Career Coaching, not jewellery.
+
+### 17.21 Sharing blog posts to your Mailchimp newsletter
+
+There is NOT currently an automatic "tick a box on publish and Mailchimp sends it" feature. Two real options:
+
+**Option A â€” Mailchimp RSS-to-Email (recommended, set up once)**
+Mailchimp can watch your website's RSS feed (`https://annalouwellness.com/feed.xml`) and automatically email subscribers when new articles publish. You set up the campaign once, then every article you mark `is_free` and publish goes out automatically.
+
+To set this up:
+1. Mailchimp â†’ Campaigns â†’ Create â†’ **Email** â†’ **Automated** â†’ **Share blog updates**.
+2. Audience: your main list (`8bcbe7b0d1`).
+3. RSS feed URL: `https://annalouwellness.com/feed.xml`
+4. Schedule: weekly digest OR every new post (your call).
+5. Design the email template (or duplicate from your existing newsletter template).
+6. Activate.
+
+After that: every article you publish on the website automatically lands in the next scheduled email. No per-post action needed.
+
+**Option B â€” Manual send per article**
+- Mailchimp â†’ Campaigns â†’ Create â†’ paste the article URL into the email body.
+- More control, more work per post.
+
+If you want Option A, WhatsApp Sameer for a 10-minute screen-share to set it up â€” one-time cost, lifetime saving.
+
+### 17.22 Mobile preview now has a close button
+
+When you open the **Preview** of a page on your phone, a small Ã— button now appears top-right that closes the preview and brings you back to the edit screen. Strapi's default preview view didn't have this on mobile.
+
 ---
 
 *End of manual. Print this, bookmark it, or just keep it open in a browser tab. Updates land in `Docs/ANNA_USER_MANUAL.docx` â€” Sameer keeps the master version.*

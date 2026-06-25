@@ -10,9 +10,8 @@
     "image": {
       "type": "media",
       "multiple": false,
-      "required": true,
       "allowedTypes": ["images"],
-      "description": "Photo for the article gallery. Best size: portrait 800×1000 (4:5), max 2 MB. Other sizes work — see the fit_mode option below to control how the photo fills the frame."
+      "description": "Optional. Photo for the article gallery (portrait 800×1000 ideal, any size works). LEAVE BLANK to automatically use the linked product's main photo — saves you uploading the same image twice. Upload here only if you want a different photo than the shop one (e.g. the product worn on the houseboat instead of the white-background catalogue shot)."
     },
     "fit_mode": {
       "type": "enumeration",

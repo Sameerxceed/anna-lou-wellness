@@ -38,6 +38,7 @@ import BetterDateInput from './extensions/BetterDateInput';
 import LinkPickerInput from './extensions/LinkPickerInput';
 import ManualHelpPage from './extensions/ManualHelpPage';
 import HelpFab from './extensions/HelpFab';
+import MobilePreviewClose from './extensions/MobilePreviewClose';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -179,13 +180,24 @@ const bootstrap = (app: StrapiApp) => {
       mount.id = 'alw-help-fab-root';
       document.body.appendChild(mount);
       const root = createRoot(mount);
-      root.render(React.createElement(HelpFab));
+      // Render both the Help FAB and the mobile preview close button
+      // into the same portal — they're both fixed-position overlays
+      // and neither overlaps the other (Help FAB bottom-right, mobile
+      // close top-right).
+      root.render(
+        React.createElement(
+          React.Fragment,
+          null,
+          React.createElement(HelpFab),
+          React.createElement(MobilePreviewClose),
+        ),
+      );
       // eslint-disable-next-line no-console
-      console.info('[ALW admin] HelpFab mounted');
+      console.info('[ALW admin] HelpFab + MobilePreviewClose mounted');
     }
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn('[ALW admin] HelpFab setup failed:', err);
+    console.warn('[ALW admin] HelpFab/MobilePreviewClose setup failed:', err);
   }
 
   // Browser tab title — replaces the default "Strapi Admin" wherever it shows.
