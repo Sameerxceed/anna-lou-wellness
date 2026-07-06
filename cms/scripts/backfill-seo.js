@@ -63,7 +63,35 @@ const CONTENT_TYPES = [
     nameFields: ['title', 'name'],
     bodyFields: ['intro', 'description', 'body', 'sections'],
   },
+  {
+    uid: 'api::custom-html-landing.custom-html-landing',
+    nameFields: ['title'],
+    // raw_html is full HTML markup — send it through the same extractor
+    // used in the lifecycle so Claude gets visible text, not tag soup.
+    bodyFields: ['raw_html'],
+    extractFromHtml: true,
+  },
 ];
+
+// Cheap HTML → text extractor (mirrors the one in custom-html-landing
+// lifecycles.js). Only applied when the content-type spec has
+// extractFromHtml: true.
+function extractText(html) {
+  if (typeof html !== 'string') return '';
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 4000);
+}
 
 const SEO_TITLE_CANDIDATES = ['seo_title', 'seoTitle'];
 const SEO_DESCRIPTION_CANDIDATES = ['seo_description', 'seoDescription'];
@@ -180,7 +208,7 @@ async function callClaude(name, description) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function processContentType(strapi, ctConfig, dryRun) {
-  const { uid, nameFields, bodyFields } = ctConfig;
+  const { uid, nameFields, bodyFields, extractFromHtml } = ctConfig;
   console.log(`\n[backfill-seo] ── ${uid} ──`);
   let entries;
   try {
@@ -225,7 +253,10 @@ async function processContentType(strapi, ctConfig, dryRun) {
     const bodyChunks = [];
     for (const f of bodyFields) {
       const hit = firstFilled(entry, [f]);
-      if (hit?.value) bodyChunks.push(hit.value);
+      if (hit?.value) {
+        const rawValue = String(hit.value);
+        bodyChunks.push(extractFromHtml ? extractText(rawValue) : rawValue);
+      }
     }
     const bodyText = bodyChunks.join('\n\n').slice(0, 4000);
 
