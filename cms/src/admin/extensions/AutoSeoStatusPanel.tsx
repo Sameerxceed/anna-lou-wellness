@@ -78,6 +78,8 @@ const styles: Record<string, React.CSSProperties> = {
 
 export default function AutoSeoStatusPanel() {
   const [refreshing, setRefreshing] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
+  const [regenError, setRegenError] = useState<string | null>(null);
   const [autoCountdown, setAutoCountdown] = useState<number | null>(null);
 
   // Watch for "Saved document" / "Published document" toasts. When we detect
@@ -119,6 +121,61 @@ export default function AutoSeoStatusPanel() {
     window.location.reload();
   };
 
+  // Extract { uid, documentId } from the current admin URL:
+  //   /admin/content-manager/collection-types/<uid>/<documentId>
+  //   /admin/content-manager/single-types/<uid>
+  const parseUrl = (): { uid: string; documentId: string } | null => {
+    if (typeof window === 'undefined') return null;
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const idx = parts.findIndex((p) => p === 'collection-types' || p === 'single-types');
+    if (idx < 0 || idx + 1 >= parts.length) return null;
+    const uid = decodeURIComponent(parts[idx + 1]);
+    const documentId = idx + 2 < parts.length ? decodeURIComponent(parts[idx + 2]) : '';
+    if (!uid || !documentId) return null;
+    return { uid, documentId };
+  };
+
+  const regenerateNow = async () => {
+    setRegenerating(true);
+    setRegenError(null);
+    try {
+      const parsed = parseUrl();
+      if (!parsed) throw new Error('Could not detect the entry from the URL.');
+      // Grab the admin JWT from wherever Strapi v5 stashed it.
+      const adminJwt =
+        (typeof window !== 'undefined' &&
+          (window.sessionStorage.getItem('jwtToken') ||
+            window.localStorage.getItem('jwtToken') ||
+            (() => {
+              try {
+                const ui = window.sessionStorage.getItem('strapi-userInfo') ||
+                  window.localStorage.getItem('strapi-userInfo');
+                if (ui) return JSON.parse(ui)?.token || '';
+              } catch { /* ignore */ }
+              return '';
+            })())) || '';
+      const res = await fetch('/api/seo-generator/regenerate-entry', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminJwt ? { Authorization: `Bearer ${adminJwt.replace(/^"|"$/g, '')}` } : {}),
+        },
+        body: JSON.stringify(parsed),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        const msg = typeof data?.error === 'string' ? data.error : `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+      // Reload so Anna sees the freshly-written SEO in the fields below.
+      window.location.reload();
+    } catch (err: any) {
+      setRegenError(err?.message || 'Regenerate failed.');
+      setRegenerating(false);
+    }
+  };
+
   return (
     <div style={styles.card}>
       <p style={styles.label}>Auto SEO</p>
@@ -131,17 +188,37 @@ export default function AutoSeoStatusPanel() {
       </p>
       <button
         type="button"
-        onClick={reloadNow}
-        disabled={refreshing}
-        style={{ ...styles.button, ...(refreshing ? styles.buttonDisabled : {}) }}
+        onClick={regenerateNow}
+        disabled={regenerating || refreshing}
+        style={{ ...styles.button, ...(regenerating || refreshing ? styles.buttonDisabled : {}) }}
         onMouseEnter={(e) => {
-          if (!refreshing) (e.currentTarget as HTMLButtonElement).style.background = '#c4704a';
+          if (!(regenerating || refreshing)) (e.currentTarget as HTMLButtonElement).style.background = '#c4704a';
         }}
         onMouseLeave={(e) => {
-          if (!refreshing) (e.currentTarget as HTMLButtonElement).style.background = '#6E3A5A';
+          if (!(regenerating || refreshing)) (e.currentTarget as HTMLButtonElement).style.background = '#6E3A5A';
         }}
       >
-        {refreshing ? 'Refreshing…' : 'Refresh to see SEO'}
+        {regenerating ? 'Regenerating…' : 'Regenerate SEO now'}
+      </button>
+      {regenError && (
+        <p style={{ ...styles.smallNote, color: '#B33A3A', fontStyle: 'normal' }}>
+          {regenError}
+        </p>
+      )}
+      <button
+        type="button"
+        onClick={reloadNow}
+        disabled={refreshing || regenerating}
+        style={{
+          ...styles.button,
+          background: '#fff',
+          color: '#6E3A5A',
+          border: '1px solid #6E3A5A',
+          marginTop: 8,
+          ...(refreshing || regenerating ? styles.buttonDisabled : {}),
+        }}
+      >
+        {refreshing ? 'Refreshing…' : 'Just refresh the view'}
       </button>
       {autoCountdown !== null && autoCountdown > 0 && (
         <p style={styles.countdown}>
@@ -149,8 +226,9 @@ export default function AutoSeoStatusPanel() {
         </p>
       )}
       <p style={styles.smallNote}>
-        If you don't like what Claude wrote, clear both SEO fields and save again — it will rewrite.
-        Your manual edits are never overwritten.
+        <strong>Regenerate SEO now</strong> re-runs Claude on the current page content and overwrites both SEO fields — use whenever you want fresh copy.
+        <br /><br />
+        SEO also fills in automatically when you Save (if the fields are blank). Manual edits you type into the SEO fields are preserved on Save.
       </p>
     </div>
   );

@@ -324,4 +324,180 @@ module.exports = {
   async backfillStatus(ctx) {
     ctx.body = { ok: true, state: backfillState };
   },
+
+  /**
+   * Regenerate SEO for a single entry on demand — called by the
+   * "Regenerate SEO" button in the edit view. Even overwrites already-
+   * filled SEO (unlike the on-save auto path, which preserves it),
+   * because the user explicitly asked.
+   *
+   * Body: { uid: string, documentId: string }
+   */
+  async regenerateEntry(ctx) {
+    const admin = await verifyAdminJwt(ctx);
+    if (!admin) {
+      ctx.status = 401;
+      ctx.body = { ok: false, error: 'Admin login required. Please log out and back in.' };
+      return;
+    }
+
+    const body = ctx.request.body || {};
+    const uid = String(body.uid || '').trim();
+    const documentId = String(body.documentId || '').trim();
+    if (!uid || !documentId) {
+      ctx.status = 400;
+      ctx.body = { ok: false, error: 'uid and documentId required' };
+      return;
+    }
+
+    const spec = CONTENT_TYPE_SPECS[uid];
+    if (!spec) {
+      ctx.status = 400;
+      ctx.body = { ok: false, error: `Unsupported content type: ${uid}` };
+      return;
+    }
+
+    let entry;
+    try {
+      entry = await strapi.documents(uid).findOne({ documentId, status: 'draft' });
+    } catch (err) {
+      ctx.status = 502;
+      ctx.body = { ok: false, error: `Load failed: ${err.message}` };
+      return;
+    }
+    if (!entry) {
+      ctx.status = 404;
+      ctx.body = { ok: false, error: 'Entry not found' };
+      return;
+    }
+
+    // Gather name + body text.
+    const name = spec.nameFields
+      .map((f) => (entry[f] ? String(entry[f]).trim() : ''))
+      .find(Boolean) || '';
+    if (!name) {
+      ctx.status = 400;
+      ctx.body = { ok: false, error: 'Entry has no title/name — fill that first.' };
+      return;
+    }
+
+    const bodyChunks = [];
+    for (const f of spec.bodyFields) {
+      const v = entry[f];
+      if (v == null) continue;
+      const flat = flattenContent(v);
+      const s = String(flat).trim();
+      if (!s) continue;
+      bodyChunks.push(spec.extractFromHtml ? extractText(s) : s);
+    }
+    const description = bodyChunks.join('\n\n').slice(0, 4000);
+
+    let seoTitle;
+    let seoDescription;
+    try {
+      const result = await callClaude(name, description, {});
+      seoTitle = result.seoTitle;
+      seoDescription = result.seoDescription;
+    } catch (err) {
+      strapi.log.error(`[seo-generator/regenerate-entry] Claude call failed: ${err.message}`);
+      ctx.status = 502;
+      ctx.body = { ok: false, error: `SEO generation failed: ${err.message}` };
+      return;
+    }
+
+    // Write to both draft AND published so the change is live
+    // regardless of which version the user is currently viewing.
+    const patch = { seo_title: seoTitle, seo_description: seoDescription };
+    try {
+      await strapi.documents(uid).update({ documentId, data: patch, status: 'draft' });
+    } catch (err) {
+      strapi.log.warn(`[seo-generator/regenerate-entry] draft update: ${err.message}`);
+    }
+    try {
+      await strapi.documents(uid).update({ documentId, data: patch, status: 'published' });
+    } catch (err) {
+      if (!String(err.message).includes('not found')) {
+        strapi.log.warn(`[seo-generator/regenerate-entry] published update: ${err.message}`);
+      }
+    }
+
+    ctx.body = { ok: true, seo_title: seoTitle, seo_description: seoDescription };
+  },
 };
+
+// Content-type spec map for the regenerate endpoint. Mirrors the list in
+// cms/scripts/backfill-seo.js. Keep in sync when adding new content types.
+const CONTENT_TYPE_SPECS = {
+  'api::article.article': {
+    nameFields: ['title', 'name'],
+    bodyFields: ['intro', 'body', 'description', 'excerpt'],
+  },
+  'api::programme.programme': {
+    nameFields: ['title'],
+    bodyFields: ['tagline', 'intro', 'whatsIncludedItems', 'approachBody', 'outcomesBody'],
+  },
+  'api::experience.experience': {
+    nameFields: ['name', 'title'],
+    bodyFields: ['description', 'tagline', 'priceLabel', 'location'],
+  },
+  'api::coaching-session.coaching-session': {
+    nameFields: ['name'],
+    bodyFields: ['description', 'tagline', 'duration', 'price_label'],
+  },
+  'api::generic-page.generic-page': {
+    nameFields: ['title', 'name'],
+    bodyFields: ['intro', 'body', 'description', 'content'],
+  },
+  'api::page.page': {
+    nameFields: ['title', 'name'],
+    bodyFields: ['intro', 'description', 'body', 'sections'],
+  },
+  'api::custom-html-landing.custom-html-landing': {
+    nameFields: ['title'],
+    bodyFields: ['raw_html'],
+    extractFromHtml: true,
+  },
+};
+
+// HTML → visible-text extractor (mirrors the one in the lifecycle +
+// backfill-seo). Used when the spec has extractFromHtml: true.
+function extractText(html) {
+  if (typeof html !== 'string') return '';
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 4000);
+}
+
+// Admin JWT verifier — same pattern as manual-help + internal-routes.
+async function verifyAdminJwt(ctx) {
+  const auth = ctx.request.header.authorization || '';
+  const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+  const COOKIE_NAMES = ['jwtToken', 'strapi_jwt', 'strapi-jwt'];
+  let cookieToken = '';
+  for (const name of COOKIE_NAMES) {
+    const val = ctx.cookies?.get(name);
+    if (val) { cookieToken = val; break; }
+  }
+  const token = headerToken || cookieToken;
+  if (!token) return null;
+  try {
+    const jwt = require('jsonwebtoken');
+    const secret = strapi.config.get('admin.auth.secret');
+    if (!secret) return null;
+    const payload = jwt.verify(token, secret);
+    if (payload && (payload.id || payload.userId)) return payload;
+    return null;
+  } catch {
+    return null;
+  }
+}

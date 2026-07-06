@@ -39,5 +39,15 @@ module.exports = {
         policies: ['admin::isAuthenticatedAdmin'],
       },
     },
+    {
+      // On-demand regenerate SEO for a single entry. Powers the "Regenerate
+      // SEO" button on the edit view. Admin JWT verified inside the
+      // controller because Strapi v5's admin::isAuthenticatedAdmin policy
+      // is unreliable on /api routes (same issue as manual-help + internal-routes).
+      method: 'POST',
+      path: '/seo-generator/regenerate-entry',
+      handler: 'seo-generator.regenerateEntry',
+      config: { auth: false },
+    },
   ],
 };
