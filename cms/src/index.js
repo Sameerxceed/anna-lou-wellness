@@ -98,6 +98,7 @@ module.exports = {
         // Editorial / collection
         'api::article.article',
         'api::article-category.article-category',
+        'api::custom-html-landing.custom-html-landing',
         'api::programme.programme',
         'api::experience-page.experience-page',
         'api::community-event-page.community-event-page',

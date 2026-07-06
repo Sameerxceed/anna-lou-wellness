@@ -2521,6 +2521,63 @@ If you want Option A, WhatsApp Sameer for a 10-minute screen-share to set it up 
 
 When you open the **Preview** of a page on your phone, a small Ã— button now appears top-right that closes the preview and brings you back to the edit screen. Strapi's default preview view didn't have this on mobile.
 
+### 17.23 Custom HTML Landings â€” competitions, collabs, one-off campaigns
+
+New collection: **Custom HTML Landing**. Use this any time you want to publish a self-contained landing page from a pasted HTML file â€” competitions with an influencer, paid ad landing pages, event RSVPs, anything with its own design that shouldn't touch the rest of the site.
+
+**How it works:** you paste the entire HTML file into the `raw_html` field. The site renders it inside a **sandboxed iframe** at `/campaigns/YOUR-SLUG`. The iframe isolates everything â€” your fonts, colours, form scripts, submit handlers all just work without clashing with the site's normal styling. Update the `raw_html` field to update the live page in seconds.
+
+**Fields on the entry:**
+- `title` â€” page title (shown in browser tab + on social shares)
+- `slug` â€” URL after `/campaigns/` (auto-fills from title). "Feral and Free" becomes `/campaigns/feral-and-free`
+- `raw_html` â€” paste the ENTIRE HTML here (from `<!DOCTYPE html>` to `</html>`)
+- `iframe_height` â€” usually `auto` (grows to fit content). Set a fixed value like `1400px` only if `auto` mis-sizes on mobile
+- `show_site_nav` â€” tick to keep the site nav at the top of the page. UNTICK for a distraction-free bare landing (recommended for competitions and paid ads)
+- `hero_image` â€” 1200Ã—630 social share preview image (optional but recommended)
+- `seo_title` + `seo_description` â€” Google + social preview
+
+**Full worked example â€” a competition with an influencer:**
+
+Say Anna and Toni Nagy are running a joint Instagram competition. Winners get a necklace. Anna has an HTML file and a Google Sheet to collect entries.
+
+*Step 1 â€” Google side (do this ONCE, ~5 min):*
+1. Create a new Google Sheet, name it (e.g. "Feral and Free entries")
+2. Extensions â†’ Apps Script
+3. Delete anything in the editor, paste in your collector script (Sameer sends this)
+4. Click Save, then Deploy â†’ New deployment
+5. Gear icon â†’ Web app. Execute as: Me. Who has access: Anyone. Deploy.
+6. Authorise when asked
+7. Copy the Web app URL (ends in `/exec`)
+8. Paste that URL into your HTML file where it says `var SHEET_URL = "";`
+9. Share the sheet with your collaborator so you both see entries in real time
+
+*Step 2 â€” CMS side (~2 min):*
+1. Content Manager â†’ Custom HTML Landing â†’ **+ Create new entry**
+2. Fill `title` (e.g. "Feral and Free")
+3. `slug` auto-fills to `feral-and-free` â†’ URL will be `/campaigns/feral-and-free`
+4. Paste the entire HTML file into `raw_html`
+5. Leave `iframe_height` as `auto` unless the page looks squashed
+6. UNTICK `show_site_nav` for a clean landing (recommended)
+7. Upload a `hero_image` (a lifestyle shot of the piece)
+8. `seo_title` (e.g. "Feral and Free â€” Enter to Win"), `seo_description` (one line)
+9. **Save & Publish**
+10. Share `annalouwellness.com/campaigns/feral-and-free` in your Substack, on Instagram, wherever
+
+*Step 3 â€” run the competition:*
+- Every entry lands in your Google Sheet in real time
+- You and your collaborator both see them (same sheet)
+- Filter, sort, pick winners. Reply to entrants from the email column.
+
+*Reusing the pattern:*
+- Next collab? Duplicate the entry, change the title/slug/raw_html. Same infra.
+- Same HTML file with a different Google Sheet? Just change `SHEET_URL` in the HTML.
+
+**Watch out for:**
+- The `SHEET_URL` in the HTML must be your `/exec` URL, not the sheet's URL
+- Google Apps Script deployment is set to "Anyone" so the form can POST without login
+- If the iframe height looks wrong on mobile, try a fixed value like `1600px`
+- Your HTML runs in a sandbox â€” it CAN'T access the parent site's cookies, localStorage, or DOM. That's the point.
+
 ---
 
 *End of manual. Print this, bookmark it, or just keep it open in a browser tab. Updates land in `Docs/ANNA_USER_MANUAL.docx` â€” Sameer keeps the master version.*

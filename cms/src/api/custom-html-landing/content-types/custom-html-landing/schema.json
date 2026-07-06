@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "custom_html_landings",
+  "info": {
+    "singularName": "custom-html-landing",
+    "pluralName": "custom-html-landings",
+    "displayName": "Custom HTML Landing",
+    "description": "Standalone landing pages built from raw HTML — for competitions, influencer collabs, one-off campaigns. Renders inside a sandboxed iframe so pasted HTML/CSS/JS just works without touching the rest of the site."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Public page title. Shown in the browser tab and on social shares."
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "description": "URL path after /campaigns/. Lowercase, hyphens-not-spaces (e.g. 'feral-and-free' becomes /campaigns/feral-and-free). Auto-fills from title — only edit if you want to change the URL."
+    },
+    "raw_html": {
+      "type": "text",
+      "required": true,
+      "description": "Paste the ENTIRE HTML file here (from <!DOCTYPE html> all the way to </html>, or just the body if you prefer). It renders in a fully sandboxed iframe, so your CSS won't clash with the site's styles and your form/script tags DO run. Update this field to update the live page — save and it's live in seconds."
+    },
+    "iframe_height": {
+      "type": "string",
+      "default": "auto",
+      "description": "Height of the iframe on the page. 'auto' (default) grows to fit the content. Or set a fixed value like '900px', '100vh', '1400px'. Use 'auto' unless the page mis-sizes on mobile."
+    },
+    "show_site_nav": {
+      "type": "boolean",
+      "default": true,
+      "description": "Tick to show the standard Anna Lou Wellness nav at the top of the page. Untick for a bare, distraction-free landing (recommended for competitions and paid ads)."
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Social share image (Facebook, Twitter, WhatsApp preview). 1200×630 landscape. Optional but recommended — makes the link look inviting when someone shares it."
+    },
+    "seo_title": {
+      "type": "string",
+      "description": "Optional SEO title override (60 chars max). Leave blank to use the page title."
+    },
+    "seo_description": {
+      "type": "text",
+      "description": "Short summary for Google and social previews (~155 chars). Fills in automatically when you Save — leave blank unless you want to override."
+    }
+  }
+}

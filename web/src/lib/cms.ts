@@ -1291,6 +1291,42 @@ export async function getMantras(): Promise<Mantra[]> {
   }
 }
 
+// ═══ CUSTOM HTML LANDING (competitions, collabs, one-off campaigns) ═══
+
+export interface CustomHtmlLanding {
+  title: string;
+  slug: string;
+  rawHtml: string;
+  iframeHeight: string;
+  showSiteNav: boolean;
+  heroImage: string | null;
+  seoTitle: string;
+  seoDescription: string;
+}
+
+export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLanding | null> {
+  try {
+    const { data } = await fetchAPI('/custom-html-landings', {
+      'populate[hero_image]': 'true',
+      'filters[slug][$eq]': slug,
+    });
+    if (!data?.length) return null;
+    const d = data[0];
+    return {
+      title: d.title || '',
+      slug: d.slug || '',
+      rawHtml: d.raw_html || '',
+      iframeHeight: d.iframe_height || 'auto',
+      showSiteNav: d.show_site_nav !== false,
+      heroImage: d.hero_image ? mediaUrl(d.hero_image) : null,
+      seoTitle: d.seo_title || '',
+      seoDescription: d.seo_description || '',
+    };
+  } catch {
+    return null;
+  }
+}
+
 // ═══ VAULT JOURNEYS (Reset Room member content) ═══
 
 export interface VaultJourney {
