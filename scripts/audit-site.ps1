@@ -15,8 +15,9 @@ $ErrorActionPreference = 'Stop'
 $KnownRoutes = @(
     '/', '/about', '/anna-story', '/practitioners', '/contact', '/testimonials', '/press',
     '/the-work', '/the-work/sessions', '/the-work/the-reset', '/the-work/signal',
-    '/the-work/signal-and-build', '/the-work/one-day-intensive', '/the-work/signal-collective',
-    '/the-work/recovery-coaching', '/the-work/founder-reset',
+    '/the-work/signal-and-build', '/the-work/one-day', '/the-work/signal-collective',
+    '/the-work/recovery', '/the-work/founder-reset', '/the-work/dating-reset',
+    '/the-work/nervous-system-reset', '/the-work/regulated',
     '/experiences', '/experiences/retreats', '/experiences/workshops',
     '/experiences/corporate-wellbeing', '/experiences/speaking',
     '/community', '/community/reset-room', '/community/the-returning-circle',
