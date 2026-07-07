@@ -186,7 +186,11 @@ export default function HelpFab() {
   const [draft, setDraft] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Optional image attachment — Anna 6 Jul: "I asked the ai assistant
+  // but I can't upload an image to show the ai robot the error page."
+  const [attached, setAttached] = useState<{ dataUrl: string; mediaType: string; name: string } | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Hide FAB on Strapi's login screen (no admin cookie yet → endpoint
   // would 401). The login URL always contains /auth/.
@@ -216,14 +220,60 @@ export default function HelpFab() {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [messages, loading, open]);
 
+  // Read a File as base64 (strips the data:mime;base64, prefix).
+  const readAsBase64 = (file: File): Promise<{ data: string; mediaType: string; dataUrl: string }> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = String(reader.result || '');
+        const [meta, data] = dataUrl.split(',');
+        const media = (meta.match(/data:([^;]+);base64/) || [])[1] || file.type || 'image/png';
+        resolve({ data: data || '', mediaType: media, dataUrl });
+      };
+      reader.onerror = () => reject(reader.error || new Error('File read failed'));
+      reader.readAsDataURL(file);
+    });
+
+  const attachImage = async (file: File) => {
+    if (!file) return;
+    if (file.size > 6 * 1024 * 1024) {
+      setError('Image is too large. Please attach one under 5 MB.');
+      return;
+    }
+    if (!/^image\/(jpeg|jpg|png|gif|webp)$/i.test(file.type)) {
+      setError('Only JPG, PNG, GIF, or WebP images can be attached.');
+      return;
+    }
+    try {
+      const { data, mediaType, dataUrl } = await readAsBase64(file);
+      setAttached({ dataUrl, mediaType, name: file.name });
+      setError(null);
+      // Small nudge: if the draft is empty, seed a helpful default so the
+      // user doesn't have to think about what to type alongside the image.
+      if (!draft.trim()) setDraft('What is this? How do I fix it?');
+    } catch {
+      setError('Could not read that image. Try a JPG or PNG.');
+    }
+  };
+
   const send = async (q: string) => {
     const trimmed = q.trim();
-    if (!trimmed || loading) return;
-    const next: Message[] = [...messages, { role: 'user', content: trimmed }];
+    if ((!trimmed && !attached) || loading) return;
+    const askText = trimmed || 'What is this? How do I fix it?';
+    // Show the image inline in the chat by embedding the data URL as
+    // markdown-esque text — quick and dirty but reads naturally.
+    const userDisplay = attached
+      ? `[Screenshot: ${attached.name}]\n${askText}`
+      : askText;
+    const next: Message[] = [...messages, { role: 'user', content: userDisplay }];
     setMessages(next);
     setDraft('');
     setError(null);
     setLoading(true);
+    const imageForSend = attached
+      ? { media_type: attached.mediaType, data: attached.dataUrl.split(',')[1] || '' }
+      : null;
+    setAttached(null);
     try {
       // Strapi v5 admin stores its JWT in sessionStorage / localStorage
       // under several possible keys depending on build. Grab it and send
@@ -249,7 +299,11 @@ export default function HelpFab() {
           'Content-Type': 'application/json',
           ...(adminJwt ? { Authorization: `Bearer ${adminJwt.replace(/^"|"$/g, '')}` } : {}),
         },
-        body: JSON.stringify({ question: trimmed, history: messages.slice(-8) }),
+        body: JSON.stringify({
+          question: askText,
+          history: messages.slice(-8),
+          image: imageForSend,
+        }),
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
@@ -272,6 +326,19 @@ export default function HelpFab() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       send(draft);
+    }
+  };
+
+  // Paste-to-attach: pasting a screenshot with Ctrl+V into the input
+  // populates the attachment (image data lives on the clipboard when
+  // Anna does Print Screen or uses the Snipping Tool).
+  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = Array.from(e.clipboardData?.items || []);
+    const imageItem = items.find((it) => it.type.startsWith('image/'));
+    if (imageItem) {
+      e.preventDefault();
+      const file = imageItem.getAsFile();
+      if (file) await attachImage(file);
     }
   };
 
@@ -334,13 +401,58 @@ export default function HelpFab() {
 
       {error && <div style={styles.error}>{error}</div>}
 
+      {attached && (
+        <div style={{ padding: '6px 10px', borderTop: '1px solid #F0F0F4', display: 'flex', alignItems: 'center', gap: 10, background: '#fff' }}>
+          <img src={attached.dataUrl} alt={attached.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, border: '1px solid #E5C9D6' }} />
+          <span style={{ flex: 1, fontSize: 11, color: '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{attached.name}</span>
+          <button
+            type="button"
+            onClick={() => setAttached(null)}
+            style={{ background: 'transparent', border: 'none', color: '#8E8EA9', cursor: 'pointer', fontSize: 16, padding: 0 }}
+            aria-label="Remove attachment"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/gif,image/webp"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) attachImage(f);
+          if (fileInputRef.current) fileInputRef.current.value = '';
+        }}
+      />
+
       <div style={styles.inputRow}>
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={loading}
+          title="Attach a screenshot"
+          style={{
+            background: 'transparent',
+            border: '1px solid #DCDCE4',
+            borderRadius: 6,
+            padding: '0 10px',
+            fontSize: 16,
+            cursor: loading ? 'not-allowed' : 'pointer',
+            color: '#6E3A5A',
+          }}
+        >
+          📎
+        </button>
         <textarea
           style={styles.input}
-          placeholder="Ask anything..."
+          placeholder={attached ? 'Describe what you want help with...' : 'Ask anything... (Ctrl+V a screenshot)'}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKey}
+          onPaste={handlePaste}
           disabled={loading}
           rows={1}
         />
@@ -348,10 +460,10 @@ export default function HelpFab() {
           type="button"
           style={{
             ...styles.send,
-            ...(loading || !draft.trim() ? styles.sendDisabled : {}),
+            ...(loading || (!draft.trim() && !attached) ? styles.sendDisabled : {}),
           }}
           onClick={() => send(draft)}
-          disabled={loading || !draft.trim()}
+          disabled={loading || (!draft.trim() && !attached)}
         >
           Send
         </button>

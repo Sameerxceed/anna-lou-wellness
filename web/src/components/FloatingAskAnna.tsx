@@ -51,6 +51,11 @@ export default function FloatingAskAnna() {
   const [error, setError] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   const [verifiedFirstMessage, setVerifiedFirstMessage] = useState(false);
+  // Anna 6 Jul: "There's a double Ask Anna button." Root cause — the CMS
+  // preview loads the public site inside an iframe, so both the CMS
+  // HelpFab (outer window) AND this FloatingAskAnna (inner iframe) render.
+  // Suppress this widget when embedded so only ONE chat button is visible.
+  const [inIframe, setInIframe] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -58,8 +63,20 @@ export default function FloatingAskAnna() {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chat, loading, open]);
 
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && window.self !== window.top) setInIframe(true);
+    } catch {
+      // Cross-origin access to window.top can throw; if it does we're
+      // definitely embedded, so suppress the widget.
+      setInIframe(true);
+    }
+  }, []);
+
   // Hide the widget on the dedicated /ask-anna page — would be redundant.
   if (pathname === '/ask-anna') return null;
+  // Hide inside CMS preview iframes and any other embedded contexts.
+  if (inIframe) return null;
 
   async function sendMessage(text: string) {
     const q = text.trim();

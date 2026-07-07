@@ -2578,6 +2578,106 @@ Say Anna and Toni Nagy are running a joint Instagram competition. Winners get a 
 - If the iframe height looks wrong on mobile, try a fixed value like `1600px`
 - Your HTML runs in a sandbox â€” it CAN'T access the parent site's cookies, localStorage, or DOM. That's the point.
 
+### 17.24 How to write good alt text
+
+Alt text is the short sentence that describes an image for people who can't see it (screen reader users) and for Google (which uses it to understand what the image shows). It's on almost every image field, usually labelled `alt_text` or "Alt text" underneath the image slot.
+
+**The rule:** describe what's in the image, not what it means. One clear sentence. No "image of" or "picture of" â€” screen readers already say that.
+
+**Good examples:**
+- "Anna wearing the Moonstone Necklace on the houseboat."
+- "Ceramic mug of matcha next to a linen-bound journal on a wood table."
+- "Portrait of Anna in cream jumper, standing barefoot on riverbank."
+
+**Bad examples:**
+- "Image" â€” tells nobody anything
+- "IMG_5847" â€” filenames aren't descriptions
+- "Beautiful photo of stunning necklace" â€” marketing fluff, no description
+- "Anna wearing the Moonstone Necklace crafted from ethically sourced Sri Lankan moonstones with 925 sterling silver" â€” too long, that's the product description not alt text
+
+**When in doubt:** if the image is decorative only (a divider line, a background pattern), leave alt text blank. If the image carries meaning or is the point of the section (a product photo, a portrait, a diagram), describe it in one sentence.
+
+### 17.25 Where are the CTA fields on each page?
+
+CTAs (Call To Action buttons) live in different places depending on the page type. Here's the map:
+
+| Page | Where the CTA fields are |
+|---|---|
+| Homepage | `hero.primary_cta_label` + `hero.primary_cta_url` + `hero.secondary_cta_label` + `hero.secondary_cta_url` inside the Hero component. Also the "Work with Anna" and "Community" section blocks each have their own CTA fields. |
+| Programmes (The Reset, Signal, etc.) | Top of the entry: `cta_label` + `cta_url` (main "book now" button). Also `upsells` at the bottom for related-page cards. |
+| Experiences (Retreats, Workshops, etc.) | `booking_url` field controls the "Book" button. `cta_label` if you want to override the default label. `upsells` for related cards. |
+| Articles | No traditional CTA. The `upsells` field at the bottom is the closest thing â€” Anna picks up to 3 related pages the reader might want next. |
+| Community pages | Each block (Returning Circle, Reset Room, etc.) has its own CTA label + URL. |
+| Reset Letters | The signup form IS the CTA. No separate button. |
+| Custom HTML Landings | Whatever you put in the pasted HTML. |
+| Standalone (About, Contact, Testimonials, Press) | `upsells` at the bottom, plus any button copy is directly editable in the rich-text body. |
+
+**Rule of thumb:** if you can't see a field called `cta_label` or `cta_url` on the entry, either the page has fixed buttons controlled by the sitewide Nav / Footer, OR the CTA lives inside a component block on the entry (scroll further down). If truly stuck, ask the Help Â· Ask chatbot which mentions the section number.
+
+### 17.26 What is the Programmes page for?
+
+The `Programmes` collection holds the paid coaching offers under Work with Anna: The Reset, Signal, Signal & Build, One Day Intensive, Signal Collective, Recovery Coaching, Founder Reset, Returning Circle â€” each one is a Programme entry.
+
+Each entry becomes its own sales page at `/the-work/{slug}` (e.g. `/the-work/the-reset`). The fields let you edit everything that appears on that sales page: the hero, the "what's included" bullets, the outcomes, the FAQ, the price, the CTA button, the SEO copy, and the upsells at the bottom.
+
+**Don't confuse with:**
+- `Coaching Session` collection â€” the shorter 1:1 sessions (90-min Reset Session, Discovery Call). Different collection because pricing model + booking flow are different.
+- `Experiences` collection â€” retreats, workshops, corporate wellbeing, speaking. Sold and booked differently.
+- `Reset Room` singleton â€” the monthly membership, not a one-off programme.
+
+If you want to add a new coaching programme (e.g. a new 12-week thing), duplicate an existing Programme entry and edit the copy â€” that's the fastest path.
+
+### 17.27 Pictures are cut off / cropped strangely
+
+Two common cases and how to fix each:
+
+**Case 1 â€” Shop Tags (the "shop the story" gallery under an article)**
+Each shop tag row has a `fit_mode` field with two options:
+- `cover` (default) â€” crops the photo to fill a portrait 4:5 frame. Best for actual portrait photos.
+- `contain` â€” shows the whole photo with padding. Use this for landscape, square, or odd-ratio photos that shouldn't crop.
+
+Fix: open the shop tag row on the article, change `fit_mode` from `cover` to `contain`, save.
+
+**Case 2 â€” Article body images (inserted directly into the rich text)**
+Article body images render at their natural aspect ratio, up to the page width. If a body image looks cut off, it's usually one of:
+- The image itself was cropped BEFORE upload (fix on your phone / Photoshop and re-upload)
+- The image is very tall/narrow, hitting the max-height CSS cap. Rotate to landscape or crop tighter.
+- The image was uploaded once, edited on your device, and the cached version is showing. Delete + re-upload.
+
+**Case 3 â€” Hero / banner images**
+Hero images render full-width and are cropped to a landscape frame by CSS. If yours is portrait or square, upload a landscape version (1600Ã—1000 min).
+
+If the specific image is one you've already uploaded and can't figure out, screenshot it and use **Help Â· Ask** with the attach button (paperclip icon) â€” the chatbot can see the screenshot and tell you which field to fix.
+
+### 17.28 Site-wide health check (broken links, missing alt text, missing SEO)
+
+You don't need to check these one page at a time. Xceed runs **ContentAgent** (an SEO audit engine) against the whole site periodically. It reports:
+- Broken links (404s from external references, internal typos)
+- Missing / duplicate SEO titles + descriptions
+- Missing alt text on images
+- Slow-loading pages
+- Sitemap coverage gaps
+
+WhatsApp Sameer and ask for the latest ContentAgent report if you want a full sweep before a big launch or press push. It takes ~10 minutes to run and produces a prioritised fix list.
+
+**For the ALW-specific stuff (SEO copy that's blank in Strapi):** the Bulk fill missing SEO button in the sidebar â†’ SEO & AI Files does this in one click. Alt text still needs your judgement so no auto-fill for that.
+
+### 17.29 Help Â· Ask now accepts screenshots
+
+Big upgrade to the in-CMS chatbot. Two ways to give it a screenshot:
+
+1. **Paperclip button (bottom-left of the chat panel)** â€” click, pick a file, done. It appears as a thumbnail above the input.
+2. **Ctrl+V paste** â€” do a Print Screen or use the Snipping Tool, then click into the chat input and press Ctrl+V. Same effect.
+
+The bot then sees the image AND your question. It can tell you what the error message says, which field the arrow is pointing at, or where you are in the CMS.
+
+Best uses:
+- "This is what I see, what do I do?" (attach a screenshot of an error)
+- "How do I edit this specific bit?" (attach a screenshot of the page)
+- "Why doesn't this look right?" (attach a screenshot of the live site)
+
+Limits: JPG / PNG / GIF / WebP up to about 5 MB. If the image is too large, retake at a lower resolution or use the Snipping Tool to grab just the part that matters.
+
 ---
 
 *End of manual. Print this, bookmark it, or just keep it open in a browser tab. Updates land in `Docs/ANNA_USER_MANUAL.docx` â€” Sameer keeps the master version.*

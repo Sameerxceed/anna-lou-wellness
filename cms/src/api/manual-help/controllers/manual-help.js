@@ -155,6 +155,28 @@ module.exports = {
       return;
     }
 
+    // Optional image attachment. Anna 6 Jul: "I asked the ai assistant
+    // but I can't upload an image to show the ai robot the error page."
+    // Claude Haiku 4.5 supports vision — accept a { media_type, data }
+    // block, validate size + type, forward as a vision content block.
+    const image = body.image && typeof body.image === 'object' ? body.image : null;
+    const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const MAX_IMAGE_BASE64_BYTES = 8 * 1024 * 1024; // ~6MB decoded
+    let validImage = null;
+    if (image && typeof image.media_type === 'string' && typeof image.data === 'string') {
+      if (!ALLOWED_IMAGE_TYPES.includes(image.media_type)) {
+        ctx.status = 400;
+        ctx.body = { error: 'Image must be JPG, PNG, GIF, or WebP.' };
+        return;
+      }
+      if (image.data.length > MAX_IMAGE_BASE64_BYTES) {
+        ctx.status = 400;
+        ctx.body = { error: 'Image is too large. Please attach one under ~5 MB.' };
+        return;
+      }
+      validImage = image;
+    }
+
     const rawHistory = Array.isArray(body.history) ? body.history : [];
     const history = rawHistory
       .filter(
@@ -177,7 +199,16 @@ module.exports = {
       return;
     }
 
-    const messages = [...history, { role: 'user', content: question }];
+    // Build the user turn. If an image is attached, use a content-block
+    // array with { image } + { text }; otherwise a plain string works.
+    const finalUserContent = validImage
+      ? [
+          { type: 'image', source: { type: 'base64', media_type: validImage.media_type, data: validImage.data } },
+          { type: 'text', text: question },
+        ]
+      : question;
+
+    const messages = [...history, { role: 'user', content: finalUserContent }];
 
     try {
       const answer = await callAnthropic({
