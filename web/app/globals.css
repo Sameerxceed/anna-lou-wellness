@@ -324,6 +324,6 @@ body.campaign-bare footer,
 body.campaign-bare .top-strip,
 body.campaign-bare .faa-trigger,
 body.campaign-bare .faa-panel,
-body.campaign-bare .decoder-quiz-popup,
+body.campaign-bare .dq-popup-backdrop,
 body.campaign-bare .back-to-top,
 body.campaign-bare [data-hide-on-campaign-bare="true"] { display: none !important; }
