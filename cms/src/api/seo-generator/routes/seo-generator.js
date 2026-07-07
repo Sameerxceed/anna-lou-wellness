@@ -16,28 +16,22 @@ module.exports = {
       method: 'POST',
       path: '/seo-generator/generate',
       handler: 'seo-generator.generate',
-      config: {
-        auth: false,
-        policies: ['admin::isAuthenticatedAdmin'],
-      },
+      config: { auth: false },
     },
     {
+      // Admin JWT verified inside the controller. The v5
+      // admin::isAuthenticatedAdmin policy is unreliable on /api/*
+      // routes (same issue as manual-help + internal-routes).
       method: 'POST',
       path: '/seo-generator/backfill-start',
       handler: 'seo-generator.backfillStart',
-      config: {
-        auth: false,
-        policies: ['admin::isAuthenticatedAdmin'],
-      },
+      config: { auth: false },
     },
     {
       method: 'GET',
       path: '/seo-generator/backfill-status',
       handler: 'seo-generator.backfillStatus',
-      config: {
-        auth: false,
-        policies: ['admin::isAuthenticatedAdmin'],
-      },
+      config: { auth: false },
     },
     {
       // On-demand regenerate SEO for a single entry. Powers the "Regenerate

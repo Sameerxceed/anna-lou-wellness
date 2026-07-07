@@ -278,6 +278,12 @@ async function runBackfill() {
 
 module.exports = {
   async generate(ctx) {
+    const admin = await verifyAdminJwt(ctx);
+    if (!admin) {
+      ctx.status = 401;
+      ctx.body = { ok: false, error: 'Admin login required. Please log out and back in.' };
+      return;
+    }
     const body = ctx.request.body || {};
     const name = String(body.name || '').trim();
     const description = flattenContent(body.description).trim();
@@ -298,6 +304,12 @@ module.exports = {
   },
 
   async backfillStart(ctx) {
+    const admin = await verifyAdminJwt(ctx);
+    if (!admin) {
+      ctx.status = 401;
+      ctx.body = { ok: false, error: 'Admin login required. Please log out and back in.' };
+      return;
+    }
     if (backfillState.status === 'running') {
       ctx.body = { ok: false, error: 'A backfill is already running', state: backfillState };
       return;
@@ -322,6 +334,12 @@ module.exports = {
   },
 
   async backfillStatus(ctx) {
+    const admin = await verifyAdminJwt(ctx);
+    if (!admin) {
+      ctx.status = 401;
+      ctx.body = { ok: false, error: 'Admin login required. Please log out and back in.' };
+      return;
+    }
     ctx.body = { ok: true, state: backfillState };
   },
 

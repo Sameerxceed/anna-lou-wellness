@@ -159,6 +159,31 @@ type BackfillState = {
   errorMessage: string;
 };
 
+// Grab the admin JWT from wherever Strapi v5 stashed it in this build.
+// Belt-and-suspenders alongside credentials:'include' so the server-side
+// verifyAdminJwt can find the token via either the Authorization header
+// or the cookie. Same pattern as HelpFab + SiteUrlsPage.
+function getAdminJwt(): string {
+  if (typeof window === 'undefined') return '';
+  const raw =
+    window.sessionStorage.getItem('jwtToken') ||
+    window.localStorage.getItem('jwtToken') ||
+    (() => {
+      try {
+        const ui = window.sessionStorage.getItem('strapi-userInfo') ||
+          window.localStorage.getItem('strapi-userInfo');
+        if (ui) return JSON.parse(ui)?.token || '';
+      } catch { /* ignore */ }
+      return '';
+    })();
+  return String(raw || '').replace(/^"|"$/g, '');
+}
+
+function authHeaders(): Record<string, string> {
+  const jwt = getAdminJwt();
+  return jwt ? { Authorization: `Bearer ${jwt}` } : {};
+}
+
 export default function SeoFilesPage() {
   const [copied, setCopied] = useState<string | null>(null);
   const [backfill, setBackfill] = useState<BackfillState | null>(null);
@@ -168,7 +193,10 @@ export default function SeoFilesPage() {
 
   const fetchStatus = async () => {
     try {
-      const res = await fetch('/api/seo-generator/backfill-status', { credentials: 'include' });
+      const res = await fetch('/api/seo-generator/backfill-status', {
+        credentials: 'include',
+        headers: authHeaders(),
+      });
       if (!res.ok) return;
       const data = await res.json();
       if (data?.state) setBackfill(data.state);
@@ -200,7 +228,10 @@ export default function SeoFilesPage() {
       const res = await fetch('/api/seo-generator/backfill-start', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...authHeaders(),
+        },
         body: JSON.stringify({}),
       });
       if (!res.ok) {

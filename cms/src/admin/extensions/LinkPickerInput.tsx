@@ -65,7 +65,25 @@ export default function LinkPickerInput({ attribute: _attribute, name, onChange,
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch('/api/internal-routes/list', { credentials: 'include' });
+        // Grab admin JWT from storage as Bearer — Strapi v5 doesn't
+        // always send the cookie on /api/* routes. Same pattern as
+        // HelpFab + SiteUrlsPage + SeoFilesPage.
+        const adminJwt = (typeof window !== 'undefined' && (
+          window.sessionStorage.getItem('jwtToken') ||
+          window.localStorage.getItem('jwtToken') ||
+          (() => {
+            try {
+              const ui = window.sessionStorage.getItem('strapi-userInfo') ||
+                window.localStorage.getItem('strapi-userInfo');
+              if (ui) return JSON.parse(ui)?.token || '';
+            } catch { /* ignore */ }
+            return '';
+          })()
+        )) || '';
+        const res = await fetch('/api/internal-routes/list', {
+          credentials: 'include',
+          headers: adminJwt ? { Authorization: `Bearer ${String(adminJwt).replace(/^"|"$/g, '')}` } : {},
+        });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         if (cancelled) return;
