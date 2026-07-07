@@ -58,7 +58,8 @@ export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | n
     // See memory feedback_strapi_v5_populate_collision.md.
     const { data } = await fetchAPI('/programmes', {
       'filters[slug][$eq]': slug,
-      'populate[hero_image]': 'true',
+      // Programme schema uses camelCase heroImage, not snake_case.
+      'populate[heroImage]': 'true',
       'populate[upsells][populate][image]': 'true',
     });
     if (Array.isArray(data) && data.length > 0) return data[0] as ProgrammeCMS;
