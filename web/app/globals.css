@@ -314,10 +314,16 @@
 /* ═══ Campaign landings — bare mode ═══
    When a Custom HTML Landing entry has show_site_nav=false, the
    CampaignFrame component adds this class to <body>. We hide the site
-   nav + footer + floating widgets so Anna's landing is distraction-free
-   (recommended for competitions and paid ads). */
+   nav + footer + all floating widgets so Anna's landing is
+   distraction-free (recommended for competitions and paid ads).
+   Cookie banner intentionally NOT hidden — legally required whenever
+   the site sets cookies (GA, Meta Pixel, session). */
 body.campaign-bare > main { padding: 0 !important; margin: 0 !important; }
 body.campaign-bare nav,
 body.campaign-bare footer,
 body.campaign-bare .top-strip,
+body.campaign-bare .faa-trigger,
+body.campaign-bare .faa-panel,
+body.campaign-bare .decoder-quiz-popup,
+body.campaign-bare .back-to-top,
 body.campaign-bare [data-hide-on-campaign-bare="true"] { display: none !important; }
