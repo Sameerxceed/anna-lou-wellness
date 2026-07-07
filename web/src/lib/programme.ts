@@ -52,12 +52,14 @@ export function parseStages(raw: string | undefined): { label: string; title: st
 
 export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | null> {
   try {
-    // populate=* pulls top-level fields including the upsells component, but
-    // the nested image inside each upsell needs explicit deep populate.
+    // Strapi v5 quirk: `populate=*` at top level PLUS a hierarchical
+    // `populate[upsells][populate]=*` in the same query throws 500
+    // InternalServerError. Fix: use explicit per-field populates only.
+    // See memory feedback_strapi_v5_populate_collision.md.
     const { data } = await fetchAPI('/programmes', {
       'filters[slug][$eq]': slug,
-      populate: '*',
-      'populate[upsells][populate]': '*',
+      'populate[hero_image]': 'true',
+      'populate[upsells][populate][image]': 'true',
     });
     if (Array.isArray(data) && data.length > 0) return data[0] as ProgrammeCMS;
     return null;

@@ -36,10 +36,13 @@ export async function getCustomPageBySlug(slug: string): Promise<CustomPageCMS |
     // every section, which is what we want for the Dynamic Zone renderer.
     const { data } = await fetchAPI('/pages', {
       'filters[slug][$eq]': slug,
+      // Strapi v5: populate=* on a media field throws 400 ValidationError
+      // ("Invalid key related at hero_image.related"). Use =true instead.
+      // Dynamic-zone sections keeps its deep populate.
       'populate[sections][populate]': '*',
-      'populate[hero_image]': '*',
-      'populate[og_image]': '*',
-      'populate[upsells][populate]': '*',
+      'populate[hero_image]': 'true',
+      'populate[og_image]': 'true',
+      'populate[upsells][populate][image]': 'true',
       'pagination[pageSize]': '1',
     });
     if (Array.isArray(data) && data.length > 0) {

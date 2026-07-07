@@ -21,6 +21,19 @@ const nextConfig = {
         destination: '/free/nervous-system-decoder',
         permanent: true,
       },
+      // 7 Jul site audit: /press and /anna-story were 404'ing (sitemap
+      // referenced them, but the actual pages live under /about/).
+      // 301 so any inbound links / SEO / cached shares still land.
+      {
+        source: '/press',
+        destination: '/about/press',
+        permanent: true,
+      },
+      {
+        source: '/anna-story',
+        destination: '/about/anna-story',
+        permanent: true,
+      },
     ];
   },
 };
