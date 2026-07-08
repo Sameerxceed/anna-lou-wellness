@@ -2678,6 +2678,225 @@ Best uses:
 
 Limits: JPG / PNG / GIF / WebP up to about 5 MB. If the image is too large, retake at a lower resolution or use the Snipping Tool to grab just the part that matters.
 
+## 18. Email journeys (what happens when someone clicks something)
+
+Two systems send emails from your site:
+- **Mailchimp** sends marketing journeys triggered by tags. You edit journey emails inside Mailchimp; the site only fires the tag.
+- **Resend** sends transactional emails triggered by specific events like a purchase. You edit these inside the CMS in the **Email Template** collection; the site pulls the wording at send time.
+
+The rest of this section is the full trigger map. If someone asks the chatbot "if X happens, what emails do they get?" or "which tag does the Y form fire?", the answer is here.
+
+### 18.1 Reset Letters signup
+
+**Trigger:** visitor submits the form on `/reset-letters`.
+**Endpoint:** POST `/api/subscribe-reset-letters`.
+
+Step by step:
+1. Turnstile CAPTCHA verified (blocks bots).
+2. Email upserted into Mailchimp with FNAME merge field.
+3. Mailchimp tag applied: **Founding Members** if before `RESET_LETTERS_LAUNCH_DATE` (default 2026-06-22), otherwise **Standard Subscribers**.
+4. Email ALSO subscribed to the Substack list in parallel so they receive the newsletter itself.
+5. If the visitor arrived via `?utm_source=...`, a SECOND tag `Origin: <source>` applied.
+6. Success response shown in the browser.
+
+**Journeys this triggers in Mailchimp:** Founding Members welcome sequence, OR Standard Subscribers welcome sequence, PLUS optional Origin-based fork.
+**Resend emails:** none.
+
+### 18.2 Nervous System Decoder signup
+
+**Trigger:** visitor submits the email form on `/free/nervous-system-decoder` OR the email gate on `/free/nervous-system-decoder/quiz`.
+**Endpoint:** POST `/api/lead/decoder`.
+
+Step by step:
+1. Turnstile CAPTCHA verified.
+2. Email upserted with FNAME.
+3. Mailchimp tag applied: **Decoder Subscriber**.
+4. If UTM present, `Origin: <source>` also applied.
+5. Success shown to visitor (destination depends on which entry point).
+
+**Journeys:** Decoder welcome + PDF delivery; then Day 2 Decoder Upsell to REGULATED; then Day 4 final upsell nudge. All three exit if the REGULATED Buyer tag is applied.
+**Resend emails:** none.
+
+### 18.3 Enquiry forms (Contact, Practitioner, Corporate, Speaking, etc.)
+
+**Trigger:** any enquiry form submission.
+**Endpoint:** POST `/api/lead/[type]` where `[type]` is the URL slug.
+
+Slug â†’ Mailchimp tag map:
+
+| Slug | Tag applied | Admin email? |
+|---|---|---|
+| returning-circle | Returning Circle Enquiry | No |
+| signal-collective | Signal Collective Enquiry | No |
+| recovery | Recovery Coaching Enquiry | No |
+| one-day | One Day Enquiry | No |
+| speaking | Speaking Enquiry | No |
+| corporate | Corporate Wellbeing Enquiry | No |
+| practitioner-enquiry | Practitioner Enquiry | Yes â€” `admin_practitioner_enquiry` |
+| anything else | `<Capitalised words>` + " Enquiry" | No |
+
+Step by step:
+1. Turnstile CAPTCHA verified.
+2. Email upserted with FNAME.
+3. Tag applied per the table above.
+4. If Origin UTM present, second Origin tag applied.
+5. If this type has an admin email in the map (currently only practitioner-enquiry), Resend fires that template to Anna.
+
+### 18.4 Shop purchase (card)
+
+**Trigger:** customer completes card checkout on `/checkout`.
+**Endpoint:** Stripe webhook â†’ POST `/api/stripe/webhook` (`checkout.session.completed`).
+
+Step by step:
+1. Stripe signature verified.
+2. Strapi order flipped from `pending` to `paid`.
+3. If new customer, Strapi creates a User record + password token, then Resend fires **shop_account_invite** ("welcome, set your password").
+4. Mailchimp tag **Shop Customers** applied to the email.
+5. If the item has a `mailchimpTag` on its Programme/Product entry (e.g. REGULATED has `mailchimpTag = "REGULATED Buyer"`), that tag is ALSO applied.
+6. Resend fires **order_paid** to the customer (receipt).
+7. Resend fires **admin_new_order** to Anna.
+
+**Journeys:** Shop welcome / thank-you; programme-specific onboarding like REGULATED Follow-up (which exits the Decoder Upsell journey so the customer stops being sold something they just bought).
+
+### 18.5 Shop purchase (bank transfer)
+
+**Trigger:** customer picks bank transfer at checkout.
+**Endpoint:** POST `/api/checkout`.
+
+Step by step:
+1. Order created in Strapi with status `pending_bank_transfer`.
+2. If new customer, **shop_account_invite** email fires.
+3. Resend fires **order_bank_transfer** to customer (bank details + reference).
+4. Resend fires **admin_new_order** to Anna.
+5. NO Mailchimp tags applied yet â€” they wait until Anna marks the order paid in the CMS, which fires the full 18.4 flow.
+
+### 18.6 Refund
+
+**Trigger:** Anna clicks Refund on an order in the CMS.
+**Endpoint:** POST `/api/order-refund`.
+
+Step by step:
+1. Stripe refund API called.
+2. Strapi order status flipped to `refunded`.
+3. If the item had a `mailchimpTag`, that tag is REMOVED (customer stops receiving that programme's follow-up).
+4. Resend fires **order_refunded** to the customer (amount + settlement time).
+5. Resend fires **admin_new_order** to Anna as the audit trail.
+
+The **Shop Customers** tag is KEPT â€” a refund doesn't un-mark them as a customer.
+
+### 18.7 Order status change (shipped / completed / return)
+
+**Trigger:** Anna changes an order status in the CMS.
+**Endpoint:** POST `/api/order-event`.
+
+This is the flexible switchboard. Anna picks a template_key from the CMS Email Template collection. Known keys used:
+
+| template_key | When it fires | To |
+|---|---|---|
+| order_shipped | On dispatch, with tracking URL | Customer |
+| order_completed | Delivery confirmed | Customer |
+| return_requested | Customer requests a return | Customer |
+| return_approved | Anna approves the return | Customer |
+| return_received | Anna marks the item received | Customer |
+| return_rejected | Anna rejects the return | Customer |
+| admin_return_requested | Customer submits return request | Anna |
+
+Wording lives in the CMS â€” Anna edits each row without touching code.
+
+### 18.8 Calendly booking (Discovery, One Day, Reset Session, etc.)
+
+**Trigger:** visitor books via any of Anna's Calendly links.
+**Endpoint:** Calendly webhook â†’ POST `/api/calendly/webhook`.
+
+Step by step:
+1. Calendly webhook signature verified (HMAC-SHA256).
+2. Calendly event slug looked up in EVENT_TAG_MAP.
+3. Email upserted in Mailchimp with FNAME.
+4. Mailchimp tag applied per the map below.
+5. Mailchimp merge fields set: `EVENT_DATE`, `EVENT_TIME`, `EVENT_NAME`, `EVENT_LOC`. Anna can reference these inside Mailchimp email bodies as `|EVENT_DATE|` etc.
+
+Slug â†’ tag map:
+
+| Calendly slug | Tag applied |
+|---|---|
+| one-day-intensive OR one-day | One Day Booked |
+| discovery-call OR discovery | Discovery Booked |
+| signal-scoping | Signal Scoping Booked |
+| reset-session | Reset Session Booked |
+| anything else | Calendly Booked (fallback) |
+
+**Resend emails:** none (Calendly sends its own booking confirmation).
+
+### 18.9 Password reset
+
+**Trigger:** visitor clicks "forgot password" on `/login`.
+**Endpoint:** POST `/api/auth/forgot-password`.
+
+Step by step:
+1. Email validated + rate-limited.
+2. One-time reset token stored on the user in Strapi.
+3. Resend fires **password_reset** with the reset link.
+
+**Mailchimp:** no tag applied â€” this is a security event, not marketing.
+
+### 18.10 Mailchimp tag catalogue (source of truth for journey wiring)
+
+Every tag the site can apply and what journey Anna should wire in Mailchimp:
+
+| Tag | Fires when | Mailchimp journey |
+|---|---|---|
+| Founding Members | Reset Letters signup before launch date | Founding Members welcome |
+| Standard Subscribers | Reset Letters signup after launch date OR after 500 cap | Standard Subscribers welcome |
+| Decoder Subscriber | Nervous System Decoder signup | Decoder welcome + PDF delivery |
+| REGULATED Buyer | REGULATED programme purchased | REGULATED Follow-up (also exits Decoder Upsell) |
+| Shop Customers | Any completed shop purchase | Shop welcome / thank-you |
+| Practitioner Enquiry | Practitioner form submitted | Practitioner review + application |
+| Returning Circle Enquiry | Returning Circle form | Returning Circle next steps |
+| Signal Collective Enquiry | Signal Collective form | Signal Collective next steps |
+| Recovery Coaching Enquiry | Recovery Coaching form | Recovery Coaching intake |
+| One Day Enquiry | One Day form | One Day pre-booking nurture |
+| Speaking Enquiry | Speaking form | Speaking follow-up |
+| Corporate Wellbeing Enquiry | Corporate Wellbeing form | Corporate proposal + follow-up |
+| One Day Booked | One Day booked in Calendly | One Day pre-call sequence (uses EVENT_DATE) |
+| Discovery Booked | Discovery call booked in Calendly | Discovery pre-call preparation |
+| Signal Scoping Booked | Signal Scoping booked | Signal Scoping pre-call |
+| Reset Session Booked | Reset Session booked | Reset Session pre-call |
+| Calendly Booked | Any Calendly booking without a specific mapping | Generic Calendly pre-call fallback |
+| Origin: <source> | Second tag on any signup with `?utm_source=...` | Optional per-source welcome fork |
+
+### 18.11 Transactional email catalogue (Resend + CMS)
+
+Every email Resend can send. Each maps to a row in the CMS **Email Template** collection.
+
+| Template key | Sent when | To |
+|---|---|---|
+| shop_account_invite | New customer's first purchase | Customer |
+| order_paid | Stripe confirms payment | Customer |
+| order_bank_transfer | Customer picks bank transfer | Customer |
+| order_shipped | Anna dispatches with tracking | Customer |
+| order_completed | Order marked complete | Customer |
+| order_refunded | Anna processes refund | Customer |
+| return_requested | Customer requests return | Customer |
+| return_approved | Anna approves return | Customer |
+| return_received | Anna marks return received | Customer |
+| return_rejected | Anna rejects return | Customer |
+| password_reset | Customer forgot password | Customer |
+| admin_new_order | Any new order (card / bank / refund) | Anna |
+| admin_return_requested | Customer requests return | Anna |
+| admin_practitioner_enquiry | Practitioner applies via form | Anna |
+
+Merge tokens available in every template body: `{{order_number}}`, `{{customer_name}}`, `{{total}}`, `{{tracking_number}}`, `{{tracking_url}}`, `{{refund_amount}}`, `{{cancellation_reason}}`, `{{site_url}}`.
+
+### 18.12 Anna's activation checklist (pre-launch punch list)
+
+Everything the site does automatically is built. What's left is what Anna needs to activate INSIDE Mailchimp so the tags actually cause emails to send.
+
+1. **Mailchimp journeys:** for each row in Â§18.10, open the corresponding Customer Journey in Mailchimp (or create it), set trigger to "when tagged with X", draft the email bodies, set exit conditions (e.g. Decoder Upsell exits on REGULATED Buyer), click Start.
+2. **Merge fields:** Audience â†’ Settings â†’ Audience fields. Add TEXT merge fields with tag names `EVENT_DATE`, `EVENT_TIME`, `EVENT_NAME`, `EVENT_LOC` (case-sensitive) so Calendly booking journeys work.
+3. **CMS Email Template copy:** open each of the 14 rows in Â§18.11 in Content Manager â†’ Email Template. Proofread subject / preheader / intro / outro / CTA. Save & Publish.
+4. **Env vars in Coolify:** confirm on the frontend service â€” `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `RESEND_API_KEY`, `EMAIL_FROM` (change from onboarding@resend.dev for prod), `CALENDLY_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
+5. **Calendly webhook:** Calendly â†’ Integrations â†’ Webhooks â†’ Create. URL `https://annalouwellness.com/api/calendly/webhook`. Subscribe to `invitee.created`. Paste the signing key into Coolify as `CALENDLY_WEBHOOK_SECRET`.
+
 ---
 
 *End of manual. Print this, bookmark it, or just keep it open in a browser tab. Updates land in `Docs/ANNA_USER_MANUAL.docx` â€” Sameer keeps the master version.*
