@@ -141,6 +141,38 @@ const TESTIMONIALS = [
   },
 ];
 
+// One-shot cleanup of the placeholder testimonials that were seeded
+// during an earlier build. Anna's real 12 testimonials are now live,
+// so the placeholders should go. Idempotent — delete-if-exists, safe
+// across future redeploys.
+const PLACEHOLDER_NAMES = [
+  'Charlotte H.',
+  'Priya M.',
+  'Emma R.',
+  'Sofia T.',
+  'Rachel B.',
+  'James K.',
+  '[Demo placeholder - replace]',
+];
+
+async function cleanupPlaceholders(strapi) {
+  let removed = 0;
+  for (const name of PLACEHOLDER_NAMES) {
+    const matches = await strapi.entityService.findMany('api::testimonial.testimonial', {
+      filters: { reviewer_name: name },
+      limit: 50,
+    });
+    for (const m of (matches || [])) {
+      await strapi.entityService.delete('api::testimonial.testimonial', m.id);
+      removed++;
+      strapi.log.info(`[seed-testimonials] removed placeholder "${name}" (id=${m.id})`);
+    }
+  }
+  if (removed > 0) {
+    strapi.log.info(`[seed-testimonials] cleanup done - removed ${removed} placeholder(s)`);
+  }
+}
+
 async function seedTestimonials(strapi) {
   let created = 0;
   let skipped = 0;
@@ -178,6 +210,15 @@ async function seedTestimonials(strapi) {
   strapi.log.info(
     `[seed-testimonials] done - created ${created}, skipped ${skipped} already present`,
   );
+
+  // Clean up the old placeholder testimonials AFTER the real ones are in.
+  // Order matters: if the cleanup ran first and something in the create
+  // step then failed, Anna's testimonials page would be blank for a bit.
+  try {
+    await cleanupPlaceholders(strapi);
+  } catch (err) {
+    strapi.log.warn('[seed-testimonials] cleanup failed:', err.message);
+  }
 }
 
 module.exports = seedTestimonials;
