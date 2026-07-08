@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feral and free: enter to win</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  #alw-embed {
+    --cream: #F5F3EF;
+    --ink: #231F20;
+    --red: #EE312F;
+    --amber: #FAA21B;
+    --blue: #7BAFDD;
+    --pink: #F280AA;
+    --green: #5DCAA5;
+    --paper: #FCFBF8;
+    box-sizing: border-box;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 32px 18px 60px;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  #alw-embed * { box-sizing: border-box; }
+
+  #alw-embed .hero { text-align: center; margin: 8px 0 30px; }
+  #alw-embed .dots { display: flex; gap: 9px; justify-content: center; margin-bottom: 22px; }
+  #alw-embed .dots span { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  #alw-embed .d1 { background: var(--red); }
+  #alw-embed .d2 { background: var(--amber); }
+  #alw-embed .d3 { background: var(--blue); }
+  #alw-embed .d4 { background: var(--pink); }
+  #alw-embed .d5 { background: var(--green); }
+  #alw-embed .hero h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500; font-size: 44px; line-height: 1.05;
+    letter-spacing: -0.5px; margin: 0 0 14px;
+  }
+  #alw-embed .hero h1 em { font-style: italic; color: var(--red); }
+  #alw-embed .hero p { font-size: 18px; max-width: 440px; margin: 0 auto; color: #4a4547; }
+
+  #alw-embed .card {
+    background: var(--paper); border-radius: 22px;
+    padding: 34px 28px 30px;
+    box-shadow: 0 18px 50px -28px rgba(35,31,32,0.35);
+  }
+  #alw-embed .field { margin-bottom: 22px; }
+  #alw-embed .q {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500; font-size: 19px; margin-bottom: 4px;
+  }
+  #alw-embed .req { color: var(--red); }
+  #alw-embed .help { font-size: 14.5px; color: #6a6567; margin-bottom: 9px; }
+  #alw-embed input[type="text"], #alw-embed input[type="email"] {
+    width: 100%; border: 1.5px solid #e2ddd6; background: #fff;
+    border-radius: 12px; padding: 13px 15px;
+    font-family: inherit; font-size: 16px; color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  #alw-embed input:focus { outline: none; border-color: var(--pink); }
+
+  #alw-embed .check {
+    display: flex; gap: 12px; align-items: flex-start;
+    cursor: pointer; user-select: none;
+  }
+  #alw-embed .box {
+    flex: 0 0 24px; width: 24px; height: 24px;
+    border: 1.5px solid #cfc9c2; border-radius: 7px; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px; transition: all 0.15s ease;
+  }
+  #alw-embed .box svg { width: 15px; height: 15px; opacity: 0; }
+  #alw-embed .check.on .box { background: var(--green); border-color: var(--green); }
+  #alw-embed .check.on .box svg { opacity: 1; }
+  #alw-embed .txt { font-size: 15.5px; line-height: 1.45; }
+  #alw-embed .txt a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--pink); text-underline-offset: 2px; }
+  #alw-embed .gift-label {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500; font-size: 19px; margin-bottom: 9px;
+  }
+
+  #alw-embed .submit {
+    width: 100%; border: none; background: var(--red); color: #fff;
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 20px;
+    padding: 15px; border-radius: 13px; cursor: pointer; margin-top: 6px;
+    transition: transform 0.1s ease, background 0.15s ease;
+  }
+  #alw-embed .submit:hover { background: #d92220; }
+  #alw-embed .submit:active { transform: scale(0.99); }
+  #alw-embed .submit:disabled { opacity: 0.6; cursor: default; }
+
+  #alw-embed .err { color: var(--red); font-size: 14px; text-align: center; margin: 12px 0 0; display: none; }
+  #alw-embed .err.show { display: block; }
+
+  #alw-embed .terms {
+    font-size: 13px; color: #8a8587; text-align: center;
+    margin: 18px 4px 0; line-height: 1.5;
+  }
+
+  #alw-embed .done { display: none; text-align: center; padding: 14px 6px 6px; }
+  #alw-embed .done.show { display: block; }
+  #alw-embed .spark { font-size: 44px; margin-bottom: 6px; }
+  #alw-embed .done h2 {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: 34px; margin: 0 0 12px; color: var(--red);
+  }
+  #alw-embed .done p { max-width: 400px; margin: 0 auto 12px; color: #4a4547; }
+  #alw-embed .early { color: var(--ink); text-decoration: underline; text-decoration-color: var(--pink); }
+
+  @media (max-width: 480px) {
+    #alw-embed .hero h1 { font-size: 36px; }
+    #alw-embed .card { padding: 28px 20px 26px; }
+  }
+</style>
+</head>
+<body>
+<div id="alw-embed">
+
+  <div class="hero">
+    <div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span><span class="d4"></span><span class="d5"></span></div>
+    <h1>Feral <em>and</em> free</h1>
+    <p>two necklaces, two winners, one gloriously unserious competition. show us your most feral and free and you are in.</p>
+  </div>
+
+  <div class="card">
+    <div class="alw-formbox">
+
+      <div class="field">
+        <div class="q">your name <span class="req">*</span></div>
+        <div class="help">the one you would like on the winners announcement.</div>
+        <input type="text" id="f-name" placeholder="first and last">
+      </div>
+
+      <div class="field">
+        <div class="q">your email <span class="req">*</span></div>
+        <div class="help">so we can reach you if you win. only the good stuff, never spam.</div>
+        <input type="email" id="f-email" placeholder="you@email.com">
+      </div>
+
+      <div class="field">
+        <div class="q">your Instagram handle <span class="req">*</span></div>
+        <div class="help">starting with the @, so we can find your entry and tag you.</div>
+        <input type="text" id="f-insta" placeholder="@yourhandle">
+      </div>
+
+      <div class="field">
+        <div class="q">the link to your post <span class="req">*</span></div>
+        <div class="help">paste the link to your video. keep your account public so we can actually see it.</div>
+        <input type="text" id="f-link" placeholder="https://instagram.com/p/...">
+      </div>
+
+      <div class="field">
+        <div class="q">the bit that makes it official <span class="req">*</span></div>
+        <label class="check" id="c-reshare" onclick="this.classList.toggle('on')">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="txt">yes, I am happy for my video to be reshared by Anna Lou and Toni.</span>
+        </label>
+      </div>
+
+      <div class="field">
+        <div class="gift-label">one more thing (optional)</div>
+        <label class="check" id="c-news" onclick="this.classList.toggle('on')">
+          <span class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="txt">yes, sign me up to Reset Letters at <a href="https://www.annalouwellness.com" target="_blank" rel="noopener">annalouwellness.com</a> and Toni Nagy's upcoming shows at <a href="https://www.toninagy.com" target="_blank" rel="noopener">toninagy.com</a>.</span>
+        </label>
+      </div>
+
+      <button class="submit" id="alw-submit">I'm in</button>
+      <p class="err" id="alw-err"></p>
+
+      <p class="terms">open to entrants aged 18 and over. winners drawn at random and contacted by email. this competition is not affiliated with Instagram.</p>
+    </div>
+
+    <div class="done">
+      <div class="spark">&#10024;</div>
+      <h2>you are in</h2>
+      <p>now go and be ferally, freely yourself. keep an eye on your inbox &mdash; winners will be contacted by email.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  // Google Apps Script Web App URL — receives entries and appends them
+  // to Anna's + Toni's shared "Feral and free entries" Google Sheet.
+  var SHEET_URL = "https://script.google.com/macros/s/AKfycbxjUrMASYHwfyHDxTv0TA8_r6QrOeAKZj_mpt-Sf575fJsJOWjgfCHSfYIlDllecNffWg/exec";
+
+  var root  = document.getElementById('alw-embed');
+  var btn   = document.getElementById('alw-submit');
+  var errEl = document.getElementById('alw-err');
+
+  function showErr(msg){ errEl.textContent = msg; errEl.classList.add('show'); }
+  function clearErr(){ errEl.classList.remove('show'); }
+
+  btn.addEventListener('click', async function(){
+    clearErr();
+    var name  = document.getElementById('f-name').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+    var insta = document.getElementById('f-insta').value.trim();
+    var link  = document.getElementById('f-link').value.trim();
+    var reshare = document.getElementById('c-reshare').classList.contains('on');
+    var news    = document.getElementById('c-news').classList.contains('on');
+
+    var missing = [];
+    if(!name)  missing.push('name');
+    if(!email) missing.push('email');
+    if(!insta) missing.push('handle');
+    if(!link)  missing.push('post link');
+    if(missing.length){
+      showErr('please fill in your ' + missing.join(', ') + '.'); return;
+    }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      showErr('that email does not look quite right.'); return;
+    }
+    if(!reshare){
+      showErr('please tick the box allowing us to reshare your video.'); return;
+    }
+    if(!SHEET_URL){
+      showErr('form not connected yet: add your Google Sheet URL in the code.'); return;
+    }
+
+    btn.disabled = true; btn.textContent = 'sending...';
+
+    try {
+      var body = new URLSearchParams({
+        name: name,
+        email: email,
+        instagram: insta,
+        post_link: link,
+        reshare_consent: reshare ? 'yes' : 'no',
+        newsletter_optin: news ? 'yes' : 'no'
+      });
+      // no-cors: the write lands in the sheet, the response is opaque
+      await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: body });
+      root.querySelector('.done').classList.add('show');
+      root.querySelector('.alw-formbox').style.display = 'none';
+    } catch(e){
+      btn.disabled = false; btn.textContent = "I'm in";
+      showErr('no connection, please try again.');
+    }
+  });
+})();
+</script>
+</body>
+</html>
