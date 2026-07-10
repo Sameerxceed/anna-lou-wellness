@@ -25,7 +25,8 @@
       "type": "text"
     },
     "body": {
-      "type": "richtext"
+      "type": "blocks",
+      "description": "The article body. Use the toolbar for headings, bold, italic, lists, links, quotes. Paste from Word, Google Docs, or Substack preserves formatting (H1/H2/bold/lists all come through). Substack RSS auto-imports also preserve structure."
     },
     "hero_image": {
       "type": "media",

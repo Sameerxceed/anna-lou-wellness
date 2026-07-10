@@ -733,7 +733,11 @@ export interface Article {
   title: string;
   slug: string;
   excerpt: string;
-  body: string;
+  // Strapi v5 blocks JSON (array). Legacy plain-text string may still show
+  // up if an entry slipped past the migration seed — the renderer handles
+  // both. Use BlocksRenderer + previewBody rather than treating as string.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: any[] | string;
   heroImage: string;
   category: { name: string; slug: string; section: string; colour: string } | null;
   author: string;
@@ -768,7 +772,8 @@ function mapArticle(d: any): Article {
     title: d.title || '',
     slug: d.slug || '',
     excerpt: d.excerpt || '',
-    body: d.body || '',
+    // Blocks is stored as an array. Fall back to empty array if missing.
+    body: Array.isArray(d.body) ? d.body : (typeof d.body === 'string' ? d.body : []),
     heroImage: mediaUrl(d.hero_image),
     category: d.category ? {
       name: d.category.name,
@@ -1371,7 +1376,11 @@ export interface VaultJourney {
   videoUrl: string;
   videoThumbnail: string;
   companionPdfUrl: string;
-  body: string;
+  // Strapi v5 blocks JSON (array). Legacy plain-text string may still show
+  // up if an entry slipped past the migration seed — the renderer handles
+  // both. Use BlocksRenderer + previewBody rather than treating as string.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: any[] | string;
   recordedDate: string;
   sortOrder: number;
 }
@@ -1389,7 +1398,8 @@ function mapVaultJourney(d: any): VaultJourney {
     videoUrl: d.video_url || '',
     videoThumbnail: mediaUrl(d.video_thumbnail),
     companionPdfUrl: mediaUrl(d.companion_pdf),
-    body: d.body || '',
+    // Blocks is stored as an array. Fall back to empty array if missing.
+    body: Array.isArray(d.body) ? d.body : (typeof d.body === 'string' ? d.body : []),
     recordedDate: d.recorded_date || '',
     sortOrder: d.sort_order ?? 0,
   };
@@ -1505,7 +1515,11 @@ export interface WorkshopReplay {
   videoUrl: string;
   videoThumbnail: string;
   audioUrl: string;
-  body: string;
+  // Strapi v5 blocks JSON (array). Legacy plain-text string may still show
+  // up if an entry slipped past the migration seed — the renderer handles
+  // both. Use BlocksRenderer + previewBody rather than treating as string.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: any[] | string;
 }
 
 function mapReplay(d: any): WorkshopReplay {
@@ -1520,7 +1534,8 @@ function mapReplay(d: any): WorkshopReplay {
     videoUrl: d.video_url || '',
     videoThumbnail: mediaUrl(d.video_thumbnail),
     audioUrl: mediaUrl(d.audio_file),
-    body: d.body || '',
+    // Blocks is stored as an array. Fall back to empty array if missing.
+    body: Array.isArray(d.body) ? d.body : (typeof d.body === 'string' ? d.body : []),
   };
 }
 

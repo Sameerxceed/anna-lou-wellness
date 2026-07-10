@@ -7,6 +7,7 @@ import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage } from '@/data/stock-images';
 import Paywall from '@/components/Paywall';
 import { previewBody } from '@/lib/article-utils';
+import BlocksRenderer from '@/components/BlocksRenderer';
 import ShopTheStory from '@/components/ShopTheStory';
 import { accentForText } from '@/lib/colours';
 
@@ -141,9 +142,7 @@ export default async function ArticlePage({ params }: PageProps) {
             style={{ objectFit: 'cover' }}
           />
           <div className="article-content">
-            {(article.isFree ? article.body : previewBody(article.body)).split('\n\n').map((para, i) => (
-              <p key={i}>{para}</p>
-            ))}
+            <BlocksRenderer content={article.isFree ? article.body : previewBody(article.body)} />
           </div>
           {!article.isFree && <Paywall substackUrl={article.substackUrl} accentColour={article.category?.colour || '#FAA21B'} />}
 

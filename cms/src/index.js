@@ -267,6 +267,17 @@ module.exports = {
       strapi.log.warn('[seed-email-templates] failed:', err.message);
     }
 
+    // ═══ Migrate article.body from richtext (string) to blocks (JSON) ═══
+    // One-shot; idempotent (skips already-migrated). Rich-text is a lossy
+    // plain-text field — blocks preserves headings/bold/italic/lists that
+    // Anna pastes from Word / Substack / Google Docs.
+    try {
+      const migrateArticlesToBlocks = require('./migrate-articles-to-blocks');
+      await migrateArticlesToBlocks(strapi);
+    } catch (err) {
+      strapi.log.warn('[migrate-articles-to-blocks] failed:', err.message);
+    }
+
     // ═══ Seed Discovery Call defaults on the Contact singleton ═══
     try {
       const seedDiscoveryCall = require('./seed-discovery-call');
