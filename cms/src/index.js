@@ -283,12 +283,17 @@ module.exports = {
     // Sends each article to Claude Haiku, gets back which paragraphs are
     // actually section headings, promotes them to heading blocks. Idempotent
     // (skips articles that already contain heading blocks).
-    try {
+    //
+    // Fired as a BACKGROUND task via setImmediate so Strapi boot completes
+    // immediately. Without this, a hung Anthropic call would block boot,
+    // Coolify healthcheck would fail, container would restart, and we'd
+    // crash-loop through the whole migration on every restart.
+    setImmediate(() => {
       const promoteArticleHeadings = require('./promote-article-headings');
-      await promoteArticleHeadings(strapi);
-    } catch (err) {
-      strapi.log.warn('[promote-article-headings] failed:', err.message);
-    }
+      promoteArticleHeadings(strapi).catch((err) => {
+        strapi.log.warn('[promote-article-headings] failed:', err.message);
+      });
+    });
 
     // ═══ Seed Discovery Call defaults on the Contact singleton ═══
     try {
