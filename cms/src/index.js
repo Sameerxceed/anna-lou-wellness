@@ -267,33 +267,13 @@ module.exports = {
       strapi.log.warn('[seed-email-templates] failed:', err.message);
     }
 
-    // ═══ Migrate article.body from richtext (string) to blocks (JSON) ═══
-    // One-shot; idempotent (skips already-migrated). Rich-text is a lossy
-    // plain-text field — blocks preserves headings/bold/italic/lists that
-    // Anna pastes from Word / Substack / Google Docs.
-    try {
-      const migrateArticlesToBlocks = require('./migrate-articles-to-blocks');
-      await migrateArticlesToBlocks(strapi);
-    } catch (err) {
-      strapi.log.warn('[migrate-articles-to-blocks] failed:', err.message);
-    }
-
-    // ═══ AI-detect section headings inside migrated articles ═══
-    // Optional one-shot pass — gated by env var AI_DETECT_HEADINGS_ONCE=true.
-    // Sends each article to Claude Haiku, gets back which paragraphs are
-    // actually section headings, promotes them to heading blocks. Idempotent
-    // (skips articles that already contain heading blocks).
-    //
-    // Fired as a BACKGROUND task via setImmediate so Strapi boot completes
-    // immediately. Without this, a hung Anthropic call would block boot,
-    // Coolify healthcheck would fail, container would restart, and we'd
-    // crash-loop through the whole migration on every restart.
-    setImmediate(() => {
-      const promoteArticleHeadings = require('./promote-article-headings');
-      promoteArticleHeadings(strapi).catch((err) => {
-        strapi.log.warn('[promote-article-headings] failed:', err.message);
-      });
-    });
+    // ═══ Blocks migration disabled ═══
+    // Reverted 10 Jul 2026: switching article.body from richtext -> blocks
+    // required a Postgres type conversion (text -> jsonb) that failed on
+    // existing plain-text bodies, crash-looping the CMS. The proper path
+    // is to convert data to JSON strings FIRST, then change schema. Until
+    // that migration is in place, article.body stays richtext and the
+    // frontend BlocksRenderer uses its string-fallback path.
 
     // ═══ Seed Discovery Call defaults on the Contact singleton ═══
     try {
