@@ -1376,11 +1376,7 @@ export interface VaultJourney {
   videoUrl: string;
   videoThumbnail: string;
   companionPdfUrl: string;
-  // Strapi v5 blocks JSON (array). Legacy plain-text string may still show
-  // up if an entry slipped past the migration seed — the renderer handles
-  // both. Use BlocksRenderer + previewBody rather than treating as string.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any[] | string;
+  body: string;
   recordedDate: string;
   sortOrder: number;
 }
@@ -1398,8 +1394,7 @@ function mapVaultJourney(d: any): VaultJourney {
     videoUrl: d.video_url || '',
     videoThumbnail: mediaUrl(d.video_thumbnail),
     companionPdfUrl: mediaUrl(d.companion_pdf),
-    // Blocks is stored as an array. Fall back to empty array if missing.
-    body: Array.isArray(d.body) ? d.body : (typeof d.body === 'string' ? d.body : []),
+    body: d.body || '',
     recordedDate: d.recorded_date || '',
     sortOrder: d.sort_order ?? 0,
   };
@@ -1515,11 +1510,7 @@ export interface WorkshopReplay {
   videoUrl: string;
   videoThumbnail: string;
   audioUrl: string;
-  // Strapi v5 blocks JSON (array). Legacy plain-text string may still show
-  // up if an entry slipped past the migration seed — the renderer handles
-  // both. Use BlocksRenderer + previewBody rather than treating as string.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any[] | string;
+  body: string;
 }
 
 function mapReplay(d: any): WorkshopReplay {
@@ -1534,8 +1525,7 @@ function mapReplay(d: any): WorkshopReplay {
     videoUrl: d.video_url || '',
     videoThumbnail: mediaUrl(d.video_thumbnail),
     audioUrl: mediaUrl(d.audio_file),
-    // Blocks is stored as an array. Fall back to empty array if missing.
-    body: Array.isArray(d.body) ? d.body : (typeof d.body === 'string' ? d.body : []),
+    body: d.body || '',
   };
 }
 
