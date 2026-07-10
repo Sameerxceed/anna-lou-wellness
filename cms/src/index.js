@@ -278,6 +278,18 @@ module.exports = {
       strapi.log.warn('[migrate-articles-to-blocks] failed:', err.message);
     }
 
+    // ═══ AI-detect section headings inside migrated articles ═══
+    // Optional one-shot pass — gated by env var AI_DETECT_HEADINGS_ONCE=true.
+    // Sends each article to Claude Haiku, gets back which paragraphs are
+    // actually section headings, promotes them to heading blocks. Idempotent
+    // (skips articles that already contain heading blocks).
+    try {
+      const promoteArticleHeadings = require('./promote-article-headings');
+      await promoteArticleHeadings(strapi);
+    } catch (err) {
+      strapi.log.warn('[promote-article-headings] failed:', err.message);
+    }
+
     // ═══ Seed Discovery Call defaults on the Contact singleton ═══
     try {
       const seedDiscoveryCall = require('./seed-discovery-call');

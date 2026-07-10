@@ -2678,6 +2678,46 @@ Best uses:
 
 Limits: JPG / PNG / GIF / WebP up to about 5 MB. If the image is too large, retake at a lower resolution or use the Snipping Tool to grab just the part that matters.
 
+### 17.30 New article editor — paste from Word / Substack / Google Docs preserves formatting
+
+**What changed:** the article `body` field now uses Strapi's newer WYSIWYG editor (called "blocks"). The old editor was plain text with markdown syntax — anything you pasted from Word or Substack came in as unformatted text, and even the H1/H2 buttons in the toolbar were being ignored by the website.
+
+**What this means for you now:**
+
+- Open any article -> the body field has a proper editor toolbar with H1, H2, H3, **Bold**, *italic*, lists, quotes, links, and code
+- Paste from Word / Substack / Google Docs -> headings stay as headings, bold stays bold, lists stay lists, links stay links
+- What you see in the editor is what appears on the live site — no more guessing
+
+**One-time tidy-up on existing articles (30 seconds per piece):**
+
+When the new editor first loaded, every article that already existed got its body converted to plain paragraphs (no headings). To add the H2 breaks back:
+
+1. Open the article in Content Manager -> Story - Article
+2. In the body, click at the start of a line you want to be a heading (e.g. "You are further along than you think")
+3. Click the **H2** button in the toolbar
+4. That line becomes a proper heading. Repeat for each section break
+5. Save & Publish
+
+You don't have to do all articles at once. Do the ones people are actually reading first (recent posts, homepage-pinned ones), leave the older archive for a rainy day.
+
+**Handy toolbar keys:**
+
+| Toolbar button | What it does |
+|---|---|
+| H1 | Big page-title-style heading. Usually you don't need this in the body because the article title above is already the H1. Use H2 as your main section headings. |
+| H2, H3 | Section headings. H2 for main breaks, H3 for sub-points inside. |
+| B | Bold. Also Ctrl+B (Cmd+B on Mac) with text selected. |
+| I | Italic. Also Ctrl+I. |
+| Underline | Underlined text. Use sparingly — readers often mistake it for a link. |
+| Bulleted list | Ctrl+Shift+8. |
+| Numbered list | Ctrl+Shift+7. |
+| Quote | Wraps the paragraph in a pull-quote block (italic, indented). |
+| Link | Ctrl+K. Select the text you want linked, click Link, paste the URL. |
+
+**Paste tip:** if you copy from Substack or Word and see something looks slightly off (extra spacing, weird font), select the pasted text and click the little "clear formatting" button in the toolbar (usually a T with a slash through it) — you keep the structure (H2 stays H2) but the visual quirks get reset to your site's styling.
+
+**Preview to be sure:** after editing, click **Open live** (top right of the edit view) to see how the article actually renders. Fastest way to spot a heading you forgot to promote.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
