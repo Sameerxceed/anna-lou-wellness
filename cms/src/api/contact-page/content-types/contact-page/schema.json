@@ -39,6 +39,47 @@
       "component": "shared.upsell-reference",
       "max": 3,
       "description": "Up to 3 'next step' cards shown at the bottom of this page. Each card has an image + label + short blurb + link. Leave empty to hide the upsell block entirely. Example use: on the About page, point to the Reset Room and Reset Letters."
+    },
+    "discovery_headline": {
+      "type": "string",
+      "description": "Big heading above the Discovery Call flow. Example: 'Book a Discovery Call'. Leave blank to hide the whole Discovery Call section."
+    },
+    "discovery_intro": {
+      "type": "text",
+      "description": "One-line promise shown above the button. Example: 'Booking costs £10, refunded straight after we speak.'"
+    },
+    "discovery_button_label": {
+      "type": "string",
+      "default": "Book my call",
+      "description": "Text on the checkout button."
+    },
+    "discovery_price_gbp": {
+      "type": "integer",
+      "default": 10,
+      "min": 1,
+      "description": "Price in GBP (whole pounds only). Change this and the Stripe charge changes automatically."
+    },
+    "discovery_stripe_product_name": {
+      "type": "string",
+      "default": "Discovery call booking",
+      "description": "Product name shown on the Stripe checkout page. Keep short."
+    },
+    "discovery_stripe_description": {
+      "type": "text",
+      "description": "Product description shown on the Stripe checkout page — the refund promise reads here. Example: 'This £10 is refunded straight after your Discovery Call. No forms, no chasing.'"
+    },
+    "discovery_calendly_url": {
+      "type": "string",
+      "description": "REQUIRED. The Calendly booking URL customers land on after paying. Format: https://calendly.com/your-handle/discovery-call. If this is blank the button won't appear on the site."
+    },
+    "discovery_why_price_label": {
+      "type": "string",
+      "default": "Why £10?",
+      "description": "Text of the expandable link under the button. Leave blank to hide the accordion entirely."
+    },
+    "discovery_why_price_body": {
+      "type": "richtext",
+      "description": "Content that shows when someone taps 'Why £10?'. Explain the refund + why the barrier exists. Never leaves the page — pure expander."
     }
   }
 }

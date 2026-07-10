@@ -2887,6 +2887,40 @@ Every email Resend can send. Each maps to a row in the CMS **Email Template** co
 
 Merge tokens available in every template body: `{{order_number}}`, `{{customer_name}}`, `{{total}}`, `{{tracking_number}}`, `{{tracking_url}}`, `{{refund_amount}}`, `{{cancellation_reason}}`, `{{site_url}}`.
 
+### 18.13 Discovery Call £10 refundable booking flow (Contact page)
+
+Live at `/contact`. The flow is: visitor sees your £10 refundable promise → clicks Book my call → pays £10 on Stripe → is redirected straight to your Calendly booking page → picks a time.
+
+**Why the tenner works (Anna 10 Jul):** "Free calls have a strange effect on the human mind. Something that costs nothing gets treated as though it's worth nothing." The £10 is a piece of string tied to the ankle â€” smallest possible skin in the game.
+
+**All copy + price + Calendly URL are CMS-editable** on the Contact singleton. No code changes needed to update wording or pricing.
+
+**Where to edit:** Content Manager â†’ Single Types â†’ **Contact**. Scroll to the Discovery Call fields:
+
+| Field | What it controls |
+|---|---|
+| `discovery_headline` | The heading above the button (e.g. "Book a Discovery Call"). Leave BLANK to hide the whole Discovery block from the site. |
+| `discovery_intro` | The one-line refund promise shown under the heading. |
+| `discovery_button_label` | Text on the button. Default "Book my call". |
+| `discovery_price_gbp` | The amount charged, in whole pounds. Change this and the Stripe charge changes with it. |
+| `discovery_stripe_product_name` | Product name shown on the Stripe checkout page. Default "Discovery call booking". |
+| `discovery_stripe_description` | The refund promise that appears on the Stripe checkout page itself. This is where hesitation happens â€” make it reassuring. |
+| `discovery_calendly_url` | **REQUIRED.** The Calendly booking URL customers land on after paying. Format: `https://calendly.com/your-handle/discovery-call`. If blank, the whole Discovery block is hidden from the site. |
+| `discovery_why_price_label` | Text of the expandable link under the button (default "Why £10?"). Leave blank to hide the expander. |
+| `discovery_why_price_body` | Long-form content shown when someone taps "Why £10?". Rich text. Explain the refund logic and why the barrier exists. |
+
+**After you edit any field, Save & Publish.** Change goes live in 1-2 seconds.
+
+**Refund flow (manual):**
+1. Customer books via Stripe + Calendly.
+2. Call happens.
+3. Anna refunds the £10 via the Stripe dashboard: Payments â†’ find the customer â†’ Refund.
+4. If the customer no-shows, Anna keeps the tenner.
+
+**No-shows accounting:** Stripe holds the payment. You choose per-customer whether to refund.
+
+**To temporarily disable the whole Discovery Call flow:** clear the `discovery_calendly_url` OR the `discovery_headline` field, Save & Publish. Block disappears from the site. Re-fill either field to bring it back.
+
 ### 18.12 Anna's activation checklist (pre-launch punch list)
 
 Everything the site does automatically is built. What's left is what Anna needs to activate INSIDE Mailchimp so the tags actually cause emails to send.

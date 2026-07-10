@@ -5,6 +5,7 @@ import { getContactInfo, getFAQs } from '@/lib/cms';
 import { getGenericPageBySlug } from '@/lib/generic-page';
 import { BreadcrumbSchema } from '@/components/StructuredData';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+import DiscoveryCallBlock from '@/components/DiscoveryCallBlock';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -22,6 +23,12 @@ export default async function ContactPage() {
     <>
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Contact', href: '/contact' }]} />
       <PageHero label={cms?.kicker || 'Say Hello'} title={cms?.title || 'Contact'} bgClass="hero-contact" height="30vh" />
+
+      {siteConfig.discoveryCall && (
+        <section className="pt-6 pb-2 px-6">
+          <DiscoveryCallBlock data={siteConfig.discoveryCall} />
+        </section>
+      )}
 
       <section className="py-8 px-8">
         <div className="max-w-[1000px] mx-auto grid grid-cols-2 gap-10 max-md:grid-cols-1 max-md:gap-6">

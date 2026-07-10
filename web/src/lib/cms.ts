@@ -258,10 +258,39 @@ export async function getEvents(): Promise<Event[]> {
 }
 
 // ═══ CONTACT PAGE ═══
-export async function getContactInfo(): Promise<SiteSettings> {
+export interface DiscoveryCallBlock {
+  headline: string;
+  intro: string;
+  buttonLabel: string;
+  priceGbp: number;
+  calendlyUrl: string;
+  whyPriceLabel: string;
+  whyPriceBody: string;
+}
+
+export async function getContactInfo(): Promise<SiteSettings & { discoveryCall: DiscoveryCallBlock | null }> {
   try {
     const { data: d } = await fetchAPI('/contact-page', { populate: '*' });
-    if (!d) return fallbackSiteSettings;
+    if (!d) return { ...fallbackSiteSettings, discoveryCall: null };
+
+    // Discovery Call block is opt-in: only rendered if the CMS has a
+    // Calendly URL + headline. If either is missing, the whole block
+    // stays hidden.
+    const calendly = String(d.discovery_calendly_url || '').trim();
+    const headline = String(d.discovery_headline || '').trim();
+    const discoveryCall: DiscoveryCallBlock | null =
+      calendly && headline
+        ? {
+            headline,
+            intro: String(d.discovery_intro || '').trim(),
+            buttonLabel: String(d.discovery_button_label || 'Book my call'),
+            priceGbp: Number(d.discovery_price_gbp || 10),
+            calendlyUrl: calendly,
+            whyPriceLabel: String(d.discovery_why_price_label || '').trim(),
+            whyPriceBody: String(d.discovery_why_price_body || '').trim(),
+          }
+        : null;
+
     return {
       ...fallbackSiteSettings,
       email: d.email || fallbackSiteSettings.email,
@@ -269,9 +298,10 @@ export async function getContactInfo(): Promise<SiteSettings> {
       address: d.address || fallbackSiteSettings.address,
       mapLatitude: d.map_latitude ?? fallbackSiteSettings.mapLatitude,
       mapLongitude: d.map_longitude ?? fallbackSiteSettings.mapLongitude,
+      discoveryCall,
     };
   } catch {
-    return fallbackSiteSettings;
+    return { ...fallbackSiteSettings, discoveryCall: null };
   }
 }
 

@@ -267,6 +267,14 @@ module.exports = {
       strapi.log.warn('[seed-email-templates] failed:', err.message);
     }
 
+    // ═══ Seed Discovery Call defaults on the Contact singleton ═══
+    try {
+      const seedDiscoveryCall = require('./seed-discovery-call');
+      await seedDiscoveryCall(strapi);
+    } catch (err) {
+      strapi.log.warn('[seed-discovery-call] failed:', err.message);
+    }
+
     // ═══ Seed wellness testimonials (idempotent — skips by reviewer_name + quote prefix) ═══
     // 12 testimonials from Docs/Anna_Lou_testimonials_for_the_website.docx
     // (Anna, 6 July 2026). Anna can edit/unpublish any in the CMS after.
