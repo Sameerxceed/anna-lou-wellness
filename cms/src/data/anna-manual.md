@@ -2726,6 +2726,44 @@ Two systems send emails from your site:
 
 The rest of this section is the full trigger map. If someone asks the chatbot "if X happens, what emails do they get?" or "which tag does the Y form fire?", the answer is here.
 
+### 18.0 In plain English — what happens when someone...
+
+This is the Anna-friendly version. If she asks something like "what emails go out when someone signs up for Reset Letters?" or "who edits the order receipt?", answer using THIS section first — plain language, no endpoints, no jargon. Only drop into the technical trigger map (18.1 onwards) if she asks for exact tags, endpoints, or step-by-step logic.
+
+**Two things send emails from her site:**
+- **Mailchimp** — welcome sequences and nurture emails. She edits these INSIDE Mailchimp. The site never touches the wording; it just tells Mailchimp what happened.
+- **Resend** — order confirmations, receipts, refund notifications, password reset links, and the "new order" emails that go to Anna. She edits these INSIDE the CMS in the **Email Template** collection. Changes take effect on the very next email sent.
+
+**Signs up for Reset Letters:** added to Mailchimp (welcome sequence — Founding Members if before 22 June 2026, Standard Subscribers after) and to Substack (so they get the newsletter itself). Anna gets nothing sent to her personally — just sees them in Mailchimp + Substack lists.
+
+**Takes the Nervous System Decoder quiz:** tagged Decoder Subscriber. Gets welcome email with free Decoder PDF, then two days later an upsell to REGULATED, then four days later one final gentle nudge. If they buy REGULATED, they exit — never sold something they already own.
+
+**Fills in any enquiry form (Contact, Practitioner, Corporate, Speaking, etc.):** tagged in Mailchimp with a tag matching the form (Practitioner form → Practitioner Enquiry tag, etc.). Whatever journey Anna set up for that tag runs. Anna only gets a notification email for the **Practitioner** form — for the others she just sees the contact appear in Mailchimp.
+
+**Buys something from the shop (card):** first-time buyers get a "welcome, set your password" email. Everyone gets an order receipt with order number + items. If the item is part of a paid programme (like REGULATED), they also enter that programme's follow-up sequence in Mailchimp. Anna gets a "new order" notification every time. Everyone who buys gets tagged **Shop Customer** in Mailchimp.
+
+**Buys something from the shop (bank transfer):** slightly different — they get the "welcome, set your password" email + a bank transfer instructions email with Anna's bank details and a reference number. Once Anna marks the order paid in the CMS, they get the normal order receipt and it becomes the same as a card order.
+
+**Anna processes a refund:** customer gets a refund confirmation with amount + settlement time (5–10 business days). Anna gets the same "new order" notification with updated status for the paper trail. Any programme-specific tags are quietly removed so they stop getting course emails; the Shop Customer tag stays.
+
+**Anna ships or completes an order:** customer gets "Your order has shipped" (with the tracking link Anna added) or "Your order arrived" when Anna marks it complete. Return-related emails fire per stage if a return is requested/approved/received/rejected. Every single one of these is editable in the CMS Email Template collection.
+
+**Books a call on Calendly (Discovery Call, One Day, Reset Session, Signal Scoping):** gets the standard Calendly confirmation with date/time/Zoom link (from Calendly, not Anna's site). Also gets whichever pre-call sequence Anna set up in Mailchimp for that call type — can reference exact booking date/time via merge tags.
+
+**Forgets their password:** one-time reset link. No tags, no journey — just the link.
+
+**What Anna actually needs to do:**
+- **In Mailchimp:** for each of the tags above, build a Customer Journey with that tag as the trigger. Log in → Automations → Customer Journeys → draft each email using merge tags like `*|FNAME|*` → click Start.
+- **For booking-email merge tags:** Audience → Settings → Audience fields → add four TEXT fields with tag names `EVENT_DATE`, `EVENT_TIME`, `EVENT_NAME`, `EVENT_LOC` (exact spelling, all caps). Then she can write "your Reset Session is on |EVENT_DATE| at |EVENT_TIME|" and it fills in per booking.
+- **In the CMS:** Content Manager → Email Template → open each row (order confirmations, refunds, shipped, returns, etc.) and adjust the wording to sound like her. Saves apply immediately; next email uses the new copy.
+
+**Common questions:**
+- *"If I edit a Mailchimp email, when does it go live?"* Immediately for anyone entering the journey AFTER she saves. People already mid-sequence continue on the version they started on.
+- *"If I edit a CMS Email Template, when does it go live?"* The very next email that sends. No queue, no delay.
+- *"Can I stop someone getting emails without deleting them?"* Yes — in Mailchimp, unsubscribe them or remove the tag. CMS transactional emails only fire when their trigger fires (so if she cancels an order, no refund email sends).
+- *"Can I see if someone opened / clicked?"* Mailchimp emails: yes, check Reports. Resend transactional: delivery + bounces yes, opens not by default.
+- *"What if my Mailchimp bill runs out?"* Sends pause, no contacts lost, journeys queue and resume when she upgrades.
+
 ### 18.1 Reset Letters signup
 
 **Trigger:** visitor submits the form on `/reset-letters`.
