@@ -643,3 +643,113 @@ export async function decrementProductStock(productId: number, qty: number): Pro
     console.warn(`[strapi] decrementProductStock failed for product ${productId}:`, err?.message);
   }
 }
+
+// ─── Circle Recording helpers ───
+
+export type Recording = {
+  id: number;
+  documentId?: string;
+  title: string;
+  session_date: string;
+  youtube_url: string;
+  price_gbp: number;
+  is_available_for_purchase: boolean;
+  description?: string | null;
+};
+
+/**
+ * Fetch the current recording available for purchase. Returns the most
+ * recent one where is_available_for_purchase is true. Anna flags one at
+ * a time; if she leaves multiple ticked, we pick the most recent by
+ * session_date. Returns null if nothing is on sale.
+ */
+export async function fetchCurrentRecording(): Promise<Recording | null> {
+  try {
+    const url = new URL(`${STRAPI_URL}/api/recordings`);
+    url.searchParams.set('filters[is_available_for_purchase][$eq]', 'true');
+    url.searchParams.set('sort', 'session_date:desc');
+    url.searchParams.set('pagination[pageSize]', '1');
+    const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+    if (!res.ok) return null;
+    const json = await res.json();
+    const rec = Array.isArray(json?.data) && json.data.length > 0 ? json.data[0] : null;
+    return rec as Recording | null;
+  } catch (err: any) {
+    console.warn('[strapi] fetchCurrentRecording failed:', err?.message);
+    return null;
+  }
+}
+
+/**
+ * Fetch a single recording by numeric id. Used by the webhook to look up
+ * the recording that was just paid for.
+ */
+export async function fetchRecordingById(id: number): Promise<Recording | null> {
+  try {
+    const url = new URL(`${STRAPI_URL}/api/recordings`);
+    url.searchParams.set('filters[id][$eq]', String(id));
+    const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+    if (!res.ok) return null;
+    const json = await res.json();
+    const rec = Array.isArray(json?.data) && json.data.length > 0 ? json.data[0] : null;
+    return rec as Recording | null;
+  } catch (err: any) {
+    console.warn('[strapi] fetchRecordingById failed:', err?.message);
+    return null;
+  }
+}
+
+/**
+ * Attach a Recording to a user's purchased_recordings list. Idempotent —
+ * if the user already has this recording, we don't duplicate. The write
+ * goes through the users-permissions user endpoint using the admin token.
+ */
+export async function attachRecordingToUser(
+  userId: number,
+  recordingId: number,
+): Promise<void> {
+  try {
+    // Read the current purchased_recordings so we can merge rather than replace.
+    const readUrl = new URL(`${STRAPI_URL}/api/users/${userId}`);
+    readUrl.searchParams.set('populate', 'purchased_recordings');
+    const readRes = await fetch(readUrl.toString(), { headers: authHeaders(), cache: 'no-store' });
+    if (!readRes.ok) {
+      console.warn(`[strapi] attachRecordingToUser read ${readRes.status}`);
+      return;
+    }
+    const user = await readRes.json();
+    const existing = Array.isArray(user?.purchased_recordings) ? user.purchased_recordings : [];
+    const existingIds: number[] = existing.map((r: any) => r?.id).filter((n: any) => Number.isFinite(n));
+    if (existingIds.includes(recordingId)) return; // idempotent
+    const mergedIds = [...existingIds, recordingId];
+    const writeRes = await fetch(`${STRAPI_URL}/api/users/${userId}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({ purchased_recordings: mergedIds }),
+    });
+    if (!writeRes.ok) {
+      console.warn(`[strapi] attachRecordingToUser update ${writeRes.status}: ${await writeRes.text()}`);
+    }
+  } catch (err: any) {
+    console.warn(`[strapi] attachRecordingToUser failed for user ${userId} + recording ${recordingId}:`, err?.message);
+  }
+}
+
+/**
+ * Fetch all recordings a user has purchased. Sorted by session_date desc
+ * (most recent first). Used by the members dashboard.
+ */
+export async function fetchUserPurchasedRecordings(userId: number): Promise<Recording[]> {
+  try {
+    const url = new URL(`${STRAPI_URL}/api/users/${userId}`);
+    url.searchParams.set('populate[purchased_recordings][sort]', 'session_date:desc');
+    const res = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+    if (!res.ok) return [];
+    const user = await res.json();
+    const arr = Array.isArray(user?.purchased_recordings) ? user.purchased_recordings : [];
+    return arr as Recording[];
+  } catch (err: any) {
+    console.warn(`[strapi] fetchUserPurchasedRecordings failed for user ${userId}:`, err?.message);
+    return [];
+  }
+}

@@ -122,18 +122,20 @@ export default async function CirclePage() {
         </div>
       </section>
 
-      {cms?.recording_headline && (
-        <section style={{ background: '#fff', padding: '1rem 1.5rem 2rem' }}>
-          <ReturningCircleRecordingBlock
-            headline={cms.recording_headline}
-            intro={cms.recording_intro}
-            buttonLabel={cms.recording_button_label || "Buy this week's recording"}
-            priceGbp={Number(cms.recording_price_gbp || 10)}
-            weekLabel={cms.recording_week_label}
-            helpNote={cms.recording_help_note}
-          />
-        </section>
-      )}
+      {/*
+        Recording block auto-hides if there is no Recording in the CMS
+        that is marked is_available_for_purchase. Copy overrides (headline,
+        intro, button label, help note) still come from the Community Event
+        singleton so Anna can tweak them without editing every Recording.
+      */}
+      <section style={{ background: '#fff', padding: '1rem 1.5rem 2rem' }}>
+        <ReturningCircleRecordingBlock
+          headline={cms?.recording_headline}
+          intro={cms?.recording_intro}
+          buttonLabel={cms?.recording_button_label}
+          helpNote={cms?.recording_help_note}
+        />
+      </section>
 
       <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
     <UpsellBlockForSingleton endpoint="/community-event-page" />

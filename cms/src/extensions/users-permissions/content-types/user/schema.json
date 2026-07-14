@@ -108,6 +108,13 @@
     "regulatedAccessSince": {
       "type": "datetime",
       "description": "When the user purchased REGULATED. Used for the welcome email window and for sorting member lists."
+    },
+    "purchased_recordings": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::recording.recording",
+      "inversedBy": "buyers",
+      "description": "Every Returning Circle recording this user has bought. Auto-updated when they pay on the site. You can also add one manually here if someone paid outside the site."
     }
   }
 }

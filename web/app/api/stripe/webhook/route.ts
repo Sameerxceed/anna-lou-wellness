@@ -13,10 +13,12 @@ import {
   decrementProductStock,
   fetchProductsByIds,
   createOrder,
+  fetchRecordingById,
+  fetchCurrentRecording,
+  attachRecordingToUser,
 } from '@/lib/strapi-admin';
 import { incrementCouponUsage } from '@/lib/strapi-coupon';
 import { sendFromTemplate } from '@/lib/email';
-import { fetchAPI } from '@/lib/strapi';
 
 /**
  * Stripe webhook handler.
@@ -321,51 +323,100 @@ async function handleShopOrder(event: StripeEvent, ref: StrapiRef, email: string
 }
 
 /**
- * Returning Circle recording: one-off £10 for a single week's YouTube
- * recording. No Strapi Order created — the "product" is a link, and Anna
- * updates that link in the CMS each week. We just fire the delivery email
- * (with the current URL) + tag the buyer in Mailchimp so Anna can build a
- * "recording buyers" journey later if she wants.
+ * Returning Circle recording: one-off purchase of a specific week's recording.
+ *
+ * The Recording collection is the source of truth — each week Anna adds
+ * an entry (title, session_date, unlisted YouTube URL, price). Price is
+ * per-recording, so guest facilitator weeks can be £25 while standard
+ * weeks stay at £10.
+ *
+ * On payment we:
+ *  1. Look up the exact Recording that was bought (from metadata.recording_id)
+ *  2. Ensure the buyer has a user account (creates one + password-reset email
+ *     if not — same pattern as shop_account_invite)
+ *  3. Attach the Recording to their purchased_recordings list so it shows up
+ *     in their members dashboard forever
+ *  4. Fire the delivery email (with the direct link) + owner notification
+ *  5. Tag the buyer in Mailchimp for optional nurture journeys
  */
 async function handleReturningCircleRecording(event: StripeEvent, email: string) {
   const obj = event.data.object as any;
   const md = (obj?.metadata || {}) as Record<string, string>;
-  const weekLabelFromCheckout = (md.week_label || '').trim();
+  const recordingIdRaw = md.recording_id;
+  const recordingTitleFromCheckout = (md.recording_title || '').trim();
   const firstName = (md.first_name || '').trim();
 
-  // Refetch the current CMS state at delivery time — Anna may have updated
-  // the URL between checkout and webhook. The URL is the deliverable.
-  let recording: {
-    week_label: string;
-    youtube_url: string;
-    price_gbp: number;
-    help_note: string;
-  } = {
-    week_label: weekLabelFromCheckout,
-    youtube_url: '',
-    price_gbp: Number(obj?.amount_total ? obj.amount_total / 100 : 10),
-    help_note: '',
+  // Look up the recording that was bought. If the metadata carries an id
+  // we use that; otherwise fall back to the current available recording.
+  let recording: Awaited<ReturnType<typeof fetchRecordingById>> = null;
+  if (recordingIdRaw && Number.isFinite(Number(recordingIdRaw))) {
+    recording = await fetchRecordingById(Number(recordingIdRaw));
+  }
+  if (!recording) {
+    recording = await fetchCurrentRecording();
+  }
+  if (!recording) {
+    console.warn(
+      `[stripe webhook] returning_circle_recording: no Recording found for id=${recordingIdRaw || 'none'}, email=${email} — sale succeeded but library attach skipped`,
+    );
+  }
+
+  const recordingContext = {
+    week_label: recording?.title || recordingTitleFromCheckout || '',
+    youtube_url: recording?.youtube_url || '',
+    price_gbp: Number(
+      recording?.price_gbp ??
+        (obj?.amount_total ? obj.amount_total / 100 : 10),
+    ),
+    help_note: recording?.description || '',
   };
+
+  const siteUrl = process.env.PUBLIC_SITE_URL || 'https://staging.annalouwellness.com';
+
+  // Ensure the buyer has a user account so the recording can be attached
+  // to them and they can log in. First-time buyers get a "set password"
+  // welcome email; existing users are just returned.
+  let accountResult: Awaited<ReturnType<typeof grantShopCustomerAccount>> | null = null;
   try {
-    const { data } = await fetchAPI('/community-event-pages', {
-      'filters[slug][$eq]': 'the-returning-circle',
-      'pagination[pageSize]': '1',
+    accountResult = await grantShopCustomerAccount({
+      email,
+      firstName: firstName || undefined,
     });
-    const cms = Array.isArray(data) && data.length > 0 ? (data[0] as Record<string, unknown>) : null;
-    if (cms) {
-      recording = {
-        week_label: String(cms.recording_week_label || weekLabelFromCheckout || '').trim(),
-        youtube_url: String(cms.recording_youtube_url || '').trim(),
-        price_gbp: Number(cms.recording_price_gbp || recording.price_gbp),
-        help_note: String(cms.recording_help_note || '').trim(),
-      };
-    }
   } catch (err: any) {
-    console.warn('[stripe webhook] recording CMS lookup failed:', err?.message);
+    console.warn(
+      `[stripe webhook] recording account create failed for ${email} (non-fatal):`,
+      err?.message,
+    );
+  }
+
+  // Attach the recording to the user's library.
+  if (accountResult?.userId && recording?.id) {
+    try {
+      await attachRecordingToUser(accountResult.userId, recording.id);
+    } catch (err: any) {
+      console.warn(
+        `[stripe webhook] attach recording ${recording.id} to user ${accountResult.userId} failed:`,
+        err?.message,
+      );
+    }
+  }
+
+  // First-time buyer → welcome + set-password email so they can log in later.
+  if (accountResult?.created && accountResult.resetToken) {
+    const setPasswordUrl = `${siteUrl}/login/reset?code=${encodeURIComponent(accountResult.resetToken)}&welcome=1`;
+    sendFromTemplate('shop_account_invite', {
+      account: {
+        email,
+        first_name: firstName || email.split('@')[0] || 'there',
+        set_password_url: setPasswordUrl,
+      },
+    }).catch((e) =>
+      console.warn(`[stripe webhook] recording welcome email failed:`, e?.message),
+    );
   }
 
   console.info(
-    `[stripe webhook] returning_circle_recording: ${email} <- ${recording.week_label || '(no week label)'}`,
+    `[stripe webhook] returning_circle_recording: ${email} <- ${recordingContext.week_label || '(no title)'}`,
   );
 
   // Mailchimp tag so Anna has a segment of recording buyers to nurture.
@@ -378,13 +429,13 @@ async function handleReturningCircleRecording(event: StripeEvent, email: string)
   // so Anna can edit the copy in the Email Template collection.
   sendFromTemplate('returning_circle_recording', {
     account: { email, first_name: firstName || 'there' },
-    recording,
+    recording: recordingContext,
   }).catch((e) =>
     console.warn(`[stripe webhook] recording delivery email failed:`, e?.message),
   );
   sendFromTemplate('admin_returning_circle_recording', {
     account: { email, first_name: firstName || '' },
-    recording,
+    recording: recordingContext,
   }).catch((e) =>
     console.warn(`[stripe webhook] recording admin email failed:`, e?.message),
   );

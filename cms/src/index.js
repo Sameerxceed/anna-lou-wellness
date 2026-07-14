@@ -102,6 +102,10 @@ module.exports = {
         'api::programme.programme',
         'api::experience-page.experience-page',
         'api::community-event-page.community-event-page',
+        // Circle Recordings — list of buyable recordings (public read; each
+        // individual purchase link/access is per-user and gated inside the
+        // members dashboard, not here).
+        'api::recording.recording',
         'api::generic-page.generic-page',
         'api::team-member.team-member',
         'api::page.page',

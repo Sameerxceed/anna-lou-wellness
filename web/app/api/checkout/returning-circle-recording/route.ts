@@ -1,41 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { fetchAPI } from '@/lib/strapi';
+import { fetchCurrentRecording } from '@/lib/strapi-admin';
 
 /**
- * One-off GBP 10 checkout for a Returning Circle recording.
+ * One-off checkout for the current Returning Circle recording.
  *
- * Anna 13 Jul brief:
- *  - GBP 10 for a single week's recording (Tuesday session).
- *  - Unlisted YouTube link is the deliverable. Anna pastes it into the
- *    Community Event singleton each week.
- *  - Button hides on the page when the YouTube URL is blank -- prevents
- *    selling access to a recording that isn't ready yet.
- *  - After payment: success page shows the link + Resend emails it.
+ * Data source: the Recording collection (api::recording.recording).
+ * Anna creates one entry per weekly Circle. The one flagged
+ * is_available_for_purchase = true becomes the buyable one on
+ * /community/the-returning-circle. Price + title + YouTube URL all
+ * come from that entry — so different weeks can be different prices
+ * (Anna can charge £25 for a guest facilitator week).
  *
- * The recurring GBP 10/week + skip-a-week self-serve is a separate,
- * bigger build (see memory: returning_circle_recording_subscription).
- * This route is one-off only.
+ * After payment:
+ *  - Stripe webhook creates/finds the buyer's user account
+ *  - Attaches the Recording to their purchased_recordings list
+ *  - Buyer gets the YouTube link by email + on the confirmation page
+ *  - They can log into /community/reset-room/dashboard any time to see
+ *    all recordings they've bought, alongside anything else they have
+ *    access to (Reset Room, REGULATED)
  */
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-async function loadRecordingConfig() {
-  const { data } = await fetchAPI('/community-event-pages', {
-    'filters[slug][$eq]': 'the-returning-circle',
-    'pagination[pageSize]': '1',
-  });
-  const cms = Array.isArray(data) && data.length > 0 ? (data[0] as Record<string, unknown>) : {};
-  return {
-    priceGbp: Number(cms.recording_price_gbp || 10),
-    productName:
-      String(cms.recording_stripe_product_name || 'Returning Circle - weekly recording'),
-    description: String(cms.recording_stripe_description || ''),
-    weekLabel: String(cms.recording_week_label || '').trim(),
-    youtubeUrl: String(cms.recording_youtube_url || '').trim(),
-  };
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,21 +39,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const cfg = await loadRecordingConfig();
-
-    if (!cfg.youtubeUrl) {
+    const recording = await fetchCurrentRecording();
+    if (!recording) {
       return NextResponse.json(
         {
           error:
-            'This week\'s recording is not ready yet. Please check back after the session, or email hello@annalouwellness.com.',
+            "This week's recording isn't available yet. Please check back after the session, or email hello@annalouwellness.com.",
+        },
+        { status: 503 },
+      );
+    }
+    if (!recording.youtube_url) {
+      return NextResponse.json(
+        {
+          error:
+            "This week's recording is being uploaded — please try again in a few minutes.",
         },
         { status: 503 },
       );
     }
 
-    const unitPence = Math.round(cfg.priceGbp * 100);
+    const priceGbp = Number(recording.price_gbp || 10);
+    const unitPence = Math.round(priceGbp * 100);
     if (!Number.isFinite(unitPence) || unitPence < 100) {
-      return NextResponse.json({ error: 'Invalid price' }, { status: 500 });
+      return NextResponse.json({ error: 'Invalid price on this recording.' }, { status: 500 });
     }
 
     const siteUrl =
@@ -74,10 +70,6 @@ export async function POST(req: NextRequest) {
       process.env.NEXT_PUBLIC_SITE_URL ||
       req.headers.get('origin') ||
       'https://staging.annalouwellness.com';
-
-    const productName = cfg.weekLabel
-      ? `${cfg.productName} (${cfg.weekLabel})`
-      : cfg.productName;
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -87,8 +79,8 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency: 'gbp',
             product_data: {
-              name: productName,
-              ...(cfg.description ? { description: cfg.description } : {}),
+              name: recording.title,
+              ...(recording.description ? { description: recording.description } : {}),
             },
             unit_amount: unitPence,
           },
@@ -102,7 +94,8 @@ export async function POST(req: NextRequest) {
       billing_address_collection: 'auto',
       metadata: {
         source: 'returning_circle_recording',
-        week_label: cfg.weekLabel,
+        recording_id: String(recording.id),
+        recording_title: recording.title,
         first_name: firstName,
       },
     });

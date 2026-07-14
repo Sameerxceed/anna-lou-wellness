@@ -2,18 +2,38 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
+import { fetchUserPurchasedRecordings } from '@/lib/strapi-admin';
 
 export const metadata: Metadata = {
-  title: 'Member Dashboard',
+  title: 'Your account',
   robots: { index: false, follow: false },
 };
 
+/**
+ * Members area — everything the logged-in user has paid for, in one place.
+ *
+ * Access model (OOOM Academy pattern): any logged-in user who has ANY
+ * access lands here. Sections show/hide based on what they actually have:
+ *  - Reset Room cards → only if isMember (reset-room-member role)
+ *  - Circle Recordings → only if user has purchased_recordings
+ *  - REGULATED → only if hasRegulatedAccess
+ *
+ * A logged-in user with nothing at all gets bounced to /community
+ * (they must have picked the wrong login somehow — nothing to show them).
+ */
 export default async function DashboardPage() {
   const session = await getSession();
   if (!session) redirect('/login?next=/community/reset-room/dashboard');
-  if (!session.isMember) redirect('/community/reset-room');
 
-  const { user } = session;
+  const { user, isMember, hasRegulatedAccess } = session;
+  const recordings = await fetchUserPurchasedRecordings(user.id);
+  const hasRecordings = recordings.length > 0;
+
+  // Nothing to show — send them back to the community hub.
+  if (!isMember && !hasRegulatedAccess && !hasRecordings) {
+    redirect('/community');
+  }
+
   const firstName = user.firstName || (user.email ? user.email.split('@')[0] : 'there');
   const memberSinceMonth = user.memberSince
     ? new Date(user.memberSince).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
@@ -21,7 +41,7 @@ export default async function DashboardPage() {
   const daysSinceJoin = user.memberSince
     ? Math.floor((Date.now() - new Date(user.memberSince).getTime()) / 86400000)
     : 0;
-  const showWelcomeBlock = daysSinceJoin <= 30;
+  const showWelcomeBlock = isMember && daysSinceJoin <= 30;
 
   return (
     <>
@@ -29,14 +49,19 @@ export default async function DashboardPage() {
 
       <section className="dash-page">
         <div className="dash-inner">
-          <p className="dash-eyebrow">Reset Room · Member portal</p>
+          <p className="dash-eyebrow">
+            {isMember ? 'Reset Room · Member portal' : 'Your account'}
+          </p>
           <h1 className="dash-greeting">Welcome back, {firstName}.</h1>
           <p className="dash-sub">
-            <em>The room is open. Take it slowly.</em>
-            {memberSinceMonth && <span className="dash-since"> · Member since {memberSinceMonth}</span>}
+            <em>Everything you have access to, in one place.</em>
+            {isMember && memberSinceMonth && (
+              <span className="dash-since"> · Member since {memberSinceMonth}</span>
+            )}
           </p>
 
-          {/* Three-pillar row */}
+          {/* Reset Room three-pillar row — members only */}
+          {isMember && (
           <div className="dash-grid">
             <article className="dash-card" style={{ borderTopColor: '#F280AA' }}>
               <p className="dash-card-kicker">01 · Sessions</p>
@@ -68,8 +93,63 @@ export default async function DashboardPage() {
               <Link href="/community/reset-room/vault" className="dash-card-btn">Browse the Vault &rarr;</Link>
             </article>
           </div>
+          )}
 
-          {/* Where to start — first 30 days only */}
+          {/* Circle Recordings — one per row per week the user has bought */}
+          {hasRecordings && (
+          <div className="dash-recordings">
+            <p className="dash-section-label">Your Returning Circle recordings</p>
+            <h2 className="dash-section-title">
+              {recordings.length === 1 ? '1 recording in your library.' : `${recordings.length} recordings in your library.`}
+            </h2>
+            <div className="dash-recording-list">
+              {recordings.map((r) => {
+                const dateLabel = r.session_date
+                  ? new Date(r.session_date).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })
+                  : '';
+                return (
+                  <article key={r.id} className="dash-recording">
+                    <div className="dash-recording-text">
+                      <p className="dash-recording-kicker">Returning Circle · {dateLabel}</p>
+                      <h3 className="dash-recording-title">{r.title}</h3>
+                      {r.description && <p className="dash-recording-desc">{r.description}</p>}
+                    </div>
+                    {r.youtube_url ? (
+                      <a
+                        href={r.youtube_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="dash-card-btn"
+                      >
+                        Watch &rarr;
+                      </a>
+                    ) : (
+                      <span className="dash-recording-pending">Uploading…</span>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+          )}
+
+          {/* REGULATED link — one-off buyers */}
+          {hasRegulatedAccess && (
+          <div className="dash-single">
+            <article className="dash-card" style={{ borderTopColor: '#C4704A' }}>
+              <p className="dash-card-kicker">REGULATED</p>
+              <h3 className="dash-card-name">Your REGULATED course</h3>
+              <p className="dash-card-body">Lifetime access to every module.</p>
+              <Link href="/regulated" className="dash-card-btn">Continue &rarr;</Link>
+            </article>
+          </div>
+          )}
+
+          {/* Where to start — first 30 days only, Reset Room members only */}
           {showWelcomeBlock && (
           <div className="dash-where">
             <p className="dash-section-label">Where to start</p>
@@ -95,7 +175,8 @@ export default async function DashboardPage() {
           </div>
           )}
 
-          {/* Member benefits row */}
+          {/* Member benefits row — Reset Room members only */}
+          {isMember && (
           <div className="dash-benefits">
             <div className="dash-benefit">
               <p className="dash-b-label">10% off all 1:1 work</p>
@@ -110,15 +191,32 @@ export default async function DashboardPage() {
               <p>Rooms that never go on the public calendar.</p>
             </div>
           </div>
+          )}
+
+          {/* Prompt for non-members with only recordings — invite them into the room */}
+          {!isMember && hasRecordings && (
+          <div className="dash-invite">
+            <p className="dash-section-label">Want more?</p>
+            <h2 className="dash-section-title">Step inside the Reset Room.</h2>
+            <p className="dash-invite-body">
+              Two new sessions a month, a monthly live call with Anna, the full Vault of signature journeys. Members-only rooms that never go on the public calendar.
+            </p>
+            <Link href="/community/reset-room" className="dash-card-btn">Learn more &rarr;</Link>
+          </div>
+          )}
 
           <div className="dash-footer-links">
-            <Link href="/community/reset-room/vault">The Vault</Link>
-            <span>·</span>
-            <Link href="/community/reset-room/replays">Workshop replays</Link>
-            <span>·</span>
+            {isMember && (
+              <>
+                <Link href="/community/reset-room/vault">The Vault</Link>
+                <span>·</span>
+                <Link href="/community/reset-room/replays">Workshop replays</Link>
+                <span>·</span>
+              </>
+            )}
             <Link href="/community/reset-room/account">Account</Link>
             <span>·</span>
-            <Link href="/community/reset-room">About the room</Link>
+            <Link href="/community/the-returning-circle">Returning Circle</Link>
           </div>
         </div>
       </section>
@@ -255,8 +353,48 @@ const dashStyles = `
 .dash-footer-links a:hover { color: #6E3A5A; }
 .dash-footer-links span { color: #8C8880; padding: 0 0.2rem; }
 
+/* Circle recordings library */
+.dash-recordings { background: #fff; padding: 1.8rem 1.6rem; border-radius: 8px; margin-bottom: 2rem; }
+.dash-recording-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.dash-recording {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem 1.2rem; border: 1px solid rgba(0,0,0,0.06); border-radius: 6px;
+  background: #FAFAF7;
+}
+.dash-recording-text { flex: 1; min-width: 0; }
+.dash-recording-kicker {
+  font-family: Mulish, sans-serif; font-weight: 500;
+  font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #5DCAA5; margin-bottom: 0.3rem;
+}
+.dash-recording-title {
+  font-family: 'Work Sans', sans-serif; font-weight: 400;
+  font-size: 1.05rem; color: #231F20; margin: 0 0 0.25rem;
+}
+.dash-recording-desc {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.9rem; line-height: 1.5; color: #5D5A52; margin: 0;
+}
+.dash-recording-pending {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.9rem; color: #8C8880; font-style: italic;
+}
+
+/* Single-card wrapper (REGULATED etc.) */
+.dash-single { display: grid; grid-template-columns: 1fr; margin-bottom: 2rem; }
+.dash-single .dash-card { max-width: 380px; }
+
+/* Non-member invite block */
+.dash-invite { background: #fff; padding: 1.8rem 1.6rem; border-radius: 8px; margin-bottom: 2rem; }
+.dash-invite-body {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem; line-height: 1.6; color: #3D3D3A; margin-bottom: 1rem;
+}
+.dash-invite .dash-card-btn { display: inline-block; }
+
 @media (max-width: 900px) {
   .dash-grid, .dash-where-grid, .dash-benefits { grid-template-columns: 1fr; }
+  .dash-recording { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 480px) {
   .dash-where-grid { grid-template-columns: repeat(2, 1fr); }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { stripe } from '@/lib/stripe';
-import { fetchAPI } from '@/lib/strapi';
+import { fetchRecordingById } from '@/lib/strapi-admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,24 +15,12 @@ interface Props {
   searchParams: Promise<{ session_id?: string }>;
 }
 
-async function loadRecording() {
-  const { data } = await fetchAPI('/community-event-pages', {
-    'filters[slug][$eq]': 'the-returning-circle',
-    'pagination[pageSize]': '1',
-  });
-  const cms = Array.isArray(data) && data.length > 0 ? (data[0] as Record<string, unknown>) : {};
-  return {
-    youtubeUrl: String(cms.recording_youtube_url || '').trim(),
-    weekLabel: String(cms.recording_week_label || '').trim(),
-    helpNote: String(cms.recording_help_note || '').trim(),
-  };
-}
-
 export default async function RecordingWatchPage({ searchParams }: Props) {
   const { session_id } = await searchParams;
 
   let paid = false;
   let email = '';
+  let recordingId: number | null = null;
 
   if (session_id) {
     try {
@@ -40,14 +28,23 @@ export default async function RecordingWatchPage({ searchParams }: Props) {
       const sourceOk = (session as any)?.metadata?.source === 'returning_circle_recording';
       if (sourceOk && session.payment_status === 'paid') {
         paid = true;
-        email = String((session as any)?.customer_details?.email || (session as any)?.customer_email || '');
+        email = String(
+          (session as any)?.customer_details?.email || (session as any)?.customer_email || '',
+        );
+        const idRaw = (session as any)?.metadata?.recording_id;
+        if (idRaw && Number.isFinite(Number(idRaw))) {
+          recordingId = Number(idRaw);
+        }
       }
     } catch (err: any) {
       console.warn('[watch] stripe retrieve failed:', err?.message);
     }
   }
 
-  const cms = await loadRecording();
+  const recording = paid && recordingId ? await fetchRecordingById(recordingId) : null;
+  const youtubeUrl = recording?.youtube_url || '';
+  const weekLabel = recording?.title || '';
+  const helpNote = recording?.description || '';
 
   return (
     <main
@@ -86,13 +83,13 @@ export default async function RecordingWatchPage({ searchParams }: Props) {
           >
             Thank you. Here is the recording.
           </h1>
-          {cms.weekLabel && (
+          {weekLabel && (
             <p style={{ fontSize: '1.1rem', color: '#5d6a63', margin: '0 0 1.4rem' }}>
-              <em>{cms.weekLabel}</em>
+              <em>{weekLabel}</em>
             </p>
           )}
 
-          {cms.youtubeUrl ? (
+          {youtubeUrl ? (
             <p
               style={{
                 fontSize: '1.1rem',
@@ -102,7 +99,7 @@ export default async function RecordingWatchPage({ searchParams }: Props) {
             >
               Watch it here:{' '}
               <a
-                href={cms.youtubeUrl}
+                href={youtubeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -113,7 +110,7 @@ export default async function RecordingWatchPage({ searchParams }: Props) {
                   wordBreak: 'break-all',
                 }}
               >
-                {cms.youtubeUrl}
+                {youtubeUrl}
               </a>
             </p>
           ) : (
@@ -130,28 +127,77 @@ export default async function RecordingWatchPage({ searchParams }: Props) {
             >
               Your payment has been received. Anna is uploading this week&apos;s
               recording — the link will land in your inbox as soon as it is
-              ready.
+              ready, and it will also appear in your library.
             </p>
           )}
+
+          <div
+            style={{
+              marginTop: '1.6rem',
+              padding: '1.2rem 1.3rem',
+              background: '#F1FAF5',
+              border: '1px solid #5DCAA540',
+              borderRadius: 8,
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'Mulish, sans-serif',
+                fontWeight: 500,
+                fontSize: '0.6rem',
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: '#5DCAA5',
+                margin: '0 0 0.4rem',
+              }}
+            >
+              Your library
+            </p>
+            <p
+              style={{
+                fontSize: '1rem',
+                lineHeight: 1.6,
+                margin: '0 0 0.7rem',
+                color: '#3D3D3A',
+              }}
+            >
+              We&apos;ve also saved this recording to your account. You can log
+              in any time to watch it back — plus any future recordings you buy.
+            </p>
+            <p style={{ margin: 0 }}>
+              <Link
+                href="/login?next=/community/reset-room/dashboard"
+                style={{
+                  color: '#6E3A5A',
+                  textDecoration: 'underline',
+                  textUnderlineOffset: 3,
+                  fontWeight: 500,
+                }}
+              >
+                Log in to your library →
+              </Link>
+            </p>
+          </div>
 
           {email && (
             <p style={{ fontSize: '0.95rem', color: '#5d6a63', margin: '1.4rem 0 0' }}>
-              A copy has also been emailed to <strong>{email}</strong>. Keep
-              that email — it is your access.
+              A copy has also been emailed to <strong>{email}</strong>. First-time
+              buyers get a separate email with a link to set your password so you
+              can log in.
             </p>
           )}
 
-          {cms.helpNote && (
+          {helpNote && (
             <p
               style={{
-                marginTop: '2rem',
+                marginTop: '1.6rem',
                 fontSize: '0.95rem',
                 color: '#5d6a63',
                 fontStyle: 'italic',
                 lineHeight: 1.6,
               }}
             >
-              {cms.helpNote}
+              {helpNote}
             </p>
           )}
 

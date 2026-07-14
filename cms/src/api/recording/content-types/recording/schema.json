@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recordings",
+  "info": {
+    "singularName": "recording",
+    "pluralName": "recordings",
+    "displayName": "Circle Recording",
+    "description": "One entry per weekly Returning Circle. Each recording is sold as a one-off (default £10). Buyers see it inside their members area after login."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Human label for this week's Circle. Buyers see this in their library. Example: 'Tuesday 15 July 2026 Circle'."
+    },
+    "session_date": {
+      "type": "date",
+      "required": true,
+      "description": "Date the Circle happened. Used to sort the library (most recent first) and shown next to each entry."
+    },
+    "youtube_url": {
+      "type": "string",
+      "required": true,
+      "description": "The UNLISTED YouTube URL. Buyers click through from their library. Format: https://youtu.be/xxxxx"
+    },
+    "price_gbp": {
+      "type": "integer",
+      "default": 10,
+      "description": "Price in whole GBP (default 10). Only relevant while this recording is 'available for purchase'."
+    },
+    "is_available_for_purchase": {
+      "type": "boolean",
+      "default": true,
+      "description": "Tick to make THIS recording the one people can buy on /community/the-returning-circle. Untick after the next week's recording is up so buyers only ever see the most recent option on sale. Existing buyers keep access forever regardless."
+    },
+    "description": {
+      "type": "text",
+      "description": "Optional short description shown on the library card (e.g. 'Guest facilitator, 90 min'). Leave blank for most weeks."
+    },
+    "notes_for_anna": {
+      "type": "text",
+      "description": "Private notes — not shown anywhere on the site. Use this to jot who attended, what came up, etc."
+    },
+    "buyers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "purchased_recordings",
+      "description": "Auto-populated when someone pays £10 for this recording. You can also manually add a buyer here if someone paid you outside the site (bank transfer, in person, etc.) — they'll see it in their library once they log in."
+    }
+  }
+}

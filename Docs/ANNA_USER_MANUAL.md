@@ -2718,52 +2718,75 @@ You don't have to do all articles at once. Do the ones people are actually readi
 
 **Preview to be sure:** after editing, click **Open live** (top right of the edit view) to see how the article actually renders. Fastest way to spot a heading you forgot to promote.
 
-### 17.31 Returning Circle — pay £10 for the recording
+### 17.31 Returning Circle — sell the recording, keep a library
 
-**What Anna asked for (13 July 2026):** a way for people who missed the live Circle to buy the recording for £10.
+**What Anna asked for (13-14 July 2026):** a way to sell weekly Circle recordings, with buyers landing in a members area (like OOOM Academy's ThriveCart pattern) so they can log in anytime to see everything they've bought.
 
-**How it works:**
+**How the flow works:**
 
-1. On `/community/the-returning-circle`, below the RSVP form, a mint-green card offers "Buy this week's recording — £10".
-2. Visitor enters their email + optional first name, clicks the button.
-3. Stripe Checkout opens at £10 GBP.
-4. On payment, they land on a confirmation page showing the YouTube link + get the same link by email.
-5. Anna gets a notification email for every recording sale.
-6. Buyer is tagged `Returning Circle Recording` in Mailchimp so Anna can build a nurture journey later if she wants.
+1. Each week Anna creates a **Circle Recording** entry (a new collection — sidebar → **Circle Recording**) with the title, session date, unlisted YouTube URL, and price (default £10 — but she can charge £25 for a guest facilitator week, or any other amount per entry).
+2. She ticks **is_available_for_purchase** on the current recording (unticks it on the previous week's).
+3. On `/community/the-returning-circle`, a mint-green card automatically shows that recording with a Buy button.
+4. Visitor enters email + first name, clicks Buy → Stripe Checkout at whatever price Anna set.
+5. On payment:
+   - The recording is attached to their user account (creates one if new).
+   - First-time buyer gets a "set your password" email so they can log in later.
+   - They get the delivery email with the YouTube link.
+   - They land on a confirmation page showing the link + a "log in to your library" prompt.
+6. Anytime after, the buyer can log in at `/login` → lands on their members dashboard (`/community/reset-room/dashboard`) → sees every recording they've bought, ready to watch.
 
-**What Anna does each week (2 fields to update, 30 seconds):**
+**What Anna does each week (2 minutes total):**
 
-Content Manager → **Community Event** → **The Returning Circle** → scroll to the Recording block:
+1. Upload the recording to YouTube as **Unlisted** after the session.
+2. Content Manager → **Circle Recording** → **+ Create new entry**:
+   - **title** — e.g. `Tuesday 15 July 2026 Circle`
+   - **session_date** — the date the Circle happened
+   - **youtube_url** — the unlisted URL you just uploaded
+   - **price_gbp** — leave at 10, or change per week (e.g. 25 for a guest)
+   - **is_available_for_purchase** — tick this ✔️
+   - **description** (optional) — short note shown on the buy card + library card
+3. On last week's entry: **untick** `is_available_for_purchase` (buyers who already own it keep access forever — this just stops NEW people buying the old one).
+4. Save.
 
-- **recording_week_label** — the label buyers see (e.g. `Tuesday 15 July 2026 Circle`)
-- **recording_youtube_url** — the UNLISTED YouTube URL you uploaded after the session
+The Buy button on the site auto-updates. Nothing else to do.
 
-Save + Publish. The Buy button on the site is hidden until this URL is filled in — so no one can pay for a recording that doesn't exist yet.
+**To pause selling entirely** (e.g. holiday week, or you don't want to sell): untick `is_available_for_purchase` on every entry. The Buy card auto-hides. Existing owners still have access via their library — untouched.
 
-**To hide the whole recording block entirely** (e.g. between weeks, or if you don't want to sell one):
+**The members library**
 
-Clear the `recording_headline` field. The block disappears from the page.
+Anyone who has bought a Recording gets a members dashboard at `/community/reset-room/dashboard`. What they see depends on what they own:
 
-**All the other fields on the block are set-and-forget:**
+- **Reset Room members** see all the Reset Room content (Sessions, Reset Call, Vault) + any Circle recordings they've bought
+- **Someone who's only bought a Circle recording** sees just their recordings + a gentle prompt to join the Reset Room
+- **Someone who's bought REGULATED** sees a link to their REGULATED course too
 
-- `recording_headline` — big heading above the button (e.g. "Missed the Circle? Watch it back.")
+The "Log in to your library →" link appears on the Circle page (under the Buy card) + on the confirmation page after purchase.
+
+**Copy overrides on the Community Event singleton** (Community Event → The Returning Circle):
+
+- `recording_headline` — big heading on the buy card (defaults to "Missed the Circle? Watch it back.")
 - `recording_intro` — one or two sentences under the headline
-- `recording_button_label` — button text (default "Buy this week's recording")
-- `recording_price_gbp` — price in whole pounds (default 10)
-- `recording_stripe_product_name` — what shows on Stripe + card statement
-- `recording_stripe_description` — small print on the Stripe page
+- `recording_button_label` — button text (defaults to "Buy this week's recording")
 - `recording_help_note` — small print under the button + on the confirmation page
+
+These are copy overrides. Actual data — price, YouTube URL, title, date — always comes from the specific Circle Recording entry.
+
+**Manual attachment (edge case):** if someone pays Anna outside the site (bank transfer, cash in person), she can attach a recording to their user account manually:
+1. Content Manager → Circle Recording → open the entry
+2. Scroll to **buyers** → **+ Add relation** → find the user by email → tick → Save.
+3. That user now sees the recording in their library next time they log in.
 
 **The two emails Anna can edit** (Content Manager → Email Template):
 
-- `returning_circle_recording` — the recording delivery email to the buyer (with the YouTube link inline)
+- `returning_circle_recording` — the recording delivery email to the buyer (with the YouTube link + prompt to log into library)
 - `admin_returning_circle_recording` — the "you had a sale!" email to Anna
+- `shop_account_invite` — the "set your password" email that first-time buyers get (already existed, used by shop too)
 
-Merge tags in these emails: `{{first_name}}`, `{{customer_email}}`, `{{recording_week_label}}`, `{{recording_url}}`, `{{recording_price}}`, `{{recording_help_note}}`.
+Merge tags in the recording delivery email: `{{first_name}}`, `{{customer_email}}`, `{{recording_week_label}}` (uses the Recording title), `{{recording_url}}`, `{{recording_price}}`, `{{recording_help_note}}`, `{{site_url}}`.
 
-**Refunds:** issued manually via the Stripe dashboard. There's no automated "refund me my £10" button — same policy as Discovery Calls.
+**Refunds:** issued manually via the Stripe dashboard. When Anna refunds, she should also remove the recording from the buyer's library manually (Circle Recording → open the entry → **buyers** → remove that user).
 
-**Note:** this is the ONE-OFF £10 flow. The recurring `£10/week with skip-a-week self-serve` version Anna asked about is coming in a separate build — different mechanism (Stripe Subscriptions + customer portal + weekly skip reminder), takes longer to do properly.
+**Note:** this is the ONE-OFF-per-week flow. The recurring `£10/week with skip-a-week self-serve` version Anna asked about is a separate build — different mechanism (Stripe Subscriptions + customer portal + weekly skip reminder), takes longer to do properly.
 
 ## 18. Email journeys (what happens when someone clicks something)
 

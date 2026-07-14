@@ -216,13 +216,13 @@ const DEFAULTS = [
     key: 'returning_circle_recording',
     name: 'Returning Circle — recording delivered',
     when_it_fires:
-      'Someone pays £10 on the Returning Circle page to get that week\'s recording. Fires straight after Stripe confirms the payment. The recording link comes from the "Recording YouTube URL" field on the Community Event → The Returning Circle entry in Strapi — update that field each week.',
+      'Someone pays for a Returning Circle recording. Fires straight after Stripe confirms the payment. Comes from the specific Recording entry they bought (Circle Recording collection).',
     audience: 'customer',
     enabled: true,
     subject: 'Your Returning Circle recording — {{recording_week_label}}',
-    preheader: 'The link below is yours — keep this email safe.',
+    preheader: 'The link below is yours — plus it is saved to your library.',
     intro:
-      'Hi {{first_name}}, thank you for buying the recording for {{recording_week_label}}.\n\nWatch it here: {{recording_url}}\n\nKeep this email safe — the link above is your access. If you cannot see the video, reply to this email and Anna will help.',
+      'Hi {{first_name}}, thank you for buying the recording for {{recording_week_label}}.\n\nWatch it here: {{recording_url}}\n\nYour recording is also saved to your library. Log in at {{site_url}}/login and you will find this recording (and any future ones you buy) waiting for you.\n\nIf you are new: you will get a second email with a link to set your password. That is your login for the library.',
     outro:
       '{{recording_help_note}}',
     cta_label: 'Watch the recording',

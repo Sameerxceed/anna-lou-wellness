@@ -1,39 +1,65 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+interface RecordingInfo {
+  id: number;
+  title: string;
+  session_date: string;
+  price_gbp: number;
+  description?: string | null;
+}
 
 interface Props {
-  headline: string;
+  /** Optional CMS-driven copy overrides from the Community Event singleton. */
+  headline?: string;
   intro?: string;
-  buttonLabel: string;
-  priceGbp: number;
-  weekLabel?: string;
+  buttonLabel?: string;
   helpNote?: string;
 }
 
 const ACCENT = '#5DCAA5';
 
 /**
- * Returning Circle recording — one-off GBP 10 purchase.
+ * Returning Circle recording — one-off purchase.
  *
- * Auto-hides if `headline` is blank OR (upstream) if the YouTube URL is
- * blank in the CMS — the API returns a 503 in that case so users never
- * pay for a recording that doesn't exist yet. But we also gate the block
- * on `headline` so Anna can hide the entire section by clearing that one
- * field.
+ * The Recording collection is the source of truth. This component asks
+ * /api/checkout/returning-circle-recording/current for whichever recording
+ * is currently marked is_available_for_purchase, so Anna can put a
+ * different price on a guest facilitator week without touching code.
+ *
+ * The whole block hides if there's no purchasable recording — Anna
+ * simply unticks is_available_for_purchase on every entry to hide the
+ * Buy option between weeks.
  */
 export default function ReturningCircleRecordingBlock({
   headline,
   intro,
   buttonLabel,
-  priceGbp,
-  weekLabel,
   helpNote,
 }: Props) {
+  const [current, setCurrent] = useState<RecordingInfo | null | undefined>(undefined);
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/recordings/current', { cache: 'no-store' })
+      .then((r) => r.json().catch(() => ({})))
+      .then((json) => {
+        if (cancelled) return;
+        const rec = json?.recording;
+        setCurrent(rec ? (rec as RecordingInfo) : null);
+      })
+      .catch(() => {
+        if (!cancelled) setCurrent(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleBuy = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,9 +86,25 @@ export default function ReturningCircleRecordingBlock({
     }
   };
 
-  if (!headline) return null;
+  // Loading — render nothing so the page doesn't flash empty state
+  if (current === undefined) return null;
 
-  const priceLabel = `£${priceGbp}`;
+  // Nothing on sale right now — hide the entire block
+  if (current === null) return null;
+
+  const finalHeadline = headline || `Missed the Circle? Watch it back.`;
+  const finalIntro =
+    intro ||
+    'One-off payment. Unlisted YouTube link sent to your inbox and saved in your library. Available for 7 days.';
+  const finalButton = buttonLabel || "Buy this week's recording";
+  const dateLabel = current.session_date
+    ? new Date(current.session_date).toLocaleDateString('en-GB', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      })
+    : '';
+  const priceLabel = `£${current.price_gbp}`;
 
   return (
     <section
@@ -89,22 +131,32 @@ export default function ReturningCircleRecordingBlock({
           margin: '0 0 0.6rem',
         }}
       >
-        Watch it back {weekLabel ? ` — ${weekLabel}` : ''}
+        Watch it back{dateLabel ? ` — ${dateLabel}` : ''}
       </p>
       <h2
         style={{
           fontFamily: "'Cormorant Garamond', 'EB Garamond', Georgia, serif",
           fontWeight: 500,
           fontSize: '1.9rem',
-          margin: '0 0 0.9rem',
+          margin: '0 0 0.5rem',
           color: '#231F20',
           lineHeight: 1.2,
         }}
       >
-        {headline}
+        {finalHeadline}
       </h2>
+      <p
+        style={{
+          fontSize: '1rem',
+          color: '#5d6a63',
+          margin: '0 0 1rem',
+          fontStyle: 'italic',
+        }}
+      >
+        {current.title}
+      </p>
 
-      {intro && (
+      {finalIntro && (
         <p
           style={{
             fontSize: '1.02rem',
@@ -114,7 +166,7 @@ export default function ReturningCircleRecordingBlock({
             maxWidth: 500,
           }}
         >
-          {intro}
+          {finalIntro}
         </p>
       )}
 
@@ -177,7 +229,7 @@ export default function ReturningCircleRecordingBlock({
             marginTop: '0.2rem',
           }}
         >
-          {loading ? 'Loading…' : `${buttonLabel} — ${priceLabel}`}
+          {loading ? 'Loading…' : `${finalButton} — ${priceLabel}`}
         </button>
       </form>
 
@@ -193,16 +245,38 @@ export default function ReturningCircleRecordingBlock({
         </p>
       )}
 
+      <p
+        style={{
+          marginTop: '1.4rem',
+          fontSize: '0.9rem',
+          color: '#5d6a63',
+          margin: '1.4rem 0 0',
+        }}
+      >
+        Already bought a recording?{' '}
+        <a
+          href="/login?next=/community/reset-room/dashboard"
+          style={{
+            color: '#6E3A5A',
+            textDecoration: 'underline',
+            textUnderlineOffset: 3,
+            fontWeight: 500,
+          }}
+        >
+          Log in to your library →
+        </a>
+      </p>
+
       {helpNote && (
         <p
           style={{
-            marginTop: '1.1rem',
-            fontSize: '0.88rem',
+            marginTop: '0.8rem',
+            fontSize: '0.85rem',
             color: '#5d6a63',
             fontStyle: 'italic',
             lineHeight: 1.5,
             maxWidth: 460,
-            margin: '1.1rem auto 0',
+            margin: '0.8rem auto 0',
           }}
         >
           {helpNote}
