@@ -18,7 +18,7 @@ interface Props {
 async function loadRecording() {
   const { data } = await fetchAPI('/community-event-pages', {
     'filters[slug][$eq]': 'the-returning-circle',
-    'pagination[pageSize]': 1,
+    'pagination[pageSize]': '1',
   });
   const cms = Array.isArray(data) && data.length > 0 ? (data[0] as Record<string, unknown>) : {};
   return {
