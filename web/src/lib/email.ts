@@ -301,16 +301,24 @@ type LeadLike = {
   submitted_at?: string;
 };
 
+type RecordingLike = {
+  week_label?: string;
+  youtube_url?: string;
+  price_gbp?: number;
+  help_note?: string;
+};
+
 type MergeContext = {
   order?: OrderLike | null;
   returnRequest?: ReturnRequestLike | null;
   account?: AccountLike | null;
   lead?: LeadLike | null;
+  recording?: RecordingLike | null;
 };
 
 function mergeTags(input: string | undefined | null, ctx: MergeContext): string {
   if (!input) return '';
-  const { order, returnRequest, account, lead } = ctx;
+  const { order, returnRequest, account, lead, recording } = ctx;
   const customerName = order?.customer_name || account?.first_name || lead?.first_name || 'there';
   const customerEmail = order?.customer_email || account?.email || lead?.email || '';
   const replacements: Record<string, string> = {
@@ -344,6 +352,11 @@ function mergeTags(input: string | undefined | null, ctx: MergeContext): string 
     lead_practice: lead?.practice || '',
     lead_message: lead?.message || '',
     lead_submitted_at: lead?.submitted_at || '',
+    // Returning Circle recording context
+    recording_week_label: recording?.week_label || '',
+    recording_url: recording?.youtube_url || '',
+    recording_price: recording?.price_gbp != null ? String(recording.price_gbp) : '',
+    recording_help_note: recording?.help_note || '',
     // Constants
     site_url: PUBLIC_SITE_URL,
     admin_url: ADMIN_URL,

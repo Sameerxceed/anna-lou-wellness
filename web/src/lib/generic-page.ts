@@ -11,6 +11,16 @@ export interface GenericPageCMS {
   intro?: string;
   ctaLabel?: string;
   ctaUrl?: string;
+  // Returning Circle recording block (only used on the-returning-circle).
+  recording_headline?: string;
+  recording_intro?: string;
+  recording_button_label?: string;
+  recording_price_gbp?: number;
+  recording_week_label?: string;
+  recording_youtube_url?: string;
+  recording_stripe_product_name?: string;
+  recording_stripe_description?: string;
+  recording_help_note?: string;
 }
 
 export async function getGenericPageBySlug(slug: string): Promise<GenericPageCMS | null> {

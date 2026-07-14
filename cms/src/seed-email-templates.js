@@ -213,6 +213,44 @@ const DEFAULTS = [
     include_shipping_address: false,
   },
   {
+    key: 'returning_circle_recording',
+    name: 'Returning Circle — recording delivered',
+    when_it_fires:
+      'Someone pays £10 on the Returning Circle page to get that week\'s recording. Fires straight after Stripe confirms the payment. The recording link comes from the "Recording YouTube URL" field on the Community Event → The Returning Circle entry in Strapi — update that field each week.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Your Returning Circle recording — {{recording_week_label}}',
+    preheader: 'The link below is yours — keep this email safe.',
+    intro:
+      'Hi {{first_name}}, thank you for buying the recording for {{recording_week_label}}.\n\nWatch it here: {{recording_url}}\n\nKeep this email safe — the link above is your access. If you cannot see the video, reply to this email and Anna will help.',
+    outro:
+      '{{recording_help_note}}',
+    cta_label: 'Watch the recording',
+    cta_url: '{{recording_url}}',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'admin_returning_circle_recording',
+    name: 'Returning Circle — new recording sale (notification to you)',
+    when_it_fires:
+      'Someone pays £10 for a Returning Circle recording. Sent to OWNER_EMAIL so you know a sale happened.',
+    audience: 'admin',
+    enabled: true,
+    subject: '[Returning Circle] {{customer_email}} bought {{recording_week_label}}',
+    preheader: 'One more sale on this week\'s recording.',
+    intro:
+      'Someone just bought the {{recording_week_label}} Returning Circle recording.\n\nEmail: {{customer_email}}\nPrice paid: £{{recording_price}}\n\nThe recording link they received: {{recording_url}}',
+    outro:
+      'If the link needs updating, edit the "Recording YouTube URL" on Community Event → The Returning Circle in Strapi.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
     key: 'password_reset',
     name: 'Password reset',
     when_it_fires: 'A customer clicks "Forgot your password?" on the sign-in page. We send them a fresh reset link valid for 24 hours.',

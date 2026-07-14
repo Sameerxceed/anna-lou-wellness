@@ -67,7 +67,46 @@
                        "seoDescription":  {
                                               "type":  "text",
                                               "description":  "Optional SEO description for Google."
-                                          }
+                                          },
+                       "recording_headline":  {
+                                                  "type":  "string",
+                                                  "description":  "RETURNING CIRCLE RECORDING BLOCK. Big heading above the Buy button. Leave BLANK to hide the whole recording block on the page. Example: 'Missed the Circle? Watch back for GBP 10.'"
+                                              },
+                       "recording_intro":  {
+                                               "type":  "text",
+                                               "description":  "One or two short sentences under the headline. Say what they get, how long it stays available, and any small nudge. Example: 'One-off payment. Unlisted YouTube link sent straight to your inbox and shown on the confirmation page. Available for 7 days.'"
+                                           },
+                       "recording_button_label":  {
+                                                      "type":  "string",
+                                                      "default":  "Buy this week's recording",
+                                                      "description":  "Text on the payment button. Keep it action-led."
+                                                  },
+                       "recording_price_gbp":  {
+                                                   "type":  "integer",
+                                                   "default":  10,
+                                                   "description":  "Price in GBP (whole pounds). Change this if you ever want to charge a different amount."
+                                               },
+                       "recording_week_label":  {
+                                                    "type":  "string",
+                                                    "description":  "Which session this recording is for. Shown on the page and inside the email. UPDATE THIS EVERY WEEK. Example: 'Tuesday 15 July 2026 Circle'."
+                                                },
+                       "recording_youtube_url":  {
+                                                     "type":  "string",
+                                                     "description":  "The UNLISTED YouTube URL for this week's recording. The Buy button will NOT show on the site until this is filled in. Update this each week after you upload the new recording. Format: https://youtu.be/xxxxx or https://www.youtube.com/watch?v=xxxxx"
+                                                 },
+                       "recording_stripe_product_name":  {
+                                                             "type":  "string",
+                                                             "default":  "Returning Circle - weekly recording",
+                                                             "description":  "What appears as the product name on the Stripe payment page + on the customer's card statement (up to 22 chars visible)."
+                                                         },
+                       "recording_stripe_description":  {
+                                                            "type":  "text",
+                                                            "description":  "Small description under the product name on the Stripe payment page. Example: 'One-off payment. Unlisted YouTube link sent to your inbox. Available for 7 days.'"
+                                                        },
+                       "recording_help_note":  {
+                                                   "type":  "text",
+                                                   "description":  "Small print shown under the button on the site AND on the confirmation page. Reassures buyers. Example: 'The link is emailed to you the moment you pay. Keep the email safe -- it is your access.'"
+                                               }
                    }
 }
 

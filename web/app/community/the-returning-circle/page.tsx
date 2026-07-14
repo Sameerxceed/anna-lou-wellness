@@ -6,6 +6,7 @@ import { getCommunityEventBySlug } from '@/lib/generic-page';
 import { getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+import ReturningCircleRecordingBlock from '@/components/ReturningCircleRecordingBlock';
 
 export const metadata: Metadata = {
   title: 'The Returning Circle | Weekly Donation-Based Circle',
@@ -120,6 +121,19 @@ export default async function CirclePage() {
           />
         </div>
       </section>
+
+      {cms?.recording_headline && (
+        <section style={{ background: '#fff', padding: '1rem 1.5rem 2rem' }}>
+          <ReturningCircleRecordingBlock
+            headline={cms.recording_headline}
+            intro={cms.recording_intro}
+            buttonLabel={cms.recording_button_label || "Buy this week's recording"}
+            priceGbp={Number(cms.recording_price_gbp || 10)}
+            weekLabel={cms.recording_week_label}
+            helpNote={cms.recording_help_note}
+          />
+        </section>
+      )}
 
       <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
     <UpsellBlockForSingleton endpoint="/community-event-page" />

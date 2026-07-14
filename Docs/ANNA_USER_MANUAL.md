@@ -2718,6 +2718,53 @@ You don't have to do all articles at once. Do the ones people are actually readi
 
 **Preview to be sure:** after editing, click **Open live** (top right of the edit view) to see how the article actually renders. Fastest way to spot a heading you forgot to promote.
 
+### 17.31 Returning Circle — pay £10 for the recording
+
+**What Anna asked for (13 July 2026):** a way for people who missed the live Circle to buy the recording for £10.
+
+**How it works:**
+
+1. On `/community/the-returning-circle`, below the RSVP form, a mint-green card offers "Buy this week's recording — £10".
+2. Visitor enters their email + optional first name, clicks the button.
+3. Stripe Checkout opens at £10 GBP.
+4. On payment, they land on a confirmation page showing the YouTube link + get the same link by email.
+5. Anna gets a notification email for every recording sale.
+6. Buyer is tagged `Returning Circle Recording` in Mailchimp so Anna can build a nurture journey later if she wants.
+
+**What Anna does each week (2 fields to update, 30 seconds):**
+
+Content Manager → **Community Event** → **The Returning Circle** → scroll to the Recording block:
+
+- **recording_week_label** — the label buyers see (e.g. `Tuesday 15 July 2026 Circle`)
+- **recording_youtube_url** — the UNLISTED YouTube URL you uploaded after the session
+
+Save + Publish. The Buy button on the site is hidden until this URL is filled in — so no one can pay for a recording that doesn't exist yet.
+
+**To hide the whole recording block entirely** (e.g. between weeks, or if you don't want to sell one):
+
+Clear the `recording_headline` field. The block disappears from the page.
+
+**All the other fields on the block are set-and-forget:**
+
+- `recording_headline` — big heading above the button (e.g. "Missed the Circle? Watch it back.")
+- `recording_intro` — one or two sentences under the headline
+- `recording_button_label` — button text (default "Buy this week's recording")
+- `recording_price_gbp` — price in whole pounds (default 10)
+- `recording_stripe_product_name` — what shows on Stripe + card statement
+- `recording_stripe_description` — small print on the Stripe page
+- `recording_help_note` — small print under the button + on the confirmation page
+
+**The two emails Anna can edit** (Content Manager → Email Template):
+
+- `returning_circle_recording` — the recording delivery email to the buyer (with the YouTube link inline)
+- `admin_returning_circle_recording` — the "you had a sale!" email to Anna
+
+Merge tags in these emails: `{{first_name}}`, `{{customer_email}}`, `{{recording_week_label}}`, `{{recording_url}}`, `{{recording_price}}`, `{{recording_help_note}}`.
+
+**Refunds:** issued manually via the Stripe dashboard. There's no automated "refund me my £10" button — same policy as Discovery Calls.
+
+**Note:** this is the ONE-OFF £10 flow. The recurring `£10/week with skip-a-week self-serve` version Anna asked about is coming in a separate build — different mechanism (Stripe Subscriptions + customer portal + weekly skip reminder), takes longer to do properly.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
@@ -2930,6 +2977,7 @@ Every tag the site can apply and what journey Anna should wire in Mailchimp:
 | Shop Customers | Any completed shop purchase | Shop welcome / thank-you |
 | Practitioner Enquiry | Practitioner form submitted | Practitioner review + application |
 | Returning Circle Enquiry | Returning Circle form | Returning Circle next steps |
+| Returning Circle Recording | Buys the £10 recording on the Circle page | Optional nurture — "did you enjoy it, want the next one?" |
 | Signal Collective Enquiry | Signal Collective form | Signal Collective next steps |
 | Recovery Coaching Enquiry | Recovery Coaching form | Recovery Coaching intake |
 | One Day Enquiry | One Day form | One Day pre-booking nurture |
@@ -2962,6 +3010,8 @@ Every email Resend can send. Each maps to a row in the CMS **Email Template** co
 | admin_new_order | Any new order (card / bank / refund) | Anna |
 | admin_return_requested | Customer requests return | Anna |
 | admin_practitioner_enquiry | Practitioner applies via form | Anna |
+| returning_circle_recording | Customer buys the £10 Returning Circle recording | Customer |
+| admin_returning_circle_recording | A Returning Circle recording sale happens | Anna |
 
 Merge tokens available in every template body: `{{order_number}}`, `{{customer_name}}`, `{{total}}`, `{{tracking_number}}`, `{{tracking_url}}`, `{{refund_amount}}`, `{{cancellation_reason}}`, `{{site_url}}`.
 

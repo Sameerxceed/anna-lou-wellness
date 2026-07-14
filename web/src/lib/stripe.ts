@@ -93,6 +93,8 @@ export type StripeCheckoutSession = {
   amount_total?: number | null;
   amount_subtotal?: number | null;
   currency?: string | null;
+  // 'paid' | 'unpaid' | 'no_payment_required'. Present on retrieval.
+  payment_status?: string;
 };
 
 export type StripeSubscription = {

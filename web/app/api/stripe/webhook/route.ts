@@ -16,6 +16,7 @@ import {
 } from '@/lib/strapi-admin';
 import { incrementCouponUsage } from '@/lib/strapi-coupon';
 import { sendFromTemplate } from '@/lib/email';
+import { fetchAPI } from '@/lib/strapi';
 
 /**
  * Stripe webhook handler.
@@ -319,14 +320,93 @@ async function handleShopOrder(event: StripeEvent, ref: StrapiRef, email: string
   }
 }
 
+/**
+ * Returning Circle recording: one-off £10 for a single week's YouTube
+ * recording. No Strapi Order created — the "product" is a link, and Anna
+ * updates that link in the CMS each week. We just fire the delivery email
+ * (with the current URL) + tag the buyer in Mailchimp so Anna can build a
+ * "recording buyers" journey later if she wants.
+ */
+async function handleReturningCircleRecording(event: StripeEvent, email: string) {
+  const obj = event.data.object as any;
+  const md = (obj?.metadata || {}) as Record<string, string>;
+  const weekLabelFromCheckout = (md.week_label || '').trim();
+  const firstName = (md.first_name || '').trim();
+
+  // Refetch the current CMS state at delivery time — Anna may have updated
+  // the URL between checkout and webhook. The URL is the deliverable.
+  let recording: {
+    week_label: string;
+    youtube_url: string;
+    price_gbp: number;
+    help_note: string;
+  } = {
+    week_label: weekLabelFromCheckout,
+    youtube_url: '',
+    price_gbp: Number(obj?.amount_total ? obj.amount_total / 100 : 10),
+    help_note: '',
+  };
+  try {
+    const { data } = await fetchAPI('/community-event-pages', {
+      'filters[slug][$eq]': 'the-returning-circle',
+      'pagination[pageSize]': 1,
+    });
+    const cms = Array.isArray(data) && data.length > 0 ? (data[0] as Record<string, unknown>) : null;
+    if (cms) {
+      recording = {
+        week_label: String(cms.recording_week_label || weekLabelFromCheckout || '').trim(),
+        youtube_url: String(cms.recording_youtube_url || '').trim(),
+        price_gbp: Number(cms.recording_price_gbp || recording.price_gbp),
+        help_note: String(cms.recording_help_note || '').trim(),
+      };
+    }
+  } catch (err: any) {
+    console.warn('[stripe webhook] recording CMS lookup failed:', err?.message);
+  }
+
+  console.info(
+    `[stripe webhook] returning_circle_recording: ${email} <- ${recording.week_label || '(no week label)'}`,
+  );
+
+  // Mailchimp tag so Anna has a segment of recording buyers to nurture.
+  const tagResult = await subscribeAndTag(email, 'Returning Circle Recording');
+  if (!tagResult.ok) {
+    console.warn(`[stripe webhook] Recording tag failed for ${email}:`, tagResult.error);
+  }
+
+  // Customer delivery + owner notification. Both fire template-driven emails
+  // so Anna can edit the copy in the Email Template collection.
+  sendFromTemplate('returning_circle_recording', {
+    account: { email, first_name: firstName || 'there' },
+    recording,
+  }).catch((e) =>
+    console.warn(`[stripe webhook] recording delivery email failed:`, e?.message),
+  );
+  sendFromTemplate('admin_returning_circle_recording', {
+    account: { email, first_name: firstName || '' },
+    recording,
+  }).catch((e) =>
+    console.warn(`[stripe webhook] recording admin email failed:`, e?.message),
+  );
+}
+
 async function handleSuccessfulPurchase(event: StripeEvent) {
   const email = await getEmailFromEvent(event);
   const ref = await getStrapiRefFromEvent(event);
+  const obj = event.data.object as any;
+  const md = (obj?.metadata || {}) as Record<string, string>;
 
   if (!email) {
     console.warn(`[stripe webhook] ${event.type}: no email found`);
     return;
   }
+
+  // Source-tagged one-off flows that don't carry a Strapi ref (Discovery
+  // Call, Returning Circle recording, etc.). Dispatch by metadata.source.
+  if (md.source === 'returning_circle_recording') {
+    return handleReturningCircleRecording(event, email);
+  }
+
   if (!ref) {
     console.warn(`[stripe webhook] ${event.type}: no Strapi ref in metadata — skipping (likely test event)`);
     return;
