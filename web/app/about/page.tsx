@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getAboutPage, getFAQs } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
-import { BreadcrumbSchema } from '@/components/StructuredData';
+import { BreadcrumbSchema, SpeakableSchema } from '@/components/StructuredData';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const revalidate = 3600;
@@ -55,6 +55,10 @@ export default async function AboutPage() {
   return (
     <>
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'About', href: '/about' }]} />
+      {/* Speakable tells voice assistants which text to read when someone
+          asks "who is Anna Lou?" or similar. Targets the roles tagline +
+          first two story paragraphs — highest-signal intro copy. */}
+      <SpeakableSchema url="/about" cssSelectors={['.about-roles', '.about-body']} headline="About Anna Lou Scaife" />
       <style dangerouslySetInnerHTML={{ __html: aboutStyles }} />
 
       {/* Header */}

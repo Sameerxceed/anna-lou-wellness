@@ -6,7 +6,7 @@ import { getFAQs, getTestimonials } from '@/lib/cms';
 import JoinResetRoomButton from '@/components/JoinResetRoomButton';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
-import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
+import { ServiceSchema, CourseSchema, BreadcrumbSchema, SpeakableSchema, type ReviewInput } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'The Reset Room | Monthly Somatic Membership',
@@ -60,6 +60,19 @@ export default async function ResetRoomPage() {
         price="25.00"
         reviews={reviewInputs}
       />
+      {/* Course schema is additive — Reset Room delivers structured learning
+          (Sessions, Vault journeys, monthly live calls) over time, so it earns
+          Course markup in addition to Service. Google + AI engines can then
+          surface it in course-related answers. */}
+      <CourseSchema
+        name="The Reset Room"
+        description="An ongoing somatic learning membership: bi-weekly video sessions, a monthly live group call with Anna, and a growing vault of guided nervous-system journeys."
+        url="/community/reset-room"
+        price={25}
+        courseMode="online"
+        image={heroImage}
+        reviews={reviewInputs}
+      />
       <BreadcrumbSchema
         items={[
           { name: 'Home', href: '/' },
@@ -67,6 +80,7 @@ export default async function ResetRoomPage() {
           { name: 'The Reset Room', href: '/community/reset-room' },
         ]}
       />
+      <SpeakableSchema url="/community/reset-room" cssSelectors={['.speakable', '.rr-hero-tagline', '.rr-body-text']} />
       <style dangerouslySetInnerHTML={{ __html: roomStyles }} />
 
       {/* Hero */}

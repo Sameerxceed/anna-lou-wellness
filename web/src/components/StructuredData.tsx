@@ -1,6 +1,19 @@
 /**
  * Structured Data (JSON-LD) components for SEO, AEO, and GEO
- * Covers: Organization, Person, WebSite, LocalBusiness, Article, Product, FAQPage, BreadcrumbList
+ *
+ * Covers:
+ *   WebSite, Person, LocalBusiness (HealthAndBeautyBusiness) — rendered on every page via layout.tsx
+ *   Article — editorial pages
+ *   Product — shop items
+ *   Service — programmes, generic services
+ *   FAQPage — any page with FAQs
+ *   BreadcrumbList — every page with breadcrumbs
+ *   Event — dated retreats + workshops (unlocks Google Events + AI "when's the next X" answers)
+ *   Course — REGULATED + Reset Room membership (unlocks Google course carousel)
+ *   VideoObject — public embedded videos with contentUrl/uploadDate
+ *   Speakable — marks text sections that voice assistants should read aloud
+ *
+ * Reviews + AggregateRating fold into Product/Service/Event via buildReviewSchema.
  */
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com';
@@ -124,6 +137,13 @@ export function ArticleSchema({ title, description, slug, section, author, publi
       '@type': 'Person',
       name: author || 'Anna Lou Scaife',
       url: `${SITE_URL}/about`,
+      image: `${SITE_URL}/og-default.svg`,
+      jobTitle: 'Wellness Coach & Therapist',
+      sameAs: [
+        'https://www.instagram.com/annalouwellness',
+        'https://www.facebook.com/annalouwellness',
+        'https://www.youtube.com/@annalouwellness',
+      ],
     },
     publisher: {
       '@type': 'Organization',
@@ -295,4 +315,241 @@ function buildReviewSchema(reviews?: ReviewInput[]) {
     });
   if (reviewItems.length > 0) out.review = reviewItems;
   return Object.keys(out).length > 0 ? out : null;
+}
+
+// ═══ Event schema (for dated retreats + workshops) ═══
+// Unlocks Google Events + lets AI answer "when's the next Anna retreat?".
+// Omit `startDate` and this returns null — evergreen items belong on ServiceSchema, not here.
+interface EventSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  startDate?: string;      // ISO 8601 — required for a valid Event
+  endDate?: string;
+  location?: string;       // free-text venue label
+  price?: number;
+  image?: string;
+  reviews?: ReviewInput[];
+  eventStatus?: 'scheduled' | 'cancelled' | 'postponed' | 'rescheduled';
+  eventAttendanceMode?: 'offline' | 'online' | 'mixed';
+}
+
+export function EventSchema({
+  name,
+  description,
+  url,
+  startDate,
+  endDate,
+  location,
+  price,
+  image,
+  reviews,
+  eventStatus = 'scheduled',
+  eventAttendanceMode = 'offline',
+}: EventSchemaProps) {
+  if (!startDate) return null;
+
+  const attendanceModeMap = {
+    offline: 'https://schema.org/OfflineEventAttendanceMode',
+    online: 'https://schema.org/OnlineEventAttendanceMode',
+    mixed: 'https://schema.org/MixedEventAttendanceMode',
+  };
+  const statusMap = {
+    scheduled: 'https://schema.org/EventScheduled',
+    cancelled: 'https://schema.org/EventCancelled',
+    postponed: 'https://schema.org/EventPostponed',
+    rescheduled: 'https://schema.org/EventRescheduled',
+  };
+
+  const schema: any = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name,
+    description,
+    url: `${SITE_URL}${url}`,
+    image: image || `${SITE_URL}/og-default.svg`,
+    startDate,
+    ...(endDate ? { endDate } : {}),
+    eventStatus: statusMap[eventStatus],
+    eventAttendanceMode: attendanceModeMap[eventAttendanceMode],
+    organizer: {
+      '@type': 'Person',
+      name: 'Anna Lou Scaife',
+      url: `${SITE_URL}/about`,
+    },
+    performer: {
+      '@type': 'Person',
+      name: 'Anna Lou Scaife',
+    },
+  };
+
+  if (location) {
+    // Location shape depends on whether it's an in-person or online event.
+    if (eventAttendanceMode === 'online') {
+      schema.location = {
+        '@type': 'VirtualLocation',
+        url: `${SITE_URL}${url}`,
+      };
+    } else {
+      schema.location = {
+        '@type': 'Place',
+        name: location,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: location,
+          addressCountry: 'GB',
+        },
+      };
+    }
+  }
+
+  if (typeof price === 'number' && price > 0) {
+    schema.offers = {
+      '@type': 'Offer',
+      priceCurrency: 'GBP',
+      price: price.toFixed(2),
+      availability: 'https://schema.org/InStock',
+      url: `${SITE_URL}${url}`,
+      validFrom: new Date().toISOString(),
+    };
+  }
+
+  const reviewBits = buildReviewSchema(reviews);
+  if (reviewBits) Object.assign(schema, reviewBits);
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+}
+
+// ═══ Course schema (for REGULATED + Reset Room + other structured learning) ═══
+// Unlocks Google's course carousel + helps AI engines identify these as trainable
+// content vs generic services. Use for offerings with modules/lessons.
+interface CourseSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  price?: number;
+  isFree?: boolean;
+  courseMode?: 'online' | 'onsite' | 'blended';
+  duration?: string;         // ISO 8601 duration e.g. 'P6W' (6 weeks) — omit if unknown
+  image?: string;
+  reviews?: ReviewInput[];
+}
+
+export function CourseSchema({
+  name,
+  description,
+  url,
+  price,
+  isFree = false,
+  courseMode = 'online',
+  duration,
+  image,
+  reviews,
+}: CourseSchemaProps) {
+  const schema: any = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name,
+    description,
+    url: `${SITE_URL}${url}`,
+    image: image || `${SITE_URL}/og-default.svg`,
+    provider: {
+      '@type': 'Organization',
+      name: 'Anna Lou Wellness',
+      url: SITE_URL,
+    },
+    hasCourseInstance: {
+      '@type': 'CourseInstance',
+      courseMode,
+      ...(duration ? { courseWorkload: duration } : {}),
+    },
+    inLanguage: 'en-GB',
+  };
+
+  // Google requires an Offer on Course (even if free) — signals accessibility.
+  const offerPrice = isFree ? 0 : (typeof price === 'number' ? price : undefined);
+  if (offerPrice !== undefined) {
+    schema.offers = {
+      '@type': 'Offer',
+      priceCurrency: 'GBP',
+      price: offerPrice.toFixed(2),
+      category: isFree ? 'Free' : 'Paid',
+      availability: 'https://schema.org/InStock',
+      url: `${SITE_URL}${url}`,
+    };
+  }
+
+  const reviewBits = buildReviewSchema(reviews);
+  if (reviewBits) Object.assign(schema, reviewBits);
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+}
+
+// ═══ VideoObject schema (for publicly embedded videos) ═══
+// Google Video results + AI engines can cite the video directly. Skip for
+// paywalled content (Circle recordings, gated workshop replays) — use only
+// where the video itself is publicly viewable.
+interface VideoObjectSchemaProps {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: string;         // ISO 8601
+  contentUrl?: string;        // direct video file URL (mp4 etc.)
+  embedUrl?: string;          // iframe embed URL (YouTube/Vimeo/Bunny)
+  duration?: string;          // ISO 8601 duration e.g. 'PT10M30S'
+}
+
+export function VideoObjectSchema({
+  name,
+  description,
+  thumbnailUrl,
+  uploadDate,
+  contentUrl,
+  embedUrl,
+  duration,
+}: VideoObjectSchemaProps) {
+  const schema: any = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name,
+    description,
+    thumbnailUrl,
+    uploadDate,
+    ...(contentUrl ? { contentUrl } : {}),
+    ...(embedUrl ? { embedUrl } : {}),
+    ...(duration ? { duration } : {}),
+    publisher: {
+      '@type': 'Organization',
+      name: 'Anna Lou Wellness',
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/og-default.svg` },
+    },
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+}
+
+// ═══ Speakable schema (AEO — voice assistant hints) ═══
+// Tells Alexa / Siri / Google Assistant which text on the page they should
+// read aloud when answering a voice query. Wrap the target elements with
+// `class="speakable"` (or use the CSS selectors passed in), then render this
+// component on the page. Google explicitly supports CSS-selector based markers.
+interface SpeakableSchemaProps {
+  cssSelectors?: string[];    // default targets .speakable elements
+  url?: string;               // page URL — defaults to the current page's canonical
+  headline?: string;          // optional page headline for the WebPage node
+}
+
+export function SpeakableSchema({
+  cssSelectors = ['.speakable'],
+  url,
+  headline,
+}: SpeakableSchemaProps = {}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    ...(url ? { url: `${SITE_URL}${url}` } : {}),
+    ...(headline ? { headline } : {}),
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: cssSelectors,
+    },
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }

@@ -7,7 +7,7 @@ import BookingButton from '@/components/BookingButton';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
-import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
+import { ServiceSchema, EventSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 
 /**
  * Individual Experience detail page — one sales page per Experience entry.
@@ -120,6 +120,22 @@ export default async function ExperienceDetailPage({ params }: Props) {
         description={item.description?.slice(0, 200) || ''}
         url={`/experiences/${slug}`}
         reviews={reviewInputs}
+      />
+      {/*
+        EventSchema is additive to ServiceSchema — Google/AI use whichever
+        fits the query. Only renders when the entry has a real date (returns
+        null otherwise, so evergreen items stay Service-only).
+      */}
+      <EventSchema
+        name={item.name}
+        description={item.description?.slice(0, 300) || ''}
+        url={`/experiences/${slug}`}
+        startDate={item.date || undefined}
+        location={item.location || undefined}
+        price={item.price ? Number(item.price) : undefined}
+        image={heroImage}
+        reviews={reviewInputs}
+        eventAttendanceMode={(item.location || '').toLowerCase().includes('zoom') ? 'online' : 'offline'}
       />
       <BreadcrumbSchema
         items={[

@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
-import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
+import { ServiceSchema, CourseSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';
@@ -46,6 +46,15 @@ export default async function TheResetPage() {
   return (
     <>
       <ServiceSchema name="The Reset" description="Six weeks of 1:1 somatic coaching with Anna Lou. Nervous-system led, trauma-informed." url="/the-work/the-reset" price="1500" reviews={reviewInputs} />
+      <CourseSchema
+        name="The Reset"
+        description="Six weeks of 1:1 somatic coaching with Anna Lou. Nervous-system led, trauma-informed. Weekly session + between-session support."
+        url="/the-work/the-reset"
+        price={1500}
+        courseMode="online"
+        duration="P6W"
+        reviews={reviewInputs}
+      />
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'The Reset', href: '/the-work/the-reset' }]} />
       <ProgrammePage {...props} />
       <ReviewsSection reviews={reviews} title="From Reset alumnae" kicker="Reviews" kickerColour="#F280AA" />
