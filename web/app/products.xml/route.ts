@@ -15,7 +15,8 @@ import { getProducts, getSiteSettings } from '@/lib/cms';
  * Same format also accepted by Bing Merchant Centre, Pinterest catalogues,
  * and Facebook Catalog Manager — submit once, syndicate everywhere.
  */
-export const revalidate = 600;
+// 1h TTL — merchant feed crawlers pull at most hourly. Was 600s.
+export const revalidate = 3600;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com';
 

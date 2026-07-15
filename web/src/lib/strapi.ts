@@ -11,8 +11,13 @@ const STRAPI_TOKEN = process.env.STRAPI_TOKEN || '';
 
 export { STRAPI_URL };
 
-// ISR revalidation period (seconds)
-const REVALIDATE = 3600; // 1 hour
+// ISR revalidation period (seconds). 24h safety-net TTL — Strapi lifecycle
+// hooks call /api/revalidate on every content change so pages reflect edits
+// within seconds. This TTL only kicks in if the webhook is skipped (secret
+// missing, network hiccup) or for content whose collection lacks a
+// lifecycles.js. Was 3600 (1h) — bumped to 86400 to keep ISR write volume
+// well under Vercel Hobby's 200K/mo limit (xceed-website hit 260K on 1h TTL).
+const REVALIDATE = 86400; // 24 hours
 
 // ═══ Fetch helper ═══
 

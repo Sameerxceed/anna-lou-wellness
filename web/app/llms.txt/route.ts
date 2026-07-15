@@ -14,7 +14,8 @@ import { getArticles, getProducts, getFAQs, getExperiences, getCoachingSessions 
  *
  * Served as text/plain so any AI agent (or curl) reads it directly.
  */
-export const revalidate = 600;
+// 1h TTL — AI crawlers don't need sub-minute freshness on this. Was 600s.
+export const revalidate = 3600;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com';
 

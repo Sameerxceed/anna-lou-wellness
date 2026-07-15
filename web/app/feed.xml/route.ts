@@ -11,10 +11,11 @@ import { getArticles, getSiteSettings } from '@/lib/cms';
  *  - Mailchimp / Substack RSS-to-email
  *  - Apple News / Pocket
  *
- * Refreshed every 10 minutes so newly-published articles get picked up
- * without a redeploy.
+ * 1h TTL as a safety net — article lifecycle hooks already bust /feed.xml
+ * cache on save so new posts appear in the feed within seconds. Was 600s
+ * which burnt writes for a feed that doesn't need sub-minute freshness.
  */
-export const revalidate = 600;
+export const revalidate = 3600;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com';
 

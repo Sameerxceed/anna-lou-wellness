@@ -22,7 +22,8 @@ import { buildOpenAIProductFeed } from '@/lib/openai-product-feed';
  * Same data + same field shape as /ai-products.json — only the wire
  * format differs.
  */
-export const revalidate = 600;
+// 1h TTL — Product lifecycle already busts this on save. Was 600s.
+export const revalidate = 3600;
 
 export async function GET() {
   const products = await buildOpenAIProductFeed();

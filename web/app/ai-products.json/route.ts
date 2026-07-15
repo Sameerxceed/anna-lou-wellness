@@ -25,9 +25,9 @@ import { buildOpenAIProductFeed } from '@/lib/openai-product-feed';
  * Pair endpoint: /ai-products.jsonl (newline-delimited, ready for
  * gzip + SFTP push to OpenAI when credentials arrive).
  *
- * Refreshed every 10 minutes so price + stock stay fresh.
+ * 1h TTL — Product lifecycle already busts this on save. Was 600s.
  */
-export const revalidate = 600;
+export const revalidate = 3600;
 
 export async function GET() {
   const products = await buildOpenAIProductFeed();
