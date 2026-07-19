@@ -602,24 +602,40 @@ export type WorkWithAnnaData = {
 };
 
 export async function getWorkWithAnnaPage(fallback: WorkWithAnnaData): Promise<WorkWithAnnaData> {
+  // NEW policy (Anna 14 Jul): return raw CMS values. Page handles
+  // all-or-nothing per section. Fallback is only used if the CMS singleton
+  // is completely untouched or unreachable — the page component decides
+  // per section which fields to substitute.
+  const empty: WorkWithAnnaData = {
+    kicker: '',
+    kickerColour: '',
+    title: '',
+    intro: '',
+    waysSectionTitle: '',
+    waysSectionBody: '',
+    waysSectionCtaLabel: '',
+    waysSectionCtaUrl: '',
+    programmesKicker: '',
+    programmesTitle: '',
+  };
   try {
     const { data: d } = await fetchAPI('/work-with-anna-page', { populate: '*' });
     if (!d) return fallback;
     const r = d as Record<string, unknown>;
     return {
-      kicker: (r.kicker as string) || fallback.kicker,
-      kickerColour: (r.kicker_colour as string) || fallback.kickerColour,
-      title: (r.title as string) || fallback.title,
-      intro: (r.intro as string) || fallback.intro,
-      waysSectionTitle: (r.ways_section_title as string) || fallback.waysSectionTitle,
-      waysSectionBody: (r.ways_section_body as string) || fallback.waysSectionBody,
-      waysSectionCtaLabel: (r.ways_section_cta_label as string) || fallback.waysSectionCtaLabel,
-      waysSectionCtaUrl: (r.ways_section_cta_url as string) || fallback.waysSectionCtaUrl,
-      programmesKicker: (r.programmes_kicker as string) || fallback.programmesKicker,
-      programmesTitle: (r.programmes_title as string) || fallback.programmesTitle,
+      kicker: (r.kicker as string) || '',
+      kickerColour: (r.kicker_colour as string) || '',
+      title: (r.title as string) || '',
+      intro: (r.intro as string) || '',
+      waysSectionTitle: (r.ways_section_title as string) || '',
+      waysSectionBody: (r.ways_section_body as string) || '',
+      waysSectionCtaLabel: (r.ways_section_cta_label as string) || '',
+      waysSectionCtaUrl: (r.ways_section_cta_url as string) || '',
+      programmesKicker: (r.programmes_kicker as string) || '',
+      programmesTitle: (r.programmes_title as string) || '',
     };
   } catch {
-    return fallback;
+    return empty;
   }
 }
 
@@ -1691,53 +1707,55 @@ export interface CommunityPage {
 }
 
 export async function getCommunityPage(): Promise<CommunityPage> {
-  const fallback: CommunityPage = {
-    kicker: 'Community',
-    title: 'Come and sit with us.',
+  // NEW policy (Anna 14 Jul): raw CMS values, page handles all-or-nothing
+  // per section. Empty strings/arrays here when Anna hasn't filled a field.
+  const empty: CommunityPage = {
+    kicker: '',
+    title: '',
     intro: '',
-    circleTitle: 'The Returning Circle',
+    circleTitle: '',
     circleDescription: '',
     circleImage: '',
-    resetRoomTitle: 'The Reset Room',
+    resetRoomTitle: '',
     resetRoomDescription: '',
-    resetRoomPrice: '£25 per month',
+    resetRoomPrice: '',
     resetRoomFeatures: [],
     resetRoomImage: '',
-    eventsTitle: 'Events Calendar',
+    eventsTitle: '',
     eventsDescription: '',
-    resourcesTitle: 'Resource Library',
+    resourcesTitle: '',
     resourcesDescription: '',
     upsells: [],
   };
 
   try {
     const { data: d } = await fetchAPI('/community-page', { populate: '*' });
-    if (!d) return fallback;
+    if (!d) return empty;
     const upsells = await getUpsellsForSingleton('/community-page');
     return {
-      kicker: d.kicker || fallback.kicker,
-      title: d.title || fallback.title,
-      intro: d.intro || fallback.intro,
-      circleTitle: d.circle_title || fallback.circleTitle,
-      circleDescription: d.circle_description || fallback.circleDescription,
-      circleImage: mediaUrl(d.circle_image) || fallback.circleImage,
-      resetRoomTitle: d.reset_room_title || fallback.resetRoomTitle,
-      resetRoomDescription: d.reset_room_description || fallback.resetRoomDescription,
-      resetRoomPrice: d.reset_room_price || fallback.resetRoomPrice,
+      kicker: d.kicker || '',
+      title: d.title || '',
+      intro: d.intro || '',
+      circleTitle: d.circle_title || '',
+      circleDescription: d.circle_description || '',
+      circleImage: mediaUrl(d.circle_image) || '',
+      resetRoomTitle: d.reset_room_title || '',
+      resetRoomDescription: d.reset_room_description || '',
+      resetRoomPrice: d.reset_room_price || '',
       resetRoomFeatures: Array.isArray(d.reset_room_features)
         ? d.reset_room_features
             .map((f: any) => (typeof f === 'string' ? f : String(f?.text || '')))
             .filter(Boolean)
-        : fallback.resetRoomFeatures,
-      resetRoomImage: mediaUrl(d.reset_room_image) || fallback.resetRoomImage,
-      eventsTitle: d.events_title || fallback.eventsTitle,
-      eventsDescription: d.events_description || fallback.eventsDescription,
-      resourcesTitle: d.resources_title || fallback.resourcesTitle,
-      resourcesDescription: d.resources_description || fallback.resourcesDescription,
+        : [],
+      resetRoomImage: mediaUrl(d.reset_room_image) || '',
+      eventsTitle: d.events_title || '',
+      eventsDescription: d.events_description || '',
+      resourcesTitle: d.resources_title || '',
+      resourcesDescription: d.resources_description || '',
       upsells,
     };
   } catch {
-    return fallback;
+    return empty;
   }
 }
 

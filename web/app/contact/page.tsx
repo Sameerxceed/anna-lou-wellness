@@ -23,7 +23,14 @@ export default async function ContactPage() {
   return (
     <>
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Contact', href: '/contact' }]} />
-      <PageHero label={cms?.kicker || 'Say Hello'} title={cms?.title || 'Contact'} bgClass="hero-contact" height="30vh" />
+      {/* Header: all-or-nothing (Anna 14 Jul). If she's set kicker OR title,
+          use only her values (blank -> empty). Both blank -> defaults. */}
+      {(() => {
+        const hasHeader = !!(cms?.kicker || cms?.title);
+        const label = hasHeader ? cms?.kicker : 'Say Hello';
+        const title = hasHeader ? cms?.title : 'Contact';
+        return <PageHero label={label || ''} title={title || ''} bgClass="hero-contact" height="30vh" />;
+      })()}
 
       {siteConfig.discoveryCall && (
         <section className="pt-6 pb-2 px-6">

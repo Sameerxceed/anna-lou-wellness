@@ -53,15 +53,36 @@ export function genericPageProps(
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage(fallback.stockCategory, fallback.stockSeed, 'hero');
 
+  // All-or-nothing per section (Anna 14 Jul policy).
+  //
+  // Header section: kicker + title. If Anna has filled either, use only her
+  // CMS values (blank = empty on the page). If both blank, defaults kick in.
+  const hasHeader = !!(cms?.kicker || cms?.title);
+  const kicker = hasHeader ? (cms?.kicker || '') : fallback.kicker;
+  const kickerColour = hasHeader ? (cms?.kickerColour || fallback.kickerColour) : fallback.kickerColour;
+  const title = hasHeader ? (cms?.title || '') : fallback.title;
+
+  // Body paragraphs: single richtext field. Blank -> fallback paragraphs.
+  const paragraphs = cms?.intro ? splitParas(cms.intro) : fallback.paragraphs;
+
+  // CTA: pair of fields. If Anna set either label OR url, use only her values.
+  // If BOTH blank, use fallback.cta (which itself may be undefined on some pages).
+  const hasCta = !!(cms?.ctaLabel || cms?.ctaUrl);
+  const cta = hasCta
+    ? (cms?.ctaLabel && cms?.ctaUrl
+        ? { label: cms.ctaLabel, href: cms.ctaUrl }
+        : undefined) // partially filled -> render nothing (avoid a broken link)
+    : fallback.cta;
+
   return {
-    kicker: cms?.kicker || fallback.kicker,
-    kickerColour: cms?.kickerColour || fallback.kickerColour,
-    title: cms?.title || fallback.title,
+    kicker,
+    kickerColour,
+    title,
     parentLabel: fallback.parentLabel,
     parentHref: fallback.parentHref,
     heroImage,
-    paragraphs: cms?.intro ? splitParas(cms.intro) : fallback.paragraphs,
-    cta: cms?.ctaLabel && cms?.ctaUrl ? { label: cms.ctaLabel, href: cms.ctaUrl } : fallback.cta,
+    paragraphs,
+    cta,
   };
 }
 

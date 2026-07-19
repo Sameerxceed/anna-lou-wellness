@@ -23,8 +23,16 @@ export default async function SpeakingPage() {
     getTestimonials({ tag: 'speaking' }),
     getFAQs({ page: 'speaking' }),
   ]);
-  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'speaking-hero');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+  // Hero section — all-or-nothing (Anna 14 Jul policy).
+  const cmsAny = cms as any;
+  const hasHero = !!(cmsAny?.eyebrow || cms?.title || cmsAny?.tagline || cms?.heroImage);
+  const heroEyebrow = hasHero ? (cmsAny?.eyebrow || '') : 'Experiences · For events';
+  const heroTitle = hasHero ? (cms?.title || '') : 'Speaking.';
+  const heroTagline = hasHero ? (cmsAny?.tagline || '') : 'Keynotes, panels, Q&As. Online and in person.';
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'speaking-hero');
+
   const introParas = cms?.intro ? splitParas(cms.intro) : [
     'Anna speaks on the inner guidance system, the nervous system, somatic coaching, the recovery work that follows narcissistic abuse, and what it actually takes for a woman to rebuild from burnout. She also speaks to founders on the link between the body and the business.',
     'Format depends on what your audience needs. Keynote, panel, fireside, intimate Q&A. Online or in the room.',
@@ -46,9 +54,9 @@ export default async function SpeakingPage() {
       <section className="sp-hero">
         <div className="sp-hero-grid">
           <div className="sp-hero-text">
-            <p className="sp-eyebrow">Experiences · For events</p>
-            <h1 className="sp-title">{cms?.title || 'Speaking.'}</h1>
-            <p className="sp-tagline"><em>Keynotes, panels, Q&amp;As. Online and in person.</em></p>
+            {heroEyebrow && <p className="sp-eyebrow">{heroEyebrow}</p>}
+            {heroTitle && <h1 className="sp-title">{heroTitle}</h1>}
+            {heroTagline && <p className="sp-tagline"><em>{heroTagline}</em></p>}
           </div>
           <div className="sp-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>

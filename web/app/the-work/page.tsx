@@ -39,41 +39,65 @@ export default async function TheWorkPage() {
     getWorkWithAnnaPage(pageFallback),
   ]);
   const faqs = hubFaqs.length > 0 ? hubFaqs : legacyFaqs;
+
+  // All-or-nothing per section (Anna 14 Jul policy).
+  const hasHeader = !!(page.kicker || page.title || page.intro);
+  const kicker = hasHeader ? page.kicker : pageFallback.kicker;
+  const kickerColour = hasHeader ? (page.kickerColour || pageFallback.kickerColour) : pageFallback.kickerColour;
+  const title = hasHeader ? page.title : pageFallback.title;
+  const intro = hasHeader ? page.intro : pageFallback.intro;
+
+  const hasWays = !!(page.waysSectionTitle || page.waysSectionBody || page.waysSectionCtaLabel || page.waysSectionCtaUrl);
+  const waysSectionTitle = hasWays ? page.waysSectionTitle : pageFallback.waysSectionTitle;
+  const waysSectionBody = hasWays ? page.waysSectionBody : pageFallback.waysSectionBody;
+  const waysSectionCtaLabel = hasWays ? page.waysSectionCtaLabel : pageFallback.waysSectionCtaLabel;
+  const waysSectionCtaUrl = hasWays ? page.waysSectionCtaUrl : pageFallback.waysSectionCtaUrl;
+
+  const hasProgrammesLabels = !!(page.programmesKicker || page.programmesTitle);
+  const programmesKicker = hasProgrammesLabels ? page.programmesKicker : pageFallback.programmesKicker;
+  const programmesTitle = hasProgrammesLabels ? page.programmesTitle : pageFallback.programmesTitle;
+
   return (
     <>
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }]} />
       <ServiceSchema name="Somatic Coaching with Anna Lou" description="1:1 coaching sessions using The Signal Method. Nervous system regulation, emotional healing, and personal transformation." url="/the-work" />
       <style dangerouslySetInnerHTML={{ __html: workStyles }} />
 
-      {/* Header */}
-      <section className="work-header">
-        <div className="work-header-inner reveal">
-          <p className="work-kicker" style={{ color: page.kickerColour }}>{page.kicker}</p>
-          <h1 className="work-title">{page.title}</h1>
-          <p className="work-intro">{page.intro}</p>
-        </div>
-      </section>
-
-      {/* Ways to work — CMS-driven */}
-      <section className="work-ways">
-        <div className="work-ways-inner">
-          <div className="reveal">
-            <h2 className="work-section-title">{page.waysSectionTitle}</h2>
-            <p className="work-body">{page.waysSectionBody}</p>
-            <div className="work-cta-group">
-              <Link href={page.waysSectionCtaUrl} className="work-cta-primary">{page.waysSectionCtaLabel} <span>&rarr;</span></Link>
-              <Link href="/ask-anna" className="work-cta-primary">Ask Anna for a recommendation <span>&rarr;</span></Link>
-            </div>
+      {/* Header — each field hides if empty */}
+      {(kicker || title || intro) && (
+        <section className="work-header">
+          <div className="work-header-inner reveal">
+            {kicker && <p className="work-kicker" style={{ color: kickerColour }}>{kicker}</p>}
+            {title && <h1 className="work-title">{title}</h1>}
+            {intro && <p className="work-intro">{intro}</p>}
           </div>
-          <div className="work-image reveal rd1" />
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* Ways to work — hides entire section when empty */}
+      {(waysSectionTitle || waysSectionBody || waysSectionCtaLabel) && (
+        <section className="work-ways">
+          <div className="work-ways-inner">
+            <div className="reveal">
+              {waysSectionTitle && <h2 className="work-section-title">{waysSectionTitle}</h2>}
+              {waysSectionBody && <p className="work-body">{waysSectionBody}</p>}
+              <div className="work-cta-group">
+                {waysSectionCtaLabel && waysSectionCtaUrl && (
+                  <Link href={waysSectionCtaUrl} className="work-cta-primary">{waysSectionCtaLabel} <span>&rarr;</span></Link>
+                )}
+                <Link href="/ask-anna" className="work-cta-primary">Ask Anna for a recommendation <span>&rarr;</span></Link>
+              </div>
+            </div>
+            <div className="work-image reveal rd1" />
+          </div>
+        </section>
+      )}
 
       {/* 1:1 Sessions — kicker/title from CMS, cards from Coaching Session collection */}
       <section className="work-sessions">
         <div className="work-sessions-inner">
-          <p className="work-kicker reveal">{page.programmesKicker}</p>
-          <h2 className="work-section-title reveal rd1">{page.programmesTitle}</h2>
+          {programmesKicker && <p className="work-kicker reveal">{programmesKicker}</p>}
+          {programmesTitle && <h2 className="work-section-title reveal rd1">{programmesTitle}</h2>}
           <div className="work-sessions-grid">
             {sessions.length > 0 ? sessions.map((session, i) => {
               // Anna 14 Jul feedback: all Learn More links used to point at

@@ -23,13 +23,27 @@ export default async function CorporatePage() {
     getTestimonials({ tag: 'corporate' }),
     getFAQs({ page: 'corporate-wellbeing' }),
   ]);
-  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'corporate-hero');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+  // All-or-nothing per section (Anna 14 Jul policy). If Anna has filled ANY
+  // field in a section, use only her CMS values (blank fields render empty).
+
+  // Hero section: eyebrow + title + tagline + heroImage
+  const cmsAny = cms as any;
+  const hasHero = !!(cmsAny?.eyebrow || cms?.title || cmsAny?.tagline || cms?.heroImage);
+  const heroEyebrow = hasHero ? (cmsAny?.eyebrow || '') : 'Experiences · For teams';
+  const heroTitle = hasHero ? (cms?.title || '') : 'Corporate Wellbeing.';
+  const heroTagline = hasHero ? (cmsAny?.tagline || '') : 'Nervous system work that actually changes how people show up.';
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'corporate-hero');
+
+  // Intro section: single richtext field. Blank -> use defaults.
   const introParas = cms?.intro ? splitParas(cms.intro) : [
     'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes tailored to your workplace. The Signal Method adapted for corporate environments.',
     'Formats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.',
     'Anna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.',
   ];
+
+  // Formats list: parse CMS or use default.
   const formats = parseSecondaryList(cms?.secondaryList) || [
     { title: '90-minute session', body: 'A single workshop. Online or in person. Topic shaped to your team.' },
     { title: 'Half-day or full-day', body: 'Immersive teambuilding plus nervous system regulation. On houseboat or at your space.' },
@@ -46,9 +60,9 @@ export default async function CorporatePage() {
       <section className="cw-hero">
         <div className="cw-hero-grid">
           <div className="cw-hero-text">
-            <p className="cw-eyebrow">{(cms as any)?.eyebrow || 'Experiences · For teams'}</p>
-            <h1 className="cw-title">{cms?.title || 'Corporate Wellbeing.'}</h1>
-            <p className="cw-tagline"><em>{(cms as any)?.tagline || 'Nervous system work that actually changes how people show up.'}</em></p>
+            {heroEyebrow && <p className="cw-eyebrow">{heroEyebrow}</p>}
+            {heroTitle && <h1 className="cw-title">{heroTitle}</h1>}
+            {heroTagline && <p className="cw-tagline"><em>{heroTagline}</em></p>}
           </div>
           <div className="cw-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
         </div>

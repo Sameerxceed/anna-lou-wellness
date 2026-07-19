@@ -30,78 +30,122 @@ const defaultResetRoomFeatures = [
   'Early retreat booking access',
 ];
 
+const defaultKicker = 'Community';
+const defaultTitle = 'Come and sit with us.';
+const defaultCircleTitle = 'The Returning Circle';
+const defaultResetRoomTitle = 'The Reset Room';
+const defaultResetRoomPrice = '£25 per month';
+const defaultEventsTitle = 'Events Calendar';
+const defaultResourcesTitle = 'Resource Library';
+const defaultEventsDescription = 'Upcoming retreats, live dates, guest experts, and member-only events. All in one place.';
+const defaultResourcesDescription = 'Guides, tools, workshop replays, and member-only content. Everything you need for the journey.';
+
 export default async function CommunityPage() {
   const page = await getCommunityPage();
 
-  const intro = page.intro || defaultIntro;
-  const circleDesc = page.circleDescription || defaultCircleDescription;
-  const resetRoomDesc = page.resetRoomDescription || defaultResetRoomDescription;
-  const resetRoomFeatures = page.resetRoomFeatures.length > 0 ? page.resetRoomFeatures : defaultResetRoomFeatures;
-  const eventsDesc = page.eventsDescription || 'Upcoming retreats, live dates, guest experts, and member-only events. All in one place.';
-  const resourcesDesc = page.resourcesDescription || 'Guides, tools, workshop replays, and member-only content. Everything you need for the journey.';
+  // All-or-nothing per section (Anna 14 Jul policy).
+  const hasHeader = !!(page.kicker || page.title || page.intro);
+  const kicker = hasHeader ? page.kicker : defaultKicker;
+  const title = hasHeader ? page.title : defaultTitle;
+  const intro = hasHeader ? page.intro : defaultIntro;
+
+  const hasCircle = !!(page.circleTitle || page.circleDescription || page.circleImage);
+  const circleTitle = hasCircle ? page.circleTitle : defaultCircleTitle;
+  const circleDesc = hasCircle ? page.circleDescription : defaultCircleDescription;
+
+  const hasResetRoom = !!(
+    page.resetRoomTitle || page.resetRoomDescription || page.resetRoomPrice ||
+    page.resetRoomFeatures.length > 0 || page.resetRoomImage
+  );
+  const resetRoomTitle = hasResetRoom ? page.resetRoomTitle : defaultResetRoomTitle;
+  const resetRoomDesc = hasResetRoom ? page.resetRoomDescription : defaultResetRoomDescription;
+  const resetRoomPrice = hasResetRoom ? page.resetRoomPrice : defaultResetRoomPrice;
+  const resetRoomFeatures = hasResetRoom ? page.resetRoomFeatures : defaultResetRoomFeatures;
+
+  const hasEvents = !!(page.eventsTitle || page.eventsDescription);
+  const eventsTitle = hasEvents ? page.eventsTitle : defaultEventsTitle;
+  const eventsDesc = hasEvents ? page.eventsDescription : defaultEventsDescription;
+
+  const hasResources = !!(page.resourcesTitle || page.resourcesDescription);
+  const resourcesTitle = hasResources ? page.resourcesTitle : defaultResourcesTitle;
+  const resourcesDesc = hasResources ? page.resourcesDescription : defaultResourcesDescription;
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: comStyles }} />
 
-      {/* Header */}
-      <section className="com-header">
-        <div className="com-header-inner reveal">
-          <p className="com-kicker">{page.kicker}</p>
-          <h1 className="com-title">{page.title}</h1>
-          <p className="com-intro">{intro}</p>
-        </div>
-      </section>
+      {/* Header — each field hides if empty */}
+      {(kicker || title || intro) && (
+        <section className="com-header">
+          <div className="com-header-inner reveal">
+            {kicker && <p className="com-kicker">{kicker}</p>}
+            {title && <h1 className="com-title">{title}</h1>}
+            {intro && <p className="com-intro">{intro}</p>}
+          </div>
+        </section>
+      )}
 
       {/* The Returning Circle */}
-      <section className="com-section">
-        <div className="com-section-inner">
-          <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#dcc8c0,#c8b0a8)' }} />
-          <div className="reveal rd1">
-            <h2 className="com-section-title">{page.circleTitle}</h2>
-            {circleDesc.split('\n\n').map((para, i) => (
-              <p key={i} className="com-body">{para}</p>
-            ))}
-            <Link href="/community/the-returning-circle" className="com-link">Come when you&rsquo;re ready <span>&rarr;</span></Link>
+      {(circleTitle || circleDesc) && (
+        <section className="com-section">
+          <div className="com-section-inner">
+            <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#dcc8c0,#c8b0a8)' }} />
+            <div className="reveal rd1">
+              {circleTitle && <h2 className="com-section-title">{circleTitle}</h2>}
+              {circleDesc && circleDesc.split('\n\n').map((para, i) => (
+                <p key={i} className="com-body">{para}</p>
+              ))}
+              <Link href="/community/the-returning-circle" className="com-link">Come when you&rsquo;re ready <span>&rarr;</span></Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* The Reset Room */}
-      <section className="com-section com-section-alt">
-        <div className="com-section-inner com-section-reverse">
-          <div className="reveal rd1">
-            <h2 className="com-section-title">{page.resetRoomTitle}</h2>
-            {resetRoomDesc.split('\n\n').map((para, i) => (
-              <p key={i} className="com-body">{para}</p>
-            ))}
-            <p className="com-price">{page.resetRoomPrice}</p>
-            <ul className="com-features">
-              {resetRoomFeatures.map((feature, i) => (
-                <li key={i}>{feature}</li>
+      {(resetRoomTitle || resetRoomDesc || resetRoomPrice || resetRoomFeatures.length > 0) && (
+        <section className="com-section com-section-alt">
+          <div className="com-section-inner com-section-reverse">
+            <div className="reveal rd1">
+              {resetRoomTitle && <h2 className="com-section-title">{resetRoomTitle}</h2>}
+              {resetRoomDesc && resetRoomDesc.split('\n\n').map((para, i) => (
+                <p key={i} className="com-body">{para}</p>
               ))}
-            </ul>
-            <Link href="/community/membership" className="com-link">Join the Reset Room <span>&rarr;</span></Link>
+              {resetRoomPrice && <p className="com-price">{resetRoomPrice}</p>}
+              {resetRoomFeatures.length > 0 && (
+                <ul className="com-features">
+                  {resetRoomFeatures.map((feature, i) => (
+                    <li key={i}>{feature}</li>
+                  ))}
+                </ul>
+              )}
+              <Link href="/community/membership" className="com-link">Join the Reset Room <span>&rarr;</span></Link>
+            </div>
+            <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#e0d4c8,#d2c4b6)' }} />
           </div>
-          <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#e0d4c8,#d2c4b6)' }} />
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Events + Resources grid */}
-      <section className="com-grid-section">
-        <div className="com-grid">
-          <Link href="/community/events" className="com-card reveal">
-            <h3>{page.eventsTitle}</h3>
-            <p>{eventsDesc}</p>
-            <span className="com-card-link">View calendar <span>&rarr;</span></span>
-          </Link>
-          <Link href="/community/resources" className="com-card reveal rd1">
-            <h3>{page.resourcesTitle}</h3>
-            <p>{resourcesDesc}</p>
-            <span className="com-card-link">Browse resources <span>&rarr;</span></span>
-          </Link>
-        </div>
-      </section>
+      {/* Events + Resources grid — hides individual cards if empty */}
+      {((eventsTitle || eventsDesc) || (resourcesTitle || resourcesDesc)) && (
+        <section className="com-grid-section">
+          <div className="com-grid">
+            {(eventsTitle || eventsDesc) && (
+              <Link href="/community/events" className="com-card reveal">
+                {eventsTitle && <h3>{eventsTitle}</h3>}
+                {eventsDesc && <p>{eventsDesc}</p>}
+                <span className="com-card-link">View calendar <span>&rarr;</span></span>
+              </Link>
+            )}
+            {(resourcesTitle || resourcesDesc) && (
+              <Link href="/community/resources" className="com-card reveal rd1">
+                {resourcesTitle && <h3>{resourcesTitle}</h3>}
+                {resourcesDesc && <p>{resourcesDesc}</p>}
+                <span className="com-card-link">Browse resources <span>&rarr;</span></span>
+              </Link>
+            )}
+          </div>
+        </section>
+      )}
     <UpsellBlockForSingleton endpoint="/community-page" />
     </>
   );

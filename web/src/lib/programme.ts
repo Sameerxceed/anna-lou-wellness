@@ -74,7 +74,11 @@ export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | n
 
 /**
  * Convert a CMS programme record into the props the existing ProgrammePage
- * component expects, layered on top of hardcoded fallbacks per route.
+ * component expects, with all-or-nothing-per-section fallback (Anna 14 Jul
+ * policy). If Anna has filled ANY field in a section, we use only her CMS
+ * values for that section (blank fields render empty). If the ENTIRE
+ * section is untouched, we use the route-specific hardcoded fallback so
+ * the page renders coherently until she gets to it.
  */
 export function programmeProps(
   cms: ProgrammeCMS | null,
@@ -94,31 +98,73 @@ export function programmeProps(
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const splitLines = (s: string) => s.split('\n').map((p) => p.trim()).filter(Boolean);
 
-  const intro = cms?.intro ? splitParas(cms.intro) : fallback.intro;
-  const items = cms?.whatsIncludedItems ? splitLines(cms.whatsIncludedItems) : fallback.whatsIncludedItems;
+  // Section: Hero (title + tagline + heroImage). All-or-nothing.
+  const hasHero = !!(cms?.title || cms?.tagline || cms?.heroImage);
+  const heroTitle = hasHero ? (cms?.title || '') : fallback.title;
+  const heroTagline = hasHero ? (cms?.tagline || '') : fallback.tagline;
+  const heroImage = hasHero
+    ? (mediaUrl(cms?.heroImage as { url?: string } | undefined) || '')
+    : (fallback.image || '');
 
-  const sections: { label: string; body: string | string[] }[] = [
-    { label: cms?.whatsIncludedLabel || 'What\'s included', body: items },
-  ];
-  if (cms?.approachBody) sections.push({ label: cms.approachLabel || 'The approach', body: cms.approachBody });
-  if (cms?.outcomesBody) sections.push({ label: cms.outcomesLabel || 'What changes', body: cms.outcomesBody });
+  // Section: Intro (single richtext field). Single-field section.
+  const intro = cms?.intro ? splitParas(cms.intro) : fallback.intro;
+
+  // Section: What's included (label + items). All-or-nothing.
+  const hasIncluded = !!(cms?.whatsIncludedLabel || cms?.whatsIncludedItems);
+  const includedLabel = hasIncluded
+    ? (cms?.whatsIncludedLabel || '')
+    : "What's included";
+  const includedItems = hasIncluded
+    ? (cms?.whatsIncludedItems ? splitLines(cms.whatsIncludedItems) : [])
+    : fallback.whatsIncludedItems;
+
+  const sections: { label: string; body: string | string[] }[] = [];
+  if (includedItems.length > 0 || includedLabel) {
+    sections.push({ label: includedLabel, body: includedItems });
+  }
+  // Approach + Outcomes are optional add-on sections. If either field is
+  // set they render; if both are blank, nothing renders (no fallback).
+  if (cms?.approachBody || cms?.approachLabel) {
+    sections.push({
+      label: cms?.approachLabel || 'The approach',
+      body: cms?.approachBody || '',
+    });
+  }
+  if (cms?.outcomesBody || cms?.outcomesLabel) {
+    sections.push({
+      label: cms?.outcomesLabel || 'What changes',
+      body: cms?.outcomesBody || '',
+    });
+  }
+
+  // Section: Pricing (label + body). All-or-nothing.
+  const hasPricing = !!(cms?.pricingLabel || cms?.pricingBody);
+  const pricingLabel = hasPricing
+    ? (cms?.pricingLabel || '')
+    : (fallback.pricingLabel || 'Investment');
+  const pricingBody = hasPricing
+    ? (cms?.pricingBody || '')
+    : fallback.pricingBody;
+
+  // Section: CTA (label + url). All-or-nothing.
+  const hasCta = !!(cms?.ctaLabel || cms?.ctaUrl);
+  const ctaLabel = hasCta
+    ? (cms?.ctaLabel || '')
+    : (fallback.ctaLabel || 'Book a 15-minute 1 to 1 chat');
+  const ctaHref = hasCta
+    ? (cms?.ctaUrl || '')
+    : (fallback.ctaUrl || '/contact');
 
   return {
     accentColour: cms?.accentColour || fallback.accentColour,
     hero: {
-      title: cms?.title || fallback.title,
-      tagline: cms?.tagline || fallback.tagline,
-      image: mediaUrl(cms?.heroImage as { url?: string } | undefined) || fallback.image,
+      title: heroTitle,
+      tagline: heroTagline,
+      image: heroImage,
     },
     intro,
     sections,
-    pricing: {
-      label: cms?.pricingLabel || fallback.pricingLabel || 'Investment',
-      body: cms?.pricingBody || fallback.pricingBody,
-    },
-    cta: {
-      label: cms?.ctaLabel || fallback.ctaLabel || 'Book a 15-minute 1 to 1 chat',
-      href: cms?.ctaUrl || fallback.ctaUrl || '/contact',
-    },
+    pricing: { label: pricingLabel, body: pricingBody },
+    cta: { label: ctaLabel, href: ctaHref },
   };
 }

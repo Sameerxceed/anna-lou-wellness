@@ -29,8 +29,8 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
               <Link href="/the-work">Work with Anna</Link>
             </nav>
             <p className="prog-eyebrow" style={{ color: accentColour }}>Work with Anna</p>
-            <h1 className="prog-title">{hero.title}</h1>
-            <p className="prog-tagline"><em>{hero.tagline}</em></p>
+            {hero.title && <h1 className="prog-title">{hero.title}</h1>}
+            {hero.tagline && <p className="prog-tagline"><em>{hero.tagline}</em></p>}
           </div>
           {hero.image && (
             <div className="prog-hero-img" style={{ backgroundImage: `url('${hero.image}')` }} />
@@ -38,48 +38,60 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
         </div>
       </section>
 
-      <section className="prog-intro">
-        <div className="prog-intro-inner">
-          {intro.map((p, i) => (
-            <p key={i} className="prog-body-text">{p}</p>
-          ))}
-        </div>
-      </section>
-
-      {sections.map((sec, i) => (
-        <section key={i} className="prog-section" style={i % 2 === 1 ? { background: '#F5F3EF' } : undefined}>
-          <div className="prog-section-inner">
-            <p className="prog-section-label" style={{ color: accentColour }}>{sec.label}</p>
-            {Array.isArray(sec.body) ? (
-              <ul className="prog-list">
-                {sec.body.map((item, j) => <li key={j}>{item}</li>)}
-              </ul>
-            ) : (
-              <p className="prog-body-text">{sec.body}</p>
-            )}
+      {intro.length > 0 && (
+        <section className="prog-intro">
+          <div className="prog-intro-inner">
+            {intro.map((p, i) => (
+              <p key={i} className="prog-body-text">{p}</p>
+            ))}
           </div>
         </section>
-      ))}
+      )}
 
-      <section className="prog-pricing">
-        <div className="prog-pricing-inner">
-          <p className="prog-section-label" style={{ color: accentColour }}>{pricing.label}</p>
-          <p className="prog-pricing-text">{pricing.body}</p>
-        </div>
-      </section>
+      {sections.map((sec, i) => {
+        const hasBody = Array.isArray(sec.body) ? sec.body.length > 0 : !!sec.body;
+        if (!sec.label && !hasBody) return null;
+        return (
+          <section key={i} className="prog-section" style={i % 2 === 1 ? { background: '#F5F3EF' } : undefined}>
+            <div className="prog-section-inner">
+              {sec.label && <p className="prog-section-label" style={{ color: accentColour }}>{sec.label}</p>}
+              {Array.isArray(sec.body) ? (
+                sec.body.length > 0 && (
+                  <ul className="prog-list">
+                    {sec.body.map((item, j) => <li key={j}>{item}</li>)}
+                  </ul>
+                )
+              ) : (
+                sec.body && <p className="prog-body-text">{sec.body}</p>
+              )}
+            </div>
+          </section>
+        );
+      })}
 
-      <section className="prog-cta" style={{ background: accentColour }}>
-        <div className="prog-cta-inner">
-          <h2 className="prog-cta-title">Ready when you are.</h2>
-          <BookingButton
-            url={cta.href}
-            label={`${cta.label} →`}
-            className="prog-cta-btn"
-            style={{ color: accentColour }}
-          />
-          <p className="prog-cta-fineprint">If unsure, book a free 15-minute 1 to 1 chat. Anna will hear what you actually need.</p>
-        </div>
-      </section>
+      {(pricing.label || pricing.body) && (
+        <section className="prog-pricing">
+          <div className="prog-pricing-inner">
+            {pricing.label && <p className="prog-section-label" style={{ color: accentColour }}>{pricing.label}</p>}
+            {pricing.body && <p className="prog-pricing-text">{pricing.body}</p>}
+          </div>
+        </section>
+      )}
+
+      {cta.label && cta.href && (
+        <section className="prog-cta" style={{ background: accentColour }}>
+          <div className="prog-cta-inner">
+            <h2 className="prog-cta-title">Ready when you are.</h2>
+            <BookingButton
+              url={cta.href}
+              label={`${cta.label} →`}
+              className="prog-cta-btn"
+              style={{ color: accentColour }}
+            />
+            <p className="prog-cta-fineprint">If unsure, book a free 15-minute 1 to 1 chat. Anna will hear what you actually need.</p>
+          </div>
+        </section>
+      )}
     </>
   );
 }
