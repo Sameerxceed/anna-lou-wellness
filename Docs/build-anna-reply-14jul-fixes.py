@@ -336,10 +336,74 @@ para(
 
 blank()
 para('That is the full list. WhatsApp me when you have hit each of the CMS + NEEDS YOU items so I can verify.', italic=True)
+
+
+# ============ Content policy change ============
+doc.add_page_break()
+h1('One important change to how the website reads content')
+
+para(
+    "You told me you were seeing hardcoded copy on pages that you thought "
+    "should be coming from the CMS — and once you edited part of a section "
+    "in Strapi, the rest of that section was still showing default text you "
+    "could not edit. That is confusing and it is fixed."
+)
+
+h2('New rule: what you see on the live site is what is in the CMS')
+
+para(
+    "Every page now reads its content strictly from Strapi. There is no "
+    "hardcoded copy hiding underneath. Three consequences:"
+)
+bullet(
+    "IF you have filled a section in the CMS -> that content shows on live. "
+    "Edit it, save, and the live site updates in a few seconds."
+)
+bullet(
+    "IF you clear a field in the CMS -> that field disappears from the live "
+    "site. The rest of the page adjusts around the gap."
+)
+bullet(
+    "IF you clear a whole section (all its fields blank) -> the entire "
+    "section is hidden from the live site. The page becomes shorter."
+)
+
+h2('What we did so you do not lose anything')
+
+para(
+    "Before switching the site to this stricter mode, we copied every piece "
+    "of content that was previously hardcoded INTO the CMS. So on the day "
+    "we ship this change, the live site looks identical to today, but every "
+    "piece of copy is now editable in your admin panel. Specifically:"
+)
+bullet("About page — kicker, title, roles tagline, both story paragraphs, additional bio")
+bullet("Community page — full header + Returning Circle + Reset Room + Events + Resources copy")
+bullet("Work with Anna hub — header, Ways-to-work-with-me section, Programmes section")
+bullet("Corporate Wellbeing + Speaking sub-pages — eyebrow + tagline in the hero band")
+bullet("All 6 programme pages (Reset, Signal, Signal & Build, One Day, Signal Collective, Recovery) were already fully in CMS — no change there")
+bullet("Retreats, Workshops, Events Calendar, Resource Library, Press, Work With Me — already in CMS, unchanged")
+
+h2('What this means for you day-to-day')
+
+para(
+    "You can now confidently edit any section without wondering whether "
+    "some hidden default is going to leak through. If you delete a section "
+    "you do not want any more, it goes away entirely. If you fill it, it "
+    "appears. Anna in control, no surprises."
+)
+para(
+    "Only three things stay as safety-net fallbacks (they never render as "
+    "text, only as visual scaffolding):",
+    italic=True,
+)
+bullet("Hero background images -- if you have not uploaded one, a stock photo shows instead of a blank white box")
+bullet("Programme accent colours -- the CSS needs a colour to be set for the layout to work")
+bullet("The site nav (top of every page) -- this stays coded because if it disappeared, visitors could not navigate")
+
 blank()
 para('Anna x', italic=True)
 para('Sameer', italic=True, size=10)
 
-out = 'Docs/ALW_Reply_To_Anna_14-07-2026.docx'
+out = 'Docs/ALW_Reply_To_Anna_14-07-2026_v2.docx'
 doc.save(out)
 print(f'Wrote: {out}')
