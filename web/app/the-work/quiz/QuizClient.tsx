@@ -198,8 +198,8 @@ export default function QuizClient({ hero, results }: QuizClientProps) {
               </Link>
               <div className="qz-result-other">
                 <p className="qz-eyebrow">Or</p>
-                <p className="qz-body">If this does not land, book a free 15-minute discovery call. Anna will hear what you actually need and tell you straight.</p>
-                <Link href="/contact" className="qz-link">Book a free discovery call &rarr;</Link>
+                <p className="qz-body">If this does not land, book a free 15-minute 1 to 1 chat. Anna will hear what you actually need and tell you straight.</p>
+                <Link href="/contact" className="qz-link">Book a free 15-minute 1 to 1 chat &rarr;</Link>
                 <button onClick={reset} className="qz-link qz-link-reset">Retake the quiz</button>
               </div>
             </div>

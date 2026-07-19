@@ -81,7 +81,7 @@
     },
     "ctaLabel": {
       "type": "string",
-      "default": "Book a discovery call",
+      "default": "Book a 15-minute 1 to 1 chat",
       "description": "Bottom button text."
     },
     "ctaUrl": {

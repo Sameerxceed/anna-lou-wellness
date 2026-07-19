@@ -61,7 +61,7 @@ export default async function SignalCollectivePage() {
             <li>Two in-person days at the Hampton studio, one at the start, one at the close.</li>
             <li>Guest sessions from practitioners Anna trusts.</li>
           </ul>
-          <p className="sc-pricing"><strong>Investment: by enquiry.</strong> Application form first, then a discovery call.</p>
+          <p className="sc-pricing"><strong>Investment: by enquiry.</strong> Application form first, then a 15-minute 1 to 1 chat.</p>
         </div>
       </section>
 
@@ -70,13 +70,13 @@ export default async function SignalCollectivePage() {
           <div className="sc-form-text">
             <p className="sc-section-label">Apply</p>
             <h2 className="sc-form-title">A few questions.</h2>
-            <p className="sc-form-body">Tell Anna where you are and what you are building. She reads every application herself. If it feels like a fit, she will book a discovery call with you. If not, she will say so honestly and point you to the door that is right for you.</p>
+            <p className="sc-form-body">Tell Anna where you are and what you are building. She reads every application herself. If it feels like a fit, she will book a 15-minute 1 to 1 chat with you. If not, she will say so honestly and point you to the door that is right for you.</p>
           </div>
           <EnquiryForm
             endpoint="/api/lead/signal-collective"
             accentColour={ACCENT}
             successTitle="Application received."
-            successMessage="Anna reads every one personally. If it's a fit, she'll be in touch within a week to book a discovery call."
+            successMessage="Anna reads every one personally. If it's a fit, she'll be in touch within a week to book a 15-minute 1 to 1 chat."
             submitLabel="Send application"
             fields={[
               { name: 'name', label: 'Your name', required: true },

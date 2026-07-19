@@ -77,7 +77,7 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
             className="prog-cta-btn"
             style={{ color: accentColour }}
           />
-          <p className="prog-cta-fineprint">If unsure, book a free fifteen-minute discovery call. Anna will hear what you actually need.</p>
+          <p className="prog-cta-fineprint">If unsure, book a free 15-minute 1 to 1 chat. Anna will hear what you actually need.</p>
         </div>
       </section>
     </>

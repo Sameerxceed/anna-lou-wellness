@@ -42,7 +42,7 @@
     },
     "discovery_headline": {
       "type": "string",
-      "description": "Big heading above the Discovery Call flow. Example: 'Book a Discovery Call'. Leave blank to hide the whole Discovery Call section."
+      "description": "Big heading above the 15-minute 1 to 1 chat flow. Example: 'Book a 15-minute 1 to 1 chat'. Leave blank to hide the whole 1 to 1 chat section."
     },
     "discovery_intro": {
       "type": "text",
@@ -61,12 +61,12 @@
     },
     "discovery_stripe_product_name": {
       "type": "string",
-      "default": "Discovery call booking",
+      "default": "1 to 1 chat booking",
       "description": "Product name shown on the Stripe checkout page. Keep short."
     },
     "discovery_stripe_description": {
       "type": "text",
-      "description": "Product description shown on the Stripe checkout page — the refund promise reads here. Example: 'This £10 is refunded straight after your Discovery Call. No forms, no chasing.'"
+      "description": "Product description shown on the Stripe checkout page — the refund promise reads here. Example: 'This £10 is refunded straight after your 1 to 1 chat. No forms, no chasing.'"
     },
     "discovery_calendly_url": {
       "type": "string",

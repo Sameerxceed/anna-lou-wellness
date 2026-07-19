@@ -105,7 +105,7 @@ export default async function RecoveryPage() {
           <div className="rec-form-text">
             <p className="rec-section-label">Reach out</p>
             <h2 className="rec-form-title">A first private conversation.</h2>
-            <p className="rec-form-body">Anna replies to every recovery enquiry herself, privately, within 48 hours. Discovery call free. No pressure. If 1:1 is not the right fit right now, she will say so and point you to what is.</p>
+            <p className="rec-form-body">Anna replies to every recovery enquiry herself, privately, within 48 hours. 15-minute 1 to 1 chat free. No pressure. If 1:1 is not the right fit right now, she will say so and point you to what is.</p>
             <p className="rec-form-body" style={{ fontSize: '0.85rem', color: '#8C8880' }}>If you are in immediate danger, please contact <Link href="https://www.nationaldahelpline.org.uk/" style={{ color: ACCENT }}>National Domestic Abuse Helpline 0808 2000 247</Link> (UK) before reading any further on this site.</p>
           </div>
           <EnquiryForm

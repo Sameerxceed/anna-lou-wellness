@@ -114,7 +114,7 @@ export function programmeProps(
       body: cms?.pricingBody || fallback.pricingBody,
     },
     cta: {
-      label: cms?.ctaLabel || fallback.ctaLabel || 'Book a discovery call',
+      label: cms?.ctaLabel || fallback.ctaLabel || 'Book a 15-minute 1 to 1 chat',
       href: cms?.ctaUrl || fallback.ctaUrl || '/contact',
     },
   };

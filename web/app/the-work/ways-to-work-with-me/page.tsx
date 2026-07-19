@@ -25,9 +25,9 @@ export default async function WaysPage() {
       'Signal & Build (12 weeks, £3,000) — Signal plus business coaching. For founders whose nervous system is affecting their business.',
       'One Day Intensive (enquire) — A full day on the houseboat. Immersive, concentrated work.',
       'The Signal Collective (by application) — Ongoing mastermind for women who have completed a programme and want continued support.',
-      'Not sure which is right? Book a free 15-minute discovery call.',
+      'Not sure which is right? Book a free 15-minute 1 to 1 chat.',
     ],
-    cta: { label: 'Book a discovery call', href: '/contact' },
+    cta: { label: 'Book a 15-minute 1 to 1 chat', href: '/contact' },
   });
   return <SubPage {...props} />;
 }

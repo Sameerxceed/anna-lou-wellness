@@ -351,7 +351,7 @@ export default function AskAnnaClient() {
 
               <div className="aa-cta-row">
                 <Link href="/contact" className="aa-cta-primary" style={{ background: ACCENT }}>
-                  Book a discovery call <span aria-hidden>→</span>
+                  Book a 15-minute 1 to 1 chat <span aria-hidden>→</span>
                 </Link>
                 <Link href="/the-work" className="aa-cta-secondary">
                   Browse all coaching

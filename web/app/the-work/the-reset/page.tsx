@@ -38,8 +38,8 @@ export default async function TheResetPage() {
       'Tools that fit your actual life',
       'A clear close at week six. Many clients roll into Signal. Many do not need to.',
     ],
-    pricingBody: '£1,500. Paid in full at booking, or two instalments of £750 across the six weeks. If you are not sure, book a free fifteen-minute discovery call.',
-    ctaLabel: 'Book a discovery call',
+    pricingBody: '£1,500. Paid in full at booking, or two instalments of £750 across the six weeks. If you are not sure, book a free 15-minute 1 to 1 chat.',
+    ctaLabel: 'Book The Reset',
     ctaUrl: '/contact',
   });
   const reviewInputs: ReviewInput[] = reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 }));

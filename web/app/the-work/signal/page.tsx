@@ -36,7 +36,7 @@ export default async function SignalPage() {
       'Optional in-person session at the Hampton studio',
     ],
     pricingBody: '£3,000. Paid in full, or three instalments of £1,000.',
-    ctaLabel: 'Book a discovery call',
+    ctaLabel: 'Book Signal',
     ctaUrl: '/contact',
   });
   return (

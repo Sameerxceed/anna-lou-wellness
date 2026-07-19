@@ -34,7 +34,7 @@ export default async function SignalAndBuildPage() {
       'Voxer access widened to include in-the-moment business questions',
     ],
     pricingBody: '£3,000. Paid in full, or three instalments of £1,000.',
-    ctaLabel: 'Book a discovery call',
+    ctaLabel: 'Book Signal & Build',
     ctaUrl: '/contact',
   });
   return (

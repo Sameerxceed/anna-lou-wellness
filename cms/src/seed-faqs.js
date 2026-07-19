@@ -46,7 +46,7 @@ const PAGE_SEEDS = {
     { q: 'Why is it by application?', a: 'Group containers only work when everyone in them is genuinely ready. Anna reads every application and personally chooses each cohort.' },
     { q: 'When does the next cohort start?', a: 'Cohorts open twice a year. The next intake date is announced to the Reset Letters mailing list first — sign up to be told ahead of public release.' },
     { q: 'Is the group space on social media?', a: 'No. The community sits on a private platform, off Instagram, off Facebook. Privacy is part of why it works.' },
-    { q: 'What is the investment?', a: 'By enquiry once your application is reviewed. Anna will share the full fee structure on the discovery call.' },
+    { q: 'What is the investment?', a: 'By enquiry once your application is reviewed. Anna will share the full fee structure on the 1 to 1 chat.' },
   ],
   'sessions': [
     { q: 'How do single sessions differ from a programme?', a: 'A single session is 90 minutes on one specific theme — useful when you have a clear decision to make or one pattern you want to look at. A programme is the longer arc of real change.' },
@@ -63,11 +63,11 @@ const PAGE_SEEDS = {
     { q: 'Will this trigger me?', a: 'Recovery work is by nature confronting. Anna is trauma-informed and paces the work carefully. You stay in the driving seat the whole way.' },
   ],
   'the-work': [
-    { q: 'I am not sure which programme is right for me — how do I choose?', a: 'Take the [3-minute quiz](/the-work/quiz) for a tailored recommendation. Or book a free 15-minute discovery call and Anna will help you decide.' },
+    { q: 'I am not sure which programme is right for me — how do I choose?', a: 'Take the [3-minute quiz](/the-work/quiz) for a tailored recommendation. Or book a free 15-minute 1 to 1 chat and Anna will help you decide.' },
     { q: 'What is The Signal Method?', a: 'Anna\'s framework for somatic coaching — nervous-system regulation, inner-guidance work, and pattern release combined. It underpins every programme on this page.' },
     { q: 'Are all sessions virtual?', a: 'Default is virtual on Zoom. In-person sessions are available at the Hampton studio for most programmes — see the individual programme pages.' },
     { q: 'Do you take male clients?', a: 'Anna\'s practice is currently focused on women. For male enquiries, she is happy to point you to trusted practitioners — just ask via the contact form.' },
-    { q: 'How quickly can I start?', a: 'Most programmes can begin within 1-2 weeks of a confirmed discovery call. Specific in-person dates depend on availability.' },
+    { q: 'How quickly can I start?', a: 'Most programmes can begin within 1-2 weeks of a confirmed 1 to 1 chat. Specific in-person dates depend on availability.' },
   ],
   'retreats': [
     { q: 'Where is the houseboat?', a: 'Taggs Island, Hampton — about 30 minutes from central London by train. Full travel directions go out with your booking confirmation.' },
@@ -134,9 +134,9 @@ const PAGE_SEEDS = {
   ],
   'contact': [
     { q: 'How quickly does Anna reply?', a: 'Within 48 hours on weekdays. Recovery and 1:1 enquiries are read and answered personally by Anna.' },
-    { q: 'What is the best way to reach the team?', a: 'For coaching: this form or the discovery call link. For press: see the press page. For partnerships: see Work With Me. For shop orders: hello@annalouwellness.com.' },
-    { q: 'Can I book a free discovery call?', a: 'Yes — every coaching programme includes a free 15-minute discovery call. Use the contact form and we\'ll send a booking link.' },
-    { q: 'Do you offer in-person consultations?', a: 'Yes — at the Hampton studio by arrangement. Most discovery calls happen virtually first.' },
+    { q: 'What is the best way to reach the team?', a: 'For coaching: this form or the 1 to 1 chat link. For press: see the press page. For partnerships: see Work With Me. For shop orders: hello@annalouwellness.com.' },
+    { q: 'Can I book a free 1 to 1 chat?', a: 'Yes — every coaching programme includes a free 15-minute 1 to 1 chat. Use the contact form and we\'ll send a booking link.' },
+    { q: 'Do you offer in-person consultations?', a: 'Yes — at the Hampton studio by arrangement. Most 1 to 1 chats happen virtually first.' },
     { q: 'Is there an address I can post to?', a: 'Studio post can go to: Anna Lou Wellness, Taggs Island, Hampton, London. Please email first to confirm a parcel is incoming.' },
   ],
   'testimonials': [
@@ -148,7 +148,7 @@ const PAGE_SEEDS = {
   'quiz': [
     { q: 'How long does the quiz take?', a: 'About two minutes. Five short questions, no email required.' },
     { q: 'Will I be added to a mailing list?', a: 'No. The quiz is anonymous and gives you a recommendation without any signup. You can choose to subscribe afterwards if you want.' },
-    { q: 'What if more than one option feels right?', a: 'Pick the one that feels closest. The recommendation is a starting point, not a verdict — Anna is happy to talk through alternatives on a discovery call.' },
+    { q: 'What if more than one option feels right?', a: 'Pick the one that feels closest. The recommendation is a starting point, not a verdict — Anna is happy to talk through alternatives on a 1 to 1 chat.' },
     { q: 'Can I retake the quiz?', a: 'Yes. Many people retake it after a few months as their needs shift. There is no record kept, so each go is fresh.' },
     { q: 'Is the recommendation a sales pitch?', a: 'No. About one in three quiz takers is pointed toward the free Decoder rather than a paid programme. The aim is the right next step, not the biggest sale.' },
   ],

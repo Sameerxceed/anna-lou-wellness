@@ -39,7 +39,7 @@ const SUGGESTIONS = [
   'What is The Reset?',
   'I am overwhelmed — where do I start?',
   'How is this different from therapy?',
-  'How do I book a discovery call?',
+  'How do I book a 15-minute 1 to 1 chat?',
 ];
 
 export default function FloatingAskAnna() {

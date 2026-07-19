@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * One-time seed for the Discovery Call fields on the Contact singleton.
+ * One-time seed for the 1 to 1 chat fields on the Contact singleton.
  * Populates Anna's default copy (from her 10 Jul Onenote) so the flow
  * shows up on /contact immediately after this ships.
  *
@@ -10,13 +10,13 @@
  */
 
 const DEFAULTS = {
-  discovery_headline: 'Book a Discovery Call',
+  discovery_headline: 'Book a 15-minute 1 to 1 chat',
   discovery_intro: 'Booking costs £10, refunded straight after we speak.',
   discovery_button_label: 'Book my call',
   discovery_price_gbp: 10,
-  discovery_stripe_product_name: 'Discovery call booking',
+  discovery_stripe_product_name: '1 to 1 chat booking',
   discovery_stripe_description:
-    'This £10 is refunded straight after your Discovery Call. No forms, no chasing.',
+    'This £10 is refunded straight after your 1 to 1 chat. No forms, no chasing.',
   discovery_calendly_url: '',
   discovery_why_price_label: 'Why £10?',
   discovery_why_price_body:
@@ -50,7 +50,7 @@ async function seedDiscoveryCall(strapi) {
       await strapi.entityService.create(uid, {
         data: { ...DEFAULTS, publishedAt: new Date() },
       });
-      strapi.log.info('[seed-discovery-call] created Contact singleton with Discovery Call defaults');
+      strapi.log.info('[seed-discovery-call] created Contact singleton with 1 to 1 chat defaults');
     } catch (err) {
       strapi.log.warn('[seed-discovery-call] create failed:', err.message);
     }
@@ -69,7 +69,7 @@ async function seedDiscoveryCall(strapi) {
   }
 
   if (Object.keys(patch).length === 0) {
-    strapi.log.info('[seed-discovery-call] Contact singleton already has Discovery Call copy - skipping');
+    strapi.log.info('[seed-discovery-call] Contact singleton already has 1 to 1 chat copy - skipping');
     return;
   }
 
