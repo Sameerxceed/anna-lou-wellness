@@ -129,12 +129,14 @@ export default function Footer({ siteSettings, footer, navigation }: FooterProps
         )}
       </nav>
 
-      {/* Tier 3: Legal */}
-      <nav className="footer-tier3">
-        {footer.legalLinks.map(link => (
-          <Link key={link.href} href={link.href}>{link.label}</Link>
-        ))}
-      </nav>
+      {/* Tier 3: Legal — hides if Anna hasn't filled the list in CMS */}
+      {footer.legalLinks.length > 0 && (
+        <nav className="footer-tier3">
+          {footer.legalLinks.map(link => (
+            <Link key={link.href} href={link.href}>{link.label}</Link>
+          ))}
+        </nav>
+      )}
 
       {/* Substack CTA */}
       <div className="footer-substack">

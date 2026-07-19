@@ -674,41 +674,37 @@ export interface FooterData {
 }
 
 export async function getFooter(): Promise<FooterData> {
-  const fallback: FooterData = {
+  // NEW policy (Anna 14 Jul): show CMS content or nothing — no hardcoded
+  // fallback links mixing in with whatever Anna typed. Only the strictly
+  // required scalar fields (closingMessage, substackCta*) keep a fallback
+  // so the page doesn't render with a bare footer when Anna hasn't touched
+  // the singleton yet. Link lists render empty if the CMS field is blank
+  // — the Footer component then hides that tier entirely.
+  const emptyFallback: FooterData = {
     closingMessage: "You don't have to hold everything.",
-    exploreLinks: fallbackFooterLinks.explore,
-    connectLinks: fallbackFooterLinks.connect,
-    legalLinks: [
-      { label: 'Press', href: '/about/press' },
-      { label: 'Privacy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
-    ],
+    exploreLinks: [],
+    connectLinks: [],
+    legalLinks: [],
     substackCtaLabel: 'Join Reset Letters →',
-    // Default to /reset-letters — Anna's own signup form with Turnstile +
-    // dual-push to Mailchimp + Substack. Routes via /api/subscribe-reset-letters.
-    // Anna can override in Footer singleton if she ever wants to link out direct.
     substackCtaUrl: '/reset-letters',
   };
   try {
     const { data: d } = await fetchAPI('/footer', { 'populate[explore_links]': '*', 'populate[connect_links]': '*', 'populate[legal_links]': '*' } as any);
-    if (!d) return fallback;
+    if (!d) return emptyFallback;
     const mapLinks = (arr: any): { label: string; href: string }[] =>
       Array.isArray(arr) && arr.length > 0
         ? arr.map((l: any) => ({ label: String(l?.label || ''), href: String(l?.href || '#') }))
         : [];
-    const explore = mapLinks((d as any).explore_links);
-    const connect = mapLinks((d as any).connect_links);
-    const legal = mapLinks((d as any).legal_links);
     return {
-      closingMessage: (d as any).closing_message || fallback.closingMessage,
-      exploreLinks: explore.length ? explore : fallback.exploreLinks,
-      connectLinks: connect.length ? connect : fallback.connectLinks,
-      legalLinks: legal.length ? legal : fallback.legalLinks,
-      substackCtaLabel: (d as any).substack_cta_label || fallback.substackCtaLabel,
-      substackCtaUrl: (d as any).substack_cta_url || fallback.substackCtaUrl,
+      closingMessage: (d as any).closing_message || emptyFallback.closingMessage,
+      exploreLinks: mapLinks((d as any).explore_links),
+      connectLinks: mapLinks((d as any).connect_links),
+      legalLinks: mapLinks((d as any).legal_links),
+      substackCtaLabel: (d as any).substack_cta_label || emptyFallback.substackCtaLabel,
+      substackCtaUrl: (d as any).substack_cta_url || emptyFallback.substackCtaUrl,
     };
   } catch {
-    return fallback;
+    return emptyFallback;
   }
 }
 
@@ -1626,10 +1622,15 @@ export interface AboutPage {
 }
 
 export async function getAboutPage(): Promise<AboutPage> {
-  const fallback: AboutPage = {
-    kicker: 'About',
-    title: 'Twenty-five years leaves a trail.',
-    rolesTagline: 'Coach. Trainer. Podcaster. Author. Entrepreneur. Designer.',
+  // NEW policy (Anna 14 Jul): CMS layer returns RAW values from Strapi —
+  // empty strings/arrays when Anna hasn't filled a field. The page
+  // component decides whether to substitute a default or render empty,
+  // using the all-or-nothing-per-section rule so Anna's copy never mixes
+  // with hardcoded fallback content.
+  const empty: AboutPage = {
+    kicker: '',
+    title: '',
+    rolesTagline: '',
     storyParagraph1: '',
     storyParagraph2: '',
     additionalBio: '',
@@ -1641,30 +1642,30 @@ export async function getAboutPage(): Promise<AboutPage> {
 
   try {
     const { data: d } = await fetchAPI('/about-page', { populate: '*' });
-    if (!d) return fallback;
+    if (!d) return empty;
     const upsells = await getUpsellsForSingleton('/about-page');
     return {
-      kicker: d.kicker || fallback.kicker,
-      title: d.title || fallback.title,
-      rolesTagline: d.roles_tagline || fallback.rolesTagline,
-      storyParagraph1: d.story_paragraph_1 || fallback.storyParagraph1,
-      storyParagraph2: d.story_paragraph_2 || fallback.storyParagraph2,
-      additionalBio: d.additional_bio || fallback.additionalBio,
-      portrait: mediaUrl(d.portrait) || fallback.portrait,
+      kicker: d.kicker || '',
+      title: d.title || '',
+      rolesTagline: d.roles_tagline || '',
+      storyParagraph1: d.story_paragraph_1 || '',
+      storyParagraph2: d.story_paragraph_2 || '',
+      additionalBio: d.additional_bio || '',
+      portrait: mediaUrl(d.portrait) || '',
       pressLogos: Array.isArray(d.press_logos)
         ? d.press_logos.map((p: any) => ({ name: String(p?.name || ''), logo: mediaUrl(p?.logo) || undefined }))
-        : fallback.pressLogos,
+        : empty.pressLogos,
       certifications: Array.isArray(d.certifications)
         ? d.certifications.map((c: any) => ({
             name: String(c?.name || ''),
             colour: String(c?.colour || '#6E3A5A'),
             badge: mediaUrl(c?.badge) || undefined,
           }))
-        : fallback.certifications,
+        : empty.certifications,
       upsells,
     };
   } catch {
-    return fallback;
+    return empty;
   }
 }
 

@@ -40,15 +40,36 @@ const defaultStory2 = `Anna Lou is a multifaceted entrepreneur, designer, and we
 
 const defaultAdditionalBio = `Anna Lou Wellness grew from her personal journey of overcoming significant challenges — narcissistic abuse, anxiety, and depression — while balancing single parenthood and business. Through her experiences, Anna became a somatic trauma-informed coach, offering support to women recovering from similar traumas. She provides one-on-one and group workshops that focus on holistic healing for mind, body, and spirit.\n\nBeyond coaching, Anna is a podcaster, author, and the creative force behind "Kirra Kirra" — an animated children's show promoting mental health, resilience, and empathy. She is also creating Narc Abuse Aid, a charity focused on providing resources and community for victims of narcissistic abuse.\n\nAcross all her ventures, Anna inspires others to embrace their unique identities, heal from past traumas, and pursue lives filled with purpose and creativity.`;
 
+// Header defaults — used only when Anna has left every header field blank.
+const defaultKicker = 'About';
+const defaultTitle = 'Twenty-five years leaves a trail.';
+const defaultRolesTagline = 'Coach. Trainer. Podcaster. Author. Entrepreneur. Designer.';
+
 export default async function AboutPage() {
   const [page, faqs] = await Promise.all([
     getAboutPage(),
     getFAQs({ page: 'about' }),
   ]);
 
-  const story1 = page.storyParagraph1 || defaultStory1;
-  const story2 = page.storyParagraph2 || defaultStory2;
-  const additionalBio = page.additionalBio || defaultAdditionalBio;
+  // NEW policy (Anna 14 Jul): all-or-nothing per section. If Anna has
+  // filled ANY field in a section, use ONLY her CMS values (blank fields
+  // render empty — no mixing her copy with hardcoded fallback text). If
+  // the ENTIRE section is untouched, fall back to defaults so a brand-new
+  // CMS boot still shows a coherent page.
+  const hasHeaderContent = !!(page.kicker || page.title || page.rolesTagline);
+  const kicker = hasHeaderContent ? page.kicker : defaultKicker;
+  const title = hasHeaderContent ? page.title : defaultTitle;
+  const rolesTagline = hasHeaderContent ? page.rolesTagline : defaultRolesTagline;
+
+  const hasStorySectionContent = !!(page.storyParagraph1 || page.storyParagraph2);
+  const story1 = hasStorySectionContent ? (page.storyParagraph1 || '') : defaultStory1;
+  const story2 = hasStorySectionContent ? (page.storyParagraph2 || '') : defaultStory2;
+
+  const hasAdditionalBio = !!page.additionalBio;
+  const additionalBio = hasAdditionalBio ? page.additionalBio : defaultAdditionalBio;
+
+  // Press logos / certifications are already list-based — if Anna has filled
+  // ANY entry, use only her list (never mix with hardcoded).
   const pressLogos = page.pressLogos.length > 0 ? page.pressLogos : defaultPressLogos;
   const certifications = page.certifications.length > 0 ? page.certifications : defaultCertifications;
 
@@ -61,12 +82,12 @@ export default async function AboutPage() {
       <SpeakableSchema url="/about" cssSelectors={['.about-roles', '.about-body']} headline="About Anna Lou Scaife" />
       <style dangerouslySetInnerHTML={{ __html: aboutStyles }} />
 
-      {/* Header */}
+      {/* Header — hides fields Anna hasn't filled if she's touched the section */}
       <section className="about-header">
         <div className="about-header-inner reveal">
-          <p className="about-kicker">{page.kicker}</p>
-          <h1 className="about-title">{page.title}</h1>
-          <p className="about-roles">{page.rolesTagline}</p>
+          {kicker && <p className="about-kicker">{kicker}</p>}
+          {title && <h1 className="about-title">{title}</h1>}
+          {rolesTagline && <p className="about-roles">{rolesTagline}</p>}
         </div>
       </section>
 
@@ -78,20 +99,27 @@ export default async function AboutPage() {
             style={page.portrait ? { backgroundImage: `url(${page.portrait})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
           />
           <div className="reveal rd1">
-            <p className="about-body"><span className="about-drop-cap">{story1.charAt(0)}</span>{story1.slice(1)}</p>
-            <p className="about-body">{story2}</p>
+            {story1 && (
+              <p className="about-body"><span className="about-drop-cap">{story1.charAt(0)}</span>{story1.slice(1)}</p>
+            )}
+            {story2 && <p className="about-body">{story2}</p>}
           </div>
         </div>
       </section>
 
-      {/* Additional Bio */}
-      <section className="about-bio">
-        <div className="about-bio-inner reveal">
-          {additionalBio.split('\n\n').map((para, i) => (
-            <p key={i} className="about-body">{para}</p>
-          ))}
-        </div>
-      </section>
+      {/* Additional Bio — hides entirely if Anna hasn't filled it AND
+          no default. With defaults still in the code, this section always
+          renders for now — it will become blank-when-empty once Anna's
+          CMS content is finalised and defaults are removed. */}
+      {additionalBio && (
+        <section className="about-bio">
+          <div className="about-bio-inner reveal">
+            {additionalBio.split('\n\n').map((para, i) => (
+              <p key={i} className="about-body">{para}</p>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Press strip */}
       <section className="about-press">
