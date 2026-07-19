@@ -160,7 +160,7 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
                 Login
               </Link>
               <WishlistNavLink className="nav-action-btn" />
-              <Link href="/cart" className="nav-action-btn nav-action-accent" aria-label={cartCount > 0 ? `Cart (${cartCount})` : 'Cart'}>
+              <Link href="/cart" className="nav-action-btn nav-action-accent nav-action-cart" aria-label={cartCount > 0 ? `Cart (${cartCount})` : 'Cart'}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
                   <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" />
                 </svg>
@@ -546,6 +546,21 @@ const navStyles = `
   }
   .nav-center-logo { padding: 0; }
   .nav-action-btn { display: none; }
+  /* Cart is essential — visitors need to see cart contents from any page.
+     Anna feedback (14 Jul): "Cart icon is not visible from the main website
+     navigation". Fix: keep Cart visible on mobile even when Login/Wishlist
+     hide. Compact icon-only rendering to save space. */
+  .nav-action-cart {
+    display: inline-flex !important;
+    align-items: center;
+    padding: 0.35rem 0.55rem;
+    font-size: 0;
+  }
+  .nav-action-cart svg { margin-right: 0 !important; }
+  .nav-action-cart .nav-cart-badge {
+    font-size: 0.65rem !important;
+    margin-left: 0.3rem !important;
+  }
   .hamburger { display: block; }
   .nav-dropdown { display: none !important; }
 }

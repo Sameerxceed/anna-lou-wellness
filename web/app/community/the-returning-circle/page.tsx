@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import EnquiryForm from '@/components/EnquiryForm';
+import BookingButton from '@/components/BookingButton';
 import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
 import { getCommunityEventBySlug } from '@/lib/generic-page';
@@ -100,27 +100,45 @@ export default async function CirclePage() {
         </div>
       </section>
 
-      <section className="rc-rsvp" id="rsvp">
-        <div className="rc-rsvp-grid">
-          <div className="rc-rsvp-text">
-            <p className="rc-section-label">RSVP</p>
-            <h2 className="rc-rsvp-title">Hold a place.</h2>
-            <p className="rc-rsvp-body">RSVP for the next circle. You will get a Zoom link, the houseboat address if you are coming in person, and a small note from Anna a day before.</p>
-          </div>
-          <EnquiryForm
-            endpoint="/api/lead/returning-circle"
-            accentColour={ACCENT}
-            successTitle="You're in for the next circle."
-            successMessage="Anna will send you the link or address by Tuesday evening. Bring nothing except yourself."
-            submitLabel="Hold my place"
-            fields={[
-              { name: 'firstName', label: 'First name', required: true },
-              { name: 'email', label: 'Email', type: 'email', required: true },
-              { name: 'attending', label: 'Attending live in person OR live on Zoom', type: 'select', required: true, options: ['In person on the houseboat (Taggs Island)', 'On Zoom'] },
-            ]}
-          />
-        </div>
-      </section>
+      {/* Anna 14 Jul feedback: "Remove the enquiry form. Replace it with a
+          Book Now button." Uses BookingButton so a Calendly URL on the
+          singleton's ctaUrl opens as a popup, staying on-site. */}
+      {(() => {
+        const bookingUrl = cms?.ctaUrl || '';
+        const bookingLabel = cms?.ctaLabel || 'Book now';
+        return (
+          <section className="rc-rsvp" id="rsvp">
+            <div className="rc-rsvp-inner">
+              <p className="rc-section-label">Book</p>
+              <h2 className="rc-rsvp-title">Hold a place.</h2>
+              <p className="rc-rsvp-body">Book the next circle in one click. You will get a Zoom link, the houseboat address if you are coming in person, and a small note from Anna a day before.</p>
+              {bookingUrl ? (
+                <BookingButton
+                  url={bookingUrl}
+                  label={bookingLabel}
+                  style={{
+                    background: ACCENT,
+                    color: '#fff',
+                    border: 'none',
+                    padding: '0.95rem 2.4rem',
+                    fontFamily: "'Josefin Sans', sans-serif",
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    borderRadius: 4,
+                    marginTop: '1.4rem',
+                  }}
+                />
+              ) : (
+                <p className="rc-rsvp-body" style={{ marginTop: '1rem', fontStyle: 'italic', color: '#5D5A52' }}>
+                  Booking link goes here. Anna sets it in Strapi → Community Event → The Returning Circle → CTA URL (paste a Calendly link).
+                </p>
+              )}
+            </div>
+          </section>
+        );
+      })()}
 
       {/*
         Recording block auto-hides if there is no Recording in the CMS
@@ -177,6 +195,8 @@ a.rc-session-card-loc:hover { color: #5A2E4A; }
 
 .rc-rsvp { background: #fff; padding: 3rem 2rem 4rem; }
 .rc-rsvp-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 3rem; align-items: start; }
+.rc-rsvp-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+.rc-rsvp-inner .rc-section-label { margin-bottom: 0.8rem; }
 .rc-rsvp-text { padding-top: 1rem; }
 .rc-rsvp-title { font-family: 'Work Sans', sans-serif; font-weight: 300; font-size: clamp(1.8rem, 4vw, 2.4rem); color: #231F20; letter-spacing: 0.03em; line-height: 1.15; margin-bottom: 0.8rem; }
 .rc-rsvp-body { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; line-height: 1.8; color: #3D3D3A; }

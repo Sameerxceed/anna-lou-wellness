@@ -30,7 +30,8 @@ export default async function EventsPage() {
       'All upcoming events in one place. Retreats on Taggs Island, workshops (online and in person), and member-only Reset Room sessions.',
       'For bespoke corporate events and private bookings, please get in touch directly.',
     ],
-    cta: { label: 'Enquire about events', href: '/contact' },
+    // Anna 14 Jul feedback: remove "Enquire about events" link.
+    cta: undefined,
   });
   return (
     <>

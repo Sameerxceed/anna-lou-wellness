@@ -33,7 +33,10 @@ export default async function RetreatPage() {
       'Each retreat includes a full day of guided practice, lunch prepared on the houseboat, and a take-home integration guide. There is no curriculum — just space, presence, and the work.',
       'Retreats are announced to the mailing list first. Sign up to Reset Letters for priority access.',
     ],
-    cta: { label: 'Register interest', href: '/contact' },
+    // Anna 14 Jul feedback: remove "Register interest" button. The page
+    // should only display the available retreats — no generic CTA.
+    // Passing undefined suppresses the CTA row entirely.
+    cta: undefined,
   });
   return (
     <>

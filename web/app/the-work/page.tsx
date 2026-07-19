@@ -75,14 +75,23 @@ export default async function TheWorkPage() {
           <p className="work-kicker reveal">{page.programmesKicker}</p>
           <h2 className="work-section-title reveal rd1">{page.programmesTitle}</h2>
           <div className="work-sessions-grid">
-            {sessions.length > 0 ? sessions.map((session, i) => (
-              <div key={session.slug} className={`work-session-card reveal${i > 0 ? ` rd${i}` : ''}`}>
-                <h3>{session.name}</h3>
-                <p>{session.description.split('\n\n')[0].slice(0, 150)}...</p>
-                {session.priceLabel && <p className="work-card-price">{session.priceLabel}{session.duration ? ` · ${session.duration}` : ''}</p>}
-                <Link href="/the-work/sessions" className="work-card-link">Learn more <span>&rarr;</span></Link>
-              </div>
-            )) : (
+            {sessions.length > 0 ? sessions.map((session, i) => {
+              // Anna 14 Jul feedback: all Learn More links used to point at
+              // /the-work/sessions. Now each card links to its own programme
+              // page — /the-work/the-reset, /the-work/signal, etc. Falls
+              // back to the sessions hub if the slug isn't wired to a page.
+              const cardHref = session.slug
+                ? `/the-work/${session.slug}`
+                : '/the-work/sessions';
+              return (
+                <div key={session.slug} className={`work-session-card reveal${i > 0 ? ` rd${i}` : ''}`}>
+                  <h3>{session.name}</h3>
+                  <p>{session.description.split('\n\n')[0].slice(0, 150)}...</p>
+                  {session.priceLabel && <p className="work-card-price">{session.priceLabel}{session.duration ? ` · ${session.duration}` : ''}</p>}
+                  <Link href={cardHref} className="work-card-link">Learn more <span>&rarr;</span></Link>
+                </div>
+              );
+            }) : (
             <>
             <div className="work-session-card reveal">
               <h3>1:1 Reset Sessions</h3>
