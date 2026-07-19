@@ -195,14 +195,23 @@ export default function HelpFab() {
   // Hide FAB on Strapi's login screen (no admin cookie yet → endpoint
   // would 401). The login URL always contains /auth/.
   const [hidden, setHidden] = useState(false);
+  // Anna 19 Jul: mobile CMS getting stuck and not scrolling. Root cause —
+  // the FAB sits fixed bottom-right, exactly where thumbs land while
+  // scrolling. On phones the finger hits the FAB instead of the page and
+  // the scroll gesture never registers. Fix: hide the floating FAB on
+  // narrow viewports (< 900px so tablets in portrait also get the fix).
+  // Anna can still open Help · Ask via the sidebar page in that case.
+  const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const check = () => {
       if (typeof window === 'undefined') return;
       const p = window.location.pathname;
       setHidden(p.includes('/auth/'));
+      setIsNarrow(window.innerWidth < 900);
     };
     check();
     window.addEventListener('popstate', check);
+    window.addEventListener('resize', check);
     // Strapi uses pushState — patch it to detect SPA navigations.
     const origPush = window.history.pushState;
     window.history.pushState = function (...args) {
@@ -212,6 +221,7 @@ export default function HelpFab() {
     };
     return () => {
       window.removeEventListener('popstate', check);
+      window.removeEventListener('resize', check);
       window.history.pushState = origPush;
     };
   }, []);
@@ -343,6 +353,9 @@ export default function HelpFab() {
   };
 
   if (hidden) return null;
+  // Hide the FAB on narrow viewports so the finger doesn't hit it while
+  // scrolling (see the isNarrow useEffect above for context).
+  if (isNarrow && !open) return null;
 
   if (!open) {
     return (
