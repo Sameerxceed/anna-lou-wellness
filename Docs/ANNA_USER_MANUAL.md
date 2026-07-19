@@ -2788,6 +2788,82 @@ Merge tags in the recording delivery email: `{{first_name}}`, `{{customer_email}
 
 **Note:** this is the ONE-OFF-per-week flow. The recurring `£10/week with skip-a-week self-serve` version Anna asked about is a separate build — different mechanism (Stripe Subscriptions + customer portal + weekly skip reminder), takes longer to do properly.
 
+### 17.32 REGULATED — pay-what-you-can price dropdown
+
+**What Anna asked for (14 July 2026):** on the REGULATED sales page, let buyers choose how much they want to pay from a dropdown instead of one fixed price.
+
+**How to switch REGULATED (or any programme) into pay-what-you-can mode:**
+
+Content Manager → **Work · Programme** → open the REGULATED entry. Three new fields near the pricing block:
+
+- **pwycOptions** — the amounts you want to offer, comma-separated in pounds. Example: `50, 100, 200, 500`. Enter this and the buy card on `/the-work/regulated` automatically becomes a dropdown of those amounts. Leave BLANK to keep the programme on a normal fixed price.
+- **pwycDefault** — which amount is pre-selected in the dropdown. Set to one of the numbers in `pwycOptions` (e.g. `100`). If blank, the smallest amount is pre-selected.
+- **pwycLabel** — the text above the dropdown. Defaults to `Choose your amount`. Change to whatever wording fits your voice.
+
+Save + Publish. Buyers now see the dropdown + a Pay button. The button label shows the amount they've chosen live (e.g. `Buy REGULATED — £100`).
+
+**Server-side safety:** the amount they submit is validated against the list you set. Someone editing the browser can't sneak a £1 payment through.
+
+**To turn OFF pay-what-you-can and go back to a fixed price:** clear `pwycOptions`. The site reverts to reading `pricePence` (the normal single-price field).
+
+**Same feature works on any programme** — not just REGULATED. If you want to make Signal or a Retreat pay-what-you-can, just fill `pwycOptions` on that programme.
+
+### 17.33 Content policy — the site shows what you fill, nothing else
+
+**What changed (19 July 2026):** Anna spotted that on some pages she was seeing text that looked like it should be editable in CMS but wasn't — it was hardcoded and would show even when the CMS field next to it was blank. Confusing.
+
+**New rule everywhere on the site:**
+
+- Fill a field in CMS → it appears on the live site (within a few seconds).
+- Clear a field → it disappears from the live site.
+- Clear every field in a whole section → the section is hidden entirely and the page adjusts around it.
+
+**To make sure nothing went missing on switchover day:** every previously-hardcoded piece of copy was seeded into the CMS singleton it belongs to (About Page, Community Page, Work with Anna, Corporate Wellbeing, Speaking, the six programme entries, and the other sub-pages). If Anna hadn't edited a field, the seed filled it in for her with the same wording the site had been showing. `ensureSingleType` never overwrites her edits — only backfills blanks.
+
+**What this means day-to-day:**
+
+- No mystery text. Every word you see on live is in the CMS somewhere.
+- Delete a section you don't want any more (clear its fields), it goes away.
+- Add copy to a section, it appears. Rewrite it, updated.
+
+**Three safety-net fallbacks stay** (these render as visual scaffolding, not text):
+
+- **Hero background images** — if you haven't uploaded one, a stock photo shows so the hero isn't a blank white box.
+- **Programme accent colours** — the CSS layout needs a colour to be set; you can change it in CMS but not clear it.
+- **Site nav (top of every page)** — this is coded because if it disappeared visitors couldn't get around.
+
+### 17.34 Discovery Call renamed → 15-minute 1 to 1 chat
+
+**What changed (14 July 2026):** every user-facing mention of "Discovery Call" on the website is now "15-minute 1 to 1 chat" or "1 to 1 chat" depending on context. Programme CTAs, quiz result page, FAQ answers, Ask Anna chat, CMS field labels — all updated.
+
+**What you still need to do (outside the website):**
+
+- **Calendly** — rename your Discovery Call event type to match. Update the URL slug too (e.g. `calendly.com/anna/15-min-chat`). Paste the new Calendly URL into Content Manager → Contact Page → `discovery_calendly_url`.
+- **Mailchimp** — if you have a tag currently named `Discovery Booked` or similar, rename it to `1 to 1 Chat Booked`. Once you've done it, tell Sameer so he can update the Calendly webhook to fire the new tag name for future bookings.
+
+**Left unchanged deliberately:**
+
+- URL paths (`/api/checkout/discovery-call`) — changing would break the Calendly webhook routing.
+- CMS field names (`discovery_calendly_url`, `discovery_headline`, etc.) — internal; not visible to visitors.
+
+### 17.35 Footer sitemap — mirrors the top nav automatically
+
+**What changed (14 July 2026):** the footer used to show a flat list of links that had to be kept in sync manually with the top nav. If you added a nav item you had to remember to add it to the footer too. That's fixed.
+
+**How it works now:** the footer has a sitemap section that reads the SAME data as the top nav (Content Manager → Navigation). Edit the top nav once and the footer automatically mirrors the changes.
+
+- Add a new nav item → it appears in the footer sitemap on next save.
+- Rename a nav item → renamed in the footer too.
+- Add a child link under a nav item → appears in the footer under that parent.
+
+The other footer tiers you can still edit separately:
+
+- **explore_links** (Content Manager → Footer → explore_links) — the small compact row of top-level parent links below the sitemap.
+- **connect_links** — same, second half of the compact row.
+- **legal_links** — the tiny bottom row (Privacy, Terms, etc.).
+
+Leave `explore_links` / `connect_links` / `legal_links` blank in CMS and those flat rows disappear entirely — the sitemap section alone is usually enough.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
