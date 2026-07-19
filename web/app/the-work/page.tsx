@@ -101,12 +101,26 @@ export default async function TheWorkPage() {
           <div className="work-sessions-grid">
             {sessions.length > 0 ? sessions.map((session, i) => {
               // Anna 14 Jul feedback: all Learn More links used to point at
-              // /the-work/sessions. Now each card links to its own programme
-              // page — /the-work/the-reset, /the-work/signal, etc. Falls
-              // back to the sessions hub if the slug isn't wired to a page.
-              const cardHref = session.slug
-                ? `/the-work/${session.slug}`
-                : '/the-work/sessions';
+              // /the-work/sessions. Now each card links to its own page.
+              //
+              // Two link shapes exist:
+              //   /the-work/{slug}          — for programme-style slugs
+              //     (the-reset, signal, signal-and-build, one-day, etc.)
+              //   /the-work/sessions/{slug} — for coaching-session slugs
+              //     (founder-reset, dating-reset, nervous-system-reset)
+              //
+              // Route by a known list of programme slugs. Unknown slugs fall
+              // through to /the-work/sessions/{slug} which the sub-route
+              // handles + 404s cleanly if nothing exists.
+              const PROGRAMME_SLUGS = [
+                'the-reset', 'signal', 'signal-and-build', 'one-day',
+                'signal-collective', 'recovery',
+              ];
+              const cardHref = !session.slug
+                ? '/the-work/sessions'
+                : PROGRAMME_SLUGS.includes(session.slug)
+                  ? `/the-work/${session.slug}`
+                  : `/the-work/sessions/${session.slug}`;
               return (
                 <div key={session.slug} className={`work-session-card reveal${i > 0 ? ` rd${i}` : ''}`}>
                   <h3>{session.name}</h3>
