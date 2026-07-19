@@ -24,26 +24,14 @@ export default async function SpeakingPage() {
     getFAQs({ page: 'speaking' }),
   ]);
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-
-  // Hero section — all-or-nothing (Anna 14 Jul policy).
+  // Anna 14 Jul (STRONGER): if a section has nothing in CMS, hide it entirely.
   const cmsAny = cms as any;
-  const hasHero = !!(cmsAny?.eyebrow || cms?.title || cmsAny?.tagline || cms?.heroImage);
-  const heroEyebrow = hasHero ? (cmsAny?.eyebrow || '') : 'Experiences · For events';
-  const heroTitle = hasHero ? (cms?.title || '') : 'Speaking.';
-  const heroTagline = hasHero ? (cmsAny?.tagline || '') : 'Keynotes, panels, Q&As. Online and in person.';
+  const heroEyebrow = cmsAny?.eyebrow || '';
+  const heroTitle = cms?.title || '';
+  const heroTagline = cmsAny?.tagline || '';
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'speaking-hero');
-
-  const introParas = cms?.intro ? splitParas(cms.intro) : [
-    'Anna speaks on the inner guidance system, the nervous system, somatic coaching, the recovery work that follows narcissistic abuse, and what it actually takes for a woman to rebuild from burnout. She also speaks to founders on the link between the body and the business.',
-    'Format depends on what your audience needs. Keynote, panel, fireside, intimate Q&A. Online or in the room.',
-  ];
-  const talks = parseSecondaryList(cms?.secondaryList) || [
-    { title: 'The Inner Guidance System.', body: 'What it is, how it gets scrambled, how to bring it back online.' },
-    { title: 'Burnout is a nervous system event.', body: 'The biology of what happens, and why willpower will not fix it.' },
-    { title: 'Recovering from narcissistic abuse.', body: 'Honest, somatic, no jargon. For survivors and the people supporting them.' },
-    { title: 'The body knows first.', body: 'Why founder decisions made from a dysregulated body are almost always wrong.' },
-    { title: 'The Signal Method.', body: 'A framework for living and leading from your own signal, not someone else\'s noise.' },
-  ];
+  const introParas = cms?.intro ? splitParas(cms.intro) : [];
+  const talks = parseSecondaryList(cms?.secondaryList) || [];
 
   return (
     <>
@@ -51,33 +39,39 @@ export default async function SpeakingPage() {
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Experiences', href: '/experiences' }, { name: 'Speaking', href: '/experiences/speaking' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
-      <section className="sp-hero">
-        <div className="sp-hero-grid">
-          <div className="sp-hero-text">
-            {heroEyebrow && <p className="sp-eyebrow">{heroEyebrow}</p>}
-            {heroTitle && <h1 className="sp-title">{heroTitle}</h1>}
-            {heroTagline && <p className="sp-tagline"><em>{heroTagline}</em></p>}
+      {(heroEyebrow || heroTitle || heroTagline) && (
+        <section className="sp-hero">
+          <div className="sp-hero-grid">
+            <div className="sp-hero-text">
+              {heroEyebrow && <p className="sp-eyebrow">{heroEyebrow}</p>}
+              {heroTitle && <h1 className="sp-title">{heroTitle}</h1>}
+              {heroTagline && <p className="sp-tagline"><em>{heroTagline}</em></p>}
+            </div>
+            <div className="sp-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
           </div>
-          <div className="sp-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="sp-body">
-        <div className="sp-body-inner">
-          {introParas.map((p, i) => <p key={i} className="sp-body-text">{p}</p>)}
-        </div>
-      </section>
+      {introParas.length > 0 && (
+        <section className="sp-body">
+          <div className="sp-body-inner">
+            {introParas.map((p, i) => <p key={i} className="sp-body-text">{p}</p>)}
+          </div>
+        </section>
+      )}
 
-      <section className="sp-talks">
-        <div className="sp-talks-inner">
-          <p className="sp-section-label">Talks she gives most</p>
-          <ol className="sp-talks-list">
-            {talks.map((t, i) => (
-              <li key={i}><strong>{t.title}</strong> {t.body}</li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      {talks.length > 0 && (
+        <section className="sp-talks">
+          <div className="sp-talks-inner">
+            <p className="sp-section-label">Talks she gives most</p>
+            <ol className="sp-talks-list">
+              {talks.map((t, i) => (
+                <li key={i}><strong>{t.title}</strong> {t.body}</li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
 
       <ReviewsSection reviews={reviews} title="From event organisers" kicker="Reviews" kickerColour={ACCENT} />
 

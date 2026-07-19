@@ -15,22 +15,28 @@ interface SubPageProps {
 }
 
 export default function SubPage({ kicker, kickerColour, title, parentLabel, parentHref, description, paragraphs, cta, inspirationLink, details, heroImage }: SubPageProps) {
-  const content = paragraphs || (description ? [description] : ['This page will be populated from the CMS (Strapi) when connected.']);
+  // Anna 14 Jul (STRONGER): if CMS section is empty, hide it. No hardcoded
+  // "This page will be populated from CMS..." fallback text.
+  const content = paragraphs && paragraphs.length > 0
+    ? paragraphs
+    : (description ? [description] : []);
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: subStyles }} />
       <article className="sub-page">
         <div className="sub-inner">
-          <p className="sub-kicker" style={{ color: kickerColour }}>{kicker}</p>
-          <h1 className="sub-title">{title}</h1>
+          {kicker && <p className="sub-kicker" style={{ color: kickerColour }}>{kicker}</p>}
+          {title && <h1 className="sub-title">{title}</h1>}
           <div
             className={heroImage ? 'sub-hero has-image' : 'sub-hero'}
             style={heroImage ? { backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
           />
-          <div className="sub-content">
-            {content.map((p, i) => <p key={i}>{p}</p>)}
-          </div>
+          {content.length > 0 && (
+            <div className="sub-content">
+              {content.map((p, i) => <p key={i}>{p}</p>)}
+            </div>
+          )}
           {details && details.length > 0 && (
             <div className="sub-details">
               {details.map((d, i) => (

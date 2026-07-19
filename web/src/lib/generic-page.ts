@@ -51,28 +51,26 @@ export function genericPageProps(
   },
 ) {
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  // Hero image: falls back to stock so a page always has a background
+  // image (a genuinely blank hero looks broken). All other content uses
+  // raw CMS values — sections render nothing when empty.
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage(fallback.stockCategory, fallback.stockSeed, 'hero');
 
-  // All-or-nothing per section (Anna 14 Jul policy).
-  //
-  // Header section: kicker + title. If Anna has filled either, use only her
-  // CMS values (blank = empty on the page). If both blank, defaults kick in.
-  const hasHeader = !!(cms?.kicker || cms?.title);
-  const kicker = hasHeader ? (cms?.kicker || '') : fallback.kicker;
-  const kickerColour = hasHeader ? (cms?.kickerColour || fallback.kickerColour) : fallback.kickerColour;
-  const title = hasHeader ? (cms?.title || '') : fallback.title;
+  // Anna 14 Jul (STRONGER): if a section has nothing in CMS, hide it entirely.
+  // fallback.kicker / title / paragraphs / cta are IGNORED — only parentLabel /
+  // parentHref / stockCategory / stockSeed are used (route metadata, not content).
+  const kicker = cms?.kicker || '';
+  const kickerColour = cms?.kickerColour || fallback.kickerColour;
+  const title = cms?.title || '';
+  const paragraphs = cms?.intro ? splitParas(cms.intro) : [];
+  const cta = cms?.ctaLabel && cms?.ctaUrl
+    ? { label: cms.ctaLabel, href: cms.ctaUrl }
+    : undefined;
 
-  // Body paragraphs: single richtext field. Blank -> fallback paragraphs.
-  const paragraphs = cms?.intro ? splitParas(cms.intro) : fallback.paragraphs;
-
-  // CTA: pair of fields. If Anna set either label OR url, use only her values.
-  // If BOTH blank, use fallback.cta (which itself may be undefined on some pages).
-  const hasCta = !!(cms?.ctaLabel || cms?.ctaUrl);
-  const cta = hasCta
-    ? (cms?.ctaLabel && cms?.ctaUrl
-        ? { label: cms.ctaLabel, href: cms.ctaUrl }
-        : undefined) // partially filled -> render nothing (avoid a broken link)
-    : fallback.cta;
+  void fallback.title;
+  void fallback.kicker;
+  void fallback.paragraphs;
+  void fallback.cta;
 
   return {
     kicker,

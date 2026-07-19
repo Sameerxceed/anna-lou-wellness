@@ -98,73 +98,40 @@ export function programmeProps(
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const splitLines = (s: string) => s.split('\n').map((p) => p.trim()).filter(Boolean);
 
-  // Section: Hero (title + tagline + heroImage). All-or-nothing.
-  const hasHero = !!(cms?.title || cms?.tagline || cms?.heroImage);
-  const heroTitle = hasHero ? (cms?.title || '') : fallback.title;
-  const heroTagline = hasHero ? (cms?.tagline || '') : fallback.tagline;
-  const heroImage = hasHero
-    ? (mediaUrl(cms?.heroImage as { url?: string } | undefined) || '')
-    : (fallback.image || '');
-
-  // Section: Intro (single richtext field). Single-field section.
-  const intro = cms?.intro ? splitParas(cms.intro) : fallback.intro;
-
-  // Section: What's included (label + items). All-or-nothing.
-  const hasIncluded = !!(cms?.whatsIncludedLabel || cms?.whatsIncludedItems);
-  const includedLabel = hasIncluded
-    ? (cms?.whatsIncludedLabel || '')
-    : "What's included";
-  const includedItems = hasIncluded
-    ? (cms?.whatsIncludedItems ? splitLines(cms.whatsIncludedItems) : [])
-    : fallback.whatsIncludedItems;
-
+  // Anna 14 Jul (STRONGER): if a section has nothing in CMS, hide it entirely.
+  // Only accentColour retains a fallback (visual brand colour that must always
+  // be set — CSS depends on it). Every other field returns raw CMS value and
+  // the ProgrammePage component skips empty sections cleanly.
   const sections: { label: string; body: string | string[] }[] = [];
-  if (includedItems.length > 0 || includedLabel) {
-    sections.push({ label: includedLabel, body: includedItems });
+  const includedItems = cms?.whatsIncludedItems ? splitLines(cms.whatsIncludedItems) : [];
+  if (cms?.whatsIncludedLabel || includedItems.length > 0) {
+    sections.push({ label: cms?.whatsIncludedLabel || '', body: includedItems });
   }
-  // Approach + Outcomes are optional add-on sections. If either field is
-  // set they render; if both are blank, nothing renders (no fallback).
   if (cms?.approachBody || cms?.approachLabel) {
-    sections.push({
-      label: cms?.approachLabel || 'The approach',
-      body: cms?.approachBody || '',
-    });
+    sections.push({ label: cms?.approachLabel || '', body: cms?.approachBody || '' });
   }
   if (cms?.outcomesBody || cms?.outcomesLabel) {
-    sections.push({
-      label: cms?.outcomesLabel || 'What changes',
-      body: cms?.outcomesBody || '',
-    });
+    sections.push({ label: cms?.outcomesLabel || '', body: cms?.outcomesBody || '' });
   }
 
-  // Section: Pricing (label + body). All-or-nothing.
-  const hasPricing = !!(cms?.pricingLabel || cms?.pricingBody);
-  const pricingLabel = hasPricing
-    ? (cms?.pricingLabel || '')
-    : (fallback.pricingLabel || 'Investment');
-  const pricingBody = hasPricing
-    ? (cms?.pricingBody || '')
-    : fallback.pricingBody;
-
-  // Section: CTA (label + url). All-or-nothing.
-  const hasCta = !!(cms?.ctaLabel || cms?.ctaUrl);
-  const ctaLabel = hasCta
-    ? (cms?.ctaLabel || '')
-    : (fallback.ctaLabel || 'Book a 15-minute 1 to 1 chat');
-  const ctaHref = hasCta
-    ? (cms?.ctaUrl || '')
-    : (fallback.ctaUrl || '/contact');
+  void splitLines;
 
   return {
     accentColour: cms?.accentColour || fallback.accentColour,
     hero: {
-      title: heroTitle,
-      tagline: heroTagline,
-      image: heroImage,
+      title: cms?.title || '',
+      tagline: cms?.tagline || '',
+      image: mediaUrl(cms?.heroImage as { url?: string } | undefined) || '',
     },
-    intro,
+    intro: cms?.intro ? splitParas(cms.intro) : [],
     sections,
-    pricing: { label: pricingLabel, body: pricingBody },
-    cta: { label: ctaLabel, href: ctaHref },
+    pricing: {
+      label: cms?.pricingLabel || '',
+      body: cms?.pricingBody || '',
+    },
+    cta: {
+      label: cms?.ctaLabel || '',
+      href: cms?.ctaUrl || '',
+    },
   };
 }

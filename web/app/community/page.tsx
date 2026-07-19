@@ -43,32 +43,27 @@ const defaultResourcesDescription = 'Guides, tools, workshop replays, and member
 export default async function CommunityPage() {
   const page = await getCommunityPage();
 
-  // All-or-nothing per section (Anna 14 Jul policy).
-  const hasHeader = !!(page.kicker || page.title || page.intro);
-  const kicker = hasHeader ? page.kicker : defaultKicker;
-  const title = hasHeader ? page.title : defaultTitle;
-  const intro = hasHeader ? page.intro : defaultIntro;
-
-  const hasCircle = !!(page.circleTitle || page.circleDescription || page.circleImage);
-  const circleTitle = hasCircle ? page.circleTitle : defaultCircleTitle;
-  const circleDesc = hasCircle ? page.circleDescription : defaultCircleDescription;
-
-  const hasResetRoom = !!(
-    page.resetRoomTitle || page.resetRoomDescription || page.resetRoomPrice ||
-    page.resetRoomFeatures.length > 0 || page.resetRoomImage
-  );
-  const resetRoomTitle = hasResetRoom ? page.resetRoomTitle : defaultResetRoomTitle;
-  const resetRoomDesc = hasResetRoom ? page.resetRoomDescription : defaultResetRoomDescription;
-  const resetRoomPrice = hasResetRoom ? page.resetRoomPrice : defaultResetRoomPrice;
-  const resetRoomFeatures = hasResetRoom ? page.resetRoomFeatures : defaultResetRoomFeatures;
-
-  const hasEvents = !!(page.eventsTitle || page.eventsDescription);
-  const eventsTitle = hasEvents ? page.eventsTitle : defaultEventsTitle;
-  const eventsDesc = hasEvents ? page.eventsDescription : defaultEventsDescription;
-
-  const hasResources = !!(page.resourcesTitle || page.resourcesDescription);
-  const resourcesTitle = hasResources ? page.resourcesTitle : defaultResourcesTitle;
-  const resourcesDesc = hasResources ? page.resourcesDescription : defaultResourcesDescription;
+  // Anna 14 Jul (STRONGER): if a section has nothing in CMS, hide it entirely.
+  // Fallbacks kept above only as reference copy Anna can paste back into CMS.
+  const kicker = page.kicker;
+  const title = page.title;
+  const intro = page.intro;
+  const circleTitle = page.circleTitle;
+  const circleDesc = page.circleDescription;
+  const resetRoomTitle = page.resetRoomTitle;
+  const resetRoomDesc = page.resetRoomDescription;
+  const resetRoomPrice = page.resetRoomPrice;
+  const resetRoomFeatures = page.resetRoomFeatures;
+  const eventsTitle = page.eventsTitle;
+  const eventsDesc = page.eventsDescription;
+  const resourcesTitle = page.resourcesTitle;
+  const resourcesDesc = page.resourcesDescription;
+  void defaultIntro; void defaultCircleDescription;
+  void defaultResetRoomDescription; void defaultResetRoomFeatures;
+  void defaultKicker; void defaultTitle; void defaultCircleTitle;
+  void defaultResetRoomTitle; void defaultResetRoomPrice;
+  void defaultEventsTitle; void defaultResourcesTitle;
+  void defaultEventsDescription; void defaultResourcesDescription;
 
   return (
     <>

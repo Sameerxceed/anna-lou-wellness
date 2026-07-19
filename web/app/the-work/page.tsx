@@ -40,22 +40,19 @@ export default async function TheWorkPage() {
   ]);
   const faqs = hubFaqs.length > 0 ? hubFaqs : legacyFaqs;
 
-  // All-or-nothing per section (Anna 14 Jul policy).
-  const hasHeader = !!(page.kicker || page.title || page.intro);
-  const kicker = hasHeader ? page.kicker : pageFallback.kicker;
-  const kickerColour = hasHeader ? (page.kickerColour || pageFallback.kickerColour) : pageFallback.kickerColour;
-  const title = hasHeader ? page.title : pageFallback.title;
-  const intro = hasHeader ? page.intro : pageFallback.intro;
-
-  const hasWays = !!(page.waysSectionTitle || page.waysSectionBody || page.waysSectionCtaLabel || page.waysSectionCtaUrl);
-  const waysSectionTitle = hasWays ? page.waysSectionTitle : pageFallback.waysSectionTitle;
-  const waysSectionBody = hasWays ? page.waysSectionBody : pageFallback.waysSectionBody;
-  const waysSectionCtaLabel = hasWays ? page.waysSectionCtaLabel : pageFallback.waysSectionCtaLabel;
-  const waysSectionCtaUrl = hasWays ? page.waysSectionCtaUrl : pageFallback.waysSectionCtaUrl;
-
-  const hasProgrammesLabels = !!(page.programmesKicker || page.programmesTitle);
-  const programmesKicker = hasProgrammesLabels ? page.programmesKicker : pageFallback.programmesKicker;
-  const programmesTitle = hasProgrammesLabels ? page.programmesTitle : pageFallback.programmesTitle;
+  // Anna 14 Jul (STRONGER): if a section has nothing in CMS, hide it entirely.
+  // pageFallback kept only as reference copy Anna can paste back into CMS.
+  const kicker = page.kicker;
+  const kickerColour = page.kickerColour;
+  const title = page.title;
+  const intro = page.intro;
+  const waysSectionTitle = page.waysSectionTitle;
+  const waysSectionBody = page.waysSectionBody;
+  const waysSectionCtaLabel = page.waysSectionCtaLabel;
+  const waysSectionCtaUrl = page.waysSectionCtaUrl;
+  const programmesKicker = page.programmesKicker;
+  const programmesTitle = page.programmesTitle;
+  void pageFallback;
 
   return (
     <>

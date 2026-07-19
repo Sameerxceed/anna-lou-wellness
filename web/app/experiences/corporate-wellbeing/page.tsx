@@ -25,31 +25,15 @@ export default async function CorporatePage() {
   ]);
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 
-  // All-or-nothing per section (Anna 14 Jul policy). If Anna has filled ANY
-  // field in a section, use only her CMS values (blank fields render empty).
-
-  // Hero section: eyebrow + title + tagline + heroImage
+  // Anna 14 Jul (STRONGER): if a section has nothing in CMS, hide it entirely.
+  // Hero image keeps stock fallback (empty hero looks broken).
   const cmsAny = cms as any;
-  const hasHero = !!(cmsAny?.eyebrow || cms?.title || cmsAny?.tagline || cms?.heroImage);
-  const heroEyebrow = hasHero ? (cmsAny?.eyebrow || '') : 'Experiences · For teams';
-  const heroTitle = hasHero ? (cms?.title || '') : 'Corporate Wellbeing.';
-  const heroTagline = hasHero ? (cmsAny?.tagline || '') : 'Nervous system work that actually changes how people show up.';
+  const heroEyebrow = cmsAny?.eyebrow || '';
+  const heroTitle = cms?.title || '';
+  const heroTagline = cmsAny?.tagline || '';
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'corporate-hero');
-
-  // Intro section: single richtext field. Blank -> use defaults.
-  const introParas = cms?.intro ? splitParas(cms.intro) : [
-    'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes tailored to your workplace. The Signal Method adapted for corporate environments.',
-    'Formats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.',
-    'Anna brings fifteen years of entrepreneurial experience and clinical somatic training to every corporate engagement. This is not generic mindfulness. This is nervous system work that actually changes how people show up.',
-  ];
-
-  // Formats list: parse CMS or use default.
-  const formats = parseSecondaryList(cms?.secondaryList) || [
-    { title: '90-minute session', body: 'A single workshop. Online or in person. Topic shaped to your team.' },
-    { title: 'Half-day or full-day', body: 'Immersive teambuilding plus nervous system regulation. On houseboat or at your space.' },
-    { title: 'Keynote / panel', body: 'For conferences and offsites. Up to 200 attendees.' },
-    { title: 'Ongoing programme', body: 'Quarterly or monthly cadence. Depth over time. Bespoke design.' },
-  ];
+  const introParas = cms?.intro ? splitParas(cms.intro) : [];
+  const formats = parseSecondaryList(cms?.secondaryList) || [];
 
   return (
     <>
@@ -57,36 +41,42 @@ export default async function CorporatePage() {
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Experiences', href: '/experiences' }, { name: 'Corporate Wellbeing', href: '/experiences/corporate-wellbeing' }]} />
       <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
 
-      <section className="cw-hero">
-        <div className="cw-hero-grid">
-          <div className="cw-hero-text">
-            {heroEyebrow && <p className="cw-eyebrow">{heroEyebrow}</p>}
-            {heroTitle && <h1 className="cw-title">{heroTitle}</h1>}
-            {heroTagline && <p className="cw-tagline"><em>{heroTagline}</em></p>}
+      {(heroEyebrow || heroTitle || heroTagline) && (
+        <section className="cw-hero">
+          <div className="cw-hero-grid">
+            <div className="cw-hero-text">
+              {heroEyebrow && <p className="cw-eyebrow">{heroEyebrow}</p>}
+              {heroTitle && <h1 className="cw-title">{heroTitle}</h1>}
+              {heroTagline && <p className="cw-tagline"><em>{heroTagline}</em></p>}
+            </div>
+            <div className="cw-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
           </div>
-          <div className="cw-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="cw-body">
-        <div className="cw-body-inner">
-          {introParas.map((p, i) => <p key={i} className="cw-body-text">{p}</p>)}
-        </div>
-      </section>
-
-      <section className="cw-formats">
-        <div className="cw-formats-inner">
-          <p className="cw-section-label">Formats</p>
-          <div className="cw-formats-grid">
-            {formats.map((f, i) => (
-              <div key={i} className="cw-format">
-                <h3>{f.title}</h3>
-                <p>{f.body}</p>
-              </div>
-            ))}
+      {introParas.length > 0 && (
+        <section className="cw-body">
+          <div className="cw-body-inner">
+            {introParas.map((p, i) => <p key={i} className="cw-body-text">{p}</p>)}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {formats.length > 0 && (
+        <section className="cw-formats">
+          <div className="cw-formats-inner">
+            <p className="cw-section-label">Formats</p>
+            <div className="cw-formats-grid">
+              {formats.map((f, i) => (
+                <div key={i} className="cw-format">
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <ReviewsSection reviews={reviews} title="From client teams" kicker="Reviews" kickerColour={ACCENT} />
 

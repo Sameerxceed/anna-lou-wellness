@@ -51,27 +51,23 @@ export default async function AboutPage() {
     getFAQs({ page: 'about' }),
   ]);
 
-  // NEW policy (Anna 14 Jul): all-or-nothing per section. If Anna has
-  // filled ANY field in a section, use ONLY her CMS values (blank fields
-  // render empty — no mixing her copy with hardcoded fallback text). If
-  // the ENTIRE section is untouched, fall back to defaults so a brand-new
-  // CMS boot still shows a coherent page.
-  const hasHeaderContent = !!(page.kicker || page.title || page.rolesTagline);
-  const kicker = hasHeaderContent ? page.kicker : defaultKicker;
-  const title = hasHeaderContent ? page.title : defaultTitle;
-  const rolesTagline = hasHeaderContent ? page.rolesTagline : defaultRolesTagline;
-
-  const hasStorySectionContent = !!(page.storyParagraph1 || page.storyParagraph2);
-  const story1 = hasStorySectionContent ? (page.storyParagraph1 || '') : defaultStory1;
-  const story2 = hasStorySectionContent ? (page.storyParagraph2 || '') : defaultStory2;
-
-  const hasAdditionalBio = !!page.additionalBio;
-  const additionalBio = hasAdditionalBio ? page.additionalBio : defaultAdditionalBio;
-
-  // Press logos / certifications are already list-based — if Anna has filled
-  // ANY entry, use only her list (never mix with hardcoded).
-  const pressLogos = page.pressLogos.length > 0 ? page.pressLogos : defaultPressLogos;
-  const certifications = page.certifications.length > 0 ? page.certifications : defaultCertifications;
+  // Anna 14 Jul policy (STRONGER): if a section has nothing in CMS, hide it
+  // entirely. No hardcoded fallback fires. Page renders only what Anna has
+  // actually filled; layout flows around the gap.
+  const kicker = page.kicker;
+  const title = page.title;
+  const rolesTagline = page.rolesTagline;
+  const story1 = page.storyParagraph1;
+  const story2 = page.storyParagraph2;
+  const additionalBio = page.additionalBio;
+  const pressLogos = page.pressLogos;
+  const certifications = page.certifications;
+  // Suppress "declared but never used" — the default* constants above are
+  // kept as reference copy Anna can paste into the CMS if she wants the
+  // previous wording. If you're happy to delete them, do so in a follow-up.
+  void defaultKicker; void defaultTitle; void defaultRolesTagline;
+  void defaultStory1; void defaultStory2; void defaultAdditionalBio;
+  void defaultPressLogos; void defaultCertifications;
 
   return (
     <>
@@ -82,35 +78,40 @@ export default async function AboutPage() {
       <SpeakableSchema url="/about" cssSelectors={['.about-roles', '.about-body']} headline="About Anna Lou Scaife" />
       <style dangerouslySetInnerHTML={{ __html: aboutStyles }} />
 
-      {/* Header — hides fields Anna hasn't filled if she's touched the section */}
-      <section className="about-header">
-        <div className="about-header-inner reveal">
-          {kicker && <p className="about-kicker">{kicker}</p>}
-          {title && <h1 className="about-title">{title}</h1>}
-          {rolesTagline && <p className="about-roles">{rolesTagline}</p>}
-        </div>
-      </section>
-
-      {/* Portrait + Story */}
-      <section className="about-story">
-        <div className="about-story-inner">
-          <div
-            className="about-portrait reveal"
-            style={page.portrait ? { backgroundImage: `url(${page.portrait})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
-          />
-          <div className="reveal rd1">
-            {story1 && (
-              <p className="about-body"><span className="about-drop-cap">{story1.charAt(0)}</span>{story1.slice(1)}</p>
-            )}
-            {story2 && <p className="about-body">{story2}</p>}
+      {/* Header — hides entirely if Anna hasn't filled anything */}
+      {(kicker || title || rolesTagline) && (
+        <section className="about-header">
+          <div className="about-header-inner reveal">
+            {kicker && <p className="about-kicker">{kicker}</p>}
+            {title && <h1 className="about-title">{title}</h1>}
+            {rolesTagline && <p className="about-roles">{rolesTagline}</p>}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Additional Bio — hides entirely if Anna hasn't filled it AND
-          no default. With defaults still in the code, this section always
-          renders for now — it will become blank-when-empty once Anna's
-          CMS content is finalised and defaults are removed. */}
+      {/* Portrait + Story — hides entirely if all fields are empty */}
+      {(page.portrait || story1 || story2) && (
+        <section className="about-story">
+          <div className="about-story-inner">
+            {page.portrait && (
+              <div
+                className="about-portrait reveal"
+                style={{ backgroundImage: `url(${page.portrait})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              />
+            )}
+            {(story1 || story2) && (
+              <div className="reveal rd1">
+                {story1 && (
+                  <p className="about-body"><span className="about-drop-cap">{story1.charAt(0)}</span>{story1.slice(1)}</p>
+                )}
+                {story2 && <p className="about-body">{story2}</p>}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Additional Bio */}
       {additionalBio && (
         <section className="about-bio">
           <div className="about-bio-inner reveal">
@@ -121,29 +122,39 @@ export default async function AboutPage() {
         </section>
       )}
 
-      {/* Press strip */}
-      <section className="about-press">
-        <p className="about-press-label">As seen in</p>
-        <div className="about-press-row">
-          {pressLogos.map((logo) => (
-            logo.logo
-              ? <img key={logo.name} src={logo.logo} alt={logo.name} className="about-press-logo-img" />
-              : <span key={logo.name} className="about-press-logo">{logo.name}</span>
-          ))}
-        </div>
-        <p className="about-press-label">Certified</p>
-        <div className="about-press-row">
-          {certifications.map((cert) => (
-            cert.badge
-              ? <img key={cert.name} src={cert.badge} alt={cert.name} className="about-cert-img" />
-              : <div key={cert.name} className="about-cert" style={{ borderColor: cert.colour, color: cert.colour }}>
-                  {cert.name.split('\n').map((line, i) => (
-                    <span key={i}>{i > 0 && <br />}{line}</span>
-                  ))}
-                </div>
-          ))}
-        </div>
-      </section>
+      {/* Press strip — hides entirely if both lists are empty */}
+      {(pressLogos.length > 0 || certifications.length > 0) && (
+        <section className="about-press">
+          {pressLogos.length > 0 && (
+            <>
+              <p className="about-press-label">As seen in</p>
+              <div className="about-press-row">
+                {pressLogos.map((logo) => (
+                  logo.logo
+                    ? <img key={logo.name} src={logo.logo} alt={logo.name} className="about-press-logo-img" />
+                    : <span key={logo.name} className="about-press-logo">{logo.name}</span>
+                ))}
+              </div>
+            </>
+          )}
+          {certifications.length > 0 && (
+            <>
+              <p className="about-press-label">Certified</p>
+              <div className="about-press-row">
+                {certifications.map((cert) => (
+                  cert.badge
+                    ? <img key={cert.name} src={cert.badge} alt={cert.name} className="about-cert-img" />
+                    : <div key={cert.name} className="about-cert" style={{ borderColor: cert.colour, color: cert.colour }}>
+                        {cert.name.split('\n').map((line, i) => (
+                          <span key={i}>{i > 0 && <br />}{line}</span>
+                        ))}
+                      </div>
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       {/* Contact + Links */}
       <section className="about-contact">
