@@ -36,6 +36,11 @@ export async function POST(req: NextRequest) {
   const strapiType = String(body?.strapi_type || '') as PurchasableType;
   const strapiId = body?.strapi_id;
   const email = (body?.email || '').trim().toLowerCase() || undefined;
+  const pwycAmountPenceRaw = Number(body?.amountPence);
+  const requestedAmountPence =
+    Number.isFinite(pwycAmountPenceRaw) && pwycAmountPenceRaw > 0
+      ? Math.round(pwycAmountPenceRaw)
+      : null;
 
   if (!VALID_TYPES.includes(strapiType)) {
     return NextResponse.json({ error: `Invalid strapi_type. Must be one of: ${VALID_TYPES.join(', ')}` }, { status: 400 });
@@ -52,6 +57,18 @@ export async function POST(req: NextRequest) {
   const invalid = validateForCheckout(purchasable);
   if (invalid) {
     return NextResponse.json({ error: invalid }, { status: 400 });
+  }
+
+  // Pay-what-you-can: if the programme has pwyc options AND the client sent
+  // an amountPence, we validate the amount against the allowed list. This is
+  // server-side enforcement — the client can't submit an arbitrary price.
+  let finalPricePence = purchasable.pricePence;
+  if (purchasable.pwycOptionsPence.length > 0) {
+    const picked =
+      requestedAmountPence && purchasable.pwycOptionsPence.includes(requestedAmountPence)
+        ? requestedAmountPence
+        : purchasable.pwycDefaultPence || purchasable.pwycOptionsPence[0];
+    finalPricePence = picked;
   }
 
   const mode = purchasable.isRecurring ? 'subscription' : 'payment';
@@ -86,7 +103,7 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency: purchasable.currency,
             product_data: { name: purchasable.name },
-            unit_amount: purchasable.pricePence,
+            unit_amount: finalPricePence,
             ...(purchasable.isRecurring &&
               purchasable.recurringInterval && {
                 recurring: { interval: purchasable.recurringInterval },

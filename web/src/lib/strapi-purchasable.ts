@@ -31,12 +31,36 @@ export type Purchasable = {
   mailchimpTag: string | null;
   grantsResetRoomAccess: boolean;
   grantsRegulatedAccess: boolean;
+  /**
+   * PAY-WHAT-YOU-CAN. Allowed amounts in pence. Empty when the programme
+   * uses a single fixed price (default). Anna sets a comma-separated
+   * pounds list on the Programme entry (e.g. "50, 100, 200, 500") and
+   * we parse it here.
+   */
+  pwycOptionsPence: number[];
+  pwycDefaultPence: number | null;
+  pwycLabel: string | null;
 };
+
+function parsePwycOptions(raw: unknown): number[] {
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  return raw
+    .split(',')
+    .map((s) => Number(String(s).trim()))
+    .filter((n) => Number.isFinite(n) && n > 0)
+    .map((pounds) => Math.round(pounds * 100));
+}
 
 function normalize(type: PurchasableType, raw: any): Purchasable | null {
   if (!raw) return null;
   const pricePence = Number(raw.pricePence ?? 0);
   if (!Number.isFinite(pricePence) || pricePence < 0) return null;
+  const pwycOptionsPence = parsePwycOptions(raw.pwycOptions);
+  const pwycDefaultRaw = Number(raw.pwycDefault ?? 0);
+  const pwycDefaultPence =
+    pwycOptionsPence.length > 0 && Number.isFinite(pwycDefaultRaw) && pwycDefaultRaw > 0
+      ? Math.round(pwycDefaultRaw * 100)
+      : null;
   return {
     type,
     id: raw.id,
@@ -49,6 +73,9 @@ function normalize(type: PurchasableType, raw: any): Purchasable | null {
     mailchimpTag: raw.mailchimpTag || null,
     grantsResetRoomAccess: Boolean(raw.grantsResetRoomAccess),
     grantsRegulatedAccess: Boolean(raw.grantsRegulatedAccess),
+    pwycOptionsPence,
+    pwycDefaultPence,
+    pwycLabel: typeof raw.pwycLabel === 'string' && raw.pwycLabel.trim() ? raw.pwycLabel : null,
   };
 }
 
@@ -115,6 +142,17 @@ export async function fetchPurchasable(
  * Returns an error message if anything's wrong, or null if valid.
  */
 export function validateForCheckout(p: Purchasable): string | null {
+  // PAY-WHAT-YOU-CAN programmes don't need a fixed pricePence — the buyer
+  // picks from pwycOptionsPence. Skip the fixed-price checks in that case.
+  if (p.pwycOptionsPence.length > 0) {
+    if (p.pwycOptionsPence.some((cents) => cents < 30)) {
+      return `${p.name} pay-what-you-can option is below Stripe's ~30p minimum.`;
+    }
+    if (p.isRecurring && !p.recurringInterval) {
+      return `${p.name} is marked recurring but has no recurringInterval — set month or year in Strapi.`;
+    }
+    return null;
+  }
   if (!p.pricePence || p.pricePence <= 0) {
     return `${p.name} is not priced (pricePence is 0). Set a price in Strapi or contact for booking.`;
   }

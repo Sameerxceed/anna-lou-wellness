@@ -4,6 +4,7 @@ import ProgrammePage from '@/components/ProgrammePage';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
 import BuyProgrammeButton from '@/components/BuyProgrammeButton';
+import PwycBuyBlock from '@/components/PwycBuyBlock';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import PageSections from '@/components/PageSections';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
@@ -151,10 +152,40 @@ export default async function DynamicProgrammePage({ params }: PageProps) {
         ]}
       />
       <ProgrammePage {...props} />
-      {/* For direct-buy programmes (pricePence > 0, not recurring), render
-          a Stripe Checkout button right below the ProgrammePage CTA. The
-          ProgrammePage's own bottom CTA stays as a fallback enquiry link. */}
-      {cms.pricePence && cms.pricePence > 0 && !cms.isRecurring && (
+      {/* PAY-WHAT-YOU-CAN block. Anna sets pwycOptions (e.g. "50, 100, 200,
+          500") on the Programme entry to switch a programme into pay-what-
+          you-can mode. Renders the dropdown block instead of the fixed-price
+          Buy button. Server-side enforces the amount is one of the allowed
+          values. */}
+      {(() => {
+        const pwycOptions = (cms.pwycOptions || '')
+          .split(',')
+          .map((s) => Number(String(s).trim()))
+          .filter((n) => Number.isFinite(n) && n > 0);
+        if (pwycOptions.length === 0) return null;
+        const pwycOptionsPence = pwycOptions.map((p) => Math.round(p * 100));
+        const pwycDefaultPence =
+          cms.pwycDefault && pwycOptions.includes(cms.pwycDefault)
+            ? Math.round(cms.pwycDefault * 100)
+            : null;
+        return (
+          <section style={{ background: cms.accentColour || '#6E3A5A', padding: '2.5rem 2rem', textAlign: 'center' }}>
+            <PwycBuyBlock
+              slug={slug}
+              optionsPence={pwycOptionsPence}
+              defaultPence={pwycDefaultPence}
+              label={cms.pwycLabel || 'Choose your amount'}
+              buttonLabel={cms.ctaLabel || `Buy ${cleanTitle}`}
+              background={cms.accentColour || '#6E3A5A'}
+            />
+            <p style={{ marginTop: '0.6rem', fontFamily: 'Mulish, sans-serif', fontSize: '0.7rem', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.75)' }}>
+              Secured by Stripe. Instant access.
+            </p>
+          </section>
+        );
+      })()}
+      {/* Fixed-price direct-buy programmes (pricePence > 0, not recurring, no PWYC). */}
+      {!cms.pwycOptions && cms.pricePence && cms.pricePence > 0 && !cms.isRecurring && (
         <section style={{ background: cms.accentColour || '#6E3A5A', padding: '2.5rem 2rem', textAlign: 'center' }}>
           <div style={{ maxWidth: 600, margin: '0 auto' }}>
             <BuyProgrammeButton

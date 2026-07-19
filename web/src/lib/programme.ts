@@ -28,6 +28,9 @@ export interface ProgrammeCMS {
   stagesList?: string;
   pricePence?: number;
   isRecurring?: boolean;
+  pwycOptions?: string;
+  pwycDefault?: number;
+  pwycLabel?: string;
   seoTitle?: string;
   seoDescription?: string;
   upsells?: ProgrammeUpsell[];

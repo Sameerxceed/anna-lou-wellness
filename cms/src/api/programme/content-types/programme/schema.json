@@ -135,6 +135,19 @@
       "default": false,
       "description": "Turn ON for the REGULATED programme entry only. When ticked, a Stripe purchase grants the buyer access to the course at /the-work/regulated/access. Leave OFF for every other programme."
     },
+    "pwycOptions": {
+      "type": "string",
+      "description": "PAY-WHAT-YOU-CAN. Comma-separated list of amounts in pounds. Example: '50, 100, 200, 500'. When set, the sales page shows a dropdown so buyers choose how much they want to pay instead of one fixed price. Leave blank for a normal fixed-price programme (uses pricePence)."
+    },
+    "pwycDefault": {
+      "type": "integer",
+      "description": "PAY-WHAT-YOU-CAN. Which amount is pre-selected in the dropdown (in pounds). Must be one of the values in pwycOptions. Example: 100."
+    },
+    "pwycLabel": {
+      "type": "string",
+      "default": "Choose your amount",
+      "description": "PAY-WHAT-YOU-CAN. Label above the price dropdown. Only shown when pwycOptions is set."
+    },
     "seoTitle": {
       "type": "string",
       "description": "Optional SEO override. Leave blank to use the title."
