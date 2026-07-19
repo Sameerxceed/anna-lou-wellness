@@ -287,7 +287,20 @@ async function seedPages(strapi) {
   await ensureSingleType(strapi, 'api::life-page.life-page', {});
   await ensureSingleType(strapi, 'api::love-and-relationships-page.love-and-relationships-page', {});
   await ensureSingleType(strapi, 'api::work-and-money-page.work-and-money-page', {});
-  await ensureSingleType(strapi, 'api::work-with-anna-page.work-with-anna-page', {});
+  await ensureSingleType(strapi, 'api::work-with-anna-page.work-with-anna-page', {
+    kicker: 'Work with Anna',
+    kicker_colour: '#F280AA',
+    title: 'Your inner world already knows.',
+    intro:
+      'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.',
+    ways_section_title: 'Ways to Work With Me',
+    ways_section_body:
+      'The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey. Whether you are just beginning to notice the patterns, or you are ready to rewire them completely, there is a way in.',
+    ways_section_cta_label: 'What do you need right now?',
+    ways_section_cta_url: '/the-work/quiz',
+    programmes_kicker: 'Programmes',
+    programmes_title: 'Four ways to begin.',
+  });
   await ensureSingleType(strapi, 'api::shop-page.shop-page', {});
 
   // ═══ Site Settings — backfill fields added after the singleton was first
@@ -369,6 +382,15 @@ async function seedPages(strapi) {
   // through a form (with image upload per row) instead of raw JSON. Pre-populate
   // with the current names so the structure is visible from day one.
   await ensureSingleType(strapi, 'api::about-page.about-page', {
+    kicker: 'About',
+    title: 'Twenty-five years leaves a trail.',
+    roles_tagline: 'Coach. Trainer. Podcaster. Author. Entrepreneur. Designer.',
+    story_paragraph_1:
+      'From the first piece about someone selling handmade jewellery on Portobello Road, to the Drapers feature when the brand hit Harrods, Selfridges, and Harvey Nichols simultaneously, to QVC Japan appearances, to trade press coverage across two decades. For most of those years the press was about the brand and the jewellery. More recently the coverage has shifted. The coaching, the houseboat, the pivot. The question is no longer just how did you build it but what did building it cost you, what did you learn, and who are you now.',
+    story_paragraph_2:
+      'Anna Lou is a multifaceted entrepreneur, designer, and wellness advocate based on Taggs Island, London. She is the founder of Anna Lou of London — a jewellery brand known for vibrant, personalised designs that has been featured in Harrods, Selfridges, Liberty, Harvey Nichols, Isetan and Hankyu in Tokyo, and Henri Bendel in New York. To uphold quality and ethical production, Anna moved all manufacturing to the UK from her Design Lab on Taggs Island.',
+    additional_bio:
+      'Anna Lou Wellness grew from her personal journey of overcoming significant challenges — narcissistic abuse, anxiety, and depression — while balancing single parenthood and business. Through her experiences, Anna became a somatic trauma-informed coach, offering support to women recovering from similar traumas. She provides one-on-one and group workshops that focus on holistic healing for mind, body, and spirit.\n\nBeyond coaching, Anna is a podcaster, author, and the creative force behind "Kirra Kirra" — an animated children\'s show promoting mental health, resilience, and empathy. She is also creating Narc Abuse Aid, a charity focused on providing resources and community for victims of narcissistic abuse.\n\nAcross all her ventures, Anna inspires others to embrace their unique identities, heal from past traumas, and pursue lives filled with purpose and creativity.',
     press_logos: [
       { name: 'Harrods' },
       { name: 'Selfridges' },
@@ -386,8 +408,25 @@ async function seedPages(strapi) {
     ],
   });
 
-  // ═══ Community Page — seed Reset Room features as components ═══
+  // ═══ Community Page — full content seed ═══
   await ensureSingleType(strapi, 'api::community-page.community-page', {
+    kicker: 'Community',
+    title: 'Come and sit with us.',
+    intro:
+      "Connection is not a concept. It is biological. Your nervous system needs co-regulation. It needs other regulated humans. That's not self-help language. That's neuroscience. Every space here is designed to bring you into the room with people who are actually honest, actually present, and actually doing the work.",
+    circle_title: 'The Returning Circle',
+    circle_description:
+      "Every Tuesday evening I hold a circle at The Hare and the Moon in Twickenham. Donation-based. Open to everyone. No booking required.\n\nWhat it is: a room. People who are honest. No advice. No fixing. No cross-talk. Just being in the presence of other humans who are willing to say what's actually going on.\n\nWhat it is not: therapy, a support group, a workshop, or anything with a curriculum. There is no programme. There is no progression. You come when you need to. You stop when you're done.\n\nMost people who come for the first time look nervous. By the end of the evening something in them has settled. Not because anything dramatic happened. Because they were in a room where they didn't have to perform. That sounds like nothing. It's actually everything.",
+    reset_room_title: 'The Reset Room',
+    reset_room_description:
+      'The Reset Room is the monthly membership for people who want ongoing access to the work without the commitment of a full programme.\n\nIt is for people who have done some work and want to keep going. For people who are not ready for 1:1 but know they need more than occasional workshops. For people who want community as part of their practice.\n\nIt is also the most natural next step after a workshop. You came to Signal Reset Day. Something shifted. You want to keep that aliveness going. This is where you come.\n\nCancel any time. First month free for anyone who has attended a paid workshop in the last three months.',
+    reset_room_price: '£25 per month',
+    events_title: 'Events Calendar',
+    events_description:
+      'Upcoming retreats, live dates, guest experts, and member-only events. All in one place.',
+    resources_title: 'Resource Library',
+    resources_description:
+      'Guides, tools, workshop replays, and member-only content. Everything you need for the journey.',
     reset_room_features: [
       { text: 'Live monthly Reset Call with Anna (90 minutes)' },
       { text: 'Full Resource Library — workshop replays, founder resets, paid archive' },
@@ -572,6 +611,8 @@ async function seedPages(strapi) {
     title: 'Corporate Wellbeing.',
     kicker: 'Experiences · For teams',
     kickerColour: '#7BAFDD',
+    eyebrow: 'Experiences · For teams',
+    tagline: 'Nervous system work that actually changes how people show up.',
     intro: [
       'Bespoke formats for teams and organisations. Workshops, keynotes, and ongoing wellbeing programmes tailored to your workplace. The Signal Method adapted for corporate environments.',
       'Formats range from a single 90-minute session to a full-day immersive experience. Available in person at your workplace, on the houseboat at Taggs Island, or online.',
@@ -589,6 +630,8 @@ async function seedPages(strapi) {
     title: 'Speaking.',
     kicker: 'Experiences · For events',
     kickerColour: '#FAA21B',
+    eyebrow: 'Experiences · For events',
+    tagline: 'Keynotes, panels, Q&As. Online and in person.',
     intro: [
       'Anna speaks on the inner guidance system, the nervous system, somatic coaching, the recovery work that follows narcissistic abuse, and what it actually takes for a woman to rebuild from burnout. She also speaks to founders on the link between the body and the business.',
       'Format depends on what your audience needs. Keynote, panel, fireside, intimate Q&A. Online or in the room.',
