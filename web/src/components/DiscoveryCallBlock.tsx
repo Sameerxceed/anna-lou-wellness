@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import type { DiscoveryCallBlock as DiscoveryCallBlockData } from '@/lib/cms';
+import { useInIframe } from '@/lib/useInIframe';
+import PreviewModeNotice from './PreviewModeNotice';
 
 interface Props {
   data: DiscoveryCallBlockData;
@@ -21,6 +23,7 @@ export default function DiscoveryCallBlock({ data }: Props) {
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inIframe = useInIframe();
 
   const handleBook = async () => {
     setLoading(true);
@@ -87,27 +90,31 @@ export default function DiscoveryCallBlock({ data }: Props) {
         </p>
       )}
 
-      <button
-        type="button"
-        onClick={handleBook}
-        disabled={loading}
-        style={{
-          fontFamily: "'Josefin Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: '0.75rem',
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          color: '#fff',
-          background: loading ? '#8E5A75' : '#6E3A5A',
-          border: 'none',
-          padding: '0.95rem 2.2rem',
-          cursor: loading ? 'wait' : 'pointer',
-          transition: 'background 0.2s',
-          minWidth: 220,
-        }}
-      >
-        {loading ? 'Loading…' : data.buttonLabel}
-      </button>
+      {inIframe ? (
+        <PreviewModeNotice action="Booking + payment" />
+      ) : (
+        <button
+          type="button"
+          onClick={handleBook}
+          disabled={loading}
+          style={{
+            fontFamily: "'Josefin Sans', sans-serif",
+            fontWeight: 400,
+            fontSize: '0.75rem',
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: '#fff',
+            background: loading ? '#8E5A75' : '#6E3A5A',
+            border: 'none',
+            padding: '0.95rem 2.2rem',
+            cursor: loading ? 'wait' : 'pointer',
+            transition: 'background 0.2s',
+            minWidth: 220,
+          }}
+        >
+          {loading ? 'Loading…' : data.buttonLabel}
+        </button>
+      )}
 
       {error && (
         <p

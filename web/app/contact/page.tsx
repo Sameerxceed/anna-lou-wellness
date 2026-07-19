@@ -6,6 +6,7 @@ import { getGenericPageBySlug } from '@/lib/generic-page';
 import { BreadcrumbSchema } from '@/components/StructuredData';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 import DiscoveryCallBlock from '@/components/DiscoveryCallBlock';
+import EnquiryForm from '@/components/EnquiryForm';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -50,31 +51,25 @@ export default async function ContactPage() {
 
           <div className="reveal reveal-delay-2">
             <p className="section-label">Send a Message</p>
-            <div className="space-y-4">
-              <div>
-                <label className="block font-sans font-light text-[0.55rem] tracking-[0.18em] uppercase text-dark-grey mb-2">Your Name</label>
-                <input type="text" className="w-full font-body text-[0.92rem] text-ink bg-transparent border-b border-mid-grey/30 py-3 outline-none focus:border-ink transition-colors" placeholder="Full name" />
-              </div>
-              <div>
-                <label className="block font-sans font-light text-[0.55rem] tracking-[0.18em] uppercase text-dark-grey mb-2">Email</label>
-                <input type="email" className="w-full font-body text-[0.92rem] text-ink bg-transparent border-b border-mid-grey/30 py-3 outline-none focus:border-ink transition-colors" placeholder="your@email.com" />
-              </div>
-              <div>
-                <label className="block font-sans font-light text-[0.55rem] tracking-[0.18em] uppercase text-dark-grey mb-2">Subject</label>
-                <select className="w-full font-body text-[0.92rem] text-ink bg-transparent border-b border-mid-grey/30 py-3 outline-none focus:border-ink appearance-none cursor-pointer">
-                  <option value="">Select subject</option>
-                  <option value="coaching">Coaching Enquiry</option>
-                  <option value="shop">Shop / Orders</option>
-                  <option value="collaboration">Collaboration</option>
-                  <option value="other">General Enquiry</option>
-                </select>
-              </div>
-              <div>
-                <label className="block font-sans font-light text-[0.55rem] tracking-[0.18em] uppercase text-dark-grey mb-2">Message</label>
-                <textarea className="w-full font-body text-[0.92rem] text-ink bg-transparent border border-mid-grey/30 p-4 outline-none focus:border-ink min-h-[120px] resize-y transition-colors" placeholder="Your message..." />
-              </div>
-              <button className="btn btn-outline w-full text-center">Send Message</button>
-            </div>
+            <EnquiryForm
+              endpoint="/api/lead/contact"
+              accentColour="#6E3A5A"
+              submitLabel="Send message"
+              successTitle="Message sent."
+              successMessage="Thank you. Anna will get back to you within 48 hours."
+              fields={[
+                { name: 'firstName', label: 'Your name', required: true },
+                { name: 'email', label: 'Email', type: 'email', required: true },
+                {
+                  name: 'subject',
+                  label: 'Subject',
+                  type: 'select',
+                  required: true,
+                  options: ['Coaching Enquiry', 'Shop / Orders', 'Collaboration', 'General Enquiry'],
+                },
+                { name: 'message', label: 'Message', type: 'textarea', required: true, rows: 5 },
+              ]}
+            />
           </div>
         </div>
       </section>

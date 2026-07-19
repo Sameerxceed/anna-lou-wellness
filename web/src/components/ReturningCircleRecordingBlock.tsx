@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useInIframe } from '@/lib/useInIframe';
+import PreviewModeNotice from './PreviewModeNotice';
 
 interface RecordingInfo {
   id: number;
@@ -43,6 +45,7 @@ export default function ReturningCircleRecordingBlock({
   const [firstName, setFirstName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inIframe = useInIframe();
 
   useEffect(() => {
     let cancelled = false;
@@ -170,6 +173,8 @@ export default function ReturningCircleRecordingBlock({
         </p>
       )}
 
+      {inIframe && <PreviewModeNotice action="Buying the recording" />}
+
       <form
         onSubmit={handleBuy}
         style={{
@@ -178,6 +183,8 @@ export default function ReturningCircleRecordingBlock({
           gap: '0.7rem',
           maxWidth: 400,
           margin: '0 auto',
+          opacity: inIframe ? 0.5 : 1,
+          pointerEvents: inIframe ? 'none' : 'auto',
         }}
       >
         <input
