@@ -92,7 +92,19 @@ export default function ExperiencesGrid({ items }: { items: ExperienceCard[] }) 
       <section className="xg-grid-wrap">
         <div className="xg-grid">
           {filtered.length === 0 && (
-            <p className="xg-empty">No upcoming items in this category. Check back soon or join the mailing list to be notified first.</p>
+            // Anna 14 Jul feedback: Corporate + Speaking pages have no
+            // scheduled events, but they ARE real offerings. Point the
+            // visitor at the sub-page (which has the sales copy + enquiry
+            // route) instead of the generic mailing-list nudge.
+            <p className="xg-empty">
+              {filter === 'corporate' ? (
+                <>No public corporate events on the calendar. <a href="/experiences/corporate-wellbeing" style={{ color: TYPE_META.corporate.colour, textDecoration: 'underline' }}>See the corporate wellbeing page for private bookings →</a></>
+              ) : filter === 'speaking' ? (
+                <>No public speaking dates on the calendar. <a href="/experiences/speaking" style={{ color: TYPE_META.speaking.colour, textDecoration: 'underline' }}>See the speaking page to book Anna →</a></>
+              ) : (
+                'No upcoming items in this category. Check back soon or join the mailing list to be notified first.'
+              )}
+            </p>
           )}
           {filtered.map((item) => {
             const meta = TYPE_META[item.type];

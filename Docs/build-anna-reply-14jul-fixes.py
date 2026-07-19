@@ -149,6 +149,14 @@ para(
     '/the-work/regulated/access to view course modules.'
 )
 
+h2('14. Corporate + Speaking "No upcoming items" empty state')
+para(
+    'From the Homepage/Footer review. When someone filters the /experiences grid by Corporate or Speaking '
+    'and there are no scheduled events, the page used to say a generic "check back soon" message. '
+    'Now for Corporate it points at /experiences/corporate-wellbeing for private bookings, and Speaking '
+    'points at /experiences/speaking to book Anna. Retreats + Workshops keep the mailing-list nudge.'
+)
+
 # ============ CMS ============
 doc.add_page_break()
 h1('CMS — quick things you can do yourself in Strapi')
@@ -227,6 +235,39 @@ para(
     'Work With Me, Practitioners) vs mobile menu (same list). If they still look different, screenshot to me — '
     'might be a caching issue.'
 )
+
+h2('J. Community page — display only blog posts')
+para(
+    'Fixes doc item 11. Two ways to read this — which do you want?'
+)
+bullet(
+    'OPTION 1 (keep 4-section landing): current /community landing shows Returning Circle + Reset Room + Events + Resources. If you want to also add a Blog Posts strip pulling from /reset-stories, tell me and I add it.'
+)
+bullet(
+    'OPTION 2 (strip it back): remove the RC + Reset Room + Events + Resources sections and show ONLY blog posts. That is a bigger change and I want to confirm before I do it — those 4 sections currently drive a lot of Reset Room signups.'
+)
+para('Reply with 1 or 2. Meanwhile, everything above is CMS-editable via Content Manager -> Community Page.')
+
+h2('K. Resource Library — only free resources')
+para(
+    'Fixes doc item 11 (second half). Content Manager -> Resource Library entries have an "is_free" toggle. '
+    'Right now some entries may be marked paid. Filter to those that are paid, either delete them (if they were seeded '
+    'placeholders) or move the paid resource content into the Reset Room dashboard instead. I can help audit — '
+    'send me the list of resources you want to keep and I will clean up the rest.'
+)
+
+h2('L. Practitioner in homepage navigation')
+para(
+    'Fixes doc item 16. Practitioners IS in the nav today, but only inside the About dropdown — not visible unless you hover About. '
+    'Two options:'
+)
+bullet(
+    'OPTION A (recommended, no work): keep it in About dropdown but I add it to Footer -> Connect Links so it always appears. Anna does this in CMS -> Footer -> Connect Links -> +Add link (label: Practitioners, href: /practitioners).'
+)
+bullet(
+    'OPTION B (top-level nav): I add "Practitioners" as its own top-level nav item next to Shop/Community/About. Makes the nav 10 items instead of 9 — might feel crowded on mid-size laptops.'
+)
+para('Reply which option. Or leave as-is if you are ok with it being nested under About.')
 
 
 # ============ NEEDS YOU ============

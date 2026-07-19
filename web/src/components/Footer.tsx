@@ -1,9 +1,13 @@
 import Link from 'next/link';
-import type { FooterData } from '@/lib/cms';
+import type { FooterData, NavItem } from '@/lib/cms';
 
 interface FooterProps {
   siteSettings: any;
   footer: FooterData;
+  /** Same navigation tree as the top nav. Used to render the sitemap
+   *  section so footer + header can never drift out of sync — Anna edits
+   *  Navigation once, both places update. */
+  navigation: NavItem[];
 }
 
 // Inline SVG icons for footer social row (PDF 6.2). Self-contained so we don't
@@ -50,7 +54,7 @@ type SocialEntry = {
   Icon: () => JSX.Element;
 };
 
-export default function Footer({ siteSettings, footer }: FooterProps) {
+export default function Footer({ siteSettings, footer, navigation }: FooterProps) {
   // Anna's PDF 6.2: footer social row in this exact order — Instagram, LinkedIn,
   // Substack, YouTube, Podcast. Each only renders if its URL is set in CMS.
   const socials: SocialEntry[] = [
@@ -66,15 +70,45 @@ export default function Footer({ siteSettings, footer }: FooterProps) {
       {/* Closing message */}
       <p className="footer-message">{footer.closingMessage}</p>
 
-      {/* Tier 1: Primary navigation */}
-      <nav className="footer-tier1">
-        {footer.exploreLinks.map(link => (
-          <Link key={link.href} href={link.href}>{link.label}</Link>
-        ))}
-        {footer.connectLinks.map(link => (
-          <Link key={link.href} href={link.href}>{link.label}</Link>
-        ))}
-      </nav>
+      {/* Tier 0: Sitemap — mirrors the top nav dropdowns so nav + footer
+          can never drift. Anna 14 Jul feedback: 'Footer should be consistent
+          with the top navigation'. Fix: single source of truth. */}
+      {navigation.length > 0 && (
+        <nav className="footer-sitemap" aria-label="Sitemap">
+          {navigation.map((section) => (
+            <div key={section.href} className="footer-sitemap-col">
+              <p
+                className="footer-sitemap-heading"
+                style={section.colour ? { color: section.colour } : undefined}
+              >
+                <Link href={section.href}>{section.label}</Link>
+              </p>
+              {section.children && section.children.length > 0 && (
+                <ul className="footer-sitemap-list">
+                  {section.children.map((child) => (
+                    <li key={child.href}>
+                      <Link href={child.href}>{child.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </nav>
+      )}
+
+      {/* Tier 1: Primary navigation — kept as a compact reminder row.
+          Anna can leave this empty in CMS if the sitemap above is enough. */}
+      {(footer.exploreLinks.length > 0 || footer.connectLinks.length > 0) && (
+        <nav className="footer-tier1">
+          {footer.exploreLinks.map(link => (
+            <Link key={link.href} href={link.href}>{link.label}</Link>
+          ))}
+          {footer.connectLinks.map(link => (
+            <Link key={link.href} href={link.href}>{link.label}</Link>
+          ))}
+        </nav>
+      )}
 
       {/* Tier 2: Social icons — Instagram, LinkedIn, Substack, YouTube, Podcast */}
       <nav className="footer-socials" aria-label="Social media">
@@ -121,6 +155,39 @@ export default function Footer({ siteSettings, footer }: FooterProps) {
 const footerStyles = `
 .footer-wrap { background:#231F20; padding:1.5rem 2rem 1rem; }
 .footer-message { font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:1.2rem; color:rgba(245,243,239,0.3); text-align:center; margin-bottom:1.2rem; }
+/* Sitemap mirrors the top nav dropdowns so both stay in sync. Grid on
+   desktop, stacked columns on mobile. Anna 14 Jul 2026. */
+.footer-sitemap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem 1.2rem;
+  max-width: 1200px;
+  margin: 0 auto 1.8rem;
+  padding: 0 1.5rem;
+}
+.footer-sitemap-col { min-width: 0; }
+.footer-sitemap-heading {
+  font-family: 'Work Sans', sans-serif; font-weight: 500;
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  margin: 0 0 0.55rem;
+  color: rgba(245,243,239,0.9);
+}
+.footer-sitemap-heading a { color: inherit; text-decoration: none; }
+.footer-sitemap-heading a:hover { color: #FFD07A; }
+.footer-sitemap-list { list-style: none; padding: 0; margin: 0; }
+.footer-sitemap-list li { margin-bottom: 0.32rem; }
+.footer-sitemap-list a {
+  font-family: 'EB Garamond', Georgia, serif; font-size: 0.85rem;
+  color: rgba(245,243,239,0.55);
+  text-decoration: none; line-height: 1.4;
+  transition: color 0.2s;
+}
+.footer-sitemap-list a:hover { color: #FFD07A; }
+@media (max-width: 600px) {
+  .footer-sitemap { grid-template-columns: repeat(2, 1fr); gap: 1.2rem 0.8rem; }
+  .footer-sitemap-heading { font-size: 0.58rem; }
+  .footer-sitemap-list a { font-size: 0.8rem; }
+}
 .footer-tier1 { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:0.8rem; }
 .footer-tier1 a { font-family:'EB Garamond',Georgia,serif; font-size:0.9rem; color:rgba(245,243,239,0.45); transition:color 0.3s; text-decoration:none; }
 .footer-tier1 a:hover { color:#FFD07A; }

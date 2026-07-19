@@ -157,7 +157,7 @@ export default async function RootLayout({
         <Analytics gaId={siteSettings.googleAnalyticsId} fbPixelId={siteSettings.facebookPixelId} />
         <Nav navigation={navigation} siteSettings={siteSettings} topStripText={topStripText} />
         <main>{children}</main>
-        <Footer siteSettings={siteSettings} footer={footer} />
+        <Footer siteSettings={siteSettings} footer={footer} navigation={navigation} />
         <Lightbox />
         <CookieBanner bannerText={siteSettings.cookieBannerText} />
         <BackToTop />
