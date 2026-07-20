@@ -145,7 +145,9 @@ Content Manager splits into Single Types and Collection Types. Both are grouped 
 - Event Â· Event
 - Team Â· Member
 
-**Sorted to the very bottom** (`zz Â· X (unused)`) â€” internal/system content types you should ignore. Cart, Coupon, Currency Rate, Page-legacy, Product Option / Review / Variant, Return Request, Shipping Method / Zone, Tax Rule, Wishlist. They sort last and are marked "(unused)" so you know to skip them.
+**Sorted to the very bottom** (`zz Â· X (unused)`) â€” internal/system content types you should ignore. Cart, Currency Rate, Page-legacy, Product Option / Review / Variant, Return Request, Shipping Method / Zone, Tax Rule, Wishlist. They sort last and are marked "(unused)" so you know to skip them.
+
+**Note:** `Shop Â· Coupon Code` is NOT unused â€” that's how you create shop discount codes. See Â§17.36.
 
 For each one, click to open. Singles are "one big form"; collections show a list with filter + search; click any row to edit.
 
@@ -2863,6 +2865,31 @@ The other footer tiers you can still edit separately:
 - **legal_links** — the tiny bottom row (Privacy, Terms, etc.).
 
 Leave `explore_links` / `connect_links` / `legal_links` blank in CMS and those flat rows disappear entirely — the sitemap section alone is usually enough.
+
+### 17.36 Discount codes / coupons — where to create them
+
+**Where they live:** Content Manager → **Shop · Coupon Code** (in the Shop group in the sidebar).
+
+**What they work on:** SHOP products only — the physical / digital items in the cart-based shop checkout. They do NOT work on programmes (Reset, Reset Room, courses), experiences (retreats, workshops, coaching), or the 15-minute 1 to 1 chat. Those all use Stripe direct checkout, which doesn't have a coupon field.
+
+**How to create one:**
+1. Content Manager → Shop · Coupon Code → **+ Create new entry**
+2. Fill:
+   - **code** — what the customer types at checkout (e.g. `RESET20`). Must be unique. Case-insensitive on entry but store it uppercase for clarity.
+   - **type** — `percentage` (e.g. 20 = 20% off), `fixed_amount` (e.g. 10 = £10 off), or `free_shipping`.
+   - **value** — the number (20, 10, etc.). Ignored for free_shipping.
+   - **min_order_amount** — cart must be at least this much for the code to work. Leave 0 for no minimum.
+   - **max_uses** — total times this code can be used across all customers. 0 = unlimited.
+   - **starts_at** / **expires_at** — optional date range. Leave blank for "no limit".
+   - **is_active** — untick to disable without deleting.
+   - **applicable_products** / **applicable_categories** — leave BOTH blank for site-wide. Fill either one to restrict the code to specific products or categories.
+3. Save. Live immediately (no Publish button — coupons are transactional, always live on save).
+
+**How the customer uses it:** on the cart page there's an "Enter promo code" field. They type the code, click Apply, the discount shows in the totals.
+
+**Where to see who used what:** `times_used` on each coupon shows how many times it's been redeemed. For per-order detail, open Content Manager → Shop · Order and filter by coupon.
+
+**Why programmes don't have coupons:** they use Stripe's one-shot checkout flow which is designed for a single price, not a cart. If you want to offer a discount on a programme, either lower the price temporarily, or create a REGULATED-style pay-what-you-can dropdown (see §17.32).
 
 ## 18. Email journeys (what happens when someone clicks something)
 
