@@ -2891,6 +2891,29 @@ Leave `explore_links` / `connect_links` / `legal_links` blank in CMS and those f
 
 **Why programmes don't have coupons:** they use Stripe's one-shot checkout flow which is designed for a single price, not a cart. If you want to offer a discount on a programme, either lower the price temporarily, or create a REGULATED-style pay-what-you-can dropdown (see §17.32).
 
+### 17.37 Article editor upgrade — proper link popup, WYSIWYG formatting
+
+**What changed (20 July 2026):** the old article body editor used Markdown syntax — when you clicked the link icon it inserted `[text](link)` and you had to know to replace the literal word `link` with a URL. Confusing. Anna 20 Jul: "if I select any text and click link it just says link and there is no provision to put in the link."
+
+**Fixed.** Article body is now Strapi's proper block editor:
+- Select text → click the 🔗 link icon → a popup asks for the URL → paste it → click Insert. The text becomes a real hyperlink you can see immediately.
+- Bold / italic / underline / headings / lists / quotes all work from the toolbar the way you'd expect in Word or Google Docs.
+- No Markdown syntax anywhere.
+
+**Where you'll see it:** open any article in Content Manager → Story · Article → look for the field labeled **body_v2** (yes, the label is ugly — Strapi humanizes it that way). The old "Body" field is hidden.
+
+**Your existing articles:** all 30+ articles were auto-migrated to the new editor. Formatting is preserved: bold, italic, headings, lists, links. **Exception:** any article where you had a broken `[text](link)` placeholder (from the old markdown link button) will now show the text as plain text — you'll need to reselect it and click the link icon to add the real URL. Only affects articles where you'd tried to add a link but never filled the URL.
+
+**How to fix a broken link on an existing article:**
+1. Open the article
+2. Find the text that should be a link (was in `[brackets]` before)
+3. Highlight the words
+4. Click the 🔗 chain icon in the toolbar
+5. Popup opens — paste the URL — click **Insert link**
+6. Save
+
+**Old body field:** still in the database as a read-only backup, hidden from the admin. If we ever need to reference it, ping Sameer.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:

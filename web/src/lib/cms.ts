@@ -779,13 +779,22 @@ export interface ArticleCategory {
 const fallbackArticles: Article[] = [];
 
 function mapArticle(d: any): Article {
+  // body_v2 (blocks) is the current source of truth. Fall back to the legacy
+  // richtext body only when body_v2 is empty — after the one-shot migration
+  // it should never be, but the fallback keeps unmigrated entries readable.
+  const preferBlocks =
+    Array.isArray(d.body_v2) && d.body_v2.length > 0 ? d.body_v2 : null;
+  const legacyBody = Array.isArray(d.body)
+    ? d.body
+    : typeof d.body === 'string'
+      ? d.body
+      : [];
   return {
     id: d.id,
     title: d.title || '',
     slug: d.slug || '',
     excerpt: d.excerpt || '',
-    // Blocks is stored as an array. Fall back to empty array if missing.
-    body: Array.isArray(d.body) ? d.body : (typeof d.body === 'string' ? d.body : []),
+    body: preferBlocks ?? legacyBody,
     heroImage: mediaUrl(d.hero_image),
     category: d.category ? {
       name: d.category.name,

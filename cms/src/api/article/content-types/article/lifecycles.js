@@ -36,8 +36,9 @@ const SECTION_PATHS = {
 const { notifyRevalidate } = require('../../../../utils/revalidate');
 const autoSeo = require('../../../../utils/auto-seo');
 
-// Field map for auto-SEO. Article uses title + intro/body for the prompt.
-const SEO_FIELDS = { nameFields: ['title', 'name'], bodyFields: ['intro', 'body', 'description', 'excerpt'] };
+// Field map for auto-SEO. Article uses title + intro/body_v2 for the prompt.
+// body_v2 (blocks) is preferred over legacy body (richtext markdown).
+const SEO_FIELDS = { nameFields: ['title', 'name'], bodyFields: ['intro', 'body_v2', 'body', 'description', 'excerpt'] };
 
 // Given an Article event, compute every public path that should refresh.
 // Always includes homepage. Adds the primary category's section landing

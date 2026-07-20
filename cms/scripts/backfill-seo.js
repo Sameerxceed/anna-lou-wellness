@@ -36,7 +36,7 @@ const CONTENT_TYPES = [
   {
     uid: 'api::article.article',
     nameFields: ['title', 'name'],
-    bodyFields: ['intro', 'body', 'description', 'excerpt'],
+    bodyFields: ['intro', 'body_v2', 'body', 'description', 'excerpt'],
   },
   {
     uid: 'api::programme.programme',

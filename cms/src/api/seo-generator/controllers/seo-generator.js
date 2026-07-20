@@ -156,7 +156,7 @@ const backfillState = {
 };
 
 const BACKFILL_CT = [
-  { uid: 'api::article.article', nameFields: ['title', 'name'], bodyFields: ['intro', 'body', 'description', 'excerpt'] },
+  { uid: 'api::article.article', nameFields: ['title', 'name'], bodyFields: ['intro', 'body_v2', 'body', 'description', 'excerpt'] },
   { uid: 'api::programme.programme', nameFields: ['title'], bodyFields: ['tagline', 'intro', 'whatsIncludedItems', 'approachBody', 'outcomesBody'] },
   { uid: 'api::experience.experience', nameFields: ['name', 'title'], bodyFields: ['description', 'tagline', 'priceLabel', 'location'] },
   { uid: 'api::coaching-session.coaching-session', nameFields: ['name'], bodyFields: ['description', 'tagline', 'duration', 'price_label'] },
@@ -448,7 +448,7 @@ module.exports = {
 const CONTENT_TYPE_SPECS = {
   'api::article.article': {
     nameFields: ['title', 'name'],
-    bodyFields: ['intro', 'body', 'description', 'excerpt'],
+    bodyFields: ['intro', 'body_v2', 'body', 'description', 'excerpt'],
   },
   'api::programme.programme': {
     nameFields: ['title'],

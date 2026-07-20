@@ -25,7 +25,15 @@
       "type": "text"
     },
     "body": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "body_v2": {
+      "type": "blocks",
+      "description": "Main article body. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL. Bold, italic, headings, lists and quotes all work from the toolbar. New articles: type here. Old articles: content was migrated here automatically, edit and Save."
     },
     "hero_image": {
       "type": "media",
