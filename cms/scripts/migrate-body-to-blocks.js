@@ -177,11 +177,28 @@ async function runMigration(strapi, opts = {}) {
   const dryRun = !!opts.dryRun;
   const targetSlug = opts.targetSlug || null;
   const backupDir = opts.backupDir || path.resolve(__dirname, '..');
-  const logger = opts.logger || console;
+  const rawLogger = opts.logger || console;
+  // Normalise: console has .log/.warn/.error; Winston (strapi.log) has
+  // .info/.warn/.error but NOT .log — calling .log on Winston throws
+  // "Cannot create property 'Symbol(level)' on string" because it tries
+  // to mutate the string as an info-object. Wrap both into one interface.
+  const info = (msg) => {
+    if (typeof rawLogger.info === 'function') rawLogger.info(msg);
+    else if (typeof rawLogger.log === 'function') rawLogger.log(msg);
+    else console.log(msg);
+  };
+  const warn = (msg) => {
+    if (typeof rawLogger.warn === 'function') rawLogger.warn(msg);
+    else console.warn(msg);
+  };
+  const err = (msg) => {
+    if (typeof rawLogger.error === 'function') rawLogger.error(msg);
+    else console.error(msg);
+  };
 
-  logger.log('[migrate-body-to-blocks] starting');
-  logger.log(`[migrate-body-to-blocks] dry-run: ${dryRun ? 'YES' : 'NO'}`);
-  if (targetSlug) logger.log(`[migrate-body-to-blocks] only slug: ${targetSlug}`);
+  info('[migrate-body-to-blocks] starting');
+  info(`[migrate-body-to-blocks] dry-run: ${dryRun ? 'YES' : 'NO'}`);
+  if (targetSlug) info(`[migrate-body-to-blocks] only slug: ${targetSlug}`);
 
   let entries;
   try {
@@ -190,7 +207,7 @@ async function runMigration(strapi, opts = {}) {
       status: 'published',
     });
   } catch (err) {
-    logger.error(`[migrate-body-to-blocks] findMany failed: ${err.message}`);
+    err(`[migrate-body-to-blocks] findMany failed: ${err.message}`);
     return { processed: 0, migrated: 0, skipped: 0, errors: 1 };
   }
 
@@ -198,7 +215,7 @@ async function runMigration(strapi, opts = {}) {
     ? entries.filter((e) => e.slug === targetSlug)
     : entries;
 
-  logger.log(`[migrate-body-to-blocks] found ${filtered.length} article(s) to consider`);
+  info(`[migrate-body-to-blocks] found ${filtered.length} article(s) to consider`);
 
   const backup = filtered.map((e) => ({
     documentId: e.documentId,
@@ -212,9 +229,9 @@ async function runMigration(strapi, opts = {}) {
       const ts = new Date().toISOString().replace(/[:.]/g, '-');
       const backupPath = path.join(backupDir, 'article-body-backup-' + ts + '.json');
       fs.writeFileSync(backupPath, JSON.stringify(backup, null, 2), 'utf-8');
-      logger.log(`[migrate-body-to-blocks] backup written → ${backupPath}`);
+      info(`[migrate-body-to-blocks] backup written → ${backupPath}`);
     } catch (err) {
-      logger.warn(`[migrate-body-to-blocks] backup write failed: ${err.message} (continuing)`);
+      warn(`[migrate-body-to-blocks] backup write failed: ${err.message} (continuing)`);
     }
   }
 
@@ -232,14 +249,14 @@ async function runMigration(strapi, opts = {}) {
         Array.isArray(b?.children) && b.children.some((c) => (c?.text || '').trim())
       );
       if (hasText) {
-        logger.log(`  SKIP  ${label} (body_v2 already populated)`);
+        info(`  SKIP  ${label} (body_v2 already populated)`);
         skipped += 1;
         continue;
       }
     }
 
     if (!entry.body || (typeof entry.body === 'string' && !entry.body.trim())) {
-      logger.log(`  SKIP  ${label} (empty body — nothing to migrate)`);
+      info(`  SKIP  ${label} (empty body — nothing to migrate)`);
       skipped += 1;
       continue;
     }
@@ -249,7 +266,7 @@ async function runMigration(strapi, opts = {}) {
       : markdownToBlocks(String(entry.body));
 
     if (dryRun) {
-      logger.log(`  DRY   ${label} → ${converted.length} blocks`);
+      info(`  DRY   ${label} → ${converted.length} blocks`);
       migrated += 1;
       continue;
     }
@@ -261,7 +278,7 @@ async function runMigration(strapi, opts = {}) {
         status: 'draft',
       });
     } catch (err) {
-      logger.warn(`  DRAFT FAIL ${label}: ${err.message}`);
+      warn(`  DRAFT FAIL ${label}: ${err.message}`);
     }
     try {
       await strapi.documents(UID).update({
@@ -271,15 +288,15 @@ async function runMigration(strapi, opts = {}) {
       });
     } catch (err) {
       if (!String(err.message).includes('not found')) {
-        logger.warn(`  PUB FAIL ${label}: ${err.message}`);
+        warn(`  PUB FAIL ${label}: ${err.message}`);
       }
     }
-    logger.log(`  OK    ${label} → ${converted.length} blocks`);
+    info(`  OK    ${label} → ${converted.length} blocks`);
     migrated += 1;
   }
 
-  logger.log('[migrate-body-to-blocks] done');
-  logger.log(`  processed: ${processed}, migrated: ${migrated}${dryRun ? ' (dry-run)' : ''}, skipped: ${skipped}, errors: ${errors}`);
+  info('[migrate-body-to-blocks] done');
+  info(`  processed: ${processed}, migrated: ${migrated}${dryRun ? ' (dry-run)' : ''}, skipped: ${skipped}, errors: ${errors}`);
 
   return { processed, migrated, skipped, errors };
 }
