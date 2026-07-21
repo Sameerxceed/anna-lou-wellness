@@ -333,14 +333,23 @@ module.exports = {
     try {
       const path = require('path');
       const fs = require('fs');
-      const flagPath = path.resolve('/app', '.migration-body-to-blocks-done');
-      const flagFallback = path.resolve(__dirname, '..', '.migration-body-to-blocks-done');
+      // v2 flag — bumped 21 Jul PM after Anna reported blog posts still
+      // rendering as one squashed paragraph. The 21 Jul AM article migration
+      // (`0365dc0` + `959d340`) ran with the buggy pre-`8a0231c` parser
+      // that split on double-newlines only, joining everything into one
+      // paragraph. This re-run uses the fixed parser + force:true to
+      // overwrite existing body_v2 data.
+      const flagPath = path.resolve('/app', '.migration-body-to-blocks-v2-done');
+      const flagFallback = path.resolve(__dirname, '..', '.migration-body-to-blocks-v2-done');
       const alreadyDone = fs.existsSync(flagPath) || fs.existsSync(flagFallback);
       if (alreadyDone) {
-        strapi.log.info('[migrate-body-to-blocks] flag file present — skipping');
+        strapi.log.info('[migrate-body-to-blocks] v2 flag file present — skipping');
       } else {
         const { runMigration } = require('../scripts/migrate-body-to-blocks');
-        const result = await runMigration(strapi, { logger: strapi.log });
+        // force: true — overwrite the buggy first-migration body_v2 data
+        // with output from the fixed parser (single-newline paragraph split,
+        // HTML tag stripping, placeholder filtering).
+        const result = await runMigration(strapi, { logger: strapi.log, force: true });
         // Write the flag ONLY if we didn't hit a hard error. Migration is
         // idempotent so even a partial run + re-run would be safe, but the
         // flag prevents an unnecessary re-run on every boot going forward.
