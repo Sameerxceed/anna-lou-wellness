@@ -17,7 +17,7 @@ import { fetchEmailTemplate } from './strapi-admin';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const EMAIL_FROM = process.env.EMAIL_FROM || 'Anna Lou Wellness <onboarding@resend.dev>';
-const OWNER_EMAIL = process.env.OWNER_EMAIL || 'hello@annalouwellness.com';
+const OWNER_EMAIL = process.env.OWNER_EMAIL || 'Hello@annalouoflondon.com';
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://staging.annalouwellness.com';
 const ADMIN_URL = process.env.ADMIN_URL || 'https://cms.annalouwellness.com/admin';
 
