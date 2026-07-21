@@ -17,10 +17,12 @@ import { fetchEmailTemplate } from './strapi-admin';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 // Fallback address used only if the EMAIL_FROM env var is missing.
-// annalouoflondon.com must be verified in Resend (Domains section) before
-// this default works in production — otherwise sends will 4xx as
-// "domain not verified". Env var takes precedence at runtime.
-const EMAIL_FROM = process.env.EMAIL_FROM || 'Anna Lou Wellness <Hello@annalouoflondon.com>';
+// annalouwellness.com is the verified sender domain in Resend (free plan
+// allows one verified domain). Anna receives at OWNER_EMAIL (her
+// annalouoflondon.com inbox) — sender identity and receiving inbox are
+// separate, and Reply-To is set to OWNER_EMAIL so customer replies land
+// in her real inbox.
+const EMAIL_FROM = process.env.EMAIL_FROM || 'Anna Lou Wellness <hello@annalouwellness.com>';
 const OWNER_EMAIL = process.env.OWNER_EMAIL || 'Hello@annalouoflondon.com';
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://staging.annalouwellness.com';
 const ADMIN_URL = process.env.ADMIN_URL || 'https://cms.annalouwellness.com/admin';
