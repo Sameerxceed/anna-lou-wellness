@@ -50,6 +50,7 @@ export default async function WorkAndMoneyPage() {
         kickerColour={page.kickerColour}
         title={page.title}
         intro={page.intro}
+        introBlocks={page.introBlocks}
         articles={feedArticles}
         sectionHref="/work-and-money"
         subcategories={subcategories}

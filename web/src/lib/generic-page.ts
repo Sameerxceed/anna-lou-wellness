@@ -9,6 +9,8 @@ export interface GenericPageCMS {
   tagline?: string;
   heroImage?: { url?: string } | null;
   intro?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  intro_v2?: any[] | null;
   ctaLabel?: string;
   ctaUrl?: string;
   // Returning Circle recording block (only used on the-returning-circle).
@@ -63,6 +65,7 @@ export function genericPageProps(
   const kickerColour = cms?.kickerColour || fallback.kickerColour;
   const title = cms?.title || '';
   const paragraphs = cms?.intro ? splitParas(cms.intro) : [];
+  const paragraphsBlocks = Array.isArray(cms?.intro_v2) && cms.intro_v2.length > 0 ? cms.intro_v2 : null;
   const cta = cms?.ctaLabel && cms?.ctaUrl
     ? { label: cms.ctaLabel, href: cms.ctaUrl }
     : undefined;
@@ -80,6 +83,7 @@ export function genericPageProps(
     parentHref: fallback.parentHref,
     heroImage,
     paragraphs,
+    paragraphsBlocks,
     cta,
   };
 }

@@ -126,6 +126,7 @@ export async function getProducts(): Promise<Product[]> {
       slug: d.slug,
       shortDescription: d.short_description || '',
       description: d.description || '',
+      descriptionBlocks: Array.isArray(d.description_v2) && d.description_v2.length > 0 ? d.description_v2 : null,
       price: d.price,
       category: d.category?.slug || '',
       images: mediaUrls(d.images),
@@ -291,6 +292,8 @@ export interface DiscoveryCallBlock {
   calendlyUrl: string;
   whyPriceLabel: string;
   whyPriceBody: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  whyPriceBodyBlocks: any[] | null;
 }
 
 export async function getContactInfo(): Promise<SiteSettings & { discoveryCall: DiscoveryCallBlock | null }> {
@@ -313,6 +316,7 @@ export async function getContactInfo(): Promise<SiteSettings & { discoveryCall: 
             calendlyUrl: calendly,
             whyPriceLabel: String(d.discovery_why_price_label || '').trim(),
             whyPriceBody: String(d.discovery_why_price_body || '').trim(),
+            whyPriceBodyBlocks: Array.isArray(d.discovery_why_price_body_v2) && d.discovery_why_price_body_v2.length > 0 ? d.discovery_why_price_body_v2 : null,
           }
         : null;
 
@@ -512,7 +516,11 @@ export async function getNavigation(): Promise<NavItem[]> {
 export interface SectionLandingPage {
   kicker: string;
   title: string;
+  // Legacy markdown string — kept so fallback prop typing works.
   intro: string;
+  // Blocks JSON companion — preferred when populated.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  introBlocks: any[] | null;
   heroImage: string;
   kickerColour: string;
   upsells: UpsellRef[];
@@ -520,22 +528,25 @@ export interface SectionLandingPage {
 
 export async function getSectionLandingPage(
   endpoint: string,
-  fallback: Omit<SectionLandingPage, 'upsells'>,
+  fallback: Omit<SectionLandingPage, 'upsells' | 'introBlocks'>,
 ): Promise<SectionLandingPage> {
   try {
     const { data: d } = await fetchAPI(endpoint, { populate: '*' });
-    if (!d) return { ...fallback, upsells: [] };
+    if (!d) return { ...fallback, introBlocks: null, upsells: [] };
     const upsells = await getUpsellsForSingleton(endpoint);
+    const rawIntroV2 = (d as any).intro_v2;
+    const introBlocks = Array.isArray(rawIntroV2) && rawIntroV2.length > 0 ? rawIntroV2 : null;
     return {
       kicker: (d as any).kicker || fallback.kicker,
       title: (d as any).title || fallback.title,
       intro: (d as any).intro || fallback.intro,
+      introBlocks,
       heroImage: mediaUrl((d as any).hero_image, 'large') || fallback.heroImage,
       kickerColour: (d as any).kicker_colour || fallback.kickerColour,
       upsells,
     };
   } catch {
-    return { ...fallback, upsells: [] };
+    return { ...fallback, introBlocks: null, upsells: [] };
   }
 }
 
@@ -618,6 +629,8 @@ export type WorkWithAnnaData = {
   kickerColour: string;
   title: string;
   intro: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  introBlocks: any[] | null;
   waysSectionTitle: string;
   waysSectionBody: string;
   waysSectionCtaLabel: string;
@@ -636,6 +649,7 @@ export async function getWorkWithAnnaPage(fallback: WorkWithAnnaData): Promise<W
     kickerColour: '',
     title: '',
     intro: '',
+    introBlocks: null,
     waysSectionTitle: '',
     waysSectionBody: '',
     waysSectionCtaLabel: '',
@@ -647,11 +661,13 @@ export async function getWorkWithAnnaPage(fallback: WorkWithAnnaData): Promise<W
     const { data: d } = await fetchAPI('/work-with-anna-page', { populate: '*' });
     if (!d) return fallback;
     const r = d as Record<string, unknown>;
+    const introV2 = r.intro_v2;
     return {
       kicker: (r.kicker as string) || '',
       kickerColour: (r.kicker_colour as string) || '',
       title: (r.title as string) || '',
       intro: (r.intro as string) || '',
+      introBlocks: Array.isArray(introV2) && introV2.length > 0 ? introV2 : null,
       waysSectionTitle: (r.ways_section_title as string) || '',
       waysSectionBody: (r.ways_section_body as string) || '',
       waysSectionCtaLabel: (r.ways_section_cta_label as string) || '',
@@ -1071,6 +1087,8 @@ export interface CosmicForecast {
   energyTheme: string;
   stoneOfWeek: string;
   summary: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  summaryBlocks: any[] | null;
 }
 
 /** Get the latest cosmic forecast */
@@ -1090,6 +1108,7 @@ export async function getLatestForecast(): Promise<CosmicForecast | null> {
       energyTheme: d.energy_theme || '',
       stoneOfWeek: d.stone_of_week || '',
       summary: d.summary || '',
+      summaryBlocks: Array.isArray(d.summary_v2) && d.summary_v2.length > 0 ? d.summary_v2 : null,
     };
   } catch {
     return null;
@@ -1104,6 +1123,8 @@ export interface Experience {
   slug: string;
   type: 'retreat' | 'workshop' | 'corporate' | 'speaking';
   description: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  descriptionBlocks: any[] | null;
   date: string;
   location: string;
   price: number | null;
@@ -1140,6 +1161,7 @@ export async function getExperiences(type?: string): Promise<Experience[]> {
       slug: d.slug,
       type: d.type,
       description: d.description || '',
+      descriptionBlocks: Array.isArray(d.description_v2) && d.description_v2.length > 0 ? d.description_v2 : null,
       date: d.date || '',
       location: d.location || '',
       price: d.price ?? null,
@@ -1596,6 +1618,8 @@ export interface MembershipPageCopy {
   kicker: string;
   title: string;
   paragraphs: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  paragraphsBlocks: any[] | null;
   priceLabel: string;
   includesLabel: string;
   commitmentLabel: string;
@@ -1611,10 +1635,13 @@ export async function getMembershipPage(fallback: MembershipPageCopy): Promise<M
     const paragraphs = rawParas
       ? rawParas.split(/\n\s*\n/).map((p: string) => p.trim()).filter(Boolean)
       : fallback.paragraphs;
+    const rawParasV2 = d.paragraphs_v2;
+    const paragraphsBlocks = Array.isArray(rawParasV2) && rawParasV2.length > 0 ? rawParasV2 : null;
     return {
       kicker: d.kicker || fallback.kicker,
       title: d.title || fallback.title,
       paragraphs,
+      paragraphsBlocks,
       priceLabel: d.price_label || fallback.priceLabel,
       includesLabel: d.includes_label || fallback.includesLabel,
       commitmentLabel: d.commitment_label || fallback.commitmentLabel,
@@ -1662,9 +1689,14 @@ export interface AboutPage {
   kicker: string;
   title: string;
   rolesTagline: string;
-  storyParagraph1: string;
-  storyParagraph2: string;
-  additionalBio: string;
+  // Rich content fields — either Strapi blocks JSON (array) or legacy
+  // markdown string. Pass to BlocksRenderer which handles both.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  storyParagraph1: any[] | string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  storyParagraph2: any[] | string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  additionalBio: any[] | string;
   portrait: string;
   pressLogos: { name: string; logo?: string }[];
   certifications: { name: string; colour: string; badge?: string }[];
@@ -1698,9 +1730,9 @@ export async function getAboutPage(): Promise<AboutPage> {
       kicker: d.kicker || '',
       title: d.title || '',
       rolesTagline: d.roles_tagline || '',
-      storyParagraph1: d.story_paragraph_1 || '',
-      storyParagraph2: d.story_paragraph_2 || '',
-      additionalBio: d.additional_bio || '',
+      storyParagraph1: richContent(d, 'story_paragraph_1'),
+      storyParagraph2: richContent(d, 'story_paragraph_2'),
+      additionalBio: richContent(d, 'additional_bio'),
       portrait: mediaUrl(d.portrait) || '',
       pressLogos: Array.isArray(d.press_logos)
         ? d.press_logos.map((p: any) => ({ name: String(p?.name || ''), logo: mediaUrl(p?.logo) || undefined }))
@@ -1724,12 +1756,15 @@ export async function getAboutPage(): Promise<AboutPage> {
 export interface CommunityPage {
   kicker: string;
   title: string;
-  intro: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  intro: any[] | string;
   circleTitle: string;
-  circleDescription: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  circleDescription: any[] | string;
   circleImage: string;
   resetRoomTitle: string;
-  resetRoomDescription: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resetRoomDescription: any[] | string;
   resetRoomPrice: string;
   resetRoomFeatures: string[];
   resetRoomImage: string;
@@ -1769,12 +1804,12 @@ export async function getCommunityPage(): Promise<CommunityPage> {
     return {
       kicker: d.kicker || '',
       title: d.title || '',
-      intro: d.intro || '',
+      intro: richContent(d, 'intro'),
       circleTitle: d.circle_title || '',
-      circleDescription: d.circle_description || '',
+      circleDescription: richContent(d, 'circle_description'),
       circleImage: mediaUrl(d.circle_image) || '',
       resetRoomTitle: d.reset_room_title || '',
-      resetRoomDescription: d.reset_room_description || '',
+      resetRoomDescription: richContent(d, 'reset_room_description'),
       resetRoomPrice: d.reset_room_price || '',
       resetRoomFeatures: Array.isArray(d.reset_room_features)
         ? d.reset_room_features

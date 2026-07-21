@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getLatestForecast } from '@/lib/cms';
 import { getGenericPageBySlug } from '@/lib/generic-page';
+import BlocksRenderer from '@/components/BlocksRenderer';
 
 export const metadata: Metadata = {
   title: 'Cosmic Forecast',
@@ -35,8 +36,12 @@ export default async function CosmicForecastPage() {
                 {forecast.moonPhase && <p className="cosmic-detail"><strong>Moon Phase:</strong> {forecast.moonPhase}</p>}
                 {forecast.energyTheme && <p className="cosmic-detail"><strong>Energy Theme:</strong> {forecast.energyTheme}</p>}
                 {forecast.stoneOfWeek && <p className="cosmic-detail"><strong>Stone of the Week:</strong> {forecast.stoneOfWeek}</p>}
-                <div className="cosmic-summary">
-                  {forecast.summary.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
+                <div className="cosmic-summary cosmic-summary-blocks">
+                  {forecast.summaryBlocks ? (
+                    <BlocksRenderer content={forecast.summaryBlocks} />
+                  ) : (
+                    forecast.summary.split('\n\n').map((p, i) => <p key={i}>{p}</p>)
+                  )}
                 </div>
               </>
             ) : (
@@ -74,6 +79,12 @@ const cosmicStyles = `
 .cosmic-detail strong { color:#231F20; }
 .cosmic-summary { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; margin-top:1rem; }
 .cosmic-summary p { margin-bottom:1rem; }
+.cosmic-summary-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+.cosmic-summary-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+.cosmic-summary-blocks strong { font-weight:600; color:#231F20; }
+.cosmic-summary-blocks em { font-style:italic; }
+.cosmic-summary-blocks h2, .cosmic-summary-blocks h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; color:#231F20; margin:1rem 0 0.5rem; line-height:1.3; }
+.cosmic-summary-blocks ul, .cosmic-summary-blocks ol { padding-left:1.5rem; margin-bottom:1rem; }
 .cosmic-cta { background:#FFF0D2; border-radius:8px; padding:2rem; text-align:center; }
 .cosmic-cta-text { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.6; margin-bottom:1rem; }
 .cosmic-cta-btn { background:#6E3A5A; color:#fff; border:1px solid #6E3A5A; font-family:Mulish,sans-serif; font-weight:500; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.7rem 1.8rem; border-radius:3px; transition:all 0.3s; display:inline-block; text-decoration:none; }

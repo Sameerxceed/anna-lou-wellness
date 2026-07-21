@@ -50,6 +50,7 @@ export default async function ResetStoriesPage() {
         kickerColour={page.kickerColour}
         title={page.title}
         intro={page.intro}
+        introBlocks={page.introBlocks}
         articles={feedArticles}
         sectionHref="/reset-stories"
         subcategories={subcategories}

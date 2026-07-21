@@ -4,7 +4,14 @@ export interface Product {
   name: string;
   slug: string;
   shortDescription: string;
+  // Legacy markdown string — kept for metadata .slice() + ProductSchema JSON-LD
+  // which need a plain string, not blocks JSON.
   description: string;
+  // Blocks JSON companion — preferred for on-page rendering when populated.
+  // Null when Anna hasn't migrated the entry yet; renderer falls back to
+  // the plain-text `description` above.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  descriptionBlocks: any[] | null;
   price: number;
   category: string;
   images: string[];

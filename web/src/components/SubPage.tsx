@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import BlocksRenderer from '@/components/BlocksRenderer';
 
 interface SubPageProps {
   kicker: string;
@@ -8,13 +9,16 @@ interface SubPageProps {
   parentHref: string;
   description?: string;
   paragraphs?: string[];
+  // Blocks JSON companion — when populated, prefer this over paragraphs.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  paragraphsBlocks?: any[] | null;
   cta?: { label: string; href: string };
   inspirationLink?: { label: string; href: string };
   details?: { label: string; value: string }[];
   heroImage?: string; // optional CMS or stock image URL — kills the beige placeholder when set
 }
 
-export default function SubPage({ kicker, kickerColour, title, parentLabel, parentHref, description, paragraphs, cta, inspirationLink, details, heroImage }: SubPageProps) {
+export default function SubPage({ kicker, kickerColour, title, parentLabel, parentHref, description, paragraphs, paragraphsBlocks, cta, inspirationLink, details, heroImage }: SubPageProps) {
   // Anna 14 Jul (STRONGER): if CMS section is empty, hide it. No hardcoded
   // "This page will be populated from CMS..." fallback text.
   const content = paragraphs && paragraphs.length > 0
@@ -32,9 +36,13 @@ export default function SubPage({ kicker, kickerColour, title, parentLabel, pare
             className={heroImage ? 'sub-hero has-image' : 'sub-hero'}
             style={heroImage ? { backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
           />
-          {content.length > 0 && (
-            <div className="sub-content">
-              {content.map((p, i) => <p key={i}>{p}</p>)}
+          {(paragraphsBlocks || content.length > 0) && (
+            <div className="sub-content sub-content-blocks">
+              {paragraphsBlocks ? (
+                <BlocksRenderer content={paragraphsBlocks} />
+              ) : (
+                content.map((p, i) => <p key={i}>{p}</p>)
+              )}
             </div>
           )}
           {details && details.length > 0 && (
@@ -80,6 +88,14 @@ const subStyles = `
 .sub-hero.has-image::after { display:none; }
 .sub-content { font-family:'EB Garamond',Georgia,serif; font-size:1.1rem; color:#3D3D3A; line-height:1.9; margin-bottom:2.5rem; }
 .sub-content p { margin-bottom:1.2rem; }
+.sub-content-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+.sub-content-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+.sub-content-blocks strong { font-weight:600; color:#231F20; }
+.sub-content-blocks em { font-style:italic; }
+.sub-content-blocks h2, .sub-content-blocks h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; color:#231F20; margin:1.2rem 0 0.6rem; line-height:1.3; }
+.sub-content-blocks ul, .sub-content-blocks ol { padding-left:1.5rem; margin-bottom:1.2rem; }
+.sub-content-blocks li { margin-bottom:0.3rem; }
+.sub-content-blocks blockquote { border-left:3px solid #6E3A5A; padding-left:1rem; margin:1rem 0; font-style:italic; color:#5A5A54; }
 .sub-details { margin-bottom:2rem; border-top:1px solid rgba(0,0,0,0.06); padding-top:1rem; }
 .sub-detail-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.5rem 0; border-bottom:1px solid rgba(0,0,0,0.04); }
 .sub-detail-label { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:#8C8880; }

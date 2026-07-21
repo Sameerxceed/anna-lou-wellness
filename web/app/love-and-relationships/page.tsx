@@ -50,6 +50,7 @@ export default async function LoveAndRelationshipsPage() {
         kickerColour={page.kickerColour}
         title={page.title}
         intro={page.intro}
+        introBlocks={page.introBlocks}
         articles={feedArticles}
         sectionHref="/love-and-relationships"
         subcategories={subcategories}

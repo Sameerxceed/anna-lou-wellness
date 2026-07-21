@@ -6,6 +6,7 @@ import AddToCartButton from '@/components/AddToCartButton';
 import WishlistHeart from '@/components/WishlistHeart';
 import { ProductSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
+import BlocksRenderer from '@/components/BlocksRenderer';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -81,7 +82,23 @@ export default async function ProductDetailPage({ params }: Props) {
               <h1 className="font-display font-normal text-[2rem] text-ink mb-3 leading-tight">{product.name}</h1>
               <p className="font-sans font-light text-[1.4rem] text-ink mb-6">&pound;{product.price.toFixed(2)}</p>
 
-              <p className="section-body max-w-none mb-8">{product.description}</p>
+              {product.descriptionBlocks ? (
+                <div className="section-body max-w-none mb-8 product-body-blocks">
+                  <BlocksRenderer content={product.descriptionBlocks} />
+                </div>
+              ) : product.description ? (
+                <p className="section-body max-w-none mb-8">{product.description}</p>
+              ) : null}
+              <style dangerouslySetInnerHTML={{ __html: `
+                .product-body-blocks p { margin-bottom: 1rem; }
+                .product-body-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+                .product-body-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+                .product-body-blocks strong { font-weight:600; color:#231F20; }
+                .product-body-blocks em { font-style:italic; }
+                .product-body-blocks ul, .product-body-blocks ol { padding-left:1.5rem; margin-bottom:1rem; }
+                .product-body-blocks li { margin-bottom:0.3rem; }
+                .product-body-blocks blockquote { border-left:3px solid #6E3A5A; padding-left:1rem; margin:1rem 0; font-style:italic; color:#5A5A54; }
+              ` }} />
 
               <div className="mb-6">
                 {product.stock > 0 ? (

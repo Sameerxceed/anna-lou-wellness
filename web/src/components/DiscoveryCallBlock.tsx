@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { DiscoveryCallBlock as DiscoveryCallBlockData } from '@/lib/cms';
 import { useInIframe } from '@/lib/useInIframe';
 import PreviewModeNotice from './PreviewModeNotice';
+import BlocksRenderer from './BlocksRenderer';
 
 interface Props {
   data: DiscoveryCallBlockData;
@@ -128,7 +129,7 @@ export default function DiscoveryCallBlock({ data }: Props) {
         </p>
       )}
 
-      {data.whyPriceLabel && paragraphs.length > 0 && (
+      {data.whyPriceLabel && (data.whyPriceBodyBlocks || paragraphs.length > 0) && (
         <div style={{ marginTop: '1.4rem' }}>
           <button
             type="button"
@@ -165,14 +166,28 @@ export default function DiscoveryCallBlock({ data }: Props) {
                 color: '#3a2e32',
               }}
             >
-              {paragraphs.map((p, i) => (
-                <p
-                  key={i}
-                  style={{ margin: i === 0 ? '0 0 0.9rem' : '0.9rem 0 0' }}
-                >
-                  {p}
-                </p>
-              ))}
+              {data.whyPriceBodyBlocks ? (
+                <div className="discovery-body-blocks">
+                  <BlocksRenderer content={data.whyPriceBodyBlocks} />
+                </div>
+              ) : (
+                paragraphs.map((p, i) => (
+                  <p
+                    key={i}
+                    style={{ margin: i === 0 ? '0 0 0.9rem' : '0.9rem 0 0' }}
+                  >
+                    {p}
+                  </p>
+                ))
+              )}
+              <style dangerouslySetInnerHTML={{ __html: `
+                .discovery-body-blocks p { margin-bottom: 0.9rem; }
+                .discovery-body-blocks p:last-child { margin-bottom: 0; }
+                .discovery-body-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+                .discovery-body-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+                .discovery-body-blocks strong { font-weight:600; color:#231F20; }
+                .discovery-body-blocks em { font-style:italic; }
+              ` }} />
             </div>
           )}
         </div>

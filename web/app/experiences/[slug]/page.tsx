@@ -8,6 +8,7 @@ import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { ServiceSchema, EventSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
+import BlocksRenderer from '@/components/BlocksRenderer';
 
 /**
  * Individual Experience detail page — one sales page per Experience entry.
@@ -181,13 +182,28 @@ export default async function ExperienceDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {paragraphs.length > 0 && (
+      {(item.descriptionBlocks || paragraphs.length > 0) && (
         <section className="exp-body">
-          <div className="exp-body-inner">
-            {paragraphs.map((p, i) => (
-              <p key={i} className="exp-body-text">{p}</p>
-            ))}
+          <div className="exp-body-inner exp-body-blocks">
+            {item.descriptionBlocks ? (
+              <BlocksRenderer content={item.descriptionBlocks} />
+            ) : (
+              paragraphs.map((p, i) => (
+                <p key={i} className="exp-body-text">{p}</p>
+              ))
+            )}
           </div>
+          <style dangerouslySetInnerHTML={{ __html: `
+            .exp-body-blocks p { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; line-height:1.85; color:#3D3D3A; margin-bottom:1rem; }
+            .exp-body-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+            .exp-body-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+            .exp-body-blocks strong { font-weight:600; color:#231F20; }
+            .exp-body-blocks em { font-style:italic; }
+            .exp-body-blocks h2, .exp-body-blocks h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; color:#231F20; margin:1.2rem 0 0.6rem; line-height:1.3; }
+            .exp-body-blocks ul, .exp-body-blocks ol { padding-left:1.5rem; margin-bottom:1rem; }
+            .exp-body-blocks li { margin-bottom:0.3rem; }
+            .exp-body-blocks blockquote { border-left:3px solid #6E3A5A; padding-left:1rem; margin:1rem 0; font-style:italic; color:#5A5A54; }
+          ` }} />
         </section>
       )}
 

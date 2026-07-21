@@ -50,6 +50,7 @@ export default async function LifePage() {
         kickerColour={page.kickerColour}
         title={page.title}
         intro={page.intro}
+        introBlocks={page.introBlocks}
         articles={feedArticles}
         sectionHref="/life"
         subcategories={subcategories}

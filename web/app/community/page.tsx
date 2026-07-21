@@ -2,6 +2,15 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getCommunityPage } from '@/lib/cms';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+import BlocksRenderer from '@/components/BlocksRenderer';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function hasContent(v: any[] | string | null | undefined): boolean {
+  if (!v) return false;
+  if (typeof v === 'string') return v.trim().length > 0;
+  if (Array.isArray(v)) return v.some((b) => Array.isArray(b?.children) && b.children.some((c: { text?: string }) => (c?.text || '').trim()));
+  return false;
+}
 
 export const revalidate = 3600;
 
@@ -70,26 +79,28 @@ export default async function CommunityPage() {
       <style dangerouslySetInnerHTML={{ __html: comStyles }} />
 
       {/* Header — each field hides if empty */}
-      {(kicker || title || intro) && (
+      {(kicker || title || hasContent(intro)) && (
         <section className="com-header">
           <div className="com-header-inner reveal">
             {kicker && <p className="com-kicker">{kicker}</p>}
             {title && <h1 className="com-title">{title}</h1>}
-            {intro && <p className="com-intro">{intro}</p>}
+            {hasContent(intro) && (
+              <div className="com-intro com-body-blocks"><BlocksRenderer content={intro} /></div>
+            )}
           </div>
         </section>
       )}
 
       {/* The Returning Circle */}
-      {(circleTitle || circleDesc) && (
+      {(circleTitle || hasContent(circleDesc)) && (
         <section className="com-section">
           <div className="com-section-inner">
             <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#dcc8c0,#c8b0a8)' }} />
             <div className="reveal rd1">
               {circleTitle && <h2 className="com-section-title">{circleTitle}</h2>}
-              {circleDesc && circleDesc.split('\n\n').map((para, i) => (
-                <p key={i} className="com-body">{para}</p>
-              ))}
+              {hasContent(circleDesc) && (
+                <div className="com-body com-body-blocks"><BlocksRenderer content={circleDesc} /></div>
+              )}
               <Link href="/community/the-returning-circle" className="com-link">Come when you&rsquo;re ready <span>&rarr;</span></Link>
             </div>
           </div>
@@ -97,14 +108,14 @@ export default async function CommunityPage() {
       )}
 
       {/* The Reset Room */}
-      {(resetRoomTitle || resetRoomDesc || resetRoomPrice || resetRoomFeatures.length > 0) && (
+      {(resetRoomTitle || hasContent(resetRoomDesc) || resetRoomPrice || resetRoomFeatures.length > 0) && (
         <section className="com-section com-section-alt">
           <div className="com-section-inner com-section-reverse">
             <div className="reveal rd1">
               {resetRoomTitle && <h2 className="com-section-title">{resetRoomTitle}</h2>}
-              {resetRoomDesc && resetRoomDesc.split('\n\n').map((para, i) => (
-                <p key={i} className="com-body">{para}</p>
-              ))}
+              {hasContent(resetRoomDesc) && (
+                <div className="com-body com-body-blocks"><BlocksRenderer content={resetRoomDesc} /></div>
+              )}
               {resetRoomPrice && <p className="com-price">{resetRoomPrice}</p>}
               {resetRoomFeatures.length > 0 && (
                 <ul className="com-features">
@@ -162,6 +173,15 @@ const comStyles = `
 .com-section-image::after { content:'Photo placeholder'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.45rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.1); }
 .com-section-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:clamp(1.4rem,2.5vw,1.8rem); color:#231F20; line-height:1.2; margin-bottom:1rem; }
 .com-body { font-family:'EB Garamond',Georgia,serif; font-size:1.02rem; line-height:1.85; color:#3D3D3A; margin-bottom:0.8rem; }
+.com-body-blocks p { margin-bottom:0.8rem; }
+.com-body-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+.com-body-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+.com-body-blocks strong { font-weight:600; color:#231F20; }
+.com-body-blocks em { font-style:italic; }
+.com-body-blocks h2, .com-body-blocks h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; color:#231F20; margin:1.2rem 0 0.6rem; line-height:1.3; }
+.com-body-blocks ul, .com-body-blocks ol { padding-left:1.5rem; margin-bottom:0.8rem; }
+.com-body-blocks li { margin-bottom:0.3rem; }
+.com-body-blocks blockquote { border-left:3px solid #6E3A5A; padding-left:1rem; margin:0.8rem 0; font-style:italic; color:#5A5A54; }
 .com-link { font-family:Mulish,sans-serif; font-weight:400; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:#231F20; border-bottom:1px solid #231F20; padding-bottom:2px; transition:all 0.3s; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; margin-top:0.5rem; }
 .com-link:hover { gap:0.7rem; }
 

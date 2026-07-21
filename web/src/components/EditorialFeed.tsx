@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getStockImage, type StockCategory } from '@/data/stock-images';
 import { getSiteSettings } from '@/lib/cms';
 import { accentForText } from '@/lib/colours';
+import BlocksRenderer from '@/components/BlocksRenderer';
 
 interface Article {
   slug: string;
@@ -26,6 +27,10 @@ interface EditorialFeedProps {
   kickerColour: string;
   title: string;
   intro: string;
+  // Optional blocks JSON companion — when populated, renderer prefers this
+  // over `intro` and uses BlocksRenderer for real hyperlinks + formatting.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  introBlocks?: any[] | null;
   articles: Article[];
   sectionHref: string;
   subcategories?: Array<{ label: string; href: string }>;
@@ -47,6 +52,7 @@ export default async function EditorialFeed({
   kickerColour,
   title,
   intro,
+  introBlocks,
   articles,
   sectionHref,
   subcategories,
@@ -89,7 +95,11 @@ export default async function EditorialFeed({
             <p className="feed-kicker" style={{ color: accentForText(kickerColour) }}>{kicker}</p>
           )}
           <h1 className="feed-title">{title}</h1>
-          {!hideIntro && intro && <p className="feed-intro">{intro}</p>}
+          {!hideIntro && (introBlocks || intro) && (
+            introBlocks
+              ? <div className="feed-intro feed-intro-blocks"><BlocksRenderer content={introBlocks} /></div>
+              : <p className="feed-intro">{intro}</p>
+          )}
         </div>
 
         {/* Subcategory filter — capped at MAX_SUBCATEGORIES per Anna's redesign */}
@@ -205,6 +215,12 @@ const feedStyles = `
 .feed-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.5rem; }
 .feed-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:1rem; }
 .feed-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:800px; margin:0 auto; }
+.feed-intro-blocks p { margin-bottom:0.8rem; }
+.feed-intro-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+.feed-intro-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+.feed-intro-blocks strong { font-weight:600; color:#231F20; }
+.feed-intro-blocks em { font-style:italic; }
+.feed-intro-blocks h2, .feed-intro-blocks h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; color:#231F20; margin:1rem 0 0.5rem; line-height:1.3; }
 
 /* ═══ SUBCATEGORY FILTERS ═══ */
 .feed-filters { display:flex; justify-content:center; align-items:center; gap:1.25rem; flex-wrap:nowrap; padding:1rem 2rem 0.5rem; max-width:1400px; margin:0 auto; overflow-x:auto; -webkit-overflow-scrolling:touch; }

@@ -4,6 +4,17 @@ import { getAboutPage, getFAQs } from '@/lib/cms';
 import FAQAccordion from '@/components/FAQAccordion';
 import { BreadcrumbSchema, SpeakableSchema } from '@/components/StructuredData';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+import BlocksRenderer from '@/components/BlocksRenderer';
+
+// Helper: returns true when a richtext-or-blocks value has any real content.
+// Handles both legacy markdown strings and Strapi blocks JSON arrays.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function hasContent(v: any[] | string | null | undefined): boolean {
+  if (!v) return false;
+  if (typeof v === 'string') return v.trim().length > 0;
+  if (Array.isArray(v)) return v.some((b) => Array.isArray(b?.children) && b.children.some((c: { text?: string }) => (c?.text || '').trim()));
+  return false;
+}
 
 export const revalidate = 3600;
 
@@ -99,12 +110,14 @@ export default async function AboutPage() {
                 style={{ backgroundImage: `url(${page.portrait})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
               />
             )}
-            {(story1 || story2) && (
-              <div className="reveal rd1">
-                {story1 && (
-                  <p className="about-body"><span className="about-drop-cap">{story1.charAt(0)}</span>{story1.slice(1)}</p>
+            {(hasContent(story1) || hasContent(story2)) && (
+              <div className="reveal rd1 about-body-blocks">
+                {hasContent(story1) && (
+                  <div className="about-body about-drop-cap-container"><BlocksRenderer content={story1} /></div>
                 )}
-                {story2 && <p className="about-body">{story2}</p>}
+                {hasContent(story2) && (
+                  <div className="about-body"><BlocksRenderer content={story2} /></div>
+                )}
               </div>
             )}
           </div>
@@ -112,12 +125,10 @@ export default async function AboutPage() {
       )}
 
       {/* Additional Bio */}
-      {additionalBio && (
+      {hasContent(additionalBio) && (
         <section className="about-bio">
-          <div className="about-bio-inner reveal">
-            {additionalBio.split('\n\n').map((para, i) => (
-              <p key={i} className="about-body">{para}</p>
-            ))}
+          <div className="about-bio-inner reveal about-body about-body-blocks">
+            <BlocksRenderer content={additionalBio} />
           </div>
         </section>
       )}
@@ -195,7 +206,17 @@ const aboutStyles = `
 .about-portrait { aspect-ratio:3/4; border-radius:6px; overflow:hidden; max-height:400px; background:linear-gradient(160deg,#d8ccc0,#c4b4a8); position:relative; }
 .about-portrait::after { content:'Portrait of Anna. Real photo to be supplied'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Mulish,sans-serif; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(0,0,0,0.1); text-align:center; max-width:80%; }
 .about-body { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; margin-bottom:1.2rem; }
+.about-body-blocks p { margin-bottom:1.2rem; }
+.about-body-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+.about-body-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+.about-body-blocks strong { font-weight:600; color:#231F20; }
+.about-body-blocks em { font-style:italic; }
+.about-body-blocks h2, .about-body-blocks h3, .about-body-blocks h4 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; color:#231F20; margin:1.5rem 0 0.8rem; line-height:1.3; }
+.about-body-blocks ul, .about-body-blocks ol { padding-left:1.5rem; margin-bottom:1.2rem; }
+.about-body-blocks li { margin-bottom:0.3rem; }
+.about-body-blocks blockquote { border-left:3px solid #6E3A5A; padding-left:1rem; margin:1rem 0; font-style:italic; color:#5A5A54; }
 .about-drop-cap { float:left; font-size:3.2rem; line-height:0.8; color:#6E3A5A; font-family:'EB Garamond',Georgia,serif; font-weight:500; margin-right:0.15rem; margin-top:0.1rem; }
+.about-drop-cap-container > p:first-child::first-letter { float:left; font-size:3.2rem; line-height:0.8; color:#6E3A5A; font-family:'EB Garamond',Georgia,serif; font-weight:500; margin-right:0.15rem; margin-top:0.1rem; }
 
 .about-bio { background:#F5F3EF; padding:1.5rem 3rem; }
 .about-bio-inner { max-width:900px; margin:0 auto; }

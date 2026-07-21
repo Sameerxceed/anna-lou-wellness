@@ -4,6 +4,7 @@ import { getCoachingSessions, getFAQs, getWorkWithAnnaPage } from '@/lib/cms';
 import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+import BlocksRenderer from '@/components/BlocksRenderer';
 
 export const metadata: Metadata = {
   title: 'Work with Anna',
@@ -23,6 +24,7 @@ const pageFallback = {
   kickerColour: '#F280AA',
   title: 'Your inner world already knows.',
   intro: 'Most people arrive here after trying everything else. The therapy. The journalling. The courses. The spiritual work. Getting all the way to the insight, and then hitting the same wall. This work meets you in the body, where the patterns actually live.',
+  introBlocks: null,
   waysSectionTitle: 'Ways to Work With Me',
   waysSectionBody: 'The Signal Method™ is the umbrella for all the coaching work here. Underneath it sit the programmes, each designed for a different stage of the journey. Whether you are just beginning to notice the patterns, or you are ready to rewire them completely, there is a way in.',
   waysSectionCtaLabel: 'What do you need right now?',
@@ -61,12 +63,16 @@ export default async function TheWorkPage() {
       <style dangerouslySetInnerHTML={{ __html: workStyles }} />
 
       {/* Header — each field hides if empty */}
-      {(kicker || title || intro) && (
+      {(kicker || title || page.introBlocks || intro) && (
         <section className="work-header">
           <div className="work-header-inner reveal">
             {kicker && <p className="work-kicker" style={{ color: kickerColour }}>{kicker}</p>}
             {title && <h1 className="work-title">{title}</h1>}
-            {intro && <p className="work-intro">{intro}</p>}
+            {page.introBlocks ? (
+              <div className="work-intro work-intro-blocks"><BlocksRenderer content={page.introBlocks} /></div>
+            ) : intro ? (
+              <p className="work-intro">{intro}</p>
+            ) : null}
           </div>
         </section>
       )}
@@ -196,6 +202,11 @@ const workStyles = `
 .work-kicker { font-family:Mulish,sans-serif; font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:#F280AA; margin-bottom:0.5rem; }
 .work-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:300; font-size:clamp(2rem,5vw,3.2rem); color:#231F20; letter-spacing:0.05em; line-height:1.1; margin-bottom:1rem; }
 .work-intro { font-family:'EB Garamond',Georgia,serif; font-size:1.05rem; color:#3D3D3A; line-height:1.85; max-width:800px; margin:0 auto; }
+.work-intro-blocks p { margin-bottom:0.6rem; }
+.work-intro-blocks a { color:#6E3A5A; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+.work-intro-blocks a:hover { color:#5A2E4A; text-decoration-thickness:2px; }
+.work-intro-blocks strong { font-weight:600; color:#231F20; }
+.work-intro-blocks em { font-style:italic; }
 .work-section-title { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:clamp(1.4rem,2.5vw,1.8rem); color:#231F20; line-height:1.2; margin-bottom:1rem; letter-spacing:0.02em; }
 .work-body { font-family:'EB Garamond',Georgia,serif; font-size:1.02rem; line-height:1.85; color:#3D3D3A; margin-bottom:1rem; }
 .work-cta-group { display:flex; gap:1.2rem; flex-wrap:wrap; margin-top:1.5rem; }
