@@ -100,8 +100,9 @@ async function migrateTarget(strapi, target, opts, log) {
   for (const entry of entries) {
     const label = entry.title || entry.name || entry.slug || entry.documentId;
 
-    // Skip if v2 already has content
-    if (Array.isArray(entry[v2Field]) && entry[v2Field].length > 0) {
+    // Skip if v2 already has content — UNLESS force mode is set (used to
+    // re-migrate after fixing the parser).
+    if (!opts.force && Array.isArray(entry[v2Field]) && entry[v2Field].length > 0) {
       const hasText = entry[v2Field].some((b) =>
         Array.isArray(b?.children) && b.children.some((c) => (c?.text || '').trim())
       );
@@ -160,9 +161,11 @@ async function migrateTarget(strapi, target, opts, log) {
 async function runAllMigrations(strapi, opts = {}) {
   const log = makeLog(opts.logger);
   const dryRun = !!opts.dryRun;
+  const force = !!opts.force;
 
   log.info('[migrate-all-richtext-to-blocks] starting');
   log.info(`[migrate-all-richtext-to-blocks] dry-run: ${dryRun ? 'YES' : 'NO'}`);
+  log.info(`[migrate-all-richtext-to-blocks] force:   ${force ? 'YES (overwrites _v2)' : 'NO'}`);
   log.info(`[migrate-all-richtext-to-blocks] targets: ${TARGETS.length}`);
 
   // Backup snapshot before any writes
@@ -193,7 +196,7 @@ async function runAllMigrations(strapi, opts = {}) {
 
   const totals = { migrated: 0, skipped: 0, errors: 0 };
   for (const t of TARGETS) {
-    const r = await migrateTarget(strapi, t, { dryRun }, log);
+    const r = await migrateTarget(strapi, t, { dryRun, force }, log);
     totals.migrated += r.migrated;
     totals.skipped += r.skipped;
     totals.errors += r.errors;
@@ -211,13 +214,14 @@ if (require.main === module) {
   const { createStrapi } = require('@strapi/strapi');
   (async () => {
     const dryRun = process.argv.includes('--dry-run');
+    const force = process.argv.includes('--force');
     const strapi = await createStrapi({
       appDir: path.resolve(__dirname, '..'),
       distDir: path.resolve(__dirname, '..', 'dist'),
     });
     await strapi.load();
     try {
-      await runAllMigrations(strapi, { dryRun });
+      await runAllMigrations(strapi, { dryRun, force });
     } finally {
       await strapi.destroy();
     }

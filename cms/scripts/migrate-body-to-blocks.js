@@ -1,4 +1,4 @@
-/**
+﻿/**
  * One-shot migration: convert every article's legacy `body` (Markdown
  * richtext string) into `body_v2` (Strapi v5 blocks JSON), so Anna can
  * edit with the WYSIWYG block editor and add hyperlinks via the toolbar
@@ -6,11 +6,11 @@
  *
  * Safe by design:
  *  - Never touches an article where body_v2 already has content.
- *  - Never modifies the legacy `body` field — that stays as a read-only
+ *  - Never modifies the legacy `body` field â€” that stays as a read-only
  *    backup (hidden from admin via schema pluginOptions).
  *  - Backs up every article to Docs/article-body-backup-<timestamp>.json
  *    before any writes.
- *  - Idempotent — safe to re-run.
+ *  - Idempotent â€” safe to re-run.
  *  - Writes to BOTH draft and published versions where applicable.
  *
  * Supported Markdown patterns (matches what Anna actually types):
@@ -23,7 +23,7 @@
  *  - Unordered lists (- or * prefix)
  *  - Ordered lists (1. prefix)
  *  - Blockquotes (> prefix)
- *  - Placeholder `[text](link)` — the exact broken pattern Anna hit when
+ *  - Placeholder `[text](link)` â€” the exact broken pattern Anna hit when
  *    she selected text, clicked the link icon, and never edited the URL
  *    placeholder. Converted to plain text so she can re-insert the link
  *    via the new block editor toolbar.
@@ -46,32 +46,72 @@ const fs = require('fs');
 
 const UID = 'api::article.article';
 
-// ═══════════════════════════════════════════════════════════════════
-// Markdown → Strapi v5 blocks JSON
-// ═══════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Markdown â†’ Strapi v5 blocks JSON
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+/**
+ * Convert common HTML tags in Strapi's richtext (which allowed raw HTML
+ * mixed with markdown) into pseudo-markdown so the inline parser handles
+ * them cleanly. Also strips any remaining unknown tags to plain text.
+ *
+ * Handled: <u>x</u> <b>x</b> <strong>x</strong> <i>x</i> <em>x</em>
+ *          <a href="url">x</a> <br> <p>x</p>
+ * Unknown tags: stripped (keep inner text).
+ */
+function normaliseHtml(text) {
+  if (typeof text !== 'string') return '';
+  return text
+    // Convert <br> to newline so paragraph split picks it up
+    .replace(/<br\s*\/?>/gi, '\n')
+    // <p>x</p> â†’ x\n (Strapi editors sometimes wrap paragraphs in <p>)
+    .replace(/<\/p>\s*<p[^>]*>/gi, '\n')
+    .replace(/<\/?p[^>]*>/gi, '')
+    // Bold: <strong>, <b>
+    .replace(/<(strong|b)>([\s\S]*?)<\/\1>/gi, '**$2**')
+    // Italic: <em>, <i>
+    .replace(/<(em|i)>([\s\S]*?)<\/\1>/gi, '*$2*')
+    // Underline: <u>x</u> â€” Strapi blocks supports underline as an inline
+    // attribute; convert to a marker we can detect in parseInline.
+    .replace(/<u>([\s\S]*?)<\/u>/gi, 'UND$1/UND')
+    // Links: <a href="url">text</a> â†’ [text](url)
+    .replace(/<a\s+[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)')
+    // Any remaining HTML tag: strip entirely, keep the inner text
+    .replace(/<\/?[a-z][^>]*>/gi, '')
+    // Common HTML entities
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
 
 /**
  * Parse a single line's inline markdown into an array of text/link nodes.
  * Ordered: links first (they can contain nothing formatted), then bold,
  * then italic. Anything that doesn't match a pattern becomes a plain text
- * node. The `[text](link)` placeholder is treated as plain text — Anna
- * will re-insert via the block editor after migration.
+ * node. Placeholders from Strapi's markdown toolbar buttons are filtered
+ * out so they don't render as bogus content.
  */
 function parseInline(text) {
   const nodes = [];
-  // Regex captures link, bold**, bold__, italic*, italic_.
-  const pattern = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|__([^_]+)__|\*([^*]+)\*|_([^_]+)_/g;
+  // Regex captures link, bold**, bold__, italic*, italic_, and the
+  // underline sentinel we inserted in normaliseHtml.
+  const UND_OPEN = 'UND';
+  const UND_CLOSE = '/UND';
+  const pattern = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|__([^_]+)__|\*([^*]+)\*|_([^_]+)_|UND([\s\S]+?)\/UND/g;
   let lastIndex = 0;
   let m;
   while ((m = pattern.exec(text)) !== null) {
     if (m.index > lastIndex) {
-      nodes.push({ type: 'text', text: text.slice(lastIndex, m.index) });
+      const chunk = text.slice(lastIndex, m.index);
+      if (chunk) nodes.push({ type: 'text', text: chunk });
     }
     if (m[1] !== undefined && m[2] !== undefined) {
       const url = m[2];
-      // Placeholder — the broken pattern from Strapi's markdown link button.
-      // Anna would need to replace the literal word "link" with a real URL.
-      // Convert to plain text so it doesn't render as a bogus /link href.
+      // Placeholder â€” Strapi's markdown link button drops [text](link)
+      // when Anna clicks it. Convert to plain text (no bogus /link href).
       if (url === 'link' || url === 'url' || url === '#') {
         nodes.push({ type: 'text', text: m[1] });
       } else {
@@ -82,17 +122,35 @@ function parseInline(text) {
         });
       }
     } else if (m[3] !== undefined || m[4] !== undefined) {
-      nodes.push({ type: 'text', text: m[3] ?? m[4], bold: true });
+      const boldText = m[3] ?? m[4];
+      // Strapi's Bold button drops literal **Bold** when nothing selected.
+      // Same UX trap as the link button â€” strip to nothing so the misplaced
+      // placeholder doesn't render.
+      if (boldText === 'Bold' || boldText === 'bold') {
+        // skip entirely
+      } else {
+        nodes.push({ type: 'text', text: boldText, bold: true });
+      }
     } else if (m[5] !== undefined || m[6] !== undefined) {
-      nodes.push({ type: 'text', text: m[5] ?? m[6], italic: true });
+      const italicText = m[5] ?? m[6];
+      // Same for the Italic button placeholder.
+      if (italicText === 'Italic' || italicText === 'italic') {
+        // skip
+      } else {
+        nodes.push({ type: 'text', text: italicText, italic: true });
+      }
+    } else if (m[7] !== undefined) {
+      nodes.push({ type: 'text', text: m[7], underline: true });
     }
     lastIndex = m.index + m[0].length;
   }
   if (lastIndex < text.length) {
-    nodes.push({ type: 'text', text: text.slice(lastIndex) });
+    const tail = text.slice(lastIndex);
+    if (tail) nodes.push({ type: 'text', text: tail });
   }
   return nodes.length > 0 ? nodes : [{ type: 'text', text: '' }];
 }
+
 
 /**
  * Convert a whole Markdown string into Strapi v5 blocks JSON.
@@ -103,7 +161,17 @@ function markdownToBlocks(md) {
   if (typeof md !== 'string' || !md.trim()) {
     return [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
   }
-  const paragraphs = md.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  // Normalise HTML tags in the source (Strapi's richtext editor allowed raw
+  // HTML mixed with markdown — Anna's About page had <u>…</u> and <br>).
+  md = normaliseHtml(md);
+  // Split into paragraphs. Prefer double-newline delimiters, but fall back
+  // to single newlines if the source has no blank-line pairs (Anna's
+  // Strapi content stores paragraph breaks as single \n rather than
+  // \n\n — my earlier assumption of double-newline was wrong).
+  const hasBlankLine = /\n\s*\n/.test(md);
+  const paragraphs = (hasBlankLine ? md.split(/\n\s*\n/) : md.split(/\n+/))
+    .map((p) => p.trim())
+    .filter(Boolean);
   const blocks = [];
   for (const p of paragraphs) {
     // Heading
@@ -118,7 +186,7 @@ function markdownToBlocks(md) {
       continue;
     }
     const lines = p.split('\n');
-    // Unordered list — every line starts with - or *
+    // Unordered list â€” every line starts with - or *
     if (lines.every((l) => /^\s*[-*]\s+/.test(l))) {
       blocks.push({
         type: 'list',
@@ -130,7 +198,7 @@ function markdownToBlocks(md) {
       });
       continue;
     }
-    // Ordered list — every line starts with N.
+    // Ordered list â€” every line starts with N.
     if (lines.every((l) => /^\s*\d+\.\s+/.test(l))) {
       blocks.push({
         type: 'list',
@@ -142,7 +210,7 @@ function markdownToBlocks(md) {
       });
       continue;
     }
-    // Blockquote — every line starts with >
+    // Blockquote â€” every line starts with >
     if (lines.every((l) => /^>\s?/.test(l))) {
       const stripped = lines.map((l) => l.replace(/^>\s?/, '')).join('\n');
       blocks.push({
@@ -151,7 +219,7 @@ function markdownToBlocks(md) {
       });
       continue;
     }
-    // Paragraph — join lines with soft breaks. Strapi blocks doesn't have
+    // Paragraph â€” join lines with soft breaks. Strapi blocks doesn't have
     // an explicit <br> node; soft breaks become spaces within the paragraph
     // (matches how Strapi's own editor treats them on paste).
     const joined = lines.join(' ').replace(/\s+/g, ' ').trim();
@@ -163,23 +231,24 @@ function markdownToBlocks(md) {
   return blocks;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// Core migration — reusable from CLI (standalone) OR from Strapi bootstrap
-// ═══════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Core migration â€” reusable from CLI (standalone) OR from Strapi bootstrap
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 /**
  * Run the migration against a live Strapi instance.
- * @param {object} strapi — live Strapi instance (from bootstrap or standalone).
- * @param {object} opts — { dryRun, targetSlug, backupDir, logger }
+ * @param {object} strapi â€” live Strapi instance (from bootstrap or standalone).
+ * @param {object} opts â€” { dryRun, targetSlug, backupDir, logger }
  * @returns {Promise<{processed, migrated, skipped, errors}>}
  */
 async function runMigration(strapi, opts = {}) {
   const dryRun = !!opts.dryRun;
+  const force = !!opts.force;
   const targetSlug = opts.targetSlug || null;
   const backupDir = opts.backupDir || path.resolve(__dirname, '..');
   const rawLogger = opts.logger || console;
   // Normalise: console has .log/.warn/.error; Winston (strapi.log) has
-  // .info/.warn/.error but NOT .log — calling .log on Winston throws
+  // .info/.warn/.error but NOT .log â€” calling .log on Winston throws
   // "Cannot create property 'Symbol(level)' on string" because it tries
   // to mutate the string as an info-object. Wrap both into one interface.
   const info = (msg) => {
@@ -229,7 +298,7 @@ async function runMigration(strapi, opts = {}) {
       const ts = new Date().toISOString().replace(/[:.]/g, '-');
       const backupPath = path.join(backupDir, 'article-body-backup-' + ts + '.json');
       fs.writeFileSync(backupPath, JSON.stringify(backup, null, 2), 'utf-8');
-      info(`[migrate-body-to-blocks] backup written → ${backupPath}`);
+      info(`[migrate-body-to-blocks] backup written â†’ ${backupPath}`);
     } catch (err) {
       warn(`[migrate-body-to-blocks] backup write failed: ${err.message} (continuing)`);
     }
@@ -244,7 +313,7 @@ async function runMigration(strapi, opts = {}) {
     processed += 1;
     const label = entry.title || entry.slug || entry.documentId;
 
-    if (Array.isArray(entry.body_v2) && entry.body_v2.length > 0) {
+    if (!force && Array.isArray(entry.body_v2) && entry.body_v2.length > 0) {
       const hasText = entry.body_v2.some((b) =>
         Array.isArray(b?.children) && b.children.some((c) => (c?.text || '').trim())
       );
@@ -256,7 +325,7 @@ async function runMigration(strapi, opts = {}) {
     }
 
     if (!entry.body || (typeof entry.body === 'string' && !entry.body.trim())) {
-      info(`  SKIP  ${label} (empty body — nothing to migrate)`);
+      info(`  SKIP  ${label} (empty body â€” nothing to migrate)`);
       skipped += 1;
       continue;
     }
@@ -266,7 +335,7 @@ async function runMigration(strapi, opts = {}) {
       : markdownToBlocks(String(entry.body));
 
     if (dryRun) {
-      info(`  DRY   ${label} → ${converted.length} blocks`);
+      info(`  DRY   ${label} â†’ ${converted.length} blocks`);
       migrated += 1;
       continue;
     }
@@ -291,7 +360,7 @@ async function runMigration(strapi, opts = {}) {
         warn(`  PUB FAIL ${label}: ${err.message}`);
       }
     }
-    info(`  OK    ${label} → ${converted.length} blocks`);
+    info(`  OK    ${label} â†’ ${converted.length} blocks`);
     migrated += 1;
   }
 
@@ -303,9 +372,9 @@ async function runMigration(strapi, opts = {}) {
 
 module.exports = { runMigration, markdownToBlocks, parseInline };
 
-// ═══════════════════════════════════════════════════════════════════
-// CLI runner — only executes when file is run directly (`node scripts/...`)
-// ═══════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// CLI runner â€” only executes when file is run directly (`node scripts/...`)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 if (require.main === module) {
   const { createStrapi } = require('@strapi/strapi');
   (async () => {

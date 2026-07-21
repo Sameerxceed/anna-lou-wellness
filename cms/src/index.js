@@ -282,14 +282,21 @@ module.exports = {
     try {
       const path = require('path');
       const fs = require('fs');
-      const flagPath = path.resolve('/app', '.migration-all-richtext-done');
-      const flagFallback = path.resolve(__dirname, '..', '.migration-all-richtext-done');
+      // v2 flag — bumped 21 Jul PM after fixing the markdown → blocks
+      // parser bugs (single-newline paragraph split, HTML tag stripping,
+      // filter placeholder `**Bold**` / `[text](link)` patterns). Old
+      // flag file is left alone; new flag guards the re-run.
+      const flagPath = path.resolve('/app', '.migration-all-richtext-v2-done');
+      const flagFallback = path.resolve(__dirname, '..', '.migration-all-richtext-v2-done');
       const alreadyDone = fs.existsSync(flagPath) || fs.existsSync(flagFallback);
       if (alreadyDone) {
-        strapi.log.info('[migrate-all-richtext] flag file present — skipping');
+        strapi.log.info('[migrate-all-richtext] v2 flag file present — skipping');
       } else {
         const { runAllMigrations } = require('../scripts/migrate-all-richtext-to-blocks');
-        const result = await runAllMigrations(strapi, { logger: strapi.log });
+        // force: true — this run overwrites _v2 fields that were populated
+        // by the buggy first migration. Safe because Anna hasn't edited
+        // any _v2 field yet (we asked her not to until re-migration).
+        const result = await runAllMigrations(strapi, { logger: strapi.log, force: true });
         if (result && result.errors === 0) {
           try {
             fs.writeFileSync(flagPath, new Date().toISOString(), 'utf-8');
