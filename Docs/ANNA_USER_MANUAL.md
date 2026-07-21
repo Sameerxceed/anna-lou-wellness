@@ -2914,6 +2914,43 @@ Leave `explore_links` / `connect_links` / `legal_links` blank in CMS and those f
 
 **Old body field:** still in the database as a read-only backup, hidden from the admin. If we ever need to reference it, ping Sameer.
 
+### 17.38 Block editor now on every body / description field (21 Jul 2026)
+
+**What changed:** the same block editor upgrade you saw on articles (§17.37) is now on every long-form text field across the whole CMS. Wherever you edit a paragraph of copy, you get the proper WYSIWYG toolbar with a real link popup.
+
+**Where you'll see it:**
+- Shop · Product → `description_v2` (was Description)
+- Experiences · Event Bookings → `description_v2`
+- Work · Coaching Session → `description_v2`
+- Story · Cosmic Forecast → `summary_v2`
+- Work · Membership → `description_v2`
+- About page → `story_paragraph_1_v2`, `story_paragraph_2_v2`, `additional_bio_v2`
+- Community page → `intro_v2`, `circle_description_v2`, `reset_room_description_v2`
+- Contact page → `discovery_why_price_body_v2` (the "Why £10?" accordion body), `parking_info_v2`, `directions_v2`
+- Reset Stories / Life / Love & Relationships / Work & Money / Shop / Work with Anna landing pages → `intro_v2`
+- Pages · Standalone → `intro_v2` (privacy, terms, mission, etc.)
+- Reset Room membership page → `paragraphs_v2`
+
+**All old content was migrated automatically.** Every existing paragraph, bold/italic, list, quote, and heading was converted from the old markdown format into the new block editor. Your live site looks exactly the same — just now editable with the proper toolbar going forward.
+
+**One-off cleanup:** you might see BOTH `Body` (old field, hidden but might still show) and `Body v 2` (new one) on some edit screens. **Only edit `body_v2` / `intro_v2` / `description_v2` etc.** — the old plain-name field is a read-only backup. If both are visible and it's confusing, click the ⚙ gear icon top-right of the edit form → "Configure the view" → drag the old field OUT of the layout → Save. Per-page one-time cleanup.
+
+**One thing to fix by hand on ONE article:** the "Why I do this work" article had a broken `[chosen?](link)` placeholder from before (Strapi link-button trap). The migration converted it to plain text `chosen?`. You need to:
+1. Open the article
+2. Find the word "chosen?" in the second paragraph
+3. Highlight it → click the 🔗 chain icon → paste the URL you meant → Insert
+4. Save + Publish
+
+### 17.39 Top strip is now clickable and editable
+
+**What changed:** the tiny uppercase strip across the very top of every page (currently reads "STORIES · WORK WITH ANNA · EXPERIENCES · SHOP · COMMUNITY") is now:
+1. **Clickable** — each word between the dots is a real link to the matching section
+2. **Editable in CMS** — same place as before (Content Manager → Navigation → `top_strip_text`)
+
+**How auto-linking works:** each word in the strip is matched against the main-nav items (case-insensitive, partial match either direction). So "Stories" matches "Reset Stories" in the nav and links to `/reset-stories`, "Shop" links to `/shop`, etc. Words that don't match any nav item render as plain text (not links).
+
+**How to edit:** Content Manager → Navigation → `top_strip_text` field. Type your labels separated by ` · ` (space, middle-dot, space). Save. Live in a second.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
