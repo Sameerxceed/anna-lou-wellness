@@ -61,9 +61,42 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
     <>
       <style dangerouslySetInnerHTML={{ __html: navStyles }} />
 
-      {/* Top strip */}
+      {/* Top strip — parses the CMS string on `·` and auto-links each
+          part to whichever main-nav item has a matching label. Anna edits
+          the string in Content Manager → Navigation → top_strip_text.
+          Labels that don't match a nav item render as plain text. */}
       <div className="top-strip">
-        <p className="top-strip-text">{topStripText || 'Stories · Work with Anna · Experiences · Shop · Community'}</p>
+        <p className="top-strip-text">
+          {(topStripText || 'Stories · Work with Anna · Experiences · Shop · Community')
+            .split(/\s*·\s*/)
+            .filter(Boolean)
+            .map((label, i, arr) => {
+              // Fuzzy match: exact case-insensitive first, then substring
+              // either direction (so "Stories" matches "Reset Stories" and
+              // vice versa). Keeps Anna's top-strip labels short without
+              // forcing them to match the main nav labels verbatim.
+              const cmp = label.trim().toLowerCase();
+              const match =
+                navigation.find((n) => n.label.trim().toLowerCase() === cmp) ||
+                navigation.find((n) => {
+                  const navLabel = n.label.trim().toLowerCase();
+                  return navLabel.includes(cmp) || cmp.includes(navLabel);
+                });
+              const el = match ? (
+                <Link key={i} href={match.href} className="top-strip-link">
+                  {label}
+                </Link>
+              ) : (
+                <span key={i}>{label}</span>
+              );
+              return (
+                <span key={`w-${i}`}>
+                  {el}
+                  {i < arr.length - 1 && <span className="top-strip-sep"> · </span>}
+                </span>
+              );
+            })}
+        </p>
       </div>
 
       {/* Main nav */}
@@ -266,6 +299,19 @@ const navStyles = `
   /* WCAG AA contrast: #8C8880 on #F5F3EF failed (~3.0:1).
      #5D5A52 on #F5F3EF passes AA (~7:1) and keeps the muted feel. */
   color: #5D5A52;
+  margin: 0;
+}
+.top-strip-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.top-strip-link:hover {
+  color: #6E3A5A;
+}
+.top-strip-sep {
+  color: #B8B4AC;
+  margin: 0 0.15rem;
 }
 
 /* ═══ NAV BAR ═══ */

@@ -18,7 +18,7 @@
     },
     "top_strip_text": {
       "type": "string",
-      "description": "Tiny text strip across the very top of every page. Use middle-dot (·) between words, e.g. 'Stories · Work with Anna · Experiences · Shop · Community'",
+      "description": "Tiny text strip across the very top of every page. Use middle-dot (·) between words, e.g. 'Stories · Work with Anna · Experiences · Shop · Community'. Each word between the dots auto-links to the matching main-nav item (case-insensitive, partial match works — 'Stories' matches 'Reset Stories'). Words that don't match anything in the main nav render as plain text.",
       "default": "Stories · Work with Anna · Experiences · Shop · Community"
     }
   }
