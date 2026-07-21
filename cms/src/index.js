@@ -271,13 +271,55 @@ module.exports = {
       strapi.log.warn('[seed-email-templates] failed:', err.message);
     }
 
-    // ═══ Blocks migration disabled ═══
-    // Reverted 10 Jul 2026: switching article.body from richtext -> blocks
-    // required a Postgres type conversion (text -> jsonb) that failed on
-    // existing plain-text bodies, crash-looping the CMS. The proper path
-    // is to convert data to JSON strings FIRST, then change schema. Until
-    // that migration is in place, article.body stays richtext and the
-    // frontend BlocksRenderer uses its string-fallback path.
+    // ═══ One-shot article body → body_v2 migration ═══
+    // Anna 20 Jul 2026: the Strapi richtext link toolbar inserts a literal
+    // `[text](link)` placeholder that non-technical clients don't know to
+    // edit. Fixed by adding a body_v2 blocks field alongside the legacy
+    // body richtext (schema tweak in commit 0365dc0). This block populates
+    // body_v2 by converting existing markdown → blocks JSON on next boot.
+    //
+    // Runs ONCE — writes a flag file to /app/.migration-body-to-blocks-done
+    // after success and skips on subsequent boots. Safe to leave in place.
+    // To force a re-run (e.g. after new legacy articles are imported),
+    // delete the flag file and redeploy.
+    //
+    // NOT the failed 10 Jul approach: this does NOT change the column type
+    // for `body`. Old body stays richtext (hidden from admin), new body_v2
+    // is a separate blocks column. No Postgres type coercion happens.
+    try {
+      const path = require('path');
+      const fs = require('fs');
+      const flagPath = path.resolve('/app', '.migration-body-to-blocks-done');
+      const flagFallback = path.resolve(__dirname, '..', '.migration-body-to-blocks-done');
+      const alreadyDone = fs.existsSync(flagPath) || fs.existsSync(flagFallback);
+      if (alreadyDone) {
+        strapi.log.info('[migrate-body-to-blocks] flag file present — skipping');
+      } else {
+        const { runMigration } = require('../scripts/migrate-body-to-blocks');
+        const result = await runMigration(strapi, { logger: strapi.log });
+        // Write the flag ONLY if we didn't hit a hard error. Migration is
+        // idempotent so even a partial run + re-run would be safe, but the
+        // flag prevents an unnecessary re-run on every boot going forward.
+        if (result && result.errors === 0) {
+          try {
+            fs.writeFileSync(flagPath, new Date().toISOString(), 'utf-8');
+            strapi.log.info(`[migrate-body-to-blocks] flag written → ${flagPath}`);
+          } catch (err) {
+            // /app may not be writable in some Coolify volume configs — fall
+            // back to writing next to src so the flag still persists across
+            // reboots that share the same volume.
+            try {
+              fs.writeFileSync(flagFallback, new Date().toISOString(), 'utf-8');
+              strapi.log.info(`[migrate-body-to-blocks] flag written → ${flagFallback}`);
+            } catch (err2) {
+              strapi.log.warn(`[migrate-body-to-blocks] could not write flag file: ${err2.message}`);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      strapi.log.warn(`[migrate-body-to-blocks] bootstrap task failed: ${err.message}`);
+    }
 
     // ═══ Seed Discovery Call defaults on the Contact singleton ═══
     try {

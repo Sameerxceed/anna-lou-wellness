@@ -43,7 +43,6 @@
 
 const path = require('path');
 const fs = require('fs');
-const { createStrapi } = require('@strapi/strapi');
 
 const UID = 'api::article.article';
 
@@ -165,24 +164,24 @@ function markdownToBlocks(md) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// Runner
+// Core migration — reusable from CLI (standalone) OR from Strapi bootstrap
 // ═══════════════════════════════════════════════════════════════════
 
-async function main() {
-  const args = process.argv.slice(2);
-  const dryRun = args.includes('--dry-run');
-  const slugArg = args.find((a) => a.startsWith('--slug='));
-  const targetSlug = slugArg ? slugArg.split('=')[1] : null;
+/**
+ * Run the migration against a live Strapi instance.
+ * @param {object} strapi — live Strapi instance (from bootstrap or standalone).
+ * @param {object} opts — { dryRun, targetSlug, backupDir, logger }
+ * @returns {Promise<{processed, migrated, skipped, errors}>}
+ */
+async function runMigration(strapi, opts = {}) {
+  const dryRun = !!opts.dryRun;
+  const targetSlug = opts.targetSlug || null;
+  const backupDir = opts.backupDir || path.resolve(__dirname, '..');
+  const logger = opts.logger || console;
 
-  console.log('[migrate-body-to-blocks] starting');
-  console.log(`[migrate-body-to-blocks] dry-run: ${dryRun ? 'YES' : 'NO'}`);
-  if (targetSlug) console.log(`[migrate-body-to-blocks] only slug: ${targetSlug}`);
-
-  const strapi = await createStrapi({
-    appDir: path.resolve(__dirname, '..'),
-    distDir: path.resolve(__dirname, '..', 'dist'),
-  });
-  await strapi.load();
+  logger.log('[migrate-body-to-blocks] starting');
+  logger.log(`[migrate-body-to-blocks] dry-run: ${dryRun ? 'YES' : 'NO'}`);
+  if (targetSlug) logger.log(`[migrate-body-to-blocks] only slug: ${targetSlug}`);
 
   let entries;
   try {
@@ -191,18 +190,16 @@ async function main() {
       status: 'published',
     });
   } catch (err) {
-    console.error(`[migrate-body-to-blocks] findMany failed: ${err.message}`);
-    await strapi.destroy();
-    process.exit(1);
+    logger.error(`[migrate-body-to-blocks] findMany failed: ${err.message}`);
+    return { processed: 0, migrated: 0, skipped: 0, errors: 1 };
   }
 
   const filtered = targetSlug
     ? entries.filter((e) => e.slug === targetSlug)
     : entries;
 
-  console.log(`[migrate-body-to-blocks] found ${filtered.length} article(s) to consider`);
+  logger.log(`[migrate-body-to-blocks] found ${filtered.length} article(s) to consider`);
 
-  // Backup EVERY article body before any writes.
   const backup = filtered.map((e) => ({
     documentId: e.documentId,
     slug: e.slug,
@@ -211,10 +208,14 @@ async function main() {
     body_v2: e.body_v2,
   }));
   if (!dryRun) {
-    const ts = new Date().toISOString().replace(/[:.]/g, '-');
-    const backupPath = path.resolve(__dirname, '..', 'article-body-backup-' + ts + '.json');
-    fs.writeFileSync(backupPath, JSON.stringify(backup, null, 2), 'utf-8');
-    console.log(`[migrate-body-to-blocks] backup written → ${backupPath}`);
+    try {
+      const ts = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupPath = path.join(backupDir, 'article-body-backup-' + ts + '.json');
+      fs.writeFileSync(backupPath, JSON.stringify(backup, null, 2), 'utf-8');
+      logger.log(`[migrate-body-to-blocks] backup written → ${backupPath}`);
+    } catch (err) {
+      logger.warn(`[migrate-body-to-blocks] backup write failed: ${err.message} (continuing)`);
+    }
   }
 
   let processed = 0;
@@ -226,32 +227,29 @@ async function main() {
     processed += 1;
     const label = entry.title || entry.slug || entry.documentId;
 
-    // Skip if body_v2 already has content — never overwrite Anna's work.
     if (Array.isArray(entry.body_v2) && entry.body_v2.length > 0) {
       const hasText = entry.body_v2.some((b) =>
         Array.isArray(b?.children) && b.children.some((c) => (c?.text || '').trim())
       );
       if (hasText) {
-        console.log(`  SKIP  ${label} (body_v2 already populated)`);
+        logger.log(`  SKIP  ${label} (body_v2 already populated)`);
         skipped += 1;
         continue;
       }
     }
 
     if (!entry.body || (typeof entry.body === 'string' && !entry.body.trim())) {
-      console.log(`  SKIP  ${label} (empty body — nothing to migrate)`);
+      logger.log(`  SKIP  ${label} (empty body — nothing to migrate)`);
       skipped += 1;
       continue;
     }
 
-    // If body is already a blocks array (shouldn't happen with richtext but
-    // guarded anyway), copy across unchanged.
     const converted = Array.isArray(entry.body)
       ? entry.body
       : markdownToBlocks(String(entry.body));
 
     if (dryRun) {
-      console.log(`  DRY   ${label} → ${converted.length} blocks`);
+      logger.log(`  DRY   ${label} → ${converted.length} blocks`);
       migrated += 1;
       continue;
     }
@@ -263,7 +261,7 @@ async function main() {
         status: 'draft',
       });
     } catch (err) {
-      console.warn(`  DRAFT FAIL ${label}: ${err.message}`);
+      logger.warn(`  DRAFT FAIL ${label}: ${err.message}`);
     }
     try {
       await strapi.documents(UID).update({
@@ -273,24 +271,45 @@ async function main() {
       });
     } catch (err) {
       if (!String(err.message).includes('not found')) {
-        console.warn(`  PUB FAIL ${label}: ${err.message}`);
+        logger.warn(`  PUB FAIL ${label}: ${err.message}`);
       }
     }
-    console.log(`  OK    ${label} → ${converted.length} blocks`);
+    logger.log(`  OK    ${label} → ${converted.length} blocks`);
     migrated += 1;
   }
 
-  console.log('\n[migrate-body-to-blocks] done');
-  console.log(`  processed: ${processed}`);
-  console.log(`  migrated:  ${migrated}${dryRun ? ' (dry-run — no writes)' : ''}`);
-  console.log(`  skipped:   ${skipped}`);
-  console.log(`  errors:    ${errors}`);
+  logger.log('[migrate-body-to-blocks] done');
+  logger.log(`  processed: ${processed}, migrated: ${migrated}${dryRun ? ' (dry-run)' : ''}, skipped: ${skipped}, errors: ${errors}`);
 
-  await strapi.destroy();
-  process.exit(0);
+  return { processed, migrated, skipped, errors };
 }
 
-main().catch((err) => {
-  console.error('[migrate-body-to-blocks] fatal:', err);
-  process.exit(1);
-});
+module.exports = { runMigration, markdownToBlocks, parseInline };
+
+// ═══════════════════════════════════════════════════════════════════
+// CLI runner — only executes when file is run directly (`node scripts/...`)
+// ═══════════════════════════════════════════════════════════════════
+if (require.main === module) {
+  const { createStrapi } = require('@strapi/strapi');
+  (async () => {
+    const args = process.argv.slice(2);
+    const dryRun = args.includes('--dry-run');
+    const slugArg = args.find((a) => a.startsWith('--slug='));
+    const targetSlug = slugArg ? slugArg.split('=')[1] : null;
+
+    const strapi = await createStrapi({
+      appDir: path.resolve(__dirname, '..'),
+      distDir: path.resolve(__dirname, '..', 'dist'),
+    });
+    await strapi.load();
+    try {
+      await runMigration(strapi, { dryRun, targetSlug });
+    } finally {
+      await strapi.destroy();
+    }
+    process.exit(0);
+  })().catch((err) => {
+    console.error('[migrate-body-to-blocks] fatal:', err);
+    process.exit(1);
+  });
+}
