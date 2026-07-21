@@ -354,6 +354,19 @@ const RelatedItemsPanel = () => {
   const [items, setItems] = useState<ChildItem[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Anna 21 Jul: hide right-sidebar panels below 900px so mobile edit view
+  // isn't buried under injected content. Same threshold as HelpFab + AutoSeo
+  // + ViewLive. Anna focuses on the form on phones; can see the tree of
+  // related items on desktop.
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const check = () => setIsNarrow(typeof window !== 'undefined' && window.innerWidth < 900);
+    check();
+    if (typeof window !== 'undefined') window.addEventListener('resize', check);
+    return () => {
+      if (typeof window !== 'undefined') window.removeEventListener('resize', check);
+    };
+  }, []);
 
   useEffect(() => {
     if (!config) {
@@ -376,6 +389,7 @@ const RelatedItemsPanel = () => {
   }, [config]);
 
   if (!config) return null;
+  if (isNarrow) return null;
 
   const accent = config.accent;
 

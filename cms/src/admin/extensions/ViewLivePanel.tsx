@@ -161,6 +161,17 @@ export default function ViewLivePanel() {
   const { pathname } = useLocation();
   const ctx = useMemo(() => parseEditContext(pathname), [pathname]);
   const [slug, setSlug] = useState<string>('');
+  // Anna 21 Jul: hide right-sidebar panels below 900px so mobile edit view
+  // isn't buried under injected content. Same threshold as HelpFab + AutoSeo.
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const check = () => setIsNarrow(typeof window !== 'undefined' && window.innerWidth < 900);
+    check();
+    if (typeof window !== 'undefined') window.addEventListener('resize', check);
+    return () => {
+      if (typeof window !== 'undefined') window.removeEventListener('resize', check);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -182,6 +193,7 @@ export default function ViewLivePanel() {
   }, [ctx]);
 
   if (!ctx) return null;
+  if (isNarrow) return null;
   const path = liveUrlFor(ctx.uid, slug);
   if (!path) return null;
   const fullUrl = `${PUBLIC_SITE_URL}${path}`;

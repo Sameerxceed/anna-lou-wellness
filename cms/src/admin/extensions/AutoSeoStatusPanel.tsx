@@ -81,6 +81,20 @@ export default function AutoSeoStatusPanel() {
   const [regenerating, setRegenerating] = useState(false);
   const [regenError, setRegenError] = useState<string | null>(null);
   const [autoCountdown, setAutoCountdown] = useState<number | null>(null);
+  // Anna 21 Jul: on mobile the right-sidebar injected panels stack at the top
+  // of the edit view, pushing the actual form fields below the fold. Hide
+  // this whole panel below 900px so the form is what she sees first.
+  // Auto-SEO still runs on Save via the lifecycle hook — she just doesn't
+  // need the reminder/refresh UI on phones. Same threshold as HelpFab.
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const check = () => setIsNarrow(typeof window !== 'undefined' && window.innerWidth < 900);
+    check();
+    if (typeof window !== 'undefined') window.addEventListener('resize', check);
+    return () => {
+      if (typeof window !== 'undefined') window.removeEventListener('resize', check);
+    };
+  }, []);
 
   // Watch for "Saved document" / "Published document" toasts. When we detect
   // one, start a 10-second countdown then auto-reload so Anna sees the
@@ -175,6 +189,9 @@ export default function AutoSeoStatusPanel() {
       setRegenerating(false);
     }
   };
+
+  // Hide on mobile — panel eats the whole viewport above the form fields.
+  if (isNarrow) return null;
 
   return (
     <div style={styles.card}>
