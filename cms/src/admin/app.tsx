@@ -205,6 +205,46 @@ const bootstrap = (app: StrapiApp) => {
     document.title = 'Anna Lou Wellness CMS';
   }
 
+  // ═══ Block editor link visibility ═══
+  // Anna 21 Jul 2026: "backend also it is very difficult to know where I
+  // have put in link — can it be underline or bold or something?"
+  //
+  // Strapi's block editor renders <a> tags for links but the default styling
+  // doesn't visually differentiate them from surrounding text. Inject CSS
+  // scoped to the block editor's contenteditable area to give links a plum
+  // colour, thick underline, and subtle highlight background — obvious at
+  // a glance even without hovering.
+  //
+  // Scoped to [contenteditable="true"] so it only affects the editor
+  // itself, never the surrounding admin UI (Strapi uses <a> tags for
+  // sidebar links, breadcrumbs, etc — those must stay untouched).
+  try {
+    if (typeof document !== 'undefined' && !document.getElementById('alw-block-editor-link-styles')) {
+      const styleEl = document.createElement('style');
+      styleEl.id = 'alw-block-editor-link-styles';
+      styleEl.textContent = `
+        [contenteditable="true"] a {
+          color: #6E3A5A !important;
+          text-decoration: underline !important;
+          text-decoration-thickness: 2px !important;
+          text-underline-offset: 2px !important;
+          background: rgba(110, 58, 90, 0.10) !important;
+          padding: 0 3px !important;
+          border-radius: 2px !important;
+          font-weight: 500 !important;
+        }
+        [contenteditable="true"] a:hover {
+          background: rgba(110, 58, 90, 0.18) !important;
+          cursor: pointer !important;
+        }
+      `;
+      document.head.appendChild(styleEl);
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[ALW admin] block-editor link style injection failed:', err);
+  }
+
   // BetterDateInput app-level custom field. Per Strapi v5 docs, app-level
   // fields (registered here, not in a plugin) DO NOT specify pluginId —
   // omitting it puts the field in the 'global' namespace which schemas
