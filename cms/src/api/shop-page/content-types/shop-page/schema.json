@@ -23,7 +23,15 @@
     },
     "intro": {
       "type": "richtext",
-      "description": "Intro paragraph below the title."
+      "description": "LEGACY — hidden. Edit intro_v2 instead.",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "intro_v2": {
+      "type": "blocks",
+      "description": "Intro paragraph below the title. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "hero_image": {
       "type": "media",

@@ -271,6 +271,43 @@ module.exports = {
       strapi.log.warn('[seed-email-templates] failed:', err.message);
     }
 
+    // ═══ One-shot full sweep: all richtext → _v2 blocks (21 Jul 2026) ═══
+    // Second phase of the migration. Article body was the pilot (21 Jul
+    // AM); this sweep handles the other 22 richtext field pairs across 19
+    // schemas (see cms/scripts/migrate-all-richtext-to-blocks.js TARGETS).
+    // Same additive pattern: legacy field hidden, _v2 blocks field visible,
+    // migration script converts markdown → blocks JSON on this one boot.
+    // Flag-file guarded, idempotent, backs up to
+    // /app/richtext-migration-backup-<ts>.json before any writes.
+    try {
+      const path = require('path');
+      const fs = require('fs');
+      const flagPath = path.resolve('/app', '.migration-all-richtext-done');
+      const flagFallback = path.resolve(__dirname, '..', '.migration-all-richtext-done');
+      const alreadyDone = fs.existsSync(flagPath) || fs.existsSync(flagFallback);
+      if (alreadyDone) {
+        strapi.log.info('[migrate-all-richtext] flag file present — skipping');
+      } else {
+        const { runAllMigrations } = require('../scripts/migrate-all-richtext-to-blocks');
+        const result = await runAllMigrations(strapi, { logger: strapi.log });
+        if (result && result.errors === 0) {
+          try {
+            fs.writeFileSync(flagPath, new Date().toISOString(), 'utf-8');
+            strapi.log.info(`[migrate-all-richtext] flag written → ${flagPath}`);
+          } catch (err) {
+            try {
+              fs.writeFileSync(flagFallback, new Date().toISOString(), 'utf-8');
+              strapi.log.info(`[migrate-all-richtext] flag written → ${flagFallback}`);
+            } catch (err2) {
+              strapi.log.warn(`[migrate-all-richtext] could not write flag file: ${err2.message}`);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      strapi.log.warn(`[migrate-all-richtext] bootstrap task failed: ${err.message}`);
+    }
+
     // ═══ One-shot article body → body_v2 migration ═══
     // Anna 20 Jul 2026: the Strapi richtext link toolbar inserts a literal
     // `[text](link)` placeholder that non-technical clients don't know to

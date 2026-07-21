@@ -8,6 +8,31 @@
 
 import { fetchAPI, mediaUrl, mediaUrls } from './strapi';
 
+// ═══════════════════════════════════════════════════════════════════
+// richContent — resolve a Strapi richtext field to blocks-or-string
+//
+// 21 Jul 2026 migration: every richtext (markdown) field got an additive
+// `<field>_v2` blocks (Strapi v5 WYSIWYG) companion. This helper picks
+// the right one for the renderer:
+//   - If <field>_v2 is a non-empty blocks array → return it
+//   - Else fall back to legacy <field> (string or array, whatever's there)
+// Both paths are handled downstream by BlocksRenderer, which accepts
+// blocks JSON OR a markdown string (with a small inline parser).
+// ═══════════════════════════════════════════════════════════════════
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function richContent(entry: any, fieldName: string): any[] | string {
+  if (!entry) return '';
+  const v2 = entry[fieldName + '_v2'];
+  if (Array.isArray(v2) && v2.length > 0) {
+    const hasText = v2.some((b) => Array.isArray(b?.children) && b.children.some((c: { text?: string }) => (c?.text || '').trim()));
+    if (hasText) return v2;
+  }
+  const legacy = entry[fieldName];
+  if (Array.isArray(legacy)) return legacy;
+  if (typeof legacy === 'string') return legacy;
+  return '';
+}
+
 // ═══ Local fallback data ═══
 import {
   products as fallbackProducts,

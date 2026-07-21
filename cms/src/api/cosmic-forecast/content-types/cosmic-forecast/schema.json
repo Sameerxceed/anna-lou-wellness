@@ -31,8 +31,16 @@
     },
     "summary": {
       "type": "richtext",
-      "required": true,
-      "description": "300-word summary version for website (NOT the full Substack version)"
+      "required": false,
+      "description": "300-word summary version for website (NOT the full Substack version) — LEGACY field, hidden. Edit summary_v2 instead.",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "summary_v2": {
+      "type": "blocks",
+      "description": "300-word summary version for website (NOT the full Substack version). Select text and click the link icon to add a hyperlink — a popup will ask you for the URL. Bold, italic, headings, lists and quotes all work from the toolbar."
     },
     "seo_title": {
       "type": "string",

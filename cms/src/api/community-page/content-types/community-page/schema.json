@@ -22,14 +22,30 @@
     },
     "intro": {
       "type": "richtext",
-      "description": "One short paragraph that sits under the main heading. 2-3 sentences max. Tells the reader what this page or item IS in their language, not yours."
+      "description": "LEGACY — hidden. Edit intro_v2 instead.",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "intro_v2": {
+      "type": "blocks",
+      "description": "One short paragraph that sits under the main heading. 2-3 sentences max. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "circle_title": {
       "type": "string",
       "default": "The Returning Circle"
     },
     "circle_description": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "circle_description_v2": {
+      "type": "blocks",
+      "description": "Description of The Returning Circle. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "circle_image": {
       "type": "media",
@@ -43,7 +59,15 @@
       "default": "The Reset Room"
     },
     "reset_room_description": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "reset_room_description_v2": {
+      "type": "blocks",
+      "description": "Description of The Reset Room. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "reset_room_price": {
       "type": "string",

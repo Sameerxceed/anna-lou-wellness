@@ -45,7 +45,15 @@
     },
     "intro": {
       "type": "richtext",
-      "description": "Main body. Use the toolbar for headings, bold, italic, bullet/numbered lists, links, and quotes. Separate paragraphs with a BLANK LINE between them. Works for short blurbs or long multi-section pages."
+      "description": "LEGACY — hidden. Edit intro_v2 instead.",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "intro_v2": {
+      "type": "blocks",
+      "description": "Main body. Use the toolbar for headings, bold, italic, bullet/numbered lists, links, and quotes. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "ctaLabel": {
       "type": "string",

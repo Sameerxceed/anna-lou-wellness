@@ -21,10 +21,26 @@
       "default": "Twenty-five years leaves a trail."
     },
     "story_paragraph_1": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "story_paragraph_1_v2": {
+      "type": "blocks",
+      "description": "First story paragraph. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL. Bold, italic, headings, lists and quotes all work from the toolbar."
     },
     "story_paragraph_2": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "story_paragraph_2_v2": {
+      "type": "blocks",
+      "description": "Second story paragraph. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL. Bold, italic, headings, lists and quotes all work from the toolbar."
     },
     "portrait": {
       "type": "media",
@@ -48,7 +64,15 @@
       "default": "Coach. Trainer. Podcaster. Author. Entrepreneur. Designer."
     },
     "additional_bio": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "additional_bio_v2": {
+      "type": "blocks",
+      "description": "Additional bio (below the main story). Select text and click the link icon to add a hyperlink — a popup will ask you for the URL. Bold, italic, headings, lists and quotes all work from the toolbar."
     },
     "seo_title": {
       "type": "string",

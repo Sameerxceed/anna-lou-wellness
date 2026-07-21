@@ -22,7 +22,15 @@
     },
     "paragraphs": {
       "type": "richtext",
-      "description": "One paragraph per blank line. Renders as flowing prose on the page."
+      "description": "LEGACY — hidden. Edit paragraphs_v2 instead.",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "paragraphs_v2": {
+      "type": "blocks",
+      "description": "Membership page body paragraphs. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "price_label": {
       "type": "string",

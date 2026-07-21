@@ -32,7 +32,15 @@
       "required": true
     },
     "description": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "description_v2": {
+      "type": "blocks",
+      "description": "Main event description. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL. Bold, italic, headings, lists and quotes all work from the toolbar."
     },
     "date": {
       "type": "customField",

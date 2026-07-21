@@ -28,10 +28,26 @@
       "type": "decimal"
     },
     "parking_info": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "parking_info_v2": {
+      "type": "blocks",
+      "description": "Parking info. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "directions": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "directions_v2": {
+      "type": "blocks",
+      "description": "Directions to reach the venue. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "upsells": {
       "type": "component",
@@ -79,7 +95,15 @@
     },
     "discovery_why_price_body": {
       "type": "richtext",
-      "description": "Content that shows when someone taps 'Why £10?'. Explain the refund + why the barrier exists. Never leaves the page — pure expander."
+      "description": "LEGACY — hidden. Edit discovery_why_price_body_v2 instead.",
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "discovery_why_price_body_v2": {
+      "type": "blocks",
+      "description": "Content that shows when someone taps 'Why £10?'. Explain the refund + why the barrier exists. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     }
   }
 }

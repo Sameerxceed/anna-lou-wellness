@@ -8,7 +8,15 @@
   "attributes": {
     "content": {
       "type": "richtext",
-      "required": true
+      "required": false,
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": true }
+      }
+    },
+    "content_v2": {
+      "type": "blocks",
+      "description": "Raw rich text content — escape hatch for any custom content. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
     },
     "style": {
       "type": "component",
