@@ -159,7 +159,9 @@ export async function POST(
   // hours does it take before we get the email after a user fills an
   // enquiry form." — both sides now get emailed. Template wording editable
   // in Content Manager → Email Template → customer_lead_confirmation.
-  sendFromTemplate('customer_lead_confirmation', { lead: leadContext, customerEmail: email })
+  // Recipient resolves inside sendFromTemplate via ctx.lead.email fallback
+  // (see web/src/lib/email.ts). No need to pass customerEmail separately.
+  sendFromTemplate('customer_lead_confirmation', { lead: leadContext })
     .catch((e) => console.warn(`[lead/${cleanType}] customer confirmation failed:`, e?.message));
 
   return NextResponse.json({ ok: true, type: cleanType, tag });
