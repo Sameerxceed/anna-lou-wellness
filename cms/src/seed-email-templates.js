@@ -213,6 +213,25 @@ const DEFAULTS = [
     include_shipping_address: false,
   },
   {
+    key: 'admin_lead_notification',
+    name: 'New enquiry from any form — notification to you (generic)',
+    when_it_fires:
+      'A visitor submits ANY enquiry form on the site — Contact, Speaking, Corporate Wellbeing, Retreat, Workshop, Returning Circle RSVP, Signal Collective, Recovery, One Day, Press, Partnerships, or any future form. Goes to OWNER_EMAIL with the enquirer\'s contact details and message. Uses this template unless the specific lead type has its own template (like practitioner-enquiry does).',
+    audience: 'admin',
+    enabled: true,
+    subject: '[{{lead_tag}}] {{lead_email}}',
+    preheader: 'A new enquiry has come in from your website.',
+    intro:
+      'A new enquiry has come in from the "{{lead_tag}}" form on your website.\n\nName: {{lead_first_name}}\nEmail: {{lead_email}}\nPhone: {{lead_phone}}\n\nMessage:\n{{lead_message}}',
+    outro:
+      'Submitted at {{lead_submitted_at}}. Reply directly to {{lead_email}} to respond, or open Mailchimp to see them tagged as "{{lead_tag}}".',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
     key: 'returning_circle_recording',
     name: 'Returning Circle — recording delivered',
     when_it_fires:

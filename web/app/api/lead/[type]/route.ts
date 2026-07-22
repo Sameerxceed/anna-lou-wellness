@@ -37,14 +37,23 @@ const KNOWN_TYPES: Record<string, string> = {
   'speaking': 'Speaking Enquiry',
   'corporate': 'Corporate Wellbeing Enquiry',
   'practitioner-enquiry': 'Practitioner Enquiry',
+  'contact': 'Contact Enquiry',
+  'press': 'Press Enquiry',
+  'partnerships': 'Partnerships Enquiry',
+  'retreat': 'Retreat Enquiry',
+  'workshop': 'Workshop Enquiry',
 };
 
-// Lead types that should ALSO send an immediate admin notification email
-// (in addition to the Mailchimp tag). Picks a template key from the
-// email-template collection. Anna edits the subject + body there.
+// Lead types that use a SPECIFIC admin notification template. Everything
+// else falls through to `admin_lead_notification` (generic). Anna 22 Jul:
+// "the enquiry forms were supposed to send Anna an email after they fill.
+// But chat says only practitioner can and I should message you to change
+// code." — this map used to be practitioner-only; every form now emails Anna
+// with a template she can edit in Content Manager → Email Template.
 const ADMIN_EMAIL_TEMPLATES: Record<string, string> = {
   'practitioner-enquiry': 'admin_practitioner_enquiry',
 };
+const ADMIN_EMAIL_FALLBACK = 'admin_lead_notification';
 
 function humaniseType(type: string): string {
   return type
@@ -117,27 +126,33 @@ export async function POST(
     addTag(email, originTag).catch((e) => console.warn(`[lead/${cleanType}] origin tag failed: ${e?.message}`));
   }
 
-  // If this lead type warrants an admin email, fire it. Lead details ride
-  // along on the `lead` merge context so the template can render them.
-  const adminTemplate = ADMIN_EMAIL_TEMPLATES[cleanType];
-  if (adminTemplate) {
-    const phone = typeof body.phone === 'string' ? body.phone.trim()
-      : typeof body.tel === 'string' ? body.tel.trim() : '';
-    const practice = typeof body.practice === 'string' ? body.practice.trim() : '';
-    const message = typeof body.message === 'string' ? body.message.trim() : '';
-    sendFromTemplate(adminTemplate, {
-      lead: {
-        type: cleanType,
-        tag,
-        email,
-        first_name: firstName || '(not provided)',
-        phone: phone || '(not provided)',
-        practice: practice || '(not provided)',
-        message: message || '(none)',
-        submitted_at: new Date().toISOString(),
-      },
-    }).catch((e) => console.warn(`[lead/${cleanType}] admin email failed:`, e?.message));
-  }
+  // Fire an admin notification email for every lead type. Uses the type-
+  // specific template if one is mapped, otherwise the generic
+  // `admin_lead_notification` template (Anna edits both in Content Manager
+  // → Email Template). Lead details ride along on the `lead` merge context
+  // so the template can render them.
+  const adminTemplate = ADMIN_EMAIL_TEMPLATES[cleanType] || ADMIN_EMAIL_FALLBACK;
+  const phone = typeof body.phone === 'string' ? body.phone.trim()
+    : typeof body.tel === 'string' ? body.tel.trim() : '';
+  const practice = typeof body.practice === 'string' ? body.practice.trim() : '';
+  // Message field varies across forms — check the common shapes.
+  const message = typeof body.message === 'string' ? body.message.trim()
+    : typeof body.brief === 'string' ? body.brief.trim()
+    : typeof body.notes === 'string' ? body.notes.trim()
+    : typeof body.about === 'string' ? body.about.trim()
+    : '';
+  sendFromTemplate(adminTemplate, {
+    lead: {
+      type: cleanType,
+      tag,
+      email,
+      first_name: firstName || '(not provided)',
+      phone: phone || '(not provided)',
+      practice: practice || '(not provided)',
+      message: message || '(none)',
+      submitted_at: new Date().toISOString(),
+    },
+  }).catch((e) => console.warn(`[lead/${cleanType}] admin email failed:`, e?.message));
 
   return NextResponse.json({ ok: true, type: cleanType, tag });
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import BookingButton from './BookingButton';
+import BuyProgrammeButton from './BuyProgrammeButton';
 
 export interface ProgrammeSection {
   label: string;
@@ -13,9 +14,18 @@ export interface ProgrammePageProps {
   pricing: { label: string; body: string };
   cta: { label: string; href: string };
   accentColour: string; // brand colour for this programme
+  /**
+   * Optional Programme slug in Strapi. When present, the CTA button uses
+   * BuyProgrammeButton (Stripe checkout flow) INSTEAD of BookingButton.
+   * Anna 22 Jul: paid programmes need Stripe first, then Calendly. Add
+   * `pricePence` on the matching Programme entry in CMS; button becomes
+   * a checkout. If pricePence is 0 or unset, the button gracefully errors
+   * on click ("could not start checkout").
+   */
+  stripeSlug?: string;
 }
 
-export default function ProgrammePage({ hero, intro, sections, pricing, cta, accentColour }: ProgrammePageProps) {
+export default function ProgrammePage({ hero, intro, sections, pricing, cta, accentColour, stripeSlug }: ProgrammePageProps) {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
@@ -78,20 +88,30 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
         </section>
       )}
 
-      {cta.label && cta.href && (
+      {(cta.label && cta.href) || stripeSlug ? (
         <section className="prog-cta" style={{ background: accentColour }}>
           <div className="prog-cta-inner">
             <h2 className="prog-cta-title">Ready when you are.</h2>
-            <BookingButton
-              url={cta.href}
-              label={`${cta.label} →`}
-              className="prog-cta-btn"
-              style={{ color: accentColour }}
-            />
+            {stripeSlug ? (
+              <BuyProgrammeButton
+                slug={stripeSlug}
+                label={cta.label || 'Book now'}
+                className="prog-cta-btn"
+                background="#fff"
+                textColor={accentColour}
+              />
+            ) : (
+              <BookingButton
+                url={cta.href}
+                label={`${cta.label} →`}
+                className="prog-cta-btn"
+                style={{ color: accentColour }}
+              />
+            )}
             <p className="prog-cta-fineprint">If unsure, book a free 15-minute 1 to 1 chat. Anna will hear what you actually need.</p>
           </div>
         </section>
-      )}
+      ) : null}
     </>
   );
 }

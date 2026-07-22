@@ -20,8 +20,12 @@ interface Props {
   className?: string;
   /** Override background colour. Defaults to plum. */
   background?: string;
+  /** Override text colour. Defaults to white. */
+  textColor?: string;
   /** Optional email to pre-fill on Stripe Checkout. */
   email?: string;
+  /** Escape hatch — merged into the button's inline style. */
+  style?: React.CSSProperties;
 }
 
 export default function BuyProgrammeButton({
@@ -29,7 +33,9 @@ export default function BuyProgrammeButton({
   label = 'Buy now',
   className,
   background,
+  textColor,
   email,
+  style,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -65,6 +71,8 @@ export default function BuyProgrammeButton({
         className={className}
         style={{
           ...(background ? { background, borderColor: background } : undefined),
+          ...(textColor ? { color: textColor } : undefined),
+          ...style,
           ...(loading ? { opacity: 0.6, cursor: 'wait' } : undefined),
         }}
       >

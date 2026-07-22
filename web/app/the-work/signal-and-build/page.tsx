@@ -37,11 +37,14 @@ export default async function SignalAndBuildPage() {
     ctaLabel: 'Book Signal & Build',
     ctaUrl: '/contact',
   });
+  // Only enable Stripe checkout when Anna has set pricePence in the CMS
+  // Programme entry — otherwise the button would error on click.
+  const stripeSlug = cms?.pricePence && cms.pricePence > 0 ? 'signal-and-build' : undefined;
   return (
     <>
       <ServiceSchema name="Signal & Build" description="Twelve weeks of 1:1 coaching for founders. Inner work and business strategy held together." url="/the-work/signal-and-build" price="3000" reviews={reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 } as ReviewInput))} />
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'Signal & Build', href: '/the-work/signal-and-build' }]} />
-      <ProgrammePage {...props} />
+      <ProgrammePage {...props} stripeSlug={stripeSlug} />
       <ReviewsSection reviews={reviews} title="From founder clients" kicker="Reviews" kickerColour="#FAA21B" />
       <FAQAccordion faqs={faqs} accentColour="#FAA21B" background="#F5F3EF" />
     </>

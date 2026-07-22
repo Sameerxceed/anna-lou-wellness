@@ -42,6 +42,12 @@ export default async function TheResetPage() {
     ctaLabel: 'Book The Reset',
     ctaUrl: '/contact',
   });
+  // Anna 22 Jul: Book button on programme pages must go via Stripe checkout,
+  // then redirect to Calendly for first-session booking. Only enable
+  // stripeSlug when the matching Programme entry in CMS has pricePence set
+  // — otherwise BuyProgrammeButton would error on click. Falls back to the
+  // BookingButton flow when the price isn't in CMS yet.
+  const stripeSlug = cms?.pricePence && cms.pricePence > 0 ? 'the-reset' : undefined;
   const reviewInputs: ReviewInput[] = reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 }));
   return (
     <>
@@ -56,7 +62,7 @@ export default async function TheResetPage() {
         reviews={reviewInputs}
       />
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'The Reset', href: '/the-work/the-reset' }]} />
-      <ProgrammePage {...props} />
+      <ProgrammePage {...props} stripeSlug={stripeSlug} />
       <ReviewsSection reviews={reviews} title="From Reset alumnae" kicker="Reviews" kickerColour="#F280AA" />
       <FAQAccordion faqs={faqs} accentColour="#F280AA" background="#F5F3EF" />
     </>

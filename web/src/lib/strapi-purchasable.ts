@@ -40,6 +40,12 @@ export type Purchasable = {
   pwycOptionsPence: number[];
   pwycDefaultPence: number | null;
   pwycLabel: string | null;
+  /**
+   * Optional Calendly URL used as success_url after Stripe payment. When set,
+   * the customer lands directly on Calendly to book their first session
+   * instead of the generic /thank-you page. Programme-only field for now.
+   */
+  postCheckoutCalendlyUrl: string | null;
 };
 
 function parsePwycOptions(raw: unknown): number[] {
@@ -76,6 +82,7 @@ function normalize(type: PurchasableType, raw: any): Purchasable | null {
     pwycOptionsPence,
     pwycDefaultPence,
     pwycLabel: typeof raw.pwycLabel === 'string' && raw.pwycLabel.trim() ? raw.pwycLabel : null,
+    postCheckoutCalendlyUrl: typeof raw.postCheckoutCalendlyUrl === 'string' && raw.postCheckoutCalendlyUrl.trim() ? raw.postCheckoutCalendlyUrl.trim() : null,
   };
 }
 

@@ -87,7 +87,11 @@
     "ctaUrl": {
       "type": "string",
       "default": "/contact",
-      "description": "Where the bottom button links to. Paste your Calendly link here (e.g. https://calendly.com/anna-annalouoflondon/discovery-call) and it will open as a popup so the customer stays on the site. Any other URL opens normally."
+      "description": "Where the bottom button links to. Paste your Calendly link here (e.g. https://calendly.com/anna-annalouoflondon/discovery-call) and it will open as a popup so the customer stays on the site. Any other URL opens normally. IGNORED when `pricePence` is set — the button then goes to Stripe checkout using pricePence + postCheckoutCalendlyUrl."
+    },
+    "postCheckoutCalendlyUrl": {
+      "type": "string",
+      "description": "Where to send the customer AFTER a successful Stripe payment. Paste the Calendly URL for booking the first session (e.g. https://calendly.com/anna-annalouoflondon/the-reset-first-session). If blank, they land on the generic thank-you page instead. Only used when the programme has a `pricePence` set — free programmes use `ctaUrl` directly."
     },
     "displayOrder": {
       "type": "integer",

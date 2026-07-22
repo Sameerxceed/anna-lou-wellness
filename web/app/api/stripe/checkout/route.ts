@@ -72,14 +72,24 @@ export async function POST(req: NextRequest) {
   }
 
   const mode = purchasable.isRecurring ? 'subscription' : 'payment';
-  // Success path priority: Reset Room dashboard > REGULATED course > generic thank-you.
-  // (If a future programme grants both, dashboard takes precedence because
-  //  that's the higher-engagement membership surface.)
+  // Success URL priority:
+  //   1. postCheckoutCalendlyUrl on the programme — used when Anna wants the
+  //      buyer to book their first session in Calendly straight after payment
+  //      (Anna 22 Jul feedback: "we don't want people going to Calendly
+  //      first, we need them to pay first, then book").
+  //   2. Reset Room dashboard for memberships.
+  //   3. REGULATED course access for regulated purchases.
+  //   4. Generic /thank-you fallback.
+  //
+  // For Calendly redirects we can't rely on session_id substitution the way
+  // we can with internal paths — but we still append it as a query string so
+  // downstream tracking (if Anna wires GA cross-domain) has the correlation.
   const successPath = purchasable.grantsResetRoomAccess
     ? '/community/reset-room/dashboard'
     : purchasable.grantsRegulatedAccess
       ? '/the-work/regulated/access'
       : '/thank-you';
+  const successUrlOverride = purchasable.postCheckoutCalendlyUrl;
   const cancelPath = purchasable.grantsResetRoomAccess
     ? '/community/reset-room'
     : purchasable.grantsRegulatedAccess
@@ -113,7 +123,9 @@ export async function POST(req: NextRequest) {
         },
       ],
       customer_email: email,
-      success_url: `${SITE_URL}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: successUrlOverride
+        ? `${successUrlOverride}${successUrlOverride.includes('?') ? '&' : '?'}session_id={CHECKOUT_SESSION_ID}`
+        : `${SITE_URL}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}${cancelPath}`,
       metadata,
       // For subscriptions, copy metadata onto the subscription itself so
