@@ -2951,6 +2951,64 @@ Leave `explore_links` / `connect_links` / `legal_links` blank in CMS and those f
 
 **How to edit:** Content Manager → Navigation → `top_strip_text` field. Type your labels separated by ` · ` (space, middle-dot, space). Save. Live in a second.
 
+### 17.40 Programme Book buttons — Stripe payment then Calendly (22 Jul 2026)
+
+**What changed:** the Book button on The Reset, Signal, and Signal & Build pages used to send visitors to the Contact page (which was your 22 Jul complaint). It now takes payment via Stripe first, then redirects them to Calendly to book their first session.
+
+**Your action to switch a programme over:**
+
+Open Content Manager → **Programme** → pick The Reset (or Signal, or Signal & Build). Fill TWO fields:
+
+1. **pricePence** — the price in pence. £1,500 = `150000`. £3,000 = `300000`. £750 = `75000`. (Stored in pence to avoid decimal rounding.)
+2. **postCheckoutCalendlyUrl** — the Calendly URL you want them to land on to book their first session AFTER paying. Example: `https://calendly.com/anna-annalouoflondon/the-reset-first-session`.
+
+Save. The Book button on that programme page flips to Stripe checkout automatically. If you leave the price blank, the button falls back to the Contact page (current behaviour) — so nothing breaks while you're mid-fill.
+
+**How to test end-to-end without spending real money:**
+
+The site is in Stripe TEST MODE on staging (staging.annalouwellness.com). Use these test card numbers — they work only in test mode, only on staging, and no money moves.
+
+| Card number | What happens |
+|---|---|
+| `4242 4242 4242 4242` | Payment always succeeds. Use this for the happy-path test. |
+| `4000 0000 0000 9995` | Payment always fails (insufficient funds). See how a failed payment looks. |
+| `4000 0025 0000 3155` | Requires 3D Secure step-up. See the bank-verification prompt. |
+| `4000 0000 0000 0341` | Succeeds, but the automatic refund fails. Rare edge case. |
+
+For ALL test cards:
+- **Expiry:** any future date (e.g. `12/34`)
+- **CVC:** any 3 digits (e.g. `123`)
+- **Postcode:** any UK postcode (e.g. `SW1A 1AA`)
+- **Name on card:** anything
+
+**Full test flow:**
+
+1. Set pricePence + postCheckoutCalendlyUrl on the programme in CMS. Save.
+2. Open the programme page on staging (e.g. `staging.annalouwellness.com/the-work/the-reset`). Hard-refresh.
+3. Click **Book The Reset**. You land on Stripe's checkout page.
+4. Paste `4242 4242 4242 4242`. Any future expiry. Any CVC. Any postcode. Your own email.
+5. Click Pay. You should be redirected to Calendly to pick your first-session slot.
+6. Within seconds you receive: (a) the Stripe receipt to your email, (b) an admin notification to Hello@annalouoflondon.com telling you a purchase happened.
+
+**Going live:** once your real Stripe account is bank-verified and the live keys are set (Sameer flips them), test cards stop working and real card numbers process real payments. Same code, no redeploy.
+
+### 17.41 Every enquiry form now emails you (22 Jul 2026)
+
+**What changed:** before today, only the Practitioner form sent you an email. Every other form on the site (Contact, Press, Retreat, Workshop, Speaking, Corporate, Returning Circle, One Day, Signal Collective, Recovery, Partnerships) just added the enquirer to Mailchimp — you'd only see it if you opened Mailchimp. Anna 22 Jul: "the enquiry forms were supposed to send Anna an email after they fill."
+
+Now every enquiry form fires an admin email to `Hello@annalouoflondon.com` within seconds. Format:
+
+- **Subject:** `[Contact Enquiry] someone@example.com` (or `[Speaking Enquiry]`, `[Press Enquiry]` etc.)
+- **From:** Anna Lou Wellness <hello@annalouwellness.com>
+- **Reply-To:** your `Hello@annalouoflondon.com` inbox — so if you hit Reply, it goes straight to you
+- **Body:** name, email, phone (if given), the message they wrote, submitted time
+
+**Time to inbox:** 1-5 seconds after they hit Submit.
+
+**Where to edit the wording:** Content Manager → **Email Template** → find `admin_lead_notification` (the generic template used for most forms) or `admin_practitioner_enquiry` (the Practitioner-specific one). Edit subject line, body wording, intro, outro. Save. Next email uses the new wording.
+
+**How to test:** open any form on the site (Contact page is easiest — `staging.annalouwellness.com/contact`) → fill with your own email → Submit. Check your Hello@annalouoflondon.com inbox within a minute. If nothing arrives, tell Sameer — probably an env var issue.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
