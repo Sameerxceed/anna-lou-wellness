@@ -3009,6 +3009,36 @@ Now every enquiry form fires an admin email to `Hello@annalouoflondon.com` withi
 
 **How to test:** open any form on the site (Contact page is easiest — `staging.annalouwellness.com/contact`) → fill with your own email → Submit. Check your Hello@annalouoflondon.com inbox within a minute. If nothing arrives, tell Sameer — probably an env var issue.
 
+### 17.42 Two things people trip on — Reset Room price + "my edit isn't showing"
+
+**How to change the Reset Room monthly price (including £0 for testing)**
+
+There are TWO Reset Room content types in the CMS and they do different things — that's what confused you.
+
+| Content type | What it controls |
+|---|---|
+| **Reset Room Page** (`api::reset-room-page.reset-room-page`) | The MARKETING page copy — headline, description, features list, images. The "sales page." |
+| **Work · Membership (Reset Room)** (`api::membership.membership`) | The Stripe SETTINGS — price, currency, monthly/yearly, Mailchimp tag, role grant. What actually charges the card. |
+
+To change the price:
+
+1. Content Manager sidebar → scroll to **Work · Membership (Reset Room)** (NOT Reset Room Page)
+2. Open it
+3. Field: **pricePence** — stored in pence. £25/month = `2500`. £19.50/month = `1950`. Set to `0` for a free test.
+4. Save.
+
+Live checkout uses the new price immediately. Stripe is just the payment processor — the price lives in your CMS.
+
+**"I've edited [X] but it's not showing on live"**
+
+Three things to check, in order:
+
+1. **Did you click Publish?** Save writes a draft. Live only shows Published entries. Publish button is top-right of the edit form. On mobile it can scroll off-screen — pinch to zoom out or scroll up. The little green "Published" tag under the entry title tells you it's live.
+2. **Are you looking at the CMS preview iframe or the actual live URL?** The preview iframe sometimes shows a cached version. Open the site in a fresh browser tab (e.g. `staging.annalouwellness.com/the-returning-circle`) and hard-refresh (Ctrl+F5 on desktop, or pull-to-refresh on phone). If it now shows your edit, the preview was just stale.
+3. **Are you editing `body` (hidden legacy) or `body_v2` (the new one the live site reads)?** Same for `intro` vs `intro_v2`, `description` vs `description_v2`, etc. The legacy field is greyed out / hidden in most places, but if you accidentally scrolled to it, edits there don't reach the live site. Rule: if a field has a `_v2` version, that's the one to edit. See §17.38 for the full field-name reference.
+
+If it still doesn't show after all three checks, tell Sameer the entry name — could be a specific edge case.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
