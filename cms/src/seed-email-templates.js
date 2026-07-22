@@ -213,6 +213,25 @@ const DEFAULTS = [
     include_shipping_address: false,
   },
   {
+    key: 'customer_lead_confirmation',
+    name: 'Enquiry received — confirmation to the customer',
+    when_it_fires:
+      'A visitor submits ANY enquiry form on the site — Contact, Speaking, Corporate Wellbeing, Retreat, Workshop, Returning Circle RSVP, Signal Collective, Recovery, One Day, Press, Partnerships, etc. Sent to the email they typed in the form. Gives them an instant "we got your message" so they know their submission worked. Anna also gets her own admin notification (see admin_lead_notification).',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Thank you — I have your message',
+    preheader: 'Your message reached me. I will reply within 48 hours.',
+    intro:
+      'Hi {{lead_first_name}},\n\nThank you for reaching out. Your message has landed in my inbox and I will reply personally within 48 hours.\n\nIn the meantime, feel free to explore more of the work — the Reset Letters (my weekly writing), the Reset Room (monthly membership), or the Returning Circle if you are near London.\n\nWarmly,\nAnna',
+    outro:
+      'A summary of what you sent, for your records:\n\n"{{lead_message}}"\n\nSubmitted at {{lead_submitted_at}}.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
     key: 'admin_lead_notification',
     name: 'New enquiry from any form — notification to you (generic)',
     when_it_fires:

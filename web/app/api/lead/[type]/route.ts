@@ -141,18 +141,26 @@ export async function POST(
     : typeof body.notes === 'string' ? body.notes.trim()
     : typeof body.about === 'string' ? body.about.trim()
     : '';
-  sendFromTemplate(adminTemplate, {
-    lead: {
-      type: cleanType,
-      tag,
-      email,
-      first_name: firstName || '(not provided)',
-      phone: phone || '(not provided)',
-      practice: practice || '(not provided)',
-      message: message || '(none)',
-      submitted_at: new Date().toISOString(),
-    },
-  }).catch((e) => console.warn(`[lead/${cleanType}] admin email failed:`, e?.message));
+  const leadContext = {
+    type: cleanType,
+    tag,
+    email,
+    first_name: firstName || '(not provided)',
+    phone: phone || '(not provided)',
+    practice: practice || '(not provided)',
+    message: message || '(none)',
+    submitted_at: new Date().toISOString(),
+  };
+  sendFromTemplate(adminTemplate, { lead: leadContext })
+    .catch((e) => console.warn(`[lead/${cleanType}] admin email failed:`, e?.message));
+
+  // Customer confirmation email — instant "we got your message" so the
+  // person who submitted knows the form worked. Anna 22 Jul: "how many
+  // hours does it take before we get the email after a user fills an
+  // enquiry form." — both sides now get emailed. Template wording editable
+  // in Content Manager → Email Template → customer_lead_confirmation.
+  sendFromTemplate('customer_lead_confirmation', { lead: leadContext, customerEmail: email })
+    .catch((e) => console.warn(`[lead/${cleanType}] customer confirmation failed:`, e?.message));
 
   return NextResponse.json({ ok: true, type: cleanType, tag });
 }

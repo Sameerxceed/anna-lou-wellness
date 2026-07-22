@@ -541,7 +541,11 @@ export async function sendFromTemplate(
     console.info(`[email] template "${templateKey}" disabled in CMS — skipped`);
     return { ok: false, error: 'template_disabled' };
   }
-  const customerEmail = ctx.order?.customer_email || ctx.account?.email || '';
+  // Recipient priority for customer emails:
+  //   order.customer_email > account.email > lead.email > ''
+  // The lead.email path is for the customer_lead_confirmation flow —
+  // enquiry-form submitters get the "we got your message" template.
+  const customerEmail = ctx.order?.customer_email || ctx.account?.email || ctx.lead?.email || '';
   const to = template.audience === 'admin' ? OWNER_EMAIL : customerEmail;
   if (!to) {
     console.warn(`[email] template "${templateKey}" has no recipient`);
