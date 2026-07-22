@@ -3007,7 +3007,12 @@ Now every enquiry form fires an admin email to `Hello@annalouoflondon.com` withi
 
 **Where to edit the wording:** Content Manager → **Email Template** → find `admin_lead_notification` (the generic template used for most forms) or `admin_practitioner_enquiry` (the Practitioner-specific one). Edit subject line, body wording, intro, outro. Save. Next email uses the new wording.
 
-**How to test:** open any form on the site (Contact page is easiest — `staging.annalouwellness.com/contact`) → fill with your own email → Submit. Check your Hello@annalouoflondon.com inbox within a minute. If nothing arrives, tell Sameer — probably an env var issue.
+**Two emails fire on every submission:**
+
+1. **To you** — the admin notification described above.
+2. **To the customer** — an instant "Thank you, I have your message" confirmation. From: `Anna Lou Wellness <hello@annalouwellness.com>`. Reply-To: `Hello@annalouoflondon.com` (so if they hit Reply it comes to you). Template name: `customer_lead_confirmation` in Content Manager → Email Template. Edit the wording there if you want to change it.
+
+**How to test:** open any form on the site (Contact page is easiest — `staging.annalouwellness.com/contact`) → fill with your own email → Submit. Within a minute you should see TWO emails: one at `Hello@annalouoflondon.com` (admin notification) and one at whichever address you typed into the form (customer confirmation). If nothing arrives, tell Sameer — probably an env var issue.
 
 ### 17.42 Two things people trip on — Reset Room price + "my edit isn't showing"
 
