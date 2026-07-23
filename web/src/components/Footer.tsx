@@ -129,6 +129,14 @@ export default function Footer({ siteSettings, footer, navigation }: FooterProps
         )}
       </nav>
 
+      {/* Anna 23 Jul: Contact + Testimonials must always be present in the
+          footer regardless of whether they've been added to the nav tree.
+          Rendered as a fixed helper row above Legal. */}
+      <nav className="footer-tier3" aria-label="Site helper">
+        <Link href="/contact">Contact</Link>
+        <Link href="/testimonials">Testimonials</Link>
+      </nav>
+
       {/* Tier 3: Legal — hides if Anna hasn't filled the list in CMS */}
       {footer.legalLinks.length > 0 && (
         <nav className="footer-tier3">

@@ -126,10 +126,20 @@ export default async function TheWorkPage() {
                   : `/the-work/sessions/${session.slug}`;
               return (
                 <div key={session.slug} className={`work-session-card reveal${i > 0 ? ` rd${i}` : ''}`}>
-                  <h3>{session.name}</h3>
-                  <p>{session.description.split('\n\n')[0].slice(0, 150)}...</p>
-                  {session.priceLabel && <p className="work-card-price">{session.priceLabel}{session.duration ? ` · ${session.duration}` : ''}</p>}
-                  <Link href={cardHref} className="work-card-link">Learn more <span>&rarr;</span></Link>
+                  {session.heroImage && (
+                    <div
+                      className="work-session-card-img"
+                      style={{ backgroundImage: `url('${session.heroImage}')` }}
+                      role="img"
+                      aria-label={session.name}
+                    />
+                  )}
+                  <div className="work-session-card-body">
+                    <h3>{session.name}</h3>
+                    <p>{session.description.split('\n\n')[0].slice(0, 150)}...</p>
+                    {session.priceLabel && <p className="work-card-price">{session.priceLabel}{session.duration ? ` · ${session.duration}` : ''}</p>}
+                    <Link href={cardHref} className="work-card-link">Learn more <span>&rarr;</span></Link>
+                  </div>
                 </div>
               );
             }) : (
@@ -221,10 +231,13 @@ const workStyles = `
 .work-sessions { background:#fff; padding:2rem 3rem; }
 .work-sessions-inner { max-width:1200px; margin:0 auto; }
 .work-sessions-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin-top:1rem; }
-.work-session-card { background:#F5F3EF; border-radius:8px; padding:1.8rem; transition:all 0.3s; border-left:3px solid #F280AA; }
+.work-session-card { background:#F5F3EF; border-radius:8px; overflow:hidden; transition:all 0.3s; border-left:3px solid #F280AA; display:flex; flex-direction:column; }
 .work-session-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.06); }
+.work-session-card-img { width:100%; aspect-ratio:16/10; background-size:cover; background-position:center; }
+.work-session-card-body { padding:1.4rem 1.6rem 1.6rem; }
 .work-session-card h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:1rem; color:#231F20; margin-bottom:0.5rem; }
 .work-session-card p { font-family:'EB Garamond',Georgia,serif; font-size:0.9rem; color:#3D3D3A; line-height:1.6; margin-bottom:0.8rem; }
+.work-session-card:not(:has(.work-session-card-img)) .work-session-card-body { padding:1.8rem; }
 .work-card-link { font-family:Mulish,sans-serif; font-weight:400; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:#F280AA; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem; transition:gap 0.3s; }
 .work-card-link:hover { gap:0.6rem; }
 
