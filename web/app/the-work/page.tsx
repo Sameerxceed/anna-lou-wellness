@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getCoachingSessions, getFAQs, getWorkWithAnnaPage } from '@/lib/cms';
+import { getCoachingSessions, getFAQs, getWorkWithAnnaPage, getMembership } from '@/lib/cms';
 import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
@@ -34,11 +34,12 @@ const pageFallback = {
 };
 
 export default async function TheWorkPage() {
-  const [sessions, hubFaqs, legacyFaqs, page] = await Promise.all([
+  const [sessions, hubFaqs, legacyFaqs, page, membership] = await Promise.all([
     getCoachingSessions(),
     getFAQs({ page: 'the-work' }),
     getFAQs('coaching'),
     getWorkWithAnnaPage(pageFallback),
+    getMembership(),
   ]);
   const faqs = hubFaqs.length > 0 ? hubFaqs : legacyFaqs;
 
@@ -170,6 +171,42 @@ export default async function TheWorkPage() {
         </div>
       </section>
 
+      {/* Memberships — Anna 23 Jul: "put memberships available here so
+          people can see different ways to work with me. Under Programmes
+          and above Client Stories." Renders Reset Room card only when the
+          singleton has a title in CMS (which it always does). */}
+      {membership && membership.title && (
+        <section className="work-memberships">
+          <div className="work-memberships-inner">
+            <p className="work-kicker reveal">Memberships</p>
+            <h2 className="work-section-title reveal rd1">Ongoing rooms, monthly.</h2>
+            <div className="work-memberships-grid">
+              <div className="work-membership-card reveal rd2">
+                {membership.heroImage && (
+                  <div
+                    className="work-membership-card-img"
+                    style={{ backgroundImage: `url('${membership.heroImage}')` }}
+                    role="img"
+                    aria-label={membership.title}
+                  />
+                )}
+                <div className="work-membership-card-body">
+                  <h3>{membership.title}</h3>
+                  {membership.description && <p>{membership.description}</p>}
+                  {membership.pricePence > 0 && (
+                    <p className="work-card-price">
+                      £{(membership.pricePence / 100).toFixed(0)}
+                      {membership.isRecurring ? ` / ${membership.recurringInterval}` : ''}
+                    </p>
+                  )}
+                  <Link href={membership.href} className="work-card-link">Learn more <span>&rarr;</span></Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Client Stories */}
       <section className="work-stories">
         <div className="work-stories-inner">
@@ -240,6 +277,18 @@ const workStyles = `
 .work-session-card:not(:has(.work-session-card-img)) .work-session-card-body { padding:1.8rem; }
 .work-card-link { font-family:Mulish,sans-serif; font-weight:400; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:#F280AA; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem; transition:gap 0.3s; }
 .work-card-link:hover { gap:0.6rem; }
+
+.work-memberships { background:#F5F3EF; padding:2rem 3rem; }
+.work-memberships-inner { max-width:1200px; margin:0 auto; }
+.work-memberships-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.2rem; margin-top:1rem; max-width:800px; }
+.work-membership-card { background:#fff; border-radius:8px; overflow:hidden; transition:all 0.3s; border-left:3px solid #6E3A5A; display:flex; flex-direction:column; }
+.work-membership-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.06); }
+.work-membership-card-img { width:100%; aspect-ratio:16/10; background-size:cover; background-position:center; }
+.work-membership-card-body { padding:1.4rem 1.6rem 1.6rem; }
+.work-membership-card:not(:has(.work-membership-card-img)) .work-membership-card-body { padding:1.8rem; }
+.work-membership-card h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; font-size:1.1rem; color:#231F20; margin-bottom:0.5rem; }
+.work-membership-card p { font-family:'EB Garamond',Georgia,serif; font-size:0.95rem; color:#3D3D3A; line-height:1.6; margin-bottom:0.8rem; }
+.work-card-price { font-family:Mulish,sans-serif; font-weight:500; font-size:0.75rem; letter-spacing:0.08em; color:#6E3A5A; margin-bottom:0.8rem; }
 
 .work-stories { background:#fff; padding:2rem 3rem; }
 .work-stories-inner { max-width:1200px; margin:0 auto; }

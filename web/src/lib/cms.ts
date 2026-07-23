@@ -1659,24 +1659,35 @@ export interface Membership {
   title: string;
   description: string;
   priceMonthly: number;
+  pricePence: number;
+  isRecurring: boolean;
+  recurringInterval: string;
   stripePriceId: string;
   features: string[];
   heroImage: string;
+  slug: string;
+  href: string;
 }
 
 export async function getMembership(): Promise<Membership | null> {
   try {
     const { data: d } = await fetchAPI('/membership', { populate: '*' });
     if (!d) return null;
+    const pricePence = Number(d.pricePence ?? d.price_pence ?? 2500);
     return {
       title: d.title || 'The Reset Room',
       description: d.description || '',
-      priceMonthly: d.price_monthly ?? 25,
+      pricePence,
+      priceMonthly: Math.round(pricePence / 100),
+      isRecurring: d.isRecurring !== false,
+      recurringInterval: d.recurringInterval || 'month',
       stripePriceId: d.stripe_price_id || '',
       features: Array.isArray(d.features)
         ? d.features.map((f: any) => (typeof f === 'string' ? f : String(f?.text || ''))).filter(Boolean)
         : [],
       heroImage: mediaUrl(d.hero_image),
+      slug: 'reset-room',
+      href: '/community/reset-room',
     };
   } catch {
     return null;

@@ -74,6 +74,10 @@
       "type": "string",
       "description": "Where the 'Book now' button takes people. Paste a Calendly link (e.g. https://calendly.com/anna-annalouoflondon/discovery-call) and it opens as a popup so the customer stays on your site. Other URLs (Stripe checkout, internal pages, etc.) open normally. Leave blank to hide the button."
     },
+    "mailchimp_tag": {
+      "type": "string",
+      "description": "Mailchimp tag applied when this experience is booked (via Calendly webhook or Stripe purchase). Must match a Mailchimp tag name EXACTLY (case-sensitive). Examples: 'Houseboat Retreat', 'Align & Amplify Attendee', 'Rise and Shine'. Leave blank to skip tagging."
+    },
     "is_active": {
       "type": "boolean",
       "default": true,
