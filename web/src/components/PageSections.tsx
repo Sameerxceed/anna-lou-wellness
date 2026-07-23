@@ -24,6 +24,8 @@
 import Link from 'next/link';
 import { mediaUrl } from '@/lib/strapi';
 import BuyProgrammeButton from '@/components/BuyProgrammeButton';
+import PwycBuyBlock from '@/components/PwycBuyBlock';
+import { getProgrammeBySlug } from '@/lib/programme';
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -458,23 +460,51 @@ function PayWhatYouFeel({ section }: { section: Section }) {
   );
 }
 
-function BuyProgramme({ section }: { section: Section }) {
+async function BuyProgramme({ section }: { section: Section }) {
   const s = styleFromBlock(section.style as Style | undefined);
   const slug = (section.programme_slug as string) || '';
   const label = (section.label as string) || 'Step inside';
   const secondary = (section.secondary_text as string) || '';
   const anchorId = (section.anchor_id as string) || undefined;
   if (!slug) return null;
+
+  // Anna 23 Jul: REGULATED needs a Pay-What-You-Feel dropdown, not a fixed
+  // £5. When the referenced Programme has pwycOptions set in CMS, render
+  // PwycBuyBlock so the buyer picks their amount before Stripe. The fallback
+  // /the-work/[slug] route already did this; the Page Builder block was
+  // stuck on fixed price. Fetch is server-side, cached by Strapi TTL.
+  const programme = await getProgrammeBySlug(slug).catch(() => null);
+  const pwycAmounts = (programme?.pwycOptions || '')
+    .split(',')
+    .map((p) => Number(p.trim()))
+    .filter((n) => Number.isFinite(n) && n > 0);
+  const pwycOptionsPence = pwycAmounts.map((p) => Math.round(p * 100));
+  const pwycDefaultPence =
+    programme?.pwycDefault && pwycAmounts.includes(programme.pwycDefault)
+      ? Math.round(programme.pwycDefault * 100)
+      : null;
+
   return (
     <section id={anchorId} style={{ ...s.outer, textAlign: 'center' }}>
       <BgLayer url={s.bgImageUrl} overlay={s.overlayOpacity} />
       <div style={{ ...s.inner, textAlign: 'center' }}>
-        <BuyProgrammeButton
-          slug={slug}
-          label={label}
-          background={s.accent}
-          className="page-buy-btn"
-        />
+        {pwycOptionsPence.length > 0 ? (
+          <PwycBuyBlock
+            slug={slug}
+            optionsPence={pwycOptionsPence}
+            defaultPence={pwycDefaultPence}
+            label={programme?.pwycLabel || 'Choose your amount'}
+            buttonLabel={label}
+            background={s.accent}
+          />
+        ) : (
+          <BuyProgrammeButton
+            slug={slug}
+            label={label}
+            background={s.accent}
+            className="page-buy-btn"
+          />
+        )}
         {secondary && (
           <p style={{ fontFamily: 'EB Garamond, Georgia, serif', fontStyle: 'italic', fontSize: '0.95rem', color: 'inherit', opacity: 0.8, marginTop: '0.8rem' }}>{secondary}</p>
         )}
@@ -509,7 +539,10 @@ function Fallback({ section }: { section: Section }) {
 
 // ─── Main export ──────────────────────────────────────────────────────────
 
-const RENDERERS: Record<string, React.FC<{ section: Section }>> = {
+// Async server components (like BuyProgramme) are allowed here — Next.js
+// awaits them during render.
+type SectionRenderer = (props: { section: Section }) => React.ReactNode | Promise<React.ReactNode>;
+const RENDERERS: Record<string, SectionRenderer> = {
   'sections.hero': Hero,
   'sections.text-block': TextBlock,
   'sections.image-text-split': ImageTextSplit,
@@ -541,6 +574,7 @@ export default function PageSections({ sections }: { sections: Section[] }) {
       <style dangerouslySetInnerHTML={{ __html: responsiveStyles }} />
       {sections.map((section, i) => {
         const Renderer = RENDERERS[section.__component] || Fallback;
+        // @ts-expect-error Async server components: JSX element return is a Promise.
         return <Renderer key={`${section.__component}-${section.id ?? i}`} section={section} />;
       })}
     </>
