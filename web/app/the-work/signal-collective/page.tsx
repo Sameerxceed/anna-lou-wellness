@@ -22,10 +22,24 @@ export default async function SignalCollectivePage() {
   ]);
   const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'signal-collective');
   const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const splitLines = (s: string) => s.split('\n').map((p) => p.trim()).filter(Boolean);
   const introParas = cms?.intro ? splitParas(cms.intro) : [
     'The Signal Collective is the mastermind. For coaches, founders, practitioners, and leaders who want depth plus community. Group and 1:1 coaching combined. Monthly intensive sessions. Peer co-regulation with people at the same level of seriousness. Direct access to the Signal Method applied to everything: business, relationships, creative work, leadership.',
     'A curated community committed to operating from their highest level. Not a course. A container for those already in motion who want to accelerate.',
   ];
+  // Anna 23 Jul: all CMS fields must render. Previously the "What's included"
+  // list + pricing + labels were hardcoded and ignored CMS edits. Now every
+  // block reads CMS first, falls back to the copy she signed off on.
+  const includedLabel = cms?.whatsIncludedLabel || "What's included";
+  const includedItems = cms?.whatsIncludedItems ? splitLines(cms.whatsIncludedItems) : [
+    'Six months. Twelve women maximum, by application.',
+    'Two group calls a month, 90 minutes each. One teaching, one open circle.',
+    'A monthly 1:1 with Anna, 60 minutes.',
+    'A private group space, off social media.',
+    'Two in-person days at the Hampton studio, one at the start, one at the close.',
+    'Guest sessions from practitioners Anna trusts.',
+  ];
+  const pricingBody = cms?.pricingBody || 'Investment: by enquiry. Application form first, then a 15-minute 1 to 1 chat.';
 
   return (
     <>
@@ -52,16 +66,11 @@ export default async function SignalCollectivePage() {
 
       <section className="sc-includes">
         <div className="sc-includes-inner">
-          <p className="sc-section-label">What&apos;s included</p>
+          <p className="sc-section-label">{includedLabel}</p>
           <ul>
-            <li>Six months. Twelve women maximum, by application.</li>
-            <li>Two group calls a month, 90 minutes each. One teaching, one open circle.</li>
-            <li>A monthly 1:1 with Anna, 60 minutes.</li>
-            <li>A private group space, off social media.</li>
-            <li>Two in-person days at the Hampton studio, one at the start, one at the close.</li>
-            <li>Guest sessions from practitioners Anna trusts.</li>
+            {includedItems.map((item, i) => <li key={i}>{item}</li>)}
           </ul>
-          <p className="sc-pricing"><strong>Investment: by enquiry.</strong> Application form first, then a 15-minute 1 to 1 chat.</p>
+          <p className="sc-pricing">{pricingBody}</p>
         </div>
       </section>
 

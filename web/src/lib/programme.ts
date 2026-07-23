@@ -25,6 +25,8 @@ export interface ProgrammeCMS {
   pricingBody?: string;
   ctaLabel?: string;
   ctaUrl?: string;
+  chatCtaLabel?: string;
+  chatCtaUrl?: string;
   stagesList?: string;
   pricePence?: number;
   isRecurring?: boolean;
@@ -129,9 +131,17 @@ export function programmeProps(
       label: cms?.pricingLabel || '',
       body: cms?.pricingBody || '',
     },
+    // Anna 23 Jul: CTA label showed blank on programme pages because CMS
+    // field was empty and we returned '' without falling back. Route-specific
+    // fallback keeps the button meaningful until Anna fills the field.
     cta: {
-      label: cms?.ctaLabel || '',
-      href: cms?.ctaUrl || '',
+      label: cms?.ctaLabel || fallback.ctaLabel || 'Book now',
+      href: cms?.ctaUrl || fallback.ctaUrl || '/contact',
     },
+    // Optional secondary "book a chat" CTA. Renders only if CMS fills either
+    // field — no fallback, since not every programme needs the second button.
+    chatCta: (cms?.chatCtaLabel || cms?.chatCtaUrl)
+      ? { label: cms?.chatCtaLabel || 'Book a 15-min chat', href: cms?.chatCtaUrl || '' }
+      : null,
   };
 }

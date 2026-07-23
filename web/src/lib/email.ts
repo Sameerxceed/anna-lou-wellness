@@ -305,6 +305,7 @@ type LeadLike = {
   practice?: string;
   message?: string;
   submitted_at?: string;
+  price_gbp?: string | number;
 };
 
 type RecordingLike = {
@@ -358,6 +359,7 @@ function mergeTags(input: string | undefined | null, ctx: MergeContext): string 
     lead_practice: lead?.practice || '',
     lead_message: lead?.message || '',
     lead_submitted_at: lead?.submitted_at || '',
+    lead_price_gbp: lead?.price_gbp != null ? String(lead.price_gbp) : '',
     // Returning Circle recording context
     recording_week_label: recording?.week_label || '',
     recording_url: recording?.youtube_url || '',

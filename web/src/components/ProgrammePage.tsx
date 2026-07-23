@@ -23,9 +23,15 @@ export interface ProgrammePageProps {
    * on click ("could not start checkout").
    */
   stripeSlug?: string;
+  /**
+   * Anna 23 Jul: optional secondary "book a free 15-min chat" CTA that
+   * renders below the main Book button. Passed straight through from CMS
+   * chatCtaLabel/chatCtaUrl. Null hides the second button.
+   */
+  chatCta?: { label: string; href: string } | null;
 }
 
-export default function ProgrammePage({ hero, intro, sections, pricing, cta, accentColour, stripeSlug }: ProgrammePageProps) {
+export default function ProgrammePage({ hero, intro, sections, pricing, cta, accentColour, stripeSlug, chatCta }: ProgrammePageProps) {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
@@ -107,6 +113,15 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
                 className="prog-cta-btn"
                 style={{ color: accentColour }}
               />
+            )}
+            {chatCta && chatCta.href && (
+              <div className="prog-cta-secondary-wrap">
+                <BookingButton
+                  url={chatCta.href}
+                  label={chatCta.label}
+                  className="prog-cta-btn-secondary"
+                />
+              </div>
             )}
             <p className="prog-cta-fineprint">If unsure, book a free 15-minute 1 to 1 chat. Anna will hear what you actually need.</p>
           </div>
@@ -205,6 +220,17 @@ const styles = `
   text-decoration: none; transition: transform 0.3s;
 }
 .prog-cta-btn:hover { transform: translateY(-1px); }
+.prog-cta-secondary-wrap { margin-top: 0.9rem; }
+.prog-cta-btn-secondary {
+  display: inline-block;
+  background: transparent; color: #fff;
+  border: 1px solid rgba(255,255,255,0.6);
+  padding: 0.85rem 1.6rem; border-radius: 4px;
+  font-family: Mulish, sans-serif; font-weight: 500;
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  text-decoration: none; transition: background 0.2s, transform 0.3s;
+}
+.prog-cta-btn-secondary:hover { background: rgba(255,255,255,0.12); transform: translateY(-1px); }
 .prog-cta-fineprint {
   font-family: Mulish, sans-serif; font-weight: 300;
   font-size: 0.7rem; color: rgba(255,255,255,0.7);

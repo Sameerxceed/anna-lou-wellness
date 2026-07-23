@@ -441,6 +441,38 @@ async function handleReturningCircleRecording(event: StripeEvent, email: string)
   );
 }
 
+/**
+ * Discovery Call £10 refundable booking.
+ *
+ * Anna 23 Jul: "no [Mailchimp tag or email]" was firing when someone paid
+ * the £10 fee — the checkout only redirected to Calendly. Now we tag the
+ * buyer + email admin + confirm to customer so Anna can see who's paid
+ * before the Calendly booking lands (and can chase if they don't book).
+ *
+ * Refund still manual via Stripe dashboard — Anna's policy, deliberate.
+ */
+async function handleDiscoveryCall(event: StripeEvent, email: string) {
+  const obj = event.data.object as any;
+  const amountTotal = Number(obj?.amount_total ?? 1000);
+
+  const tagResult = await subscribeAndTag(email, 'Discovery Call');
+  if (!tagResult.ok) {
+    console.warn(`[stripe webhook] Discovery Call tag failed for ${email}:`, tagResult.error);
+  }
+
+  const context = {
+    email,
+    price_gbp: (amountTotal / 100).toFixed(2),
+    submitted_at: new Date().toISOString(),
+  };
+  sendFromTemplate('admin_discovery_call', { lead: { ...context, tag: 'Discovery Call', type: 'discovery-call' } })
+    .catch((e) => console.warn(`[stripe webhook] Discovery Call admin email failed:`, e?.message));
+  sendFromTemplate('customer_discovery_call', { lead: { ...context, tag: 'Discovery Call', type: 'discovery-call' } })
+    .catch((e) => console.warn(`[stripe webhook] Discovery Call customer email failed:`, e?.message));
+
+  console.info(`[stripe webhook] discovery_call: ${email} tagged + emailed`);
+}
+
 async function handleSuccessfulPurchase(event: StripeEvent) {
   const email = await getEmailFromEvent(event);
   const ref = await getStrapiRefFromEvent(event);
@@ -456,6 +488,9 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
   // Call, Returning Circle recording, etc.). Dispatch by metadata.source.
   if (md.source === 'returning_circle_recording') {
     return handleReturningCircleRecording(event, email);
+  }
+  if (md.source === 'discovery_call') {
+    return handleDiscoveryCall(event, email);
   }
 
   if (!ref) {
