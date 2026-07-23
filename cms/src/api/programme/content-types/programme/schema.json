@@ -93,6 +93,14 @@
       "type": "string",
       "description": "Where to send the customer AFTER a successful Stripe payment. Paste the Calendly URL for booking the first session (e.g. https://calendly.com/anna-annalouoflondon/the-reset-first-session). If blank, they land on the generic thank-you page instead. Only used when the programme has a `pricePence` set — free programmes use `ctaUrl` directly."
     },
+    "chatCtaLabel": {
+      "type": "string",
+      "description": "Optional SECOND button below the main Book button. Use for a free 15-min chat option (e.g. 'Book a free 15-min chat'). Leave blank to hide the second button entirely."
+    },
+    "chatCtaUrl": {
+      "type": "string",
+      "description": "Where the second button links to. Paste the Calendly URL for the free chat (e.g. https://calendly.com/anna-annalouoflondon/discovery-call). Only shown when chatCtaLabel is also filled."
+    },
     "displayOrder": {
       "type": "integer",
       "default": 100,

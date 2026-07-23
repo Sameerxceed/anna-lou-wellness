@@ -22,7 +22,16 @@ function pathsFromEvent(event) {
   // Always refresh the listing-style parent route in case the page
   // appears in a "Recent pages" component somewhere down the line.
   const paths = ['/p'];
-  if (slug) paths.push(`/p/${slug}`);
+  if (slug) {
+    // Page entries are served at MULTIPLE mount points via the [slug]
+    // catch-all routes. If we only revalidate /p/<slug> the change won't
+    // reach /the-work/<slug> where the REGULATED sales page and any
+    // future Page Builder pages actually live. Anna 23 Jul: reported
+    // REGULATED edits not reflecting — this was the cause. Revalidate
+    // every catch-all mount that reads Page entries.
+    paths.push(`/p/${slug}`);
+    paths.push(`/the-work/${slug}`);
+  }
   return paths;
 }
 

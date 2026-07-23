@@ -251,6 +251,44 @@ const DEFAULTS = [
     include_shipping_address: false,
   },
   {
+    key: 'admin_discovery_call',
+    name: 'Discovery Call £10 booking — notification to you',
+    when_it_fires:
+      'Someone pays the £10 refundable Discovery Call fee via Stripe. Sent to OWNER_EMAIL. They then land on Calendly to pick a time; expect a Calendly booking notification separately once they choose a slot.',
+    audience: 'admin',
+    enabled: true,
+    subject: '[Discovery Call £{{lead_price_gbp}}] {{lead_email}}',
+    preheader: 'Someone paid for a Discovery Call — Calendly booking may follow.',
+    intro:
+      'Someone just paid £{{lead_price_gbp}} for a Discovery Call.\n\nEmail: {{lead_email}}\nPaid at: {{lead_submitted_at}}\n\nThey are now on Calendly picking a time. You will get a Calendly notification when they book. If no Calendly booking arrives within a few hours, consider reaching out — they may have got distracted after paying.',
+    outro:
+      'Reply directly to {{lead_email}} to reach them. Refund is manual via Stripe dashboard once the call happens (Anna policy — no auto-refund).',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'customer_discovery_call',
+    name: 'Discovery Call £10 booking — confirmation to the customer',
+    when_it_fires:
+      'A visitor pays the £10 refundable Discovery Call fee via Stripe. Sent to the email they used at checkout — confirms payment before they finish picking a Calendly slot, so they have a receipt even if Calendly redirect fails.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Discovery Call — payment received',
+    preheader: 'Payment confirmed. Now pick a time that works for you.',
+    intro:
+      'Hi,\n\nThank you — I have received your £{{lead_price_gbp}} Discovery Call payment. If you have not yet chosen a time, please book one via the Calendly link on the Contact page.\n\nThis fee is refundable after we speak. I refund it manually via Stripe once the call has happened — you do not need to do anything.\n\nLooking forward to our conversation.\n\nWarmly,\nAnna',
+    outro:
+      'Paid at {{lead_submitted_at}}. Any questions before the call, just reply to this email.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
     key: 'returning_circle_recording',
     name: 'Returning Circle — recording delivered',
     when_it_fires:
