@@ -3044,6 +3044,68 @@ Three things to check, in order:
 
 If it still doesn't show after all three checks, tell Sameer the entry name — could be a specific edge case.
 
+### 17.43 Programme secondary "Book a chat" CTA (23 Jul 2026)
+
+Anna 23 Jul: "there should still be a CTA in each programme for people that are not ready to book yet — then they can book a 1:1 call (her discovery call Calendly link)."
+
+Every Programme in CMS now has TWO new fields under the main Book button:
+
+| Field | What it does |
+|---|---|
+| **chatCtaLabel** | Text on the SECOND button. e.g. "Book a free 15-min chat first" |
+| **chatCtaUrl** | Where the second button links to. Paste the discovery-call Calendly URL. |
+
+Both must be filled for the button to appear. Leave both blank on any programme where you don't want the second button — it hides entirely.
+
+Style: the second button is ghost / outlined (transparent with a border), so it doesn't compete with the main Book button.
+
+How to set it up on every programme in one pass:
+1. Content Manager → **Work · Programme** → open each one (The Reset, Signal, Signal & Build, One Day, Recovery, etc.)
+2. Scroll to `chatCtaLabel` and `chatCtaUrl` (near the top, right after `ctaUrl`)
+3. Paste `https://calendly.com/anna-annalouoflondon/discovery-call` (or your current discovery call URL) into chatCtaUrl
+4. Type "Book a free 15-min chat first" into chatCtaLabel (or your own wording)
+5. Save + Publish
+
+### 17.44 Discovery Call £10 now emails you AND tags in Mailchimp (23 Jul 2026)
+
+Anna 23 Jul: "after a user book the discovery call it's not tagged on Mailchimp."
+
+Previously the £10 Discovery Call payment only redirected to Calendly — you had no visibility until Calendly notified you of the booking. Now, the moment payment succeeds, three things fire:
+
+1. **Mailchimp tag "Discovery Call"** is applied to the buyer. Any Customer Journey you build in Mailchimp targeting that tag will trigger.
+2. **You get an admin email** at Hello@annalouoflondon.com — subject line `[Discovery Call £10] their@email.com`. So you know a Discovery Call is coming even before they finish picking a Calendly time.
+3. **They get a payment confirmation email** from Anna — "payment received, refundable after the call."
+
+Both email templates are editable in **Content Manager → Email Template**:
+- `admin_discovery_call` — notification to you
+- `customer_discovery_call` — confirmation to the buyer
+
+Change the subject line, wording, or turn either off with the Enabled toggle. Merge tags available: `{{lead_email}}`, `{{lead_price_gbp}}`, `{{lead_submitted_at}}`.
+
+Refund is still manual via the Stripe dashboard after the call happens — this is deliberate, your choice.
+
+### 17.45 CMS-to-live refresh is now reliable across every route (23 Jul 2026)
+
+Bug we fixed on 23 Jul that was behind most "my edit isn't showing" complaints:
+
+The auto-refresh system that pings the live site when you save in CMS was only refreshing the "/p/<slug>" URL. But most pages actually live at "/the-work/<slug>", "/experiences/<slug>", "/community/<slug>", etc. So your edit reached the server but the page kept showing the old version for up to an hour.
+
+Fixed. Every Page Builder entry now refreshes ALL the mount points where it can be served. Same for regulated-modules — they now refresh both the members access page AND the sales page.
+
+Rule: **CMS save → live update in 1-2 seconds**. If a specific page still shows old content after that, the cause is your browser's own cache — hard-refresh once (Ctrl+Shift+R on Windows, Cmd+Shift+R on Mac).
+
+### 17.46 Signal Collective page now reads every field from CMS (23 Jul 2026)
+
+Bug we fixed on 23 Jul: the Signal Collective page had a "What's included" list, pricing text, and section labels hardcoded — silently ignored what you edited in CMS. Now every field on that page reads from CMS first, and only falls back to the original copy if you leave a field completely empty.
+
+Fields you can now edit on **Work · Programme → Signal Collective**:
+- `title` / `tagline` / `heroImage` / `intro` (already worked)
+- `whatsIncludedLabel` — label above the bullet list (default "What's included")
+- `whatsIncludedItems` — one bullet per line, changes the bullet points
+- `pricingBody` — the pricing paragraph below the bullets
+
+Same policy as every programme page: edit any of these and the page updates. Leave blank to keep the original copy.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
