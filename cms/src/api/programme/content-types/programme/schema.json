@@ -5,7 +5,7 @@
     "singularName": "programme",
     "pluralName": "programmes",
     "displayName": "Work · Programme",
-    "description": "One entry per coaching offer or 1:1 session (The Reset, Signal, Founder Reset, etc.). The slug must match the URL path."
+    "description": "Every coaching offer AND every 90-min 1:1 session. One entry each: The Reset (6-week, slug `the-reset`), Signal (12-week, `signal`), Signal & Build (`signal-and-build`), One Day (`one-day`), Signal Collective (`signal-collective`), Recovery (`recovery`), REGULATED (`regulated`), plus the three 90-min sessions — Nervous System Reset (`nervous-system-reset`), Founder Reset (`founder-reset`), Dating Reset (`dating-reset`). The slug must match the URL path. For session CARDS on /the-work/sessions edit **Work · Session CARD** instead."
   },
   "options": {
     "draftAndPublish": true

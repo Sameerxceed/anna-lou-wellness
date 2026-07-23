@@ -3094,6 +3094,36 @@ Fixed. Every Page Builder entry now refreshes ALL the mount points where it can 
 
 Rule: **CMS save → live update in 1-2 seconds**. If a specific page still shows old content after that, the cause is your browser's own cache — hard-refresh once (Ctrl+Shift+R on Windows, Cmd+Shift+R on Mac).
 
+### 17.47 Where are the 90-min Reset Sessions in the CMS? (23 Jul 2026)
+
+Anna 23 Jul: "The Reset programme for 90 mins sessions isn't on the CMS we don't think."
+
+They ARE — but the naming trapped you. Here is the map:
+
+**"The Reset" (£1,500, six weeks with weekly 90-min sessions)** — one entry:
+- Content Manager → **Work · Programme** → open "The Reset" (slug `the-reset`)
+- Lives at /the-work/the-reset
+
+**The three individual 90-min 1:1 sessions** — three separate entries, ALL under Work · Programme:
+
+| Session name | Slug | Live at |
+|---|---|---|
+| Nervous System Reset | `nervous-system-reset` | /the-work/sessions/nervous-system-reset |
+| Founder Reset | `founder-reset` | /the-work/sessions/founder-reset |
+| Dating Reset | `dating-reset` | /the-work/sessions/dating-reset |
+
+None of them have "90-min" in the title on purpose (the title becomes the page hero, and Anna's copy calls the outcome, not the duration). If you want to see all four in one glance, sort the Programme list by name in the CMS.
+
+**Why the confusion — two collections for the same thing**
+
+There is a second collection called **Work · Session CARD (list only)**. It ONLY controls the little cards on the /the-work/sessions listing page (name shown on the card, one-line pitch, price label, sort order). It does NOT drive the actual sales page — the sales page is the matching Programme entry above.
+
+Rule of thumb:
+- Editing hero, intro, "what's included", pricing body, CTA button of the sales page → **Work · Programme**
+- Editing the card name / pitch / price label on the /the-work/sessions overview → **Work · Session CARD (list only)**
+
+If you edit under Session CARD and expect the change to appear on /the-work/sessions/nervous-system-reset (or any individual session page), it will not — that page reads from Programme.
+
 ### 17.46 Signal Collective page now reads every field from CMS (23 Jul 2026)
 
 Bug we fixed on 23 Jul: the Signal Collective page had a "What's included" list, pricing text, and section labels hardcoded — silently ignored what you edited in CMS. Now every field on that page reads from CMS first, and only falls back to the original copy if you leave a field completely empty.

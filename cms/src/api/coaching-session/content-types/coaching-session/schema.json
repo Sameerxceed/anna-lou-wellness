@@ -4,8 +4,8 @@
   "info": {
     "singularName": "coaching-session",
     "pluralName": "coaching-sessions",
-    "displayName": "Work · Coaching Session",
-    "description": "1:1 coaching session types: Reset Sessions, Founder Reset, Dating Reset, Nervous System Reset"
+    "displayName": "Work · Session CARD (list only)",
+    "description": "IMPORTANT — this controls the CARDS on the /the-work/sessions listing page ONLY (name, one-line pitch, price label, order). The FULL SALES PAGE for each 90-min session (Nervous System Reset, Founder Reset, Dating Reset) is edited under **Work · Programme** — look for slugs `nervous-system-reset`, `founder-reset`, `dating-reset`. Also edit under Programme if you want to change the hero, intro paragraphs, what's included, pricing body, or CTA button on the actual page."
   },
   "options": {
     "draftAndPublish": true
