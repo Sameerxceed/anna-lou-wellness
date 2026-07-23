@@ -3124,6 +3124,58 @@ Rule of thumb:
 
 If you edit under Session CARD and expect the change to appear on /the-work/sessions/nervous-system-reset (or any individual session page), it will not — that page reads from Programme.
 
+### 17.48 Memberships block on Work with Anna (23 Jul 2026)
+
+Anna 23 Jul: "put memberships available here so people can see different ways to work with me. Under Programmes and above Client Stories."
+
+Shipped. /the-work now shows a Memberships section between Programmes and Client Stories. Currently one card renders — The Reset Room — pulled from **Work · Membership (Reset Room)** singleton. Shows the CMS title, description, price (£X / month), and links to /community/reset-room.
+
+If you want the card to change:
+- **Update the marketing description** on this /the-work card → edit `description` on Work · Membership (Reset Room).
+- **Change the price shown** → edit `pricePence` (£25 = 2500) — same field that drives Stripe checkout, so both places stay in sync automatically.
+- **Change the image** → upload to `hero_image` on Work · Membership.
+
+The section auto-hides if the singleton is missing / unpublished. To add MORE memberships in future (e.g. Reset Letters as a paid Substack tier, or a new founder programme), tell Sameer — the memberships block will need to loop over an array instead of the single record.
+
+### 17.49 What every bookable offering needs in the CMS (23 Jul 2026)
+
+For a Programme / Experience / Session / Retreat / Workshop to actually work as a bookable, revenue-generating page, fill ALL of these fields on the entry. If any is missing, the page shows without a Book button OR the Mailchimp journey doesn't trigger.
+
+**Every programme (Work · Programme):**
+- `heroImage` — landscape image, min 1600×1000. Shows at top of the sales page AND as the cover on /the-work card.
+- `pricePence` — price in pence. £1,500 = 150000. Set to 0 for "enquire only" programmes.
+- `ctaLabel` — button text (e.g. "Book The Reset").
+- `ctaUrl` — where the Book button goes if no `pricePence`. Paste Calendly link.
+- `postCheckoutCalendlyUrl` — for paid programmes only: where Stripe redirects the buyer AFTER payment (usually first-session booking Calendly).
+- `mailchimpTag` — the tag that fires on successful purchase. Must match a Mailchimp tag EXACTLY.
+- `chatCtaLabel` + `chatCtaUrl` — optional secondary "book a free 15-min chat" button, for people not ready to buy.
+
+**Every experience (retreats / workshops — Experiences · Event Bookings):**
+- `hero_image` — landscape image, min 1600×1000.
+- `price` — decimal amount in £ (e.g. 115).
+- `price_label` — human-readable label (e.g. "£115 · Day immersion").
+- `booking_url` — Stripe checkout link OR Calendly link for booking.
+- `mailchimp_tag` — the tag that fires on successful booking. Must match a Mailchimp tag EXACTLY.
+- `is_active` — must be TICKED, otherwise the experience is hidden from the public site.
+- `is_upcoming` — TICK for future events, UNTICK once the event has passed (moves it to the archive).
+
+**Every 1:1 session (Work · Session CARD list only):**
+- `hero_image` — landscape image, min 1600×1000. This is what shows on the /the-work card.
+- `booking_url` — where the Book button goes.
+- Note: the FULL SALES PAGE for each 90-min session is edited under **Work · Programme** (slugs `nervous-system-reset`, `founder-reset`, `dating-reset`), NOT here. See §17.47.
+
+**The Reset Room membership (Work · Membership — Reset Room):**
+- Everything already filled including `pricePence`, `mailchimpTag`, and Stripe wiring. Only thing to add is `hero_image` if you want a photo on the /the-work memberships card.
+
+**The email journey (Mailchimp):**
+Once every offering has a `mailchimp_tag` (or `mailchimpTag`) set, you can build a Customer Journey in Mailchimp per tag:
+1. Mailchimp → Automations → Customer Journeys → Create.
+2. Trigger: **Contact tagged** → paste the exact tag name.
+3. Design the emails (welcome / logistics / follow-up / testimonial ask etc.).
+4. Publish the journey.
+
+The site fires the tag automatically on booking. Mailchimp handles the emails from there.
+
 ### 17.46 Signal Collective page now reads every field from CMS (23 Jul 2026)
 
 Bug we fixed on 23 Jul: the Signal Collective page had a "What's included" list, pricing text, and section labels hardcoded — silently ignored what you edited in CMS. Now every field on that page reads from CMS first, and only falls back to the original copy if you leave a field completely empty.
