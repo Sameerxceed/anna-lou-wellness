@@ -86,14 +86,15 @@ export default async function CirclePage() {
                 </>
               );
             }
-            // Fallback when CMS has no sessions filled — show generic notice
-            // pointing Anna (and visitors) at the booking form below.
+            // Fallback when CMS has no sessions filled — 3 evergreen bullets
+            // (removed the dev-instruction line that used to be here; it was
+            // leaking "Anna sets the next weekly dates in Strapi..." onto
+            // the public page).
             return (
               <ul>
                 <li>Hybrid — in person at Taggs Island, or live on Zoom</li>
                 <li>Donation-based. Pay what feels right when you book</li>
                 <li>Replays kept inside the Reset Room library</li>
-                <li><em>Anna sets the next weekly dates in Strapi → Community Event → The Returning Circle → Sessions.</em></li>
               </ul>
             );
           })()}
@@ -110,35 +111,34 @@ export default async function CirclePage() {
         // to swallow, not hers to notice.
         const bookingUrl = (cms?.ctaUrl || '').trim();
         const bookingLabel = (cms?.ctaLabel || 'Book now').trim();
+        // Only render the whole booking section when a URL is set.
+        // Previously the empty state showed a dev-facing instruction line
+        // that was leaking onto the public page — never show CMS-editor
+        // instructions to visitors.
+        if (!bookingUrl) return null;
         return (
           <section className="rc-rsvp" id="rsvp">
             <div className="rc-rsvp-inner">
               <p className="rc-section-label">Book</p>
               <h2 className="rc-rsvp-title">Hold a place.</h2>
               <p className="rc-rsvp-body">Book the next circle in one click. You will get a Zoom link, the houseboat address if you are coming in person, and a small note from Anna a day before.</p>
-              {bookingUrl ? (
-                <BookingButton
-                  url={bookingUrl}
-                  label={bookingLabel}
-                  style={{
-                    background: ACCENT,
-                    color: '#fff',
-                    border: 'none',
-                    padding: '0.95rem 2.4rem',
-                    fontFamily: "'Josefin Sans', sans-serif",
-                    fontSize: '0.75rem',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    cursor: 'pointer',
-                    borderRadius: 4,
-                    marginTop: '1.4rem',
-                  }}
-                />
-              ) : (
-                <p className="rc-rsvp-body" style={{ marginTop: '1rem', fontStyle: 'italic', color: '#5D5A52' }}>
-                  Booking link goes here. Anna sets it in Strapi → Community Event → The Returning Circle → CTA URL (paste a Calendly link).
-                </p>
-              )}
+              <BookingButton
+                url={bookingUrl}
+                label={bookingLabel}
+                style={{
+                  background: ACCENT,
+                  color: '#fff',
+                  border: 'none',
+                  padding: '0.95rem 2.4rem',
+                  fontFamily: "'Josefin Sans', sans-serif",
+                  fontSize: '0.75rem',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                  borderRadius: 4,
+                  marginTop: '1.4rem',
+                }}
+              />
             </div>
           </section>
         );

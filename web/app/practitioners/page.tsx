@@ -72,7 +72,7 @@ export default async function PractitionersPage() {
 
       {all.length === 0 ? (
         <section className="pr-empty">
-          <p>Anna is building this circle. To add the first practitioner, open Strapi → Practitioner → +Create.</p>
+          <p>Practitioner directory coming soon. Anna is building this circle.</p>
         </section>
       ) : (
         <section className="pr-body">

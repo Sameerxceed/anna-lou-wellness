@@ -92,7 +92,7 @@ export default async function TestimonialsPage() {
 
       {all.length === 0 ? (
         <section className="ts-empty">
-          <p>Stories will appear here as Anna gathers them. To add one, open Strapi → Testimonial / Review → +Create.</p>
+          <p>Client stories coming soon.</p>
         </section>
       ) : (
         <section className="ts-body">
