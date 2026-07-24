@@ -123,11 +123,20 @@ export default async function TheWorkPage() {
                 'the-reset', 'signal', 'signal-and-build', 'one-day',
                 'signal-collective', 'recovery',
               ];
+              // Anna 24 Jul: Coaching Session slugs in CMS don't always
+              // match Programme route slugs. Map the known mismatches so
+              // "Learn more" doesn't 404. Long-term Anna could rename in
+              // CMS, but this alias map means either works.
+              const SLUG_ALIAS: Record<string, string> = {
+                'one-day-intensive': 'one-day',
+                'the-signal-collective': 'signal-collective',
+              };
+              const routeSlug = SLUG_ALIAS[session.slug] || session.slug;
               const cardHref = !session.slug
                 ? '/the-work/sessions'
-                : PROGRAMME_SLUGS.includes(session.slug)
-                  ? `/the-work/${session.slug}`
-                  : `/the-work/sessions/${session.slug}`;
+                : PROGRAMME_SLUGS.includes(routeSlug)
+                  ? `/the-work/${routeSlug}`
+                  : `/the-work/sessions/${routeSlug}`;
               return (
                 <div key={session.slug} className={`work-session-card reveal${i > 0 ? ` rd${i}` : ''}`}>
                   {session.heroImage && (
