@@ -155,7 +155,20 @@ export default async function TheWorkPage() {
                   </div>
                 </div>
               );
-            }) : (
+            }).concat([
+              // Anna 24 Jul: 6th card — Reset Sessions aggregator. Clicking
+              // Learn more opens /the-work/sessions which lists the 3 real
+              // 90-min sessions (nervous-system-reset / founder-reset /
+              // dating-reset). Each of those has Stripe checkout + tag.
+              <div key="reset-sessions-agg" className={`work-session-card reveal rd${sessions.length}`}>
+                <div className="work-session-card-body">
+                  <h3>Reset Sessions</h3>
+                  <p>Three 90-minute 1:1 sessions to pick from: Nervous System, Founder, or Dating Reset. Focused, single-session support.</p>
+                  <p className="work-card-price">£200 · 90 min</p>
+                  <Link href="/the-work/sessions" className="work-card-link">Learn more <span>&rarr;</span></Link>
+                </div>
+              </div>
+            ]) : (
             <>
             <div className="work-session-card reveal">
               <h3>1:1 Reset Sessions</h3>
@@ -183,65 +196,37 @@ export default async function TheWorkPage() {
         </div>
       </section>
 
-      {/* Memberships — Anna 23 Jul: "put memberships available here so
-          people can see different ways to work with me. Under Programmes
-          and above Client Stories." Anna 24 Jul: REGULATED (self-study
-          membership) shows as the FIRST card here so people see the
-          low-friction entry point. Reset Room is the ongoing monthly. */}
-      {((regulatedProgramme && regulatedProgramme.title) || (membership && membership.title)) && (
+      {/* Memberships — Anna 24 Jul: only REGULATED (self-study). Reset Room
+          removed from this block per her explicit ask; it lives on its own
+          Community page and doesn't need double surfacing here. */}
+      {regulatedProgramme && regulatedProgramme.title && (
         <section className="work-memberships">
           <div className="work-memberships-inner">
             <p className="work-kicker reveal">Memberships</p>
-            <h2 className="work-section-title reveal rd1">Ongoing rooms, self-study.</h2>
+            <h2 className="work-section-title reveal rd1">Self-study, on your own time.</h2>
             <div className="work-memberships-grid">
-              {regulatedProgramme && regulatedProgramme.title && (
-                <div className="work-membership-card reveal">
-                  {(() => {
-                    const img = mediaUrl(regulatedProgramme.heroImage as { url?: string } | undefined);
-                    return img ? (
-                      <div
-                        className="work-membership-card-img"
-                        style={{ backgroundImage: `url('${img}')` }}
-                        role="img"
-                        aria-label={regulatedProgramme.title}
-                      />
-                    ) : null;
-                  })()}
-                  <div className="work-membership-card-body">
-                    <h3>{regulatedProgramme.title}</h3>
-                    <p style={{ fontFamily: 'Mulish, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6E3A5A', marginBottom: '0.4rem' }}>Self-study membership</p>
-                    {regulatedProgramme.tagline && <p>{regulatedProgramme.tagline}</p>}
-                    <p className="work-card-price">
-                      {regulatedProgramme.pwycOptions ? 'Pay what you feel · from £5' : (regulatedProgramme.pricePence ? `£${(regulatedProgramme.pricePence / 100).toFixed(0)}` : '')}
-                    </p>
-                    <Link href="/the-work/regulated" className="work-card-link">Learn more <span>&rarr;</span></Link>
-                  </div>
-                </div>
-              )}
-              {membership && membership.title && (
-                <div className="work-membership-card reveal rd1">
-                  {membership.heroImage && (
+              <div className="work-membership-card reveal">
+                {(() => {
+                  const img = mediaUrl(regulatedProgramme.heroImage as { url?: string } | undefined);
+                  return img ? (
                     <div
                       className="work-membership-card-img"
-                      style={{ backgroundImage: `url('${membership.heroImage}')` }}
+                      style={{ backgroundImage: `url('${img}')` }}
                       role="img"
-                      aria-label={membership.title}
+                      aria-label={regulatedProgramme.title}
                     />
-                  )}
-                  <div className="work-membership-card-body">
-                    <h3>{membership.title}</h3>
-                    <p style={{ fontFamily: 'Mulish, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6E3A5A', marginBottom: '0.4rem' }}>Monthly membership</p>
-                    {membership.description && <p>{membership.description}</p>}
-                    {membership.pricePence > 0 && (
-                      <p className="work-card-price">
-                        £{(membership.pricePence / 100).toFixed(0)}
-                        {membership.isRecurring ? ` / ${membership.recurringInterval}` : ''}
-                      </p>
-                    )}
-                    <Link href={membership.href} className="work-card-link">Learn more <span>&rarr;</span></Link>
-                  </div>
+                  ) : null;
+                })()}
+                <div className="work-membership-card-body">
+                  <h3>{regulatedProgramme.title}</h3>
+                  <p style={{ fontFamily: 'Mulish, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6E3A5A', marginBottom: '0.4rem' }}>Self-study membership</p>
+                  {regulatedProgramme.tagline && <p>{regulatedProgramme.tagline}</p>}
+                  <p className="work-card-price">
+                    {regulatedProgramme.pwycOptions ? 'Pay what you feel · from £5' : (regulatedProgramme.pricePence ? `£${(regulatedProgramme.pricePence / 100).toFixed(0)}` : '')}
+                  </p>
+                  <Link href="/the-work/regulated" className="work-card-link">Learn more <span>&rarr;</span></Link>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </section>

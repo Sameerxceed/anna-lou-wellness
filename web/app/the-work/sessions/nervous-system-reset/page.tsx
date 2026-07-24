@@ -20,7 +20,8 @@ export default async function NervousSystemResetPage() {
       accentColour={cms?.accentColour || '#7BAFDD'}
       image={mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('programmes', 'nervous-system-reset')}
       bookingUrl={cms?.ctaUrl || undefined}
-      bookingLabel={cms?.ctaLabel ? `${cms.ctaLabel} →` : undefined}
+      bookingLabel={cms?.ctaLabel || undefined}
+      stripeSlug={cms?.pricePence && cms.pricePence > 0 ? 'nervous-system-reset' : undefined}
     />
   );
 }

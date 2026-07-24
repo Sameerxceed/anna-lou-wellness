@@ -20,7 +20,8 @@ export default async function FounderResetPage() {
       accentColour={cms?.accentColour || '#FAA21B'}
       image={mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('work-and-money', 'founder-reset')}
       bookingUrl={cms?.ctaUrl || undefined}
-      bookingLabel={cms?.ctaLabel ? `${cms.ctaLabel} →` : undefined}
+      bookingLabel={cms?.ctaLabel || undefined}
+      stripeSlug={cms?.pricePence && cms.pricePence > 0 ? 'founder-reset' : undefined}
     />
   );
 }

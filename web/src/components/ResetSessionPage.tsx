@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import BookingButton from './BookingButton';
+import BuyProgrammeButton from './BuyProgrammeButton';
 
 export interface ResetSessionPageProps {
   name: string;
@@ -9,6 +10,13 @@ export interface ResetSessionPageProps {
   image: string;
   bookingUrl?: string;
   bookingLabel?: string;
+  /**
+   * Anna 24 Jul: when set, the Book button goes via Stripe checkout for
+   * this programme slug (with post-checkout Calendly redirect from CMS)
+   * instead of BookingButton. Fires the Programme's mailchimpTag on
+   * successful payment. Pass the Programme slug (e.g. 'nervous-system-reset').
+   */
+  stripeSlug?: string;
 }
 
 export default function ResetSessionPage({
@@ -19,6 +27,7 @@ export default function ResetSessionPage({
   image,
   bookingUrl,
   bookingLabel,
+  stripeSlug,
 }: ResetSessionPageProps) {
   return (
     <>
@@ -64,12 +73,22 @@ export default function ResetSessionPage({
         <div className="rsp-cta-inner">
           <h2 className="rsp-cta-title">Ready to book?</h2>
           <p className="rsp-cta-body">Stripe checkout opens in a new tab. The intake form is sent on booking.</p>
-          <BookingButton
-            url={bookingUrl || '/contact'}
-            label={bookingLabel || 'Book this session · £200 →'}
-            className="rsp-cta-btn"
-            style={{ color: accentColour }}
-          />
+          {stripeSlug ? (
+            <BuyProgrammeButton
+              slug={stripeSlug}
+              label={bookingLabel || 'Book this session · £200'}
+              className="rsp-cta-btn"
+              background="#fff"
+              textColor={accentColour}
+            />
+          ) : (
+            <BookingButton
+              url={bookingUrl || '/contact'}
+              label={bookingLabel || 'Book this session · £200 →'}
+              className="rsp-cta-btn"
+              style={{ color: accentColour }}
+            />
+          )}
           <p className="rsp-cta-fineprint">Not sure if it&apos;s the right fit? <Link href="/the-work/quiz" style={{ color: '#fff', textDecoration: 'underline' }}>Take the 5-minute quiz</Link> instead.</p>
         </div>
       </section>

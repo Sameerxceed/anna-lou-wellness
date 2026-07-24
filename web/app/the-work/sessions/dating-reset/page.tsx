@@ -20,7 +20,8 @@ export default async function DatingResetPage() {
       accentColour={cms?.accentColour || '#F280AA'}
       image={mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('love-and-relationships', 'dating-reset')}
       bookingUrl={cms?.ctaUrl || undefined}
-      bookingLabel={cms?.ctaLabel ? `${cms.ctaLabel} →` : undefined}
+      bookingLabel={cms?.ctaLabel || undefined}
+      stripeSlug={cms?.pricePence && cms.pricePence > 0 ? 'dating-reset' : undefined}
     />
   );
 }

@@ -2,7 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import FAQAccordion from '@/components/FAQAccordion';
 import { getStockImage } from '@/data/stock-images';
-import { getCoachingSessions, getSessionsHubPage, getFAQs } from '@/lib/cms';
+import { getSessionsHubPage, getFAQs } from '@/lib/cms';
+import { getProgrammeBySlug } from '@/lib/programme';
+import { mediaUrl } from '@/lib/strapi';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 
 export const metadata: Metadata = {
@@ -27,12 +29,27 @@ const SESSION_FALLBACK_IMAGE: Record<string, string> = {
   'nervous-system-reset': getStockImage('programmes', 'ns-reset-card'),
 };
 
+// Anna 24 Jul: hub now shows the 3 real 90-min Reset Sessions from the
+// Programme collection (not the Coaching Session collection, which had
+// duplicates of longer programmes). Each card → its own sales page with
+// Stripe checkout + Mailchimp tag on purchase.
+const RESET_SESSION_SLUGS = ['nervous-system-reset', 'founder-reset', 'dating-reset'];
+
 export default async function SessionsHubPage() {
-  const [hero, sessions, faqs] = await Promise.all([
+  const [hero, resetProgrammes, faqs] = await Promise.all([
     getSessionsHubPage(heroFallback),
-    getCoachingSessions(),
+    Promise.all(RESET_SESSION_SLUGS.map((s) => getProgrammeBySlug(s))),
     getFAQs({ page: 'sessions' }),
   ]);
+  const sessions = resetProgrammes
+    .filter((p): p is NonNullable<typeof p> => p != null)
+    .map((p) => ({
+      slug: p.slug,
+      name: p.title || '',
+      tagline: p.tagline || '',
+      heroImage: mediaUrl(p.heroImage as { url?: string } | undefined),
+      accentColour: p.accentColour || '#FAA21B',
+    }));
 
   return (
     <>
