@@ -101,7 +101,14 @@ export async function getCommunityEventBySlug(slug: string): Promise<GenericPage
         'filters[slug][$eq]': slug,
         'populate[heroImage]': 'true',
         'populate[sessions]': 'true',
-        'populate[upsells][populate]': '*',
+        // NOTE: NO populate[upsells] here. Anna 24 Jul: including any
+        // populate on the upsells component field causes Strapi v5 to
+        // silently return an EMPTY data array (bug in the alw-link-picker
+        // custom field inside the upsell-reference component). That
+        // masked every CMS edit on this page — cms came back null and
+        // the page fell to hardcoded fallback. Upsells are rendered
+        // separately by <UpsellBlockForSingleton endpoint="/community-event-page" />
+        // which does its own populate, so nothing renders less.
       },
       { noCache: true },
     );
