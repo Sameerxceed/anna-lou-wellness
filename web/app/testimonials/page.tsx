@@ -4,6 +4,7 @@ import { getTestimonials, getTestimonialsPage, getFAQs, type Testimonial } from 
 import FAQAccordion from '@/components/FAQAccordion';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+import { extractYouTubeId } from '@/lib/youtube';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getTestimonialsPage();
@@ -114,7 +115,7 @@ export default async function TestimonialsPage() {
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   const meta = [t.reviewerName, t.reviewerLocation].filter(Boolean).join(' — ');
-  const ytId = parseYouTubeId(t.youtubeUrl);
+  const ytId = extractYouTubeId(t.youtubeUrl);
 
   return (
     <article className="ts-card">
@@ -143,7 +144,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 
 function BannerTestimonial({ t }: { t: Testimonial }) {
   const meta = [t.reviewerName, t.reviewerLocation].filter(Boolean).join(' — ');
-  const ytId = parseYouTubeId(t.youtubeUrl);
+  const ytId = extractYouTubeId(t.youtubeUrl);
 
   return (
     <aside className="ts-banner">
@@ -176,13 +177,6 @@ function BannerTestimonial({ t }: { t: Testimonial }) {
       </div>
     </aside>
   );
-}
-
-function parseYouTubeId(url: string): string | null {
-  if (!url) return null;
-  // Match youtu.be/ID, youtube.com/watch?v=ID, youtube.com/embed/ID, youtube.com/shorts/ID
-  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
-  return m ? m[1] : null;
 }
 
 const pageStyles = `

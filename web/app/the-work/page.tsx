@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getCoachingSessions, getFAQs, getWorkWithAnnaPage, getMembership } from '@/lib/cms';
+import { getProgrammeBySlug } from '@/lib/programme';
+import { mediaUrl } from '@/lib/strapi';
 import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
@@ -34,12 +36,13 @@ const pageFallback = {
 };
 
 export default async function TheWorkPage() {
-  const [sessions, hubFaqs, legacyFaqs, page, membership] = await Promise.all([
+  const [sessions, hubFaqs, legacyFaqs, page, membership, regulatedProgramme] = await Promise.all([
     getCoachingSessions(),
     getFAQs({ page: 'the-work' }),
     getFAQs('coaching'),
     getWorkWithAnnaPage(pageFallback),
     getMembership(),
+    getProgrammeBySlug('regulated'),
   ]);
   const faqs = hubFaqs.length > 0 ? hubFaqs : legacyFaqs;
 
@@ -173,35 +176,63 @@ export default async function TheWorkPage() {
 
       {/* Memberships — Anna 23 Jul: "put memberships available here so
           people can see different ways to work with me. Under Programmes
-          and above Client Stories." Renders Reset Room card only when the
-          singleton has a title in CMS (which it always does). */}
-      {membership && membership.title && (
+          and above Client Stories." Anna 24 Jul: REGULATED (self-study
+          membership) shows as the FIRST card here so people see the
+          low-friction entry point. Reset Room is the ongoing monthly. */}
+      {((regulatedProgramme && regulatedProgramme.title) || (membership && membership.title)) && (
         <section className="work-memberships">
           <div className="work-memberships-inner">
             <p className="work-kicker reveal">Memberships</p>
-            <h2 className="work-section-title reveal rd1">Ongoing rooms, monthly.</h2>
+            <h2 className="work-section-title reveal rd1">Ongoing rooms, self-study.</h2>
             <div className="work-memberships-grid">
-              <div className="work-membership-card reveal rd2">
-                {membership.heroImage && (
-                  <div
-                    className="work-membership-card-img"
-                    style={{ backgroundImage: `url('${membership.heroImage}')` }}
-                    role="img"
-                    aria-label={membership.title}
-                  />
-                )}
-                <div className="work-membership-card-body">
-                  <h3>{membership.title}</h3>
-                  {membership.description && <p>{membership.description}</p>}
-                  {membership.pricePence > 0 && (
+              {regulatedProgramme && regulatedProgramme.title && (
+                <div className="work-membership-card reveal">
+                  {(() => {
+                    const img = mediaUrl(regulatedProgramme.heroImage as { url?: string } | undefined);
+                    return img ? (
+                      <div
+                        className="work-membership-card-img"
+                        style={{ backgroundImage: `url('${img}')` }}
+                        role="img"
+                        aria-label={regulatedProgramme.title}
+                      />
+                    ) : null;
+                  })()}
+                  <div className="work-membership-card-body">
+                    <h3>{regulatedProgramme.title}</h3>
+                    <p style={{ fontFamily: 'Mulish, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6E3A5A', marginBottom: '0.4rem' }}>Self-study membership</p>
+                    {regulatedProgramme.tagline && <p>{regulatedProgramme.tagline}</p>}
                     <p className="work-card-price">
-                      £{(membership.pricePence / 100).toFixed(0)}
-                      {membership.isRecurring ? ` / ${membership.recurringInterval}` : ''}
+                      {regulatedProgramme.pwycOptions ? 'Pay what you feel · from £5' : (regulatedProgramme.pricePence ? `£${(regulatedProgramme.pricePence / 100).toFixed(0)}` : '')}
                     </p>
-                  )}
-                  <Link href={membership.href} className="work-card-link">Learn more <span>&rarr;</span></Link>
+                    <Link href="/the-work/regulated" className="work-card-link">Learn more <span>&rarr;</span></Link>
+                  </div>
                 </div>
-              </div>
+              )}
+              {membership && membership.title && (
+                <div className="work-membership-card reveal rd1">
+                  {membership.heroImage && (
+                    <div
+                      className="work-membership-card-img"
+                      style={{ backgroundImage: `url('${membership.heroImage}')` }}
+                      role="img"
+                      aria-label={membership.title}
+                    />
+                  )}
+                  <div className="work-membership-card-body">
+                    <h3>{membership.title}</h3>
+                    <p style={{ fontFamily: 'Mulish, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6E3A5A', marginBottom: '0.4rem' }}>Monthly membership</p>
+                    {membership.description && <p>{membership.description}</p>}
+                    {membership.pricePence > 0 && (
+                      <p className="work-card-price">
+                        £{(membership.pricePence / 100).toFixed(0)}
+                        {membership.isRecurring ? ` / ${membership.recurringInterval}` : ''}
+                      </p>
+                    )}
+                    <Link href={membership.href} className="work-card-link">Learn more <span>&rarr;</span></Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>

@@ -7,6 +7,7 @@ import {
   getTestimonials,
   getPressMentions,
   getCertifications,
+  getSiteSettings,
 } from '@/lib/cms';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
@@ -47,6 +48,7 @@ export default async function HomePage() {
     featuredTestimonials,
     pressMentions,
     certifications,
+    siteSettings,
   ] = await Promise.all([
     getFeaturedArticles(1),
     getArticles(),
@@ -55,6 +57,7 @@ export default async function HomePage() {
     getTestimonials({ featured: true, limit: 3 }),
     getPressMentions(),
     getCertifications(),
+    getSiteSettings(),
   ]);
 
   const featured = featuredArticles[0] || null;
@@ -299,19 +302,38 @@ export default async function HomePage() {
           <p className="hp-kicker reveal" style={{ color: '#FFD07A' }}>{f(cms, 'mediaKicker', 'Watch · Listen · Read')}</p>
           <h2 className="hp-section-title reveal rd1">{f(cms, 'mediaTitle', 'The Reset with Anna.')}</h2>
           <div className="hp-media-grid">
-            <a href={f(cms, 'mediaTile1Url', '#')} className="hp-media-tile reveal">
+            {/* Anna 24 Jul: YouTube + Podcast tiles were going back to
+                homepage (# anchor) because CMS field was empty. Fall back
+                to Site Settings social URLs so the tiles always link
+                somewhere real. External links open in new tab. */}
+            <a
+              href={f(cms, 'mediaTile1Url', siteSettings.youtubeUrl || '#')}
+              className="hp-media-tile reveal"
+              target={/^https?:\/\//.test(f(cms, 'mediaTile1Url', siteSettings.youtubeUrl || '')) ? '_blank' : undefined}
+              rel="noopener noreferrer"
+            >
               <p className="hp-media-label">{f(cms, 'mediaTile1Label', 'YouTube')}</p>
               <h3 className="hp-media-tile-title">{f(cms, 'mediaTile1Title', 'Come Back to Yourself — daily mantras and practices.')}</h3>
               <p className="hp-media-meta">{f(cms, 'mediaTile1Meta', 'Video series')}</p>
               <span className="hp-media-link">Watch <span>&rarr;</span></span>
             </a>
-            <a href={f(cms, 'mediaTile2Url', '#')} className="hp-media-tile reveal rd1">
+            <a
+              href={f(cms, 'mediaTile2Url', siteSettings.podcastUrl || '#')}
+              className="hp-media-tile reveal rd1"
+              target={/^https?:\/\//.test(f(cms, 'mediaTile2Url', siteSettings.podcastUrl || '')) ? '_blank' : undefined}
+              rel="noopener noreferrer"
+            >
               <p className="hp-media-label">{f(cms, 'mediaTile2Label', 'Podcast')}</p>
               <h3 className="hp-media-tile-title">{f(cms, 'mediaTile2Title', 'The Reset with Anna Lou — honest conversations about the inner world.')}</h3>
               <p className="hp-media-meta">{f(cms, 'mediaTile2Meta', 'Coming soon')}</p>
               <span className="hp-media-link">Listen <span>&rarr;</span></span>
             </a>
-            <a href={f(cms, 'mediaTile3Url', '/reset-letters')} className="hp-media-tile reveal rd2">
+            <a
+              href={f(cms, 'mediaTile3Url', siteSettings.substackUrl || '/reset-letters')}
+              className="hp-media-tile reveal rd2"
+              target={/^https?:\/\//.test(f(cms, 'mediaTile3Url', siteSettings.substackUrl || '')) ? '_blank' : undefined}
+              rel="noopener noreferrer"
+            >
               <p className="hp-media-label">{f(cms, 'mediaTile3Label', 'Substack')}</p>
               <h3 className="hp-media-tile-title">{f(cms, 'mediaTile3Title', 'Reset Letters — weekly writing that feels like coming home.')}</h3>
               <p className="hp-media-meta">{f(cms, 'mediaTile3Meta', 'Weekly newsletter')}</p>

@@ -61,12 +61,18 @@ export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | n
     // `populate[upsells][populate]=*` in the same query throws 500
     // InternalServerError. Fix: use explicit per-field populates only.
     // See memory feedback_strapi_v5_populate_collision.md.
-    const { data } = await fetchAPI('/programmes', {
-      'filters[slug][$eq]': slug,
-      // Programme schema uses camelCase heroImage, not snake_case.
-      'populate[heroImage]': 'true',
-      'populate[upsells][populate][image]': 'true',
-    });
+    // noCache: Anna 24 Jul — programme sales pages need edits to reflect
+    // within the request. Same fix pattern as RC page.
+    const { data } = await fetchAPI(
+      '/programmes',
+      {
+        'filters[slug][$eq]': slug,
+        // Programme schema uses camelCase heroImage, not snake_case.
+        'populate[heroImage]': 'true',
+        'populate[upsells][populate][image]': 'true',
+      },
+      { noCache: true },
+    );
     if (Array.isArray(data) && data.length > 0) return data[0] as ProgrammeCMS;
     return null;
   } catch {
