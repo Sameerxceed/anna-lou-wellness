@@ -72,30 +72,40 @@ export default function Footer({ siteSettings, footer, navigation }: FooterProps
 
       {/* Tier 0: Sitemap — mirrors the top nav dropdowns so nav + footer
           can never drift. Anna 14 Jul feedback: 'Footer should be consistent
-          with the top navigation'. Fix: single source of truth. */}
-      {navigation.length > 0 && (
-        <nav className="footer-sitemap" aria-label="Sitemap">
-          {navigation.map((section) => (
-            <div key={section.href} className="footer-sitemap-col">
-              <p
-                className="footer-sitemap-heading"
-                style={section.colour ? { color: section.colour } : undefined}
-              >
-                <Link href={section.href}>{section.label}</Link>
-              </p>
-              {section.children && section.children.length > 0 && (
-                <ul className="footer-sitemap-list">
-                  {section.children.map((child) => (
-                    <li key={child.href}>
-                      <Link href={child.href}>{child.label}</Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </nav>
-      )}
+          with the top navigation'. Fix: single source of truth.
+          Anna 24 Jul: Contact + Testimonials appended as their own columns
+          in the same grid so they sit alongside Shop / Community / About
+          instead of a separate helper row. */}
+      {(() => {
+        const helperColumns: NavItem[] = [
+          { label: 'Contact', href: '/contact', colour: '#8C8880' },
+          { label: 'Testimonials', href: '/testimonials', colour: '#8C8880' },
+        ];
+        const sitemapColumns = [...navigation, ...helperColumns];
+        return (
+          <nav className="footer-sitemap" aria-label="Sitemap">
+            {sitemapColumns.map((section) => (
+              <div key={section.href} className="footer-sitemap-col">
+                <p
+                  className="footer-sitemap-heading"
+                  style={section.colour ? { color: section.colour } : undefined}
+                >
+                  <Link href={section.href}>{section.label}</Link>
+                </p>
+                {section.children && section.children.length > 0 && (
+                  <ul className="footer-sitemap-list">
+                    {section.children.map((child) => (
+                      <li key={child.href}>
+                        <Link href={child.href}>{child.label}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </nav>
+        );
+      })()}
 
       {/* Tier 1: Primary navigation — kept as a compact reminder row.
           Anna can leave this empty in CMS if the sitemap above is enough. */}
@@ -129,15 +139,9 @@ export default function Footer({ siteSettings, footer, navigation }: FooterProps
         )}
       </nav>
 
-      {/* Anna 23 Jul: Contact + Testimonials must always be present in the
-          footer regardless of whether they've been added to the nav tree.
-          Rendered as a fixed helper row above Legal. */}
-      <nav className="footer-tier3" aria-label="Site helper">
-        <Link href="/contact">Contact</Link>
-        <Link href="/testimonials">Testimonials</Link>
-      </nav>
-
-      {/* Tier 3: Legal — hides if Anna hasn't filled the list in CMS */}
+      {/* Tier 3: Legal — hides if Anna hasn't filled the list in CMS.
+          Contact + Testimonials moved into the sitemap grid above per
+          Anna 24 Jul so they sit alongside the main nav columns. */}
       {footer.legalLinks.length > 0 && (
         <nav className="footer-tier3">
           {footer.legalLinks.map(link => (
