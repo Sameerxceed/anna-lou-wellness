@@ -97,17 +97,18 @@ export default function Footer({ siteSettings, footer, navigation }: FooterProps
               )}
             </div>
           ))}
-          {/* Anna 24 Jul: Contact + Testimonials sit in a SINGLE column,
-              stacked vertically as two heading-style links (not two
-              separate columns side by side). Kept as a fixed helper so
-              they always appear regardless of the CMS Navigation tree. */}
+          {/* Anna 24 Jul: Contact + Testimonials sit in one helper column
+              styled as child links (not headings) so they line up
+              horizontally with the child items of the adjacent About
+              column — Contact aligns with Anna's Story, Testimonials with
+              Press. Invisible heading spacer keeps the column-top baseline
+              aligned across the row. */}
           <div className="footer-sitemap-col footer-sitemap-col-helper">
-            <p className="footer-sitemap-heading" style={{ color: '#8C8880' }}>
-              <Link href="/contact">Contact</Link>
-            </p>
-            <p className="footer-sitemap-heading" style={{ color: '#8C8880', marginTop: '0.8rem' }}>
-              <Link href="/testimonials">Testimonials</Link>
-            </p>
+            <p className="footer-sitemap-heading" aria-hidden="true" style={{ visibility: 'hidden' }}>&nbsp;</p>
+            <ul className="footer-sitemap-list">
+              <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/testimonials">Testimonials</Link></li>
+            </ul>
           </div>
         </nav>
       )}
