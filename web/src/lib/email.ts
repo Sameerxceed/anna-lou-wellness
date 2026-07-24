@@ -306,6 +306,12 @@ type LeadLike = {
   message?: string;
   submitted_at?: string;
   price_gbp?: string | number;
+  // Experience-purchase fields (retreats, workshops). Populated by the
+  // Stripe webhook when type === 'experience'. Template can render:
+  // {{event_name}} {{event_date}} {{event_location}}.
+  event_name?: string;
+  event_date?: string;
+  event_location?: string;
 };
 
 type RecordingLike = {
@@ -360,6 +366,9 @@ function mergeTags(input: string | undefined | null, ctx: MergeContext): string 
     lead_message: lead?.message || '',
     lead_submitted_at: lead?.submitted_at || '',
     lead_price_gbp: lead?.price_gbp != null ? String(lead.price_gbp) : '',
+    event_name: lead?.event_name || '',
+    event_date: lead?.event_date || '',
+    event_location: lead?.event_location || '',
     // Returning Circle recording context
     recording_week_label: recording?.week_label || '',
     recording_url: recording?.youtube_url || '',

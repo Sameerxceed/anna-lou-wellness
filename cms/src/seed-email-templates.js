@@ -289,6 +289,44 @@ const DEFAULTS = [
     include_shipping_address: false,
   },
   {
+    key: 'admin_experience_purchase',
+    name: 'Retreat / workshop booking — notification to you',
+    when_it_fires:
+      'Someone completes Stripe checkout for an Experience (retreat, workshop, day session, etc). Fires the moment payment succeeds. Sent to OWNER_EMAIL with the event details so you can prepare + follow up.',
+    audience: 'admin',
+    enabled: true,
+    subject: '[{{event_name}}] {{lead_email}} booked — {{event_date}}',
+    preheader: 'A new booking landed.',
+    intro:
+      'Someone just booked a place on:\n\n**{{event_name}}**\nDate: {{event_date}}\nLocation: {{event_location}}\nAmount paid: £{{lead_price_gbp}}\n\nAttendee email: {{lead_email}}\nBooked at: {{lead_submitted_at}}\n\nMailchimp tag "{{lead_tag}}" has been applied to their contact + the event details (EVENT_NAME / EVENT_DATE / EVENT_LOC) are now on their merge fields so any journey email you send can render them personalised.',
+    outro:
+      'Reply directly to {{lead_email}} to reach the attendee. Refund via Stripe dashboard if needed.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
+    key: 'customer_experience_purchase',
+    name: 'Retreat / workshop booking — confirmation to the attendee',
+    when_it_fires:
+      'An attendee completes Stripe checkout for an Experience (retreat, workshop, day session, etc). Sent to the email they used at checkout — payment receipt + event confirmation with date/location.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Booking confirmed — {{event_name}}',
+    preheader: '{{event_date}} · {{event_location}}',
+    intro:
+      'Your place is held.\n\n**{{event_name}}**\nDate: {{event_date}}\nLocation: {{event_location}}\nYou paid £{{lead_price_gbp}} — thank you.\n\nI will be in touch closer to the day with anything you need to bring / know / prepare. If you have any questions in the meantime, just reply to this email.\n\nWith warmth,\nAnna',
+    outro:
+      'Paid at {{lead_submitted_at}}. This confirmation is also your receipt.',
+    cta_label: '',
+    cta_url: '',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
+  {
     key: 'returning_circle_recording',
     name: 'Returning Circle — recording delivered',
     when_it_fires:

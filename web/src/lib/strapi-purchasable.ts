@@ -46,6 +46,10 @@ export type Purchasable = {
    * instead of the generic /thank-you page. Programme-only field for now.
    */
   postCheckoutCalendlyUrl: string | null;
+  /** Experience-only: ISO date string (YYYY-MM-DD). Null otherwise. */
+  eventDate: string | null;
+  /** Experience-only: location string. Null otherwise. */
+  eventLocation: string | null;
 };
 
 function parsePwycOptions(raw: unknown): number[] {
@@ -90,6 +94,12 @@ function normalize(type: PurchasableType, raw: any): Purchasable | null {
     postCheckoutCalendlyUrl: typeof raw.postCheckoutCalendlyUrl === 'string' && raw.postCheckoutCalendlyUrl.trim()
       ? raw.postCheckoutCalendlyUrl.trim()
       : (typeof raw.booking_url === 'string' && raw.booking_url.trim() ? raw.booking_url.trim() : null),
+    // Experience-only event details (retreats, workshops). Undefined for
+    // membership/programme/experience-page. Used to populate Mailchimp
+    // merge fields on purchase so Anna's journey emails can render
+    // *|EVENT_DATE|* / *|EVENT_LOC|* / *|EVENT_NAME|*.
+    eventDate: type === 'experience' && typeof raw.date === 'string' ? raw.date : null,
+    eventLocation: type === 'experience' && typeof raw.location === 'string' ? raw.location.trim() : null,
   };
 }
 

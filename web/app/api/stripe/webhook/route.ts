@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, type StripeEvent } from '@/lib/stripe';
 import { fetchPurchasable, type PurchasableType } from '@/lib/strapi-purchasable';
-import { subscribeAndTag, removeTag } from '@/lib/mailchimp';
+import { subscribeAndTag, removeTag, setMergeFields } from '@/lib/mailchimp';
 import {
   grantResetRoomMembership,
   revokeResetRoomMembership,
@@ -540,6 +540,49 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
     } catch (err: any) {
       console.error(`[stripe webhook] REGULATED grant failed for ${email}:`, err?.message);
     }
+  }
+
+  // Experience purchases (retreats, workshops): also push event details
+  // to Mailchimp as merge fields so Anna's Customer Journey emails can
+  // render *|EVENT_NAME|* / *|EVENT_DATE|* / *|EVENT_LOC|*. Also fire
+  // admin + customer Resend emails so both sides have immediate
+  // confirmation with the specific event details.
+  // Anna 24 Jul: 'the merge tag for the retreats and workshops are not
+  // working. event date, time and location.' — now populated per purchase.
+  if (purchasable.type === 'experience') {
+    // Format date for the email + merge field (e.g. "13 June 2026")
+    const eventDateFmt = purchasable.eventDate
+      ? new Date(purchasable.eventDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '';
+    const mergeFields: Record<string, string> = {};
+    if (eventDateFmt) mergeFields.EVENT_DATE = eventDateFmt;
+    if (purchasable.eventLocation) mergeFields.EVENT_LOC = purchasable.eventLocation;
+    if (purchasable.name) mergeFields.EVENT_NAME = purchasable.name;
+    if (Object.keys(mergeFields).length > 0) {
+      const mergeResult = await setMergeFields(email, mergeFields);
+      if (!mergeResult.ok) {
+        console.warn(`[stripe webhook] experience merge fields failed for ${email}: ${mergeResult.error}`);
+      } else {
+        console.info(`[stripe webhook] experience merge fields set for ${email}:`, mergeFields);
+      }
+    }
+
+    const context = {
+      event_name: purchasable.name,
+      event_date: eventDateFmt,
+      event_location: purchasable.eventLocation || '',
+      email,
+      price_gbp: purchasable.pricePence ? (purchasable.pricePence / 100).toFixed(2) : '',
+      submitted_at: new Date().toISOString(),
+    };
+    // Reusing lead context shape — merge tag names in the email template
+    // become {{lead_email}}, {{event_name}}, {{event_date}}, {{event_location}}.
+    sendFromTemplate('admin_experience_purchase', {
+      lead: { ...context, tag: purchasable.mailchimpTag || 'Experience', type: 'experience' },
+    }).catch((e) => console.warn(`[stripe webhook] experience admin email failed:`, e?.message));
+    sendFromTemplate('customer_experience_purchase', {
+      lead: { ...context, tag: purchasable.mailchimpTag || 'Experience', type: 'experience' },
+    }).catch((e) => console.warn(`[stripe webhook] experience customer email failed:`, e?.message));
   }
 }
 
