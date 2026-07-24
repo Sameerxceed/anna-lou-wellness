@@ -38,15 +38,43 @@ export default async function CirclePage() {
         </div>
       </section>
 
-      <section className="rc-body">
-        <div className="rc-body-inner">
-          <p className="rc-body-text">Anna holds the Returning Circle weekly, sometimes more than once a week at different locations. The current times and places are listed below. Hybrid by default — in person where you can, on Zoom when you can't.</p>
-          <p className="rc-body-text"><strong>What it is:</strong> a room. People who are honest. No advice. No fixing. No cross-talk. Just being in the presence of other humans who are willing to say what is actually going on.</p>
-          <p className="rc-body-text"><strong>What it is not:</strong> therapy, a support group, a workshop, or anything with a curriculum. There is no programme. There is no progression. You come when you need to. You stop when you are done.</p>
-          <p className="rc-body-text">Most people who come for the first time look nervous. By the end of the evening something in them has settled. Not because anything dramatic happened. Because they were in a room where they did not have to perform. That sounds like nothing. It is actually everything.</p>
-          <p className="rc-body-text">Connection is biological. Your nervous system needs co-regulation. It needs other regulated humans. That is not self-help language. That is neuroscience.</p>
-        </div>
-      </section>
+      {/* Body paragraphs — reads from CMS `intro` field. Anna 24 Jul:
+          these were hardcoded and silently ignored her CMS edits. Now
+          rendered from CMS intro split on blank lines. Falls back to the
+          original 5 paragraphs only if the CMS field is empty. */}
+      {(() => {
+        const cmsIntro = (cms?.intro || '').trim();
+        const splitParas = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+        const paragraphs = cmsIntro ? splitParas(cmsIntro) : [
+          "Anna holds the Returning Circle weekly, sometimes more than once a week at different locations. The current times and places are listed below. Hybrid by default — in person where you can, on Zoom when you can't.",
+          "**What it is:** a room. People who are honest. No advice. No fixing. No cross-talk. Just being in the presence of other humans who are willing to say what is actually going on.",
+          "**What it is not:** therapy, a support group, a workshop, or anything with a curriculum. There is no programme. There is no progression. You come when you need to. You stop when you are done.",
+          "Most people who come for the first time look nervous. By the end of the evening something in them has settled. Not because anything dramatic happened. Because they were in a room where they did not have to perform. That sounds like nothing. It is actually everything.",
+          "Connection is biological. Your nervous system needs co-regulation. It needs other regulated humans. That is not self-help language. That is neuroscience.",
+        ];
+        // Minimal markdown handling for **bold** inline emphasis so Anna's
+        // "**What it is:**" pattern in CMS still renders bold on the page.
+        const renderPara = (p: string, i: number) => {
+          const parts = p.split(/(\*\*[^*]+\*\*)/g);
+          return (
+            <p key={i} className="rc-body-text">
+              {parts.map((part, j) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                  return <strong key={j}>{part.slice(2, -2)}</strong>;
+                }
+                return <span key={j}>{part}</span>;
+              })}
+            </p>
+          );
+        };
+        return (
+          <section className="rc-body">
+            <div className="rc-body-inner">
+              {paragraphs.map(renderPara)}
+            </div>
+          </section>
+        );
+      })()}
 
       <section className="rc-details">
         <div className="rc-details-inner">
