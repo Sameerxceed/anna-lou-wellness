@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { fetchUserPurchasedRecordings } from '@/lib/strapi-admin';
+import YouTubeThumbLink from '@/components/YouTubeThumbLink';
 
 export const metadata: Metadata = {
   title: 'Your account',
@@ -119,14 +120,21 @@ export default async function DashboardPage() {
                       {r.description && <p className="dash-recording-desc">{r.description}</p>}
                     </div>
                     {r.youtube_url ? (
-                      <a
-                        href={r.youtube_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="dash-card-btn"
-                      >
-                        Watch &rarr;
-                      </a>
+                      <div className="dash-recording-video">
+                        <YouTubeThumbLink
+                          url={r.youtube_url}
+                          maxWidth={320}
+                          size="hq"
+                        />
+                        <a
+                          href={r.youtube_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="dash-card-btn"
+                        >
+                          Watch on YouTube &rarr;
+                        </a>
+                      </div>
                     ) : (
                       <span className="dash-recording-pending">Uploading…</span>
                     )}

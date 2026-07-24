@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { stripe } from '@/lib/stripe';
 import { fetchRecordingById } from '@/lib/strapi-admin';
+import YouTubeThumbLink from '@/components/YouTubeThumbLink';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -90,29 +91,14 @@ export default async function RecordingWatchPage({ searchParams }: Props) {
           )}
 
           {youtubeUrl ? (
-            <p
-              style={{
-                fontSize: '1.1rem',
-                lineHeight: 1.6,
-                margin: '1.4rem 0',
-              }}
-            >
-              Watch it here:{' '}
-              <a
-                href={youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: '#6E3A5A',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: 3,
-                  fontWeight: 500,
-                  wordBreak: 'break-all',
-                }}
-              >
-                {youtubeUrl}
-              </a>
-            </p>
+            <div style={{ margin: '1.4rem 0' }}>
+              <YouTubeThumbLink
+                url={youtubeUrl}
+                label={weekLabel ? `Watch: ${weekLabel}` : 'Watch on YouTube'}
+                maxWidth={640}
+                size="max"
+              />
+            </div>
           ) : (
             <p
               style={{

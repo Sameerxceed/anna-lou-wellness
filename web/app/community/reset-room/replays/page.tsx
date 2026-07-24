@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getSession } from '@/lib/auth';
 import { getWorkshopReplays, type WorkshopReplay } from '@/lib/cms';
+import { youtubeThumbnail } from '@/lib/youtube';
 
 export const metadata: Metadata = {
   title: 'Workshop replays — Reset Room',
@@ -49,9 +50,15 @@ function ReplayCard({ replay }: { replay: WorkshopReplay }) {
 
   return (
     <article className="rp-card">
-      {replay.videoThumbnail && (
-        <div className="rp-thumb" style={{ backgroundImage: `url('${replay.videoThumbnail}')` }} />
-      )}
+      {(() => {
+        // Prefer Anna's uploaded thumbnail; if she only pasted a YouTube URL
+        // fall back to the auto-generated YouTube thumbnail so the card
+        // always has a visual.
+        const thumb = replay.videoThumbnail || youtubeThumbnail(replay.videoUrl, 'hq');
+        return thumb ? (
+          <div className="rp-thumb" style={{ backgroundImage: `url('${thumb}')` }} />
+        ) : null;
+      })()}
       <div className="rp-card-body">
         <p className="rp-card-kind">{replay.kind}{date && ` · ${date}`}</p>
         <h3 className="rp-card-title">{replay.title}</h3>

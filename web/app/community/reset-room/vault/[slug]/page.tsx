@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { getVaultJourneyBySlug } from '@/lib/cms';
+import { youtubeEmbedUrl } from '@/lib/youtube';
 
 export const metadata: Metadata = {
   title: 'Vault Journey',
@@ -42,11 +43,13 @@ export default async function VaultSinglePage({ params }: PageProps) {
           <h1 className="vs-title">{journey.name}</h1>
           {journey.description && <p className="vs-sub">{journey.description}</p>}
 
-          {/* Video player (Bunny.net Stream URL — iframe-embeddable) */}
+          {/* Video player. Handles Bunny.net Stream URL (iframe-embeddable
+              directly) AND YouTube URLs pasted in any variant — we normalise
+              to the embed URL so /watch?v= and youtu.be links both work. */}
           {hasVideo && (
             <div className="vs-player">
               <iframe
-                src={journey.videoUrl}
+                src={youtubeEmbedUrl(journey.videoUrl) || journey.videoUrl}
                 className="vs-video"
                 allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { getVaultJourneys, type VaultJourney } from '@/lib/cms';
+import { youtubeThumbnail } from '@/lib/youtube';
 
 export const metadata: Metadata = {
   title: 'The Vault',
@@ -60,9 +61,18 @@ function VaultCard({ journey }: { journey: VaultJourney }) {
   if (journey.audioUrl) formats.push('Audio');
   if (journey.videoUrl) formats.push('Video');
   const formatLabel = formats.length ? formats.join(' + ') : 'Coming soon';
+  const ytThumb = youtubeThumbnail(journey.videoUrl);
 
   return (
     <Link href={`/community/reset-room/vault/${journey.slug}`} className="vault-card" style={{ borderLeftColor: journey.toneColour }}>
+      {ytThumb && (
+        <div
+          className="vault-card-thumb"
+          style={{ backgroundImage: `url('${ytThumb}')` }}
+          role="img"
+          aria-label={journey.name}
+        />
+      )}
       <div className="vault-card-head">
         <p className="vault-card-kind" style={{ color: journey.toneColour }}>{journey.kind}</p>
         {journey.duration && <p className="vault-card-length">{journey.duration}</p>}
@@ -94,7 +104,8 @@ const vaultStyles = `
 .vault-filter-btn.vault-active { background: #6E3A5A; color: #fff; border-color: #6E3A5A; }
 
 .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.vault-card { background: #fff; padding: 1.5rem; border-radius: 8px; border-left: 3px solid; text-decoration: none; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; }
+.vault-card { background: #fff; padding: 1.5rem; border-radius: 8px; border-left: 3px solid; text-decoration: none; display: flex; flex-direction: column; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; overflow: hidden; }
+.vault-card-thumb { width: calc(100% + 3rem); margin: -1.5rem -1.5rem 0.4rem; aspect-ratio: 16 / 9; background-size: cover; background-position: center; border-top-right-radius: 5px; }
 .vault-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
 .vault-card-head { display: flex; justify-content: space-between; align-items: center; }
 .vault-card-kind { font-family: Mulish, sans-serif; font-weight: 500; font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase; }
