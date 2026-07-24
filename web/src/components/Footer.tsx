@@ -76,36 +76,41 @@ export default function Footer({ siteSettings, footer, navigation }: FooterProps
           Anna 24 Jul: Contact + Testimonials appended as their own columns
           in the same grid so they sit alongside Shop / Community / About
           instead of a separate helper row. */}
-      {(() => {
-        const helperColumns: NavItem[] = [
-          { label: 'Contact', href: '/contact', colour: '#8C8880' },
-          { label: 'Testimonials', href: '/testimonials', colour: '#8C8880' },
-        ];
-        const sitemapColumns = [...navigation, ...helperColumns];
-        return (
-          <nav className="footer-sitemap" aria-label="Sitemap">
-            {sitemapColumns.map((section) => (
-              <div key={section.href} className="footer-sitemap-col">
-                <p
-                  className="footer-sitemap-heading"
-                  style={section.colour ? { color: section.colour } : undefined}
-                >
-                  <Link href={section.href}>{section.label}</Link>
-                </p>
-                {section.children && section.children.length > 0 && (
-                  <ul className="footer-sitemap-list">
-                    {section.children.map((child) => (
-                      <li key={child.href}>
-                        <Link href={child.href}>{child.label}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </nav>
-        );
-      })()}
+      {navigation.length > 0 && (
+        <nav className="footer-sitemap" aria-label="Sitemap">
+          {navigation.map((section) => (
+            <div key={section.href} className="footer-sitemap-col">
+              <p
+                className="footer-sitemap-heading"
+                style={section.colour ? { color: section.colour } : undefined}
+              >
+                <Link href={section.href}>{section.label}</Link>
+              </p>
+              {section.children && section.children.length > 0 && (
+                <ul className="footer-sitemap-list">
+                  {section.children.map((child) => (
+                    <li key={child.href}>
+                      <Link href={child.href}>{child.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+          {/* Anna 24 Jul: Contact + Testimonials sit in a SINGLE column,
+              stacked vertically as two heading-style links (not two
+              separate columns side by side). Kept as a fixed helper so
+              they always appear regardless of the CMS Navigation tree. */}
+          <div className="footer-sitemap-col footer-sitemap-col-helper">
+            <p className="footer-sitemap-heading" style={{ color: '#8C8880' }}>
+              <Link href="/contact">Contact</Link>
+            </p>
+            <p className="footer-sitemap-heading" style={{ color: '#8C8880', marginTop: '0.8rem' }}>
+              <Link href="/testimonials">Testimonials</Link>
+            </p>
+          </div>
+        </nav>
+      )}
 
       {/* Tier 1: Primary navigation — kept as a compact reminder row.
           Anna can leave this empty in CMS if the sitemap above is enough. */}
