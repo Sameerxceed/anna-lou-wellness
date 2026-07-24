@@ -104,8 +104,12 @@ export default async function CirclePage() {
           Book Now button." Uses BookingButton so a Calendly URL on the
           singleton's ctaUrl opens as a popup, staying on-site. */}
       {(() => {
-        const bookingUrl = cms?.ctaUrl || '';
-        const bookingLabel = cms?.ctaLabel || 'Book now';
+        // Trim defensively — Anna 24 Jul pasted a URL with a leading space
+        // from the source page, which browsers treat as an invalid href.
+        // Any leading/trailing whitespace in the CMS ctaUrl is our problem
+        // to swallow, not hers to notice.
+        const bookingUrl = (cms?.ctaUrl || '').trim();
+        const bookingLabel = (cms?.ctaLabel || 'Book now').trim();
         return (
           <section className="rc-rsvp" id="rsvp">
             <div className="rc-rsvp-inner">
