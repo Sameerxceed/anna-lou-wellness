@@ -14,6 +14,12 @@ export const metadata: Metadata = {
   alternates: { canonical: '/community/the-returning-circle' },
 };
 
+// Anna 24 Jul: publish edits weren't reflecting even after site-wide
+// revalidation because the built-time static output was surviving. Force
+// dynamic so this page always renders from fresh Strapi data. Low-traffic
+// member page — negligible perf cost for zero stale-content risk.
+export const dynamic = 'force-dynamic';
+
 const ACCENT = '#5DCAA5';
 
 export default async function CirclePage() {
