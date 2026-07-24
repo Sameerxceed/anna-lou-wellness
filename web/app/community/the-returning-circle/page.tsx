@@ -156,23 +156,27 @@ export default async function CirclePage() {
               <p className="rc-section-label">Book</p>
               <h2 className="rc-rsvp-title">Hold a place.</h2>
               <p className="rc-rsvp-body">Book the next circle in one click. You will get a Zoom link, the houseboat address if you are coming in person, and a small note from Anna a day before.</p>
-              <BookingButton
-                url={bookingUrl}
-                label={bookingLabel}
-                style={{
-                  background: ACCENT,
-                  color: '#fff',
-                  border: 'none',
-                  padding: '0.95rem 2.4rem',
-                  fontFamily: "'Josefin Sans', sans-serif",
-                  fontSize: '0.75rem',
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  cursor: 'pointer',
-                  borderRadius: 4,
-                  marginTop: '1.4rem',
-                }}
-              />
+              <div style={{ marginTop: '1.8rem', display: 'flex', justifyContent: 'center' }}>
+                <BookingButton
+                  url={bookingUrl}
+                  label={bookingLabel}
+                  style={{
+                    background: ACCENT,
+                    color: '#fff',
+                    border: 'none',
+                    padding: '1.15rem 3.2rem',
+                    fontFamily: "'Josefin Sans', sans-serif",
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.16em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    borderRadius: 6,
+                    boxShadow: '0 6px 20px rgba(93, 202, 165, 0.35)',
+                    display: 'inline-block',
+                  }}
+                />
+              </div>
             </div>
           </section>
         );
@@ -231,7 +235,7 @@ a.rc-session-card-loc:hover { color: #5A2E4A; }
 .rc-session-extra { font-family: 'EB Garamond', Georgia, serif; font-size: 0.95rem; color: #5D5A52; font-style: italic; margin: 1.2rem 0 0; text-align: center; }
 @media (max-width: 600px) { .rc-session-grid { grid-template-columns: 1fr; } }
 
-.rc-rsvp { background: #fff; padding: 3rem 2rem 4rem; }
+.rc-rsvp { background: #fff; padding: 2.5rem 2rem 2.5rem; }
 .rc-rsvp-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 3rem; align-items: start; }
 .rc-rsvp-inner { max-width: 720px; margin: 0 auto; text-align: center; }
 .rc-rsvp-inner .rc-section-label { margin-bottom: 0.8rem; }
