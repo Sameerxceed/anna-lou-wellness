@@ -311,6 +311,7 @@ type LeadLike = {
   // {{event_name}} {{event_date}} {{event_location}}.
   event_name?: string;
   event_date?: string;
+  event_time?: string;
   event_location?: string;
 };
 
@@ -368,6 +369,7 @@ function mergeTags(input: string | undefined | null, ctx: MergeContext): string 
     lead_price_gbp: lead?.price_gbp != null ? String(lead.price_gbp) : '',
     event_name: lead?.event_name || '',
     event_date: lead?.event_date || '',
+    event_time: lead?.event_time || '',
     event_location: lead?.event_location || '',
     // Returning Circle recording context
     recording_week_label: recording?.week_label || '',

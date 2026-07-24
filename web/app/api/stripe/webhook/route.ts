@@ -558,6 +558,7 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
     if (eventDateFmt) mergeFields.EVENT_DATE = eventDateFmt;
     if (purchasable.eventLocation) mergeFields.EVENT_LOC = purchasable.eventLocation;
     if (purchasable.name) mergeFields.EVENT_NAME = purchasable.name;
+    if (purchasable.eventTime) mergeFields.EVENT_TIME = purchasable.eventTime;
     if (Object.keys(mergeFields).length > 0) {
       const mergeResult = await setMergeFields(email, mergeFields);
       if (!mergeResult.ok) {
@@ -570,6 +571,7 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
     const context = {
       event_name: purchasable.name,
       event_date: eventDateFmt,
+      event_time: purchasable.eventTime || '',
       event_location: purchasable.eventLocation || '',
       email,
       price_gbp: purchasable.pricePence ? (purchasable.pricePence / 100).toFixed(2) : '',

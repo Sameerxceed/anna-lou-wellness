@@ -50,6 +50,8 @@ export type Purchasable = {
   eventDate: string | null;
   /** Experience-only: location string. Null otherwise. */
   eventLocation: string | null;
+  /** Experience-only: time-of-day free-text (e.g. "10am to 4pm UK"). Null otherwise. */
+  eventTime: string | null;
 };
 
 function parsePwycOptions(raw: unknown): number[] {
@@ -100,6 +102,7 @@ function normalize(type: PurchasableType, raw: any): Purchasable | null {
     // *|EVENT_DATE|* / *|EVENT_LOC|* / *|EVENT_NAME|*.
     eventDate: type === 'experience' && typeof raw.date === 'string' ? raw.date : null,
     eventLocation: type === 'experience' && typeof raw.location === 'string' ? raw.location.trim() : null,
+    eventTime: type === 'experience' && typeof raw.time === 'string' ? raw.time.trim() : null,
   };
 }
 

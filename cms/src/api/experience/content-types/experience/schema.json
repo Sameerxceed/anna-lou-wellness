@@ -47,6 +47,10 @@
       "customField": "global::alw-date",
       "description": "Click the month name at top of the picker to jump months/years. Use the < > arrows to step one month at a time. Leave empty for evergreen items (no fixed date)."
     },
+    "time": {
+      "type": "string",
+      "description": "Time of the event as text (e.g. '10am to 4pm UK', '7.30pm', 'All day'). Free text — write it however you'd say it. Populates the EVENT_TIME merge tag in Mailchimp emails + shows in the admin/customer booking confirmation. Leave blank if not applicable."
+    },
     "location": {
       "type": "string"
     },

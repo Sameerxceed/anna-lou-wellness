@@ -298,7 +298,7 @@ const DEFAULTS = [
     subject: '[{{event_name}}] {{lead_email}} booked — {{event_date}}',
     preheader: 'A new booking landed.',
     intro:
-      'Someone just booked a place on:\n\n**{{event_name}}**\nDate: {{event_date}}\nLocation: {{event_location}}\nAmount paid: £{{lead_price_gbp}}\n\nAttendee email: {{lead_email}}\nBooked at: {{lead_submitted_at}}\n\nMailchimp tag "{{lead_tag}}" has been applied to their contact + the event details (EVENT_NAME / EVENT_DATE / EVENT_LOC) are now on their merge fields so any journey email you send can render them personalised.',
+      'Someone just booked a place on:\n\n**{{event_name}}**\nDate: {{event_date}}\nTime: {{event_time}}\nLocation: {{event_location}}\nAmount paid: £{{lead_price_gbp}}\n\nAttendee email: {{lead_email}}\nBooked at: {{lead_submitted_at}}\n\nMailchimp tag "{{lead_tag}}" has been applied to their contact + the event details (EVENT_NAME / EVENT_DATE / EVENT_TIME / EVENT_LOC) are now on their merge fields so any journey email you send can render them personalised.',
     outro:
       'Reply directly to {{lead_email}} to reach the attendee. Refund via Stripe dashboard if needed.',
     cta_label: '',
@@ -315,9 +315,9 @@ const DEFAULTS = [
     audience: 'customer',
     enabled: true,
     subject: 'Booking confirmed — {{event_name}}',
-    preheader: '{{event_date}} · {{event_location}}',
+    preheader: '{{event_date}} · {{event_time}} · {{event_location}}',
     intro:
-      'Your place is held.\n\n**{{event_name}}**\nDate: {{event_date}}\nLocation: {{event_location}}\nYou paid £{{lead_price_gbp}} — thank you.\n\nI will be in touch closer to the day with anything you need to bring / know / prepare. If you have any questions in the meantime, just reply to this email.\n\nWith warmth,\nAnna',
+      'Your place is held.\n\n**{{event_name}}**\nDate: {{event_date}}\nTime: {{event_time}}\nLocation: {{event_location}}\nYou paid £{{lead_price_gbp}} — thank you.\n\nI will be in touch closer to the day with anything you need to bring / know / prepare. If you have any questions in the meantime, just reply to this email.\n\nWith warmth,\nAnna',
     outro:
       'Paid at {{lead_submitted_at}}. This confirmation is also your receipt.',
     cta_label: '',
