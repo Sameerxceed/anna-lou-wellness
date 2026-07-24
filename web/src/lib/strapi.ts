@@ -24,16 +24,25 @@ const REVALIDATE = 86400; // 24 hours
 export async function fetchAPI<T = any>(
   endpoint: string,
   params: Record<string, string> = {},
+  options: { noCache?: boolean } = {},
 ): Promise<T> {
   const url = new URL(`/api${endpoint}`, STRAPI_URL);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+
+  // Pages that need to reflect CMS edits within the same request
+  // (typically paired with `export const dynamic = 'force-dynamic'`)
+  // pass noCache: true so the fetch skips Next.js data cache entirely.
+  // Default is the 24h ISR cache (busted on save via site-wide revalidation).
+  const cacheOpts = options.noCache
+    ? { cache: 'no-store' as const }
+    : { next: { revalidate: REVALIDATE } };
 
   const res = await fetch(url.toString(), {
     headers: {
       'Content-Type': 'application/json',
       ...(STRAPI_TOKEN && { Authorization: `Bearer ${STRAPI_TOKEN}` }),
     },
-    next: { revalidate: REVALIDATE },
+    ...cacheOpts,
   });
 
   if (!res.ok) throw new Error(`Strapi ${res.status}: ${res.statusText}`);

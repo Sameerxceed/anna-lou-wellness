@@ -95,12 +95,16 @@ export async function getCommunityEventBySlug(slug: string): Promise<GenericPage
     // populate[sessions][populate]=* (v5 silent-failure bug, returns
     // empty array). Listing each field keeps nested session-slot
     // entries (day_of_week / time / location_label etc.) populated.
-    const { data } = await fetchAPI('/community-event-pages', {
-      'filters[slug][$eq]': slug,
-      'populate[heroImage]': 'true',
-      'populate[sessions]': 'true',
-      'populate[upsells][populate]': '*',
-    });
+    const { data } = await fetchAPI(
+      '/community-event-pages',
+      {
+        'filters[slug][$eq]': slug,
+        'populate[heroImage]': 'true',
+        'populate[sessions]': 'true',
+        'populate[upsells][populate]': '*',
+      },
+      { noCache: true },
+    );
     if (Array.isArray(data) && data.length > 0) return data[0] as GenericPageCMS;
     return null;
   } catch {
