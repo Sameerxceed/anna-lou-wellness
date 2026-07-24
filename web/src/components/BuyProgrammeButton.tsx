@@ -26,6 +26,11 @@ interface Props {
   email?: string;
   /** Escape hatch — merged into the button's inline style. */
   style?: React.CSSProperties;
+  /**
+   * Which Strapi purchasable type to charge. Defaults to 'programme'.
+   * Anna 24 Jul: reused for experience (retreat/workshop) checkout too.
+   */
+  strapiType?: 'programme' | 'experience' | 'membership' | 'experience-page';
 }
 
 export default function BuyProgrammeButton({
@@ -36,6 +41,7 @@ export default function BuyProgrammeButton({
   textColor,
   email,
   style,
+  strapiType = 'programme',
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,7 +53,7 @@ export default function BuyProgrammeButton({
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ strapi_type: 'programme', strapi_id: slug, email }),
+        body: JSON.stringify({ strapi_type: strapiType, strapi_id: slug, email }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) {

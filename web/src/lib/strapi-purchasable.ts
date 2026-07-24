@@ -17,7 +17,7 @@
 
 const STRAPI_URL = process.env.STRAPI_URL || process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 
-export type PurchasableType = 'membership' | 'programme' | 'experience-page';
+export type PurchasableType = 'membership' | 'programme' | 'experience-page' | 'experience';
 
 export type Purchasable = {
   type: PurchasableType;
@@ -59,7 +59,12 @@ function parsePwycOptions(raw: unknown): number[] {
 
 function normalize(type: PurchasableType, raw: any): Purchasable | null {
   if (!raw) return null;
-  const pricePence = Number(raw.pricePence ?? 0);
+  // Experience uses `price` (decimal £). Everything else uses `pricePence` (integer).
+  // Anna 24 Jul: added experience support for retreat/workshop Stripe checkout —
+  // buyers pay before booking so we can lock the seat + fire Mailchimp tag.
+  const pricePence = type === 'experience'
+    ? Math.round(Number(raw.price ?? 0) * 100)
+    : Number(raw.pricePence ?? 0);
   if (!Number.isFinite(pricePence) || pricePence < 0) return null;
   const pwycOptionsPence = parsePwycOptions(raw.pwycOptions);
   const pwycDefaultRaw = Number(raw.pwycDefault ?? 0);
@@ -76,13 +81,15 @@ function normalize(type: PurchasableType, raw: any): Purchasable | null {
     currency: String(raw.currency || 'gbp').toLowerCase(),
     isRecurring: Boolean(raw.isRecurring),
     recurringInterval: raw.recurringInterval || null,
-    mailchimpTag: raw.mailchimpTag || null,
+    mailchimpTag: raw.mailchimpTag || raw.mailchimp_tag || null,
     grantsResetRoomAccess: Boolean(raw.grantsResetRoomAccess),
     grantsRegulatedAccess: Boolean(raw.grantsRegulatedAccess),
     pwycOptionsPence,
     pwycDefaultPence,
     pwycLabel: typeof raw.pwycLabel === 'string' && raw.pwycLabel.trim() ? raw.pwycLabel : null,
-    postCheckoutCalendlyUrl: typeof raw.postCheckoutCalendlyUrl === 'string' && raw.postCheckoutCalendlyUrl.trim() ? raw.postCheckoutCalendlyUrl.trim() : null,
+    postCheckoutCalendlyUrl: typeof raw.postCheckoutCalendlyUrl === 'string' && raw.postCheckoutCalendlyUrl.trim()
+      ? raw.postCheckoutCalendlyUrl.trim()
+      : (typeof raw.booking_url === 'string' && raw.booking_url.trim() ? raw.booking_url.trim() : null),
   };
 }
 
@@ -106,7 +113,11 @@ export async function fetchPurchasable(
 
   if (!identifier) return null;
 
-  const pluralPath = type === 'programme' ? 'programmes' : 'experience-pages';
+  const pluralPath = type === 'programme'
+    ? 'programmes'
+    : type === 'experience'
+      ? 'experiences'
+      : 'experience-pages';
 
   // Try slug first (preferred — stable across DB resets)
   if (typeof identifier === 'string' && !/^\d+$/.test(identifier)) {

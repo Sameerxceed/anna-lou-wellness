@@ -23,7 +23,7 @@ import { fetchPurchasable, validateForCheckout, type PurchasableType } from '@/l
 
 const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://staging.annalouwellness.com';
 
-const VALID_TYPES: PurchasableType[] = ['membership', 'programme', 'experience-page'];
+const VALID_TYPES: PurchasableType[] = ['membership', 'programme', 'experience-page', 'experience'];
 
 export async function POST(req: NextRequest) {
   let body: any;

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getExperiences, getTestimonials, getFAQs } from '@/lib/cms';
 import { getStockImage } from '@/data/stock-images';
 import BookingButton from '@/components/BookingButton';
+import BuyProgrammeButton from '@/components/BuyProgrammeButton';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
@@ -170,12 +171,32 @@ export default async function ExperienceDetailPage({ params }: Props) {
             )}
             {priceLabel && <p className="exp-price">{priceLabel}</p>}
             <div className="exp-cta-row">
-              <BookingButton
-                url={bookingUrl}
-                label={bookingLabel}
-                className="exp-book-btn"
-                style={{ background: accent, color: '#fff' }}
-              />
+              {(() => {
+                // Anna 24 Jul: paid retreats/workshops must go via Stripe
+                // checkout first, THEN redirect to the booking URL (Calendly
+                // etc.) so we can lock the seat + fire the Mailchimp tag.
+                // Free/enquire-only experiences keep the direct link.
+                const hasPrice = Number(item.price) > 0;
+                if (hasPrice) {
+                  return (
+                    <BuyProgrammeButton
+                      slug={slug}
+                      strapiType="experience"
+                      label={bookingLabel}
+                      className="exp-book-btn"
+                      background={accent}
+                    />
+                  );
+                }
+                return (
+                  <BookingButton
+                    url={bookingUrl}
+                    label={bookingLabel}
+                    className="exp-book-btn"
+                    style={{ background: accent, color: '#fff' }}
+                  />
+                );
+              })()}
             </div>
           </div>
           <div className="exp-hero-img" style={{ backgroundImage: `url('${heroImage}')` }} />
@@ -211,12 +232,29 @@ export default async function ExperienceDetailPage({ params }: Props) {
         <div className="exp-cta-inner">
           <h2 className="exp-cta-title">Ready to come?</h2>
           {priceLabel && <p className="exp-cta-price">{priceLabel}</p>}
-          <BookingButton
-            url={bookingUrl}
-            label={bookingLabel}
-            className="exp-cta-btn"
-            style={{ color: accent }}
-          />
+          {(() => {
+            const hasPrice = Number(item.price) > 0;
+            if (hasPrice) {
+              return (
+                <BuyProgrammeButton
+                  slug={slug}
+                  strapiType="experience"
+                  label={bookingLabel}
+                  className="exp-cta-btn"
+                  background="#fff"
+                  textColor={accent}
+                />
+              );
+            }
+            return (
+              <BookingButton
+                url={bookingUrl}
+                label={bookingLabel}
+                className="exp-cta-btn"
+                style={{ color: accent }}
+              />
+            );
+          })()}
         </div>
       </section>
 
