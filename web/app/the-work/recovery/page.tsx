@@ -75,19 +75,31 @@ export default async function RecoveryPage() {
         </div>
       </section>
 
-      <section className="rec-includes">
-        <div className="rec-includes-inner">
-          <p className="rec-section-label">What&apos;s included</p>
-          <ul>
-            <li>Twelve weekly sessions, 1:1 with Anna, 60 minutes each</li>
-            <li>Voice note support between sessions, Tuesday to Thursday</li>
-            <li>The full somatic toolkit: Flash EMDR, TRE, IFS parts work, Brainspotting, breathwork, pendulum where it fits</li>
-            <li>Personalised recovery map at the close</li>
-            <li>Optional: phone support add-on at £60/week (up to four 60-minute calls a month)</li>
-          </ul>
-          <p className="rec-pricing">Investment is by enquiry — Anna shapes the price to your situation. Payment plans available. Some places held at reduced rate for women genuinely unable to pay full price.</p>
-        </div>
-      </section>
+      {(() => {
+        // Anna 24 Jul sweep: read What's Included + pricing from CMS. Falls
+        // back to the original copy only if the field is empty.
+        const splitLines = (s: string) => s.split('\n').map((l) => l.trim()).filter(Boolean);
+        const includedItems = cms?.whatsIncludedItems ? splitLines(cms.whatsIncludedItems) : [
+          'Twelve weekly sessions, 1:1 with Anna, 60 minutes each',
+          'Voice note support between sessions, Tuesday to Thursday',
+          'The full somatic toolkit: Flash EMDR, TRE, IFS parts work, Brainspotting, breathwork, pendulum where it fits',
+          'Personalised recovery map at the close',
+          'Optional: phone support add-on at £60/week (up to four 60-minute calls a month)',
+        ];
+        const includedLabel = cms?.whatsIncludedLabel || "What's included";
+        const pricingBody = cms?.pricingBody || 'Investment is by enquiry — Anna shapes the price to your situation. Payment plans available. Some places held at reduced rate for women genuinely unable to pay full price.';
+        return (
+          <section className="rec-includes">
+            <div className="rec-includes-inner">
+              <p className="rec-section-label">{includedLabel}</p>
+              <ul>
+                {includedItems.map((item, i) => <li key={i}>{item}</li>)}
+              </ul>
+              <p className="rec-pricing">{pricingBody}</p>
+            </div>
+          </section>
+        );
+      })()}
 
       <section className="rec-credentials">
         <div className="rec-credentials-inner">
