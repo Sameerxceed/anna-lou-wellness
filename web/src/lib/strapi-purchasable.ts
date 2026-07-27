@@ -56,7 +56,14 @@ export type Purchasable = {
 
 function parsePwycOptions(raw: unknown): number[] {
   if (typeof raw !== 'string' || !raw.trim()) return [];
-  return raw
+  // Defensive: strip any surrounding quote characters Anna may paste with
+  // the value (e.g. `'5, 10, 50'` from copying a comma-list from a doc).
+  // Also strip £ signs and any non-digit-comma-space characters.
+  const cleaned = raw
+    .trim()
+    .replace(/^['"`]+|['"`]+$/g, '')
+    .replace(/£/g, '');
+  return cleaned
     .split(',')
     .map((s) => Number(String(s).trim()))
     .filter((n) => Number.isFinite(n) && n > 0)
