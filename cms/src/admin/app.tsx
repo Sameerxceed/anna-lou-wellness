@@ -205,6 +205,46 @@ const bootstrap = (app: StrapiApp) => {
     document.title = 'Anna Lou Wellness CMS';
   }
 
+  // ═══ Mobile block editor fix (experimental) ═══
+  // Anna 24 Jul: "you can't type and edit in the body V2 text area, and
+  // the cursor isn't showing on Chrome on the mobile device CMS."
+  //
+  // Known Strapi v5 issue — the blocks editor uses Slate.js which has
+  // documented contenteditable bugs on mobile Chrome + iOS Safari:
+  //   - cursor invisible
+  //   - typing blocked by touch-event handling
+  //   - virtual keyboard causing blur/focus loops
+  //   - iOS zoom-on-focus if font-size < 16px
+  //
+  // Best-guess CSS override targeting the common causes. Injected as a
+  // style tag on <head> so it applies site-wide in the admin. If it
+  // doesn't help, the real fix is a Strapi core upgrade or waiting for
+  // the upstream Slate.js patch.
+  if (typeof document !== 'undefined' && !document.getElementById('alw-mobile-blocks-fix')) {
+    const style = document.createElement('style');
+    style.id = 'alw-mobile-blocks-fix';
+    style.textContent = `
+      /* Ensure cursor + selection work on the Slate.js block editor */
+      [contenteditable="true"] {
+        -webkit-user-select: text !important;
+        user-select: text !important;
+        -webkit-touch-callout: default !important;
+        caret-color: #6E3A5A !important;
+      }
+      /* Prevent iOS zoom-on-focus by forcing 16px minimum on the editor */
+      @media (max-width: 900px) {
+        [contenteditable="true"], [data-slate-editor] {
+          font-size: 16px !important;
+          min-height: 44px !important;
+        }
+        [data-slate-editor] {
+          touch-action: manipulation !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   // ═══ Block editor link visibility ═══
   // Anna 21 Jul 2026: "backend also it is very difficult to know where I
   // have put in link — can it be underline or bold or something?"

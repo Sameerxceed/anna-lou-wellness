@@ -374,6 +374,43 @@ module.exports = {
       strapi.log.warn(`[migrate-body-to-blocks] bootstrap task failed: ${err.message}`);
     }
 
+    // ═══ Fill any stragglers: articles created after v2 migration ═══
+    // Anna 24 Jul: 1 article ('breathwork...') was created AFTER the
+    // main v2 migration ran, so its body has content but body_v2 is
+    // empty. Run the migration one more time with force: false — the
+    // script's idempotent skip logic will pass over the 77 already-
+    // migrated articles and only fill the empty stragglers. Guarded
+    // by a new flag file so this only runs once itself.
+    try {
+      const flagPath = path.resolve('/app', '.migration-body-fill-stragglers-done');
+      const flagFallback = path.resolve(__dirname, '..', '.migration-body-fill-stragglers-done');
+      const alreadyDone = fs.existsSync(flagPath) || fs.existsSync(flagFallback);
+      if (alreadyDone) {
+        strapi.log.info('[migrate-body-fill-stragglers] flag file present — skipping');
+      } else {
+        const { runMigration } = require('../scripts/migrate-body-to-blocks');
+        // force: false — this run ONLY touches articles where body_v2
+        // is empty. The 77 already-populated articles get skipped
+        // silently; Anna's edits since original migration are preserved.
+        const result = await runMigration(strapi, { logger: strapi.log, force: false });
+        if (result && typeof result.errors === 'number' && result.errors === 0) {
+          try {
+            fs.writeFileSync(flagPath, new Date().toISOString(), 'utf-8');
+            strapi.log.info(`[migrate-body-fill-stragglers] flag written → ${flagPath}`);
+          } catch (writeErr) {
+            try {
+              fs.writeFileSync(flagFallback, new Date().toISOString(), 'utf-8');
+              strapi.log.info(`[migrate-body-fill-stragglers] flag written → ${flagFallback}`);
+            } catch (writeErr2) {
+              strapi.log.warn(`[migrate-body-fill-stragglers] could not write flag file: ${writeErr2.message}`);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      strapi.log.warn(`[migrate-body-fill-stragglers] bootstrap task failed: ${err.message}`);
+    }
+
     // ═══ Seed Discovery Call defaults on the Contact singleton ═══
     try {
       const seedDiscoveryCall = require('./seed-discovery-call');
