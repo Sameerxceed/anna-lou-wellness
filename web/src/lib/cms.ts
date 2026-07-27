@@ -337,7 +337,11 @@ export async function getContactInfo(): Promise<SiteSettings & { discoveryCall: 
 // ═══ SITE SETTINGS ═══
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const { data: d } = await fetchAPI('/site-settings', { populate: '*' });
+    // noCache: Site Settings drive social URLs used on the homepage tiles +
+    // footer icons. Anna 24 Jul: filled youtube_url in CMS but homepage tile
+    // stayed hidden because getSiteSettings had the 24h ISR cache. Bypass so
+    // any Site Settings save reflects on next page load.
+    const { data: d } = await fetchAPI('/site-settings', { populate: '*' }, { noCache: true });
     if (!d) return fallbackSiteSettings;
     return {
       ...fallbackSiteSettings,
