@@ -3188,6 +3188,91 @@ Fields you can now edit on **Work · Programme → Signal Collective**:
 
 Same policy as every programme page: edit any of these and the page updates. Leave blank to keep the original copy.
 
+### 17.50 Reset Sessions 6th card on Work with Anna (24 Jul 2026)
+
+Anna 23 Jul: "Reset 90 min sessions should be in Work with Anna as a programme/session option and when a user clicks Learn more it should show the 3 sub-sessions."
+
+Shipped. The 6th card on `/the-work` is now **Reset Sessions** — clicking Learn more opens `/the-work/sessions` which lists all 3 real 90-min sessions:
+- **Nervous System Reset** — /the-work/sessions/nervous-system-reset
+- **Founder Reset** — /the-work/sessions/founder-reset
+- **Dating Reset** — /the-work/sessions/dating-reset
+
+Each session page has a Book button that goes to Stripe checkout (£200 by default from CMS `pricePence`), then redirects to Calendly on successful payment, then fires the Mailchimp tag.
+
+**Anna's action per session** (Content Manager → Work · Programme → open):
+- `pricePence` = already 20000 (£200). Change if you want a different price.
+- `mailchimpTag` = already "Reset Session (90-min)" — leave as-is for shared journey, OR split per session ("Nervous System Reset" / "Founder Reset" / "Dating Reset") for separate Mailchimp Customer Journeys.
+- `postCheckoutCalendlyUrl` = paste the Calendly booking URL for THAT specific session. This is where the buyer lands after paying to pick a time.
+- Save + Publish.
+
+Same applies to **One Day Intensive** (`/the-work/one-day`) — as soon as you set `pricePence` on the one-day Programme, the Book button switches from "scroll to enquiry" to Stripe checkout. Leave `pricePence` at 0 to keep it enquiry-only.
+
+### 17.51 Paid retreats/workshops with Mailchimp event merge fields (24 Jul 2026)
+
+Anna 23 Jul: "retreats/workshops need payment link + Mailchimp tag."
+Anna 24 Jul: "event date, time and location merge tags aren't working."
+
+Full flow now:
+1. Attendee clicks Book on `/experiences/<slug>` → Stripe checkout at CMS `price`
+2. After payment → redirect to CMS `booking_url` (Calendly)
+3. Mailchimp tag from CMS `mailchimp_tag` applied to the buyer's contact
+4. Mailchimp merge fields set on the buyer's contact:
+   - `EVENT_NAME` = experience title
+   - `EVENT_DATE` = formatted date (e.g. "13 June 2026")
+   - `EVENT_TIME` = whatever's in the CMS `time` field (e.g. "10am to 4pm UK")
+   - `EVENT_LOC` = CMS `location`
+5. Two Resend emails auto-fire: admin confirmation to you + attendee receipt with all event details
+
+**Anna's per-experience fill list** (Content Manager → **Experiences · Event Bookings**):
+- `price` — decimal £ (e.g. 115)
+- `booking_url` — Calendly for post-payment step
+- `mailchimp_tag` — exact Mailchimp tag name
+- `date` — event date
+- `time` — free text like "10am to 4pm UK", "7:30pm", "All day"
+- `location` — human-readable location
+- `hero_image` — landscape image
+
+**Anna's one-time Mailchimp setup:** Audience → Settings → Audience fields → verify these 4 merge fields exist (add if missing, type = text):
+- `EVENT_NAME`
+- `EVENT_DATE`
+- `EVENT_TIME`
+- `EVENT_LOC`
+
+Once filled, any Customer Journey email you build for a retreat/workshop tag can use `*|EVENT_NAME|*` / `*|EVENT_DATE|*` etc. and they auto-fill per attendee based on which specific event they booked.
+
+### 17.52 Homepage YouTube / Podcast / Substack tiles (24 Jul 2026)
+
+Tiles on the homepage under "The Reset with Anna" (Watch / Listen / Read) auto-hide when their URL is empty — no more dead links going to top-of-page.
+
+**Where the URLs come from** (in priority order):
+1. Homepage-specific override: `mediaTile1Url` (YouTube) / `mediaTile2Url` (Podcast) / `mediaTile3Url` (Substack). Edit on Homepage entry in CMS.
+2. Fallback: Site Settings social URLs (`youtube_url` / `podcast_url` / `substack_url`). Same fields drive the footer icons — one place, two surfaces update.
+
+**Anna's action** (Content Manager → **Site Settings** — singleton in sidebar):
+- `youtube_url` = e.g. `https://www.youtube.com/@annalouwellness`
+- `podcast_url` = e.g. Apple/Spotify podcast link. **Paste the FULL URL before hitting Save** — partial URLs will show broken tiles.
+- `substack_url` = e.g. `https://annalouwellness.substack.com/`
+- Save.
+
+Both the homepage tiles + the footer social icons come alive as soon as those fields are filled.
+
+### 17.53 PAY-WHAT-YOU-CAN dropdown format (27 Jul 2026)
+
+Anna 27 Jul: REGULATED dropdown was starting at £10 not £5, and two options were silently dropped.
+
+Root cause: `pwycOptions` had extra quote marks around the value (paste artifact from a doc).
+
+**Format rules for `pwycOptions` on any Programme with pay-what-you-can:**
+- Comma-separated list of amounts in **pounds** (not pence).
+- NO quote marks around the list. NO `£` signs.
+- Example: `5, 10, 50, 100, 150, 200, 500`
+- WRONG: `'5, 10, 50, 100, 150, 200, 500'` (wrapping quotes will silently break first + last)
+- WRONG: `£5, £10, £50` (£ signs will silently drop options)
+
+`pwycDefault` = which amount is pre-selected in the dropdown (must be one of the amounts in the list above, in pounds — e.g. `10` to default-select £10).
+
+The code now strips wrapping quotes and £ signs defensively, but cleaner data = cleaner output.
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
