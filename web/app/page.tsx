@@ -309,12 +309,17 @@ export default async function HomePage() {
                 per-tile URL on Homepage in CMS OR the corresponding Site
                 Settings social URL to make the tile appear. */}
             {(() => {
+              // Anna 27 Jul: per-tile background image field (mediaTileNImage)
+              // wired here. When set, image sits behind the text with a subtle
+              // dark overlay so labels stay readable. Optional — tile is
+              // text-only when image is blank.
               const tiles = [
                 {
                   url: f(cms, 'mediaTile1Url', siteSettings.youtubeUrl || ''),
                   label: f(cms, 'mediaTile1Label', 'YouTube'),
                   title: f(cms, 'mediaTile1Title', 'Come Back to Yourself — daily mantras and practices.'),
                   meta: f(cms, 'mediaTile1Meta', 'Video series'),
+                  image: mediaUrl(cms?.mediaTile1Image as { url?: string } | undefined),
                   cta: 'Watch',
                   cls: 'reveal',
                 },
@@ -323,6 +328,7 @@ export default async function HomePage() {
                   label: f(cms, 'mediaTile2Label', 'Podcast'),
                   title: f(cms, 'mediaTile2Title', 'The Reset with Anna Lou — honest conversations about the inner world.'),
                   meta: f(cms, 'mediaTile2Meta', 'Coming soon'),
+                  image: mediaUrl(cms?.mediaTile2Image as { url?: string } | undefined),
                   cta: 'Listen',
                   cls: 'reveal rd1',
                 },
@@ -331,6 +337,7 @@ export default async function HomePage() {
                   label: f(cms, 'mediaTile3Label', 'Substack'),
                   title: f(cms, 'mediaTile3Title', 'Reset Letters — weekly writing that feels like coming home.'),
                   meta: f(cms, 'mediaTile3Meta', 'Weekly newsletter'),
+                  image: mediaUrl(cms?.mediaTile3Image as { url?: string } | undefined),
                   cta: 'Read',
                   cls: 'reveal rd2',
                 },
@@ -339,9 +346,10 @@ export default async function HomePage() {
                 <a
                   key={i}
                   href={t.url}
-                  className={`hp-media-tile ${t.cls}`}
+                  className={`hp-media-tile${t.image ? ' hp-media-tile-has-image' : ''} ${t.cls}`}
                   target={/^https?:\/\//.test(t.url) ? '_blank' : undefined}
                   rel="noopener noreferrer"
+                  style={t.image ? { backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%), url('${t.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
                 >
                   <p className="hp-media-label">{t.label}</p>
                   <h3 className="hp-media-tile-title">{t.title}</h3>
@@ -634,7 +642,12 @@ const homepageStyles = `
 .hp-media { background:#FFF0D2; padding:1.5rem 2rem; }
 .hp-media-inner { max-width:1200px; margin:0 auto; }
 .hp-media-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
-.hp-media-tile { background:#fff; border-radius:8px; padding:1.5rem; cursor:pointer; transition:all 0.3s; border:1px solid rgba(0,0,0,0.04); }
+.hp-media-tile { background:#fff; border-radius:8px; padding:1.5rem; cursor:pointer; transition:all 0.3s; border:1px solid rgba(0,0,0,0.04); min-height:180px; display:flex; flex-direction:column; justify-content:flex-end; text-decoration:none; }
+.hp-media-tile-has-image { color:#fff; border-color:transparent; }
+.hp-media-tile-has-image .hp-media-label { color:#FFD07A; }
+.hp-media-tile-has-image .hp-media-tile-title { color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.35); }
+.hp-media-tile-has-image .hp-media-meta { color:rgba(255,255,255,0.85); }
+.hp-media-tile-has-image .hp-media-link { color:#FFD07A; }
 .hp-media-tile:hover { transform:translateY(-3px); box-shadow:0 8px 25px rgba(0,0,0,0.06); }
 .hp-media-label { font-family:Mulish,sans-serif; font-weight:500; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:#FFD07A; margin-bottom:0.5rem; }
 .hp-media-tile-title { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:1rem; color:#231F20; margin-bottom:0.4rem; line-height:1.3; }

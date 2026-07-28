@@ -351,6 +351,12 @@
       "default": "#",
       "description": "MEDIA HUB — Tile 1 link."
     },
+    "mediaTile1Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "MEDIA HUB — Tile 1 background image (YouTube). Landscape, ~1200x800 minimum. Shows behind the label + title. Optional — text-only if left blank."
+    },
     "mediaTile2Label": {
       "type": "string",
       "default": "Podcast",
@@ -371,6 +377,12 @@
       "default": "#",
       "description": "MEDIA HUB — Tile 2 link."
     },
+    "mediaTile2Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "MEDIA HUB — Tile 2 background image (Podcast). Landscape, ~1200x800 minimum. Optional."
+    },
     "mediaTile3Label": {
       "type": "string",
       "default": "Substack",
@@ -390,6 +402,12 @@
       "type": "string",
       "default": "https://annalouwellness.substack.com",
       "description": "MEDIA HUB — Tile 3 link."
+    },
+    "mediaTile3Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "MEDIA HUB — Tile 3 background image (Substack). Landscape, ~1200x800 minimum. Optional."
     },
     "quote3Text": {
       "type": "text",
