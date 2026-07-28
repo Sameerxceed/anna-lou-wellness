@@ -47,7 +47,14 @@ export default async function OneDayPage() {
     <>
       <ServiceSchema name="One Day" description="A full day of private 1:1 somatic coaching with Anna Lou. Houseboat at Hampton or virtual." url="/the-work/one-day" reviews={reviews.map((r) => ({ reviewerName: r.reviewerName || 'Anonymous', quote: r.quote, rating: 5 } as ReviewInput))} />
       <BreadcrumbSchema items={[{ name: 'Home', href: '/' }, { name: 'Work with Anna', href: '/the-work' }, { name: 'One Day', href: '/the-work/one-day' }]} />
-      <ProgrammePage {...props} />
+      {/* Anna 27 Jul: when she sets pricePence on the one-day Programme
+          in CMS, the Book button switches to Stripe checkout with the
+          Calendly redirect afterwards. Falls back to enquiry form scroll
+          when pricePence is 0 (current default). */}
+      <ProgrammePage
+        {...props}
+        stripeSlug={cms?.pricePence && cms.pricePence > 0 ? 'one-day' : undefined}
+      />
       <ReviewsSection reviews={reviews} title="From past One Days" kicker="Reviews" kickerColour={ACCENT} />
       <FAQAccordion faqs={faqs} accentColour={ACCENT} background="#F5F3EF" />
 
