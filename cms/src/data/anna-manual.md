@@ -3273,6 +3273,69 @@ Root cause: `pwycOptions` had extra quote marks around the value (paste artifact
 
 The code now strips wrapping quotes and £ signs defensively, but cleaner data = cleaner output.
 
+### 17.54 How to get an image URL from CMS to use in Custom HTML pages (29 Jul 2026)
+
+For Custom HTML Landing pages (campaigns, collabs) you can embed any image you've uploaded to the CMS Media Library. Steps:
+
+**1. Upload / find the image:**
+- Strapi admin sidebar → **Media Library** (picture icon)
+- Drag-and-drop the image to upload, OR find one already uploaded
+- Click the thumbnail — a detail pane opens on the right
+- The file URL path shows near the top (looks like `/uploads/my-image_a1b2c3d4.jpg`)
+- Click the copy icon next to it (or select + copy manually)
+
+**2. Build the full URL:**
+The path in Media Library is relative — needs the CMS domain in front. Add `https://cms.annalouwellness.com` to the start:
+
+```
+/uploads/my-image_a1b2c3d4.jpg
+    ↓
+https://cms.annalouwellness.com/uploads/my-image_a1b2c3d4.jpg
+```
+
+That's the full URL to paste anywhere.
+
+**3. Paste into the Custom HTML Landing body:**
+
+Simple image (responsive on mobile):
+```html
+<img src="https://cms.annalouwellness.com/uploads/my-image_a1b2c3d4.jpg"
+     alt="Describe what the image shows"
+     style="width:100%; height:auto; border-radius:8px;" />
+```
+
+Full-width banner (crops to fit):
+```html
+<img src="https://cms.annalouwellness.com/uploads/my-image_a1b2c3d4.jpg"
+     alt="Banner description"
+     style="width:100%; max-height:500px; object-fit:cover;" />
+```
+
+Section with background image + text overlay:
+```html
+<div style="background-image:url('https://cms.annalouwellness.com/uploads/my-image_a1b2c3d4.jpg');
+            background-size:cover;
+            background-position:center;
+            padding:4rem 2rem;
+            color:#fff;
+            text-align:center;">
+  <h2>Your heading text here</h2>
+  <p>Your paragraph</p>
+</div>
+```
+
+**Rules of thumb:**
+- Always include `alt="..."` — helps screen readers, shows if image fails to load, and helps SEO.
+- Use `width:100%; height:auto` for images that should scale down on mobile without distorting.
+- Use `object-fit:cover` when you want the image to fill a specific area (crops edges if needed).
+- File extensions supported: `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`.
+- The image URL is public — anyone who has the link can view. Don't upload anything you wouldn't publish publicly.
+
+**If the image doesn't show up:**
+- Check the URL by pasting it directly into the browser address bar. If it 404s, the file wasn't uploaded correctly — try re-uploading via Media Library.
+- Check there's no typo in the filename (case-sensitive on Linux servers — `Image.jpg` and `image.jpg` are different).
+- Check you included `https://` at the start (URLs starting with just `cms.annalouwellness.com/...` won't work).
+
 ## 18. Email journeys (what happens when someone clicks something)
 
 Two systems send emails from your site:
