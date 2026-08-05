@@ -58,7 +58,9 @@ export function PersonSchema() {
     ],
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'London',
+      streetAddress: 'Half Mile, Taggs Island',
+      addressLocality: 'Hampton',
+      postalCode: 'TW12 2HA',
       addressCountry: 'GB',
     },
   };
@@ -74,19 +76,22 @@ export function LocalBusinessSchema() {
     url: SITE_URL,
     logo: `${SITE_URL}/og-default.svg`,
     image: `${SITE_URL}/og-default.svg`,
-    description: 'London-based wellness coaching, crystal healing, retreats, and handmade jewellery. Founded by Anna Lou Scaife.',
+    description: 'Wellness coaching, crystal healing, retreats, and handmade jewellery based on Taggs Island, Hampton. Founded by Anna Lou Scaife.',
     founder: { '@type': 'Person', name: 'Anna Lou Scaife' },
-    foundingDate: '2004',
+    foundingDate: '2024',
+    telephone: '+44 7738 470156',
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'London',
+      streetAddress: 'Half Mile, Taggs Island',
+      addressLocality: 'Hampton',
       addressRegion: 'Greater London',
+      postalCode: 'TW12 2HA',
       addressCountry: 'GB',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 51.5074,
-      longitude: -0.1278,
+      latitude: 51.4053,
+      longitude: -0.3406,
     },
     areaServed: [
       { '@type': 'City', name: 'London' },
@@ -95,6 +100,12 @@ export function LocalBusinessSchema() {
     ],
     priceRange: '££',
     email: 'hello@annalouwellness.com',
+    // Anna 5 Aug: Taggs Island is by-appointment only — reflect that on
+    // the schema so Google Business Profile "appointment required"
+    // attribute matches once the profile is filed.
+    additionalProperty: [
+      { '@type': 'PropertyValue', name: 'byAppointment', value: true },
+    ],
     sameAs: [
       'https://www.instagram.com/annalouwellness',
       'https://www.facebook.com/annalouwellness',

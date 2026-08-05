@@ -360,6 +360,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       podcastUrl: d.podcast_url || fallbackSiteSettings.podcastUrl,
       maxSubcategoriesPerMenu: (d.max_subcategories_per_menu as number) || fallbackSiteSettings.maxSubcategoriesPerMenu,
       email: d.notification_email || fallbackSiteSettings.email,
+      phone: d.phone || fallbackSiteSettings.phone,
+      address: d.address || fallbackSiteSettings.address,
       cookieBannerText: d.cookie_banner_text || fallbackSiteSettings.cookieBannerText,
       footerCopyright: d.footer_copyright || fallbackSiteSettings.footerCopyright,
       maintenanceMode: d.maintenance_mode ?? false,

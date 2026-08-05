@@ -161,9 +161,16 @@ export default function Footer({ siteSettings, footer, navigation }: FooterProps
         <a href={footer.substackCtaUrl} target="_blank" rel="noopener noreferrer">{footer.substackCtaLabel}</a>
       </div>
 
-      {/* Bottom */}
+      {/* Bottom — NAP block must match schema + Google Business Profile exactly.
+          Anna 5 Aug: mismatched name/address/phone across these three surfaces
+          is a common cause of GBP suspension. Address + phone are CMS-driven
+          via Site Settings so a single edit updates everywhere. */}
       <div className="footer-bottom">
-        <p className="footer-address">{siteSettings.siteName} &middot; {siteSettings.address} &middot; annalouwellness.com</p>
+        <p className="footer-address">
+          {siteSettings.siteName} &middot; {siteSettings.address}
+          {siteSettings.phone ? <> &middot; {siteSettings.phone}</> : null}
+          {' '}&middot; annalouwellness.com
+        </p>
         <p className="footer-copy">&copy; {new Date().getFullYear()} {siteSettings.footerCopyright}</p>
       </div>
 

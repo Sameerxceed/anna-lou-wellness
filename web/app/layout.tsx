@@ -67,6 +67,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Organization schema for SEO
+// Anna 5 Aug: NAP (name / address / phone) must be identical across the
+// schema, the site footer, and the Google Business Profile — mismatches
+// between those three are a common cause of GBP suspension. If any of
+// these change, update site-settings.address in Strapi at the same time.
 function OrganizationSchema({ settings }: { settings: any }) {
   const schema = {
     '@context': 'https://schema.org',
@@ -79,10 +83,13 @@ function OrganizationSchema({ settings }: { settings: any }) {
       '@type': 'Person',
       name: 'Anna Lou Scaife',
     },
-    foundingDate: '2004',
+    foundingDate: '2024',
+    telephone: '+44 7738 470156',
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'London',
+      streetAddress: 'Half Mile, Taggs Island',
+      addressLocality: 'Hampton',
+      postalCode: 'TW12 2HA',
       addressCountry: 'GB',
     },
     sameAs: [

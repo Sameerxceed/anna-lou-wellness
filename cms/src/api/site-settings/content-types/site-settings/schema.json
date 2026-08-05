@@ -214,7 +214,13 @@
     },
     "address": {
       "type": "text",
-      "default": "Taggs Island, Hampton, London"
+      "default": "Half Mile, Taggs Island, Hampton TW12 2HA",
+      "description": "Full postal address as it should appear in the footer, on the Google Business Profile, and in the schema.org markup. Keep these three identical — mismatched NAP (name/address/phone) can cause GBP suspension."
+    },
+    "phone": {
+      "type": "string",
+      "default": "07738 470156",
+      "description": "Public phone number shown in the footer + schema.org markup. UK format with spaces, e.g. 07738 470156."
     },
     "substack_url": {
       "type": "string",
