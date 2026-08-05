@@ -43,6 +43,12 @@
       "allowedTypes": ["images"],
       "description": "Social share image (Facebook, Twitter, WhatsApp preview). 1200×630 landscape. Optional but recommended — makes the link look inviting when someone shares it."
     },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"],
+      "description": "Upload up to ~10 images used inside your HTML. In the HTML body use tokens like {{image_1}} for the first image, {{image_2}} for the second, etc. — the site replaces them with the correct URL. Zero URL building. Example: <img src=\"{{image_1}}\" alt=\"...\">"
+    },
     "seo_title": {
       "type": "string",
       "description": "Optional SEO title override (60 chars max). Leave blank to use the page title."

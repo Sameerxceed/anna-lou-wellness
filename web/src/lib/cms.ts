@@ -1409,25 +1409,41 @@ export interface CustomHtmlLanding {
   heroImage: string | null;
   seoTitle: string;
   seoDescription: string;
+  /** Full URLs of images uploaded to the entry's `images` field, in order.
+   *  Substituted into rawHtml via {{image_N}} tokens (1-indexed). */
+  imageUrls: string[];
 }
 
 export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLanding | null> {
   try {
     const { data } = await fetchAPI('/custom-html-landings', {
       'populate[hero_image]': 'true',
+      'populate[images]': 'true',
       'filters[slug][$eq]': slug,
     });
     if (!data?.length) return null;
     const d = data[0];
+    // images: multiple media field. Strapi returns an array of media objects.
+    const imageUrls: string[] = Array.isArray(d.images)
+      ? d.images.map((m: unknown) => mediaUrl(m as { url?: string })).filter(Boolean)
+      : [];
+    // Token substitution: {{image_1}}, {{image_2}}, etc. → actual URLs.
+    // Case-insensitive, tolerates whitespace: {{ image_1 }} also works.
+    // Anna 29 Jul: kills the URL-building friction on Custom HTML pages.
+    const rawHtml = String(d.raw_html || '').replace(/\{\{\s*image_(\d+)\s*\}\}/gi, (_match, num) => {
+      const idx = Number(num) - 1;
+      return imageUrls[idx] || '';
+    });
     return {
       title: d.title || '',
       slug: d.slug || '',
-      rawHtml: d.raw_html || '',
+      rawHtml,
       iframeHeight: d.iframe_height || 'auto',
       showSiteNav: d.show_site_nav !== false,
       heroImage: d.hero_image ? mediaUrl(d.hero_image) : null,
       seoTitle: d.seo_title || '',
       seoDescription: d.seo_description || '',
+      imageUrls,
     };
   } catch {
     return null;

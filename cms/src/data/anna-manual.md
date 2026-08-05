@@ -3273,9 +3273,48 @@ Root cause: `pwycOptions` had extra quote marks around the value (paste artifact
 
 The code now strips wrapping quotes and £ signs defensively, but cleaner data = cleaner output.
 
-### 17.54 How to get an image URL from CMS to use in Custom HTML pages (29 Jul 2026)
+### 17.54 Adding images to Custom HTML Landing pages (updated 30 Jul 2026)
 
-For Custom HTML Landing pages (campaigns, collabs) you can embed any image you've uploaded to the CMS Media Library. Steps:
+For Custom HTML Landing pages (campaigns, collabs), you can embed images WITHOUT building any URLs. Just upload them to the entry and reference them by number.
+
+**Simple 3-step workflow:**
+
+1. Open your Custom HTML Landing entry in CMS.
+2. Scroll to the **`images`** field. Upload up to ~10 images (drag-and-drop straight into the field).
+3. In your HTML body, reference them as `{{image_1}}`, `{{image_2}}`, `{{image_3}}` etc. — one token per uploaded image, in the order you uploaded them.
+
+**Example:**
+
+Say you uploaded 3 images to the entry. In the HTML body:
+
+```html
+<!-- Hero image (first upload) -->
+<img src="{{image_1}}" alt="Hero" style="width:100%; height:auto;" />
+
+<!-- Section with background image (second upload) -->
+<div style="background-image:url('{{image_2}}'); background-size:cover; padding:4rem 2rem; color:#fff;">
+  <h2>Overlay heading</h2>
+</div>
+
+<!-- Product/collab image inline (third upload) -->
+<img src="{{image_3}}" alt="Product" style="max-width:400px;" />
+```
+
+The site substitutes each token with the correct URL on render. Zero URL building.
+
+**Tips:**
+- Always include `alt="..."` — screen readers, SEO, and fallback if the image fails to load.
+- `width:100%; height:auto` = responsive across devices.
+- `object-fit:cover` on a fixed-height image = fills the space, crops edges as needed.
+- Supported formats: `.jpg`, `.png`, `.webp`, `.gif`.
+
+**Reordering:** if you re-upload the images in a different order in the CMS, the tokens re-map. So `{{image_1}}` always means "the first image currently in the field." Move things around by re-ordering the uploads.
+
+---
+
+**Fallback method (if you need an image URL from ELSEWHERE, not this entry):**
+
+Some cases (e.g. embedding an image from another Article or Programme in a Custom HTML page) still need the URL directly. Steps:
 
 **1. Upload / find the image:**
 - Strapi admin sidebar → **Media Library** (picture icon)
