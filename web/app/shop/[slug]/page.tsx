@@ -39,8 +39,18 @@ export default async function ProductDetailPage({ params }: Props) {
   const product = products.find(p => p.slug === slug);
   if (!product) notFound();
 
+  // Anna 30 Jul: related items showed a broken thumbnail for Chakra Bag
+  // because that product has zero images uploaded — we were falling to a
+  // stock image that also 404'd. Filter out image-less products so the
+  // grid always shows real photos. Also require a non-null category so
+  // products with unset category don't accidentally match each other.
   const related = products
-    .filter(p => p.isActive && p.slug !== slug && p.category === product.category)
+    .filter(p => p.isActive
+      && p.slug !== slug
+      && p.category
+      && p.category === product.category
+      && p.images.length > 0
+      && p.images[0])
     .slice(0, 4);
 
   return (
