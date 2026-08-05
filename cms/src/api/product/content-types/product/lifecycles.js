@@ -17,6 +17,18 @@
  */
 
 const { notifyRevalidate } = require('../../../../utils/revalidate');
+const autoSeo = require('../../../../utils/auto-seo');
+
+// Auto-fill seo_title + seo_description on save when Anna leaves them
+// blank. Runs Claude against the product's name + description +
+// short_description to generate one-liner SEO copy she can edit later.
+// Anna 30 Jul: reported products had no SEO/AEO info showing on live —
+// this closes the gap end-to-end (schema fields + auto-fill + page
+// metadata prefers CMS values when set).
+const SEO_FIELDS = {
+  nameFields: ['name'],
+  bodyFields: ['short_description', 'description'],
+};
 
 function pathsForProduct(product) {
   const paths = ['/', '/shop'];
@@ -32,9 +44,11 @@ function pathsForProduct(product) {
 
 module.exports = {
   async afterCreate(event) {
+    autoSeo.runAfter(event, 'api::product.product', SEO_FIELDS);
     await notifyRevalidate(strapi, pathsForProduct(event.result));
   },
   async afterUpdate(event) {
+    autoSeo.runAfter(event, 'api::product.product', SEO_FIELDS);
     await notifyRevalidate(strapi, pathsForProduct(event.result));
   },
   async afterDelete(event) {

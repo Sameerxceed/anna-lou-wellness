@@ -22,8 +22,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const products = await getProducts();
   const product = products.find(p => p.slug === slug);
   if (!product) return { title: 'Product Not Found' };
-  const title = `${product.name} — Anna Lou Wellness Shop`;
-  const description = product.shortDescription || product.description?.slice(0, 160) || `${product.name}. Handmade by Anna Lou Wellness.`;
+  // Anna 30 Jul: use CMS seo_title / seo_description when set (either
+  // manually or via auto-SEO on save). Falls back to name + short/long
+  // description if she hasn't filled them yet.
+  const title = product.seoTitle || `${product.name} — Anna Lou Wellness Shop`;
+  const description = product.seoDescription
+    || product.shortDescription
+    || product.description?.slice(0, 160)
+    || `${product.name}. Handmade by Anna Lou Wellness.`;
   return {
     title,
     description,

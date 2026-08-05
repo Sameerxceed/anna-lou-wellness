@@ -133,6 +133,8 @@ export async function getProducts(): Promise<Product[]> {
       stock: d.stock ?? 0,
       isFeatured: d.is_featured || false,
       isActive: d.is_active !== false,
+      seoTitle: d.seo_title || '',
+      seoDescription: d.seo_description || '',
     }));
   } catch {
     return fallbackProducts;

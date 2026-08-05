@@ -18,6 +18,8 @@ export interface Product {
   stock: number;
   isFeatured: boolean;
   isActive: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export interface Category {
