@@ -22,7 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s — ${settings.siteName}`,
     },
     description: settings.seoDescription,
-    keywords: settings.seoKeywords,
+    // `<meta name="keywords">` was retired by Google in 2009 and is a mild
+    // spam signal to Bing when stuffed. Anna's SEO consultant flagged the
+    // sitewide keywords tag on 11 Aug; removed here. The per-article
+    // focus_keyword + supporting_keywords fields still exist — they feed
+    // the auto-SEO Claude prompt that writes seo_title + seo_description,
+    // never render as a meta tag.
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://annalouwellness.com'),
     alternates: {},
     openGraph: {
