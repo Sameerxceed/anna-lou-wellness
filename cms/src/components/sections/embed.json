@@ -7,11 +7,13 @@
   },
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional heading shown above the embed. Leave blank if the embedded content already has its own heading."
     },
     "embed_code": {
       "type": "text",
-      "required": true
+      "required": true,
+      "description": "Paste either (a) a URL — YouTube, Vimeo, Calendly, any iframe-able site — and the site will render it as an iframe; OR (b) raw HTML (e.g. an entire campaign page, a form snippet, a widget script) and the site will render it as-is. For a whole standalone HTML page with your own layout, prefer the Custom HTML Landing content type instead (it gives you a proper /campaigns/ URL and image tokens)."
     },
     "style": {
       "type": "component",

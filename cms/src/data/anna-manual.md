@@ -1,6 +1,6 @@
 # Anna Lou Wellness â€” User Manual
 
-**Version 1.7 â€” Updated 19 June 2026**
+**Version 1.24 â€” Updated 11 August 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -3668,6 +3668,31 @@ Everything the site does automatically is built. What's left is what Anna needs 
 3. **CMS Email Template copy:** open each of the 14 rows in Â§18.11 in Content Manager â†’ Email Template. Proofread subject / preheader / intro / outro / CTA. Save & Publish.
 4. **Env vars in Coolify:** confirm on the frontend service â€” `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `RESEND_API_KEY`, `EMAIL_FROM` (change from onboarding@resend.dev for prod), `CALENDLY_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
 5. **Calendly webhook:** Calendly â†’ Integrations â†’ Webhooks â†’ Create. URL `https://annalouwellness.com/api/calendly/webhook`. Subscribe to `invitee.created`. Paste the signing key into Coolify as `CALENDLY_WEBHOOK_SECRET`.
+
+### 17.55 Where to paste raw HTML â€” the routing rule (9 Aug 2026)
+
+If you have a whole HTML page (e.g. an influencer collab, a campaign design, a landing page someone else built for you) and you want to publish it on the site, there are two routes. Use the RIGHT one for the job.
+
+**Default route â€” Custom HTML Landing (RECOMMENDED for whole HTML pages).**
+
+- Content Manager â†’ **Custom HTML Landing** â†’ + Create new entry
+- Fill Title + Slug (e.g. `the-big-exhale`) + paste your HTML into **Raw HTML**
+- Live at `https://annalouwellness.com/campaigns/<slug>`
+- Supports image tokens (`{{image_1}}`, `{{image_2}}` etc. â€” see Â§17.54) so you can swap images without editing the HTML
+- No Page Builder chrome wraps the design â€” it renders as its own dedicated page
+
+**Escape hatch â€” Page Builder Embed section.**
+
+- Content Manager â†’ **Page** â†’ open an existing Page â†’ scroll to Sections â†’ Add component â†’ **Embed**
+- Paste your HTML (or a URL â€” YouTube, Vimeo, Calendly, any iframe target) into **Embed code**
+- Renders inside the Page Builder layout (nav + footer + section styling around it)
+- Use this when you want to drop an HTML widget into the middle of an existing composed page. NOT the first choice for a whole HTML article.
+
+**Do not use** the Page Builder "Custom HTML" section for a whole HTML page â€” that field is a lightly-formatted text editor (bold/italic/headings/lists), not a raw-HTML canvas.
+
+**On images inside pasted HTML:** if your HTML already has `<img src="https://..." >` tags with real URLs (or inline base64 data), you do NOT need to use image tokens. Tokens are optional â€” they only help if you want to swap images later without editing the HTML.
+
+**On the "Bad Gateway" error while saving:** usually a transient timeout on very large pastes from a phone. Wait 30 seconds and try again. If it keeps failing, let Sameer know the size of the file and he will raise the server limit.
 
 ---
 

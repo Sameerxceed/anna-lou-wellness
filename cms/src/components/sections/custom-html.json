@@ -16,7 +16,7 @@
     },
     "content_v2": {
       "type": "blocks",
-      "description": "Raw rich text content — escape hatch for any custom content. Select text and click the link icon to add a hyperlink — a popup will ask you for the URL."
+      "description": "Lightly-formatted text with bold / italic / headings / lists / links. Not for pasting full HTML — for a whole HTML page use Custom HTML Landing (Content Manager → Custom HTML Landing), which gives you a /campaigns/ URL and supports image tokens. Select text and click the link icon to add a hyperlink."
     },
     "style": {
       "type": "component",
