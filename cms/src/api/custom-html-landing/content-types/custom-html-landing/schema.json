@@ -49,6 +49,18 @@
       "allowedTypes": ["images"],
       "description": "Upload up to ~10 images used inside your HTML. In the HTML body use tokens like {{image_1}} for the first image, {{image_2}} for the second, etc. — the site replaces them with the correct URL. Zero URL building. Example: <img src=\"{{image_1}}\" alt=\"...\">"
     },
+    "focus_keyword": {
+      "type": "string",
+      "description": "The ONE phrase you most want this campaign page to rank for on Google. Example: 'anna lou toni nagy feral and free'. Feeds into the auto-generated SEO title + description on Save."
+    },
+    "supporting_keywords": {
+      "type": "text",
+      "description": "Comma-separated related search phrases. Used alongside the focus keyword when the site auto-writes SEO copy."
+    },
+    "tags": {
+      "type": "string",
+      "description": "Comma-separated tags for filtering + internal tracking. Optional."
+    },
     "seo_title": {
       "type": "string",
       "description": "Optional SEO title override (60 chars max). Leave blank to use the page title."

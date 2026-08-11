@@ -1,6 +1,6 @@
 # Anna Lou Wellness â€” User Manual
 
-**Version 1.24 â€” Updated 11 August 2026**
+**Version 1.25 â€” Updated 11 August 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -3668,6 +3668,18 @@ Everything the site does automatically is built. What's left is what Anna needs 
 3. **CMS Email Template copy:** open each of the 14 rows in Â§18.11 in Content Manager â†’ Email Template. Proofread subject / preheader / intro / outro / CTA. Save & Publish.
 4. **Env vars in Coolify:** confirm on the frontend service â€” `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `RESEND_API_KEY`, `EMAIL_FROM` (change from onboarding@resend.dev for prod), `CALENDLY_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
 5. **Calendly webhook:** Calendly â†’ Integrations â†’ Webhooks â†’ Create. URL `https://annalouwellness.com/api/calendly/webhook`. Subscribe to `invitee.created`. Paste the signing key into Coolify as `CALENDLY_WEBHOOK_SECRET`.
+
+### 17.56 Focus keyword + supporting keywords + tags (11 Aug 2026)
+
+Three new fields on **Article, Product, Experience, Membership, Custom HTML Landing**. Match the CMS pack format you use for blog drafts.
+
+- **Focus keyword** â€” the ONE phrase you most want this piece to rank for on Google. Whatever a real person would type into the search box. Example (from your Dating in your 40s pack): `dating in your 40s`.
+- **Supporting keywords** â€” comma-separated list of related search phrases. Example: `dating over 40, emotionally unavailable men, inner work, finding love after 40`. These guide the vocabulary the auto-SEO uses without appearing as a keyword-stuffed list.
+- **Tags** â€” comma-separated tags for filtering + browsing. Different from Category (which sets the URL). Example: `dating in your 40s, inner work, midlife, subconscious healing`. Product already had a Tags field; the new one on Articles is the same shape.
+
+**How they wire up:** the auto-SEO helper reads the focus keyword + supporting keywords when it generates the SEO title + description on Save. So if you fill Focus keyword = `dating in your 40s` and leave `seo_description` blank, Claude will write a description that leads with that phrase. Fill them BEFORE you first hit Save for best results (the description locks in the first time it's generated â€” see Â§17.7 for the regenerate button if you want a fresh pass later).
+
+**Do NOT keyword-stuff.** One focus keyword, three-to-six supporting phrases, a handful of tags. That is enough. Google penalises repetition; Claude will refuse to stuff even if you list twenty.
 
 ### 17.55 Where to paste raw HTML â€” the routing rule (9 Aug 2026)
 

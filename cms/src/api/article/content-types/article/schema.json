@@ -90,6 +90,18 @@
       "type": "string",
       "description": "Canonical URL on Substack for the 12 free posts"
     },
+    "focus_keyword": {
+      "type": "string",
+      "description": "The ONE phrase you most want this article to rank for on Google — the thing a real person would type. Example: 'dating in your 40s'. Feeds into the auto-generated SEO title + description so they land closer to what people search for."
+    },
+    "supporting_keywords": {
+      "type": "text",
+      "description": "Comma-separated list of related search phrases. Example: 'dating over 40, emotionally unavailable men, finding love after 40'. Used alongside the focus keyword when the site auto-writes SEO copy on Save."
+    },
+    "tags": {
+      "type": "string",
+      "description": "Comma-separated tags for filtering + browsing. Example: 'dating in your 40s, inner work, midlife, subconscious healing'. Different from category — tags are lightweight cross-cuts, categories drive the URL."
+    },
     "seo_title": {
       "type": "string",
       "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."

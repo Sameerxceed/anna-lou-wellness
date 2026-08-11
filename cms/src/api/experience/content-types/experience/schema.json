@@ -92,6 +92,18 @@
       "default": 0,
       "description": "Lower numbers show first. Use 10, 20, 30 (not 1, 2, 3) so you can drop new entries between existing ones without renumbering everything."
     },
+    "focus_keyword": {
+      "type": "string",
+      "description": "The ONE phrase you most want this experience to rank for on Google. Example: 'Thames houseboat retreat day'. Feeds into the auto-generated SEO title + description on Save."
+    },
+    "supporting_keywords": {
+      "type": "text",
+      "description": "Comma-separated related search phrases. Example: 'somatic retreat London, day retreat, women's wellness day'. Used alongside the focus keyword when the site auto-writes SEO copy."
+    },
+    "tags": {
+      "type": "string",
+      "description": "Comma-separated tags for filtering + browsing (e.g. 'retreat, workshop, corporate, day'). Optional — separate from category."
+    },
     "seo_title": {
       "type": "string",
       "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."

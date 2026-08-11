@@ -106,12 +106,23 @@ function flattenContent(value) {
   return String(value);
 }
 
-async function callClaude(name, description) {
+async function callClaude(name, description, keywords) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY not configured');
   }
-  const userText = `Entry name: ${name}\n\nBody text:\n${description || '(no body content yet)'}\n\nProduce the JSON now.`;
+  // Anna 11 Aug asked for focus_keyword + supporting_keywords on articles +
+  // sales pages, matching the CMS-pack format she uses for blog drafts.
+  // When present, we tell Claude to WEIGHT the SEO copy around them — the
+  // focus keyword should appear in both title and description if it fits
+  // naturally, supporting keywords guide the vocabulary choices. Never
+  // stuff — Claude decides how much fits without sounding forced.
+  const focus = String(keywords?.focus || '').trim();
+  const supporting = String(keywords?.supporting || '').trim();
+  const keywordBlock = focus || supporting
+    ? `\n\nKeyword targeting (weight the copy around these — never keyword-stuff):\n- Focus keyword (the one Google should rank us for): ${focus || '(none set)'}\n- Supporting keywords (use the vocabulary but do not list them): ${supporting || '(none set)'}\n`
+    : '';
+  const userText = `Entry name: ${name}\n\nBody text:\n${description || '(no body content yet)'}${keywordBlock}\n\nProduce the JSON now.`;
   const res = await fetch(ANTHROPIC_URL, {
     method: 'POST',
     headers: {
@@ -218,9 +229,19 @@ function runAfter(event, uid, opts = {}) {
       }
       const bodyText = bodyChunks.join('\n\n').slice(0, 4000); // cap prompt size
 
+      // Pull optional keyword hints — new fields Anna 11 Aug. Only used
+      // when the content type actually has these fields set; harmless when
+      // absent.
+      const focusHit = firstFilled(result, ['focus_keyword', 'focusKeyword']);
+      const supportingHit = firstFilled(result, ['supporting_keywords', 'supportingKeywords']);
+      const keywords = {
+        focus: focusHit?.value || '',
+        supporting: supportingHit?.value || '',
+      };
+
       let generated;
       try {
-        generated = await callClaude(nameSource.value, bodyText);
+        generated = await callClaude(nameSource.value, bodyText, keywords);
       } catch (err) {
         strapi.log.warn(`[auto-seo] ${uid}/${documentId}: ${err.message}`);
         return;
