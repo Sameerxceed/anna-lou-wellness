@@ -354,7 +354,17 @@ function CtaBanner({ section }: { section: Section }) {
 
 function CustomHtml({ section }: { section: Section }) {
   const s = styleFromBlock(section.style as Style | undefined);
-  const html = (section.html as string) || '';
+  // Schema fields are `content` (legacy richtext markdown) or `content_v2`
+  // (blocks JSON — preferred). Renderer previously read a non-existent
+  // `html` field, so pasted content silently rendered blank. Now: prefer
+  // the raw string if present so admins can paste full HTML including
+  // <img> tags and styling; blocks JSON is stringified as a fallback so at
+  // least the text appears. For the "paste a whole HTML page" workflow the
+  // Custom HTML Landing content type at /campaigns/[slug] is the right
+  // route — this section is a lighter escape hatch inside Page Builder.
+  const raw = String((section.html as string) || (section.content as string) || '').trim();
+  const blocks = Array.isArray(section.content_v2) ? (section.content_v2 as unknown[]) : null;
+  const html = raw || (blocks ? blocksToPlainHtml(blocks) : '');
   return (
     <section style={s.outer}>
       <BgLayer url={s.bgImageUrl} overlay={s.overlayOpacity} />
@@ -363,12 +373,33 @@ function CustomHtml({ section }: { section: Section }) {
   );
 }
 
+// Minimal blocks-to-HTML for Custom HTML section fallback. The dedicated
+// BlocksRenderer covers full styling; here we just want the raw text to
+// appear so an admin who pasted content into content_v2 sees something.
+function blocksToPlainHtml(blocks: unknown[]): string {
+  return blocks
+    .map((b) => {
+      const node = b as { type?: string; children?: Array<{ text?: string }>; level?: number };
+      const text = (node.children || []).map((c) => c.text || '').join('');
+      if (!text.trim()) return '';
+      if (node.type === 'heading') return `<h${node.level || 2}>${text}</h${node.level || 2}>`;
+      return `<p>${text}</p>`;
+    })
+    .join('');
+}
+
 function Embed({ section }: { section: Section }) {
   const s = styleFromBlock(section.style as Style | undefined);
-  const url = (section.url as string) || '';
-  // YouTube / Vimeo / generic iframe support
-  const ytId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
-  const isVimeo = /vimeo\.com\/(\d+)/.test(url);
+  // Schema field is `embed_code` — a text blob. Anna 9 Aug paste of a full
+  // HTML article into this field rendered blank because the renderer was
+  // reading a non-existent `url` field. Now: if the payload starts with
+  // http and has no HTML tags treat it as an iframe URL (YouTube / Vimeo /
+  // generic), otherwise inject the raw HTML directly. Content is authored
+  // by admins only, so dangerouslySetInnerHTML is acceptable here.
+  const code = String((section.embed_code as string) || (section.url as string) || '').trim();
+  const looksLikeUrl = /^https?:\/\//i.test(code) && !/[<>]/.test(code);
+  const ytId = looksLikeUrl && code.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  const isVimeo = looksLikeUrl && /vimeo\.com\/(\d+)/.test(code);
   return (
     <section style={s.outer}>
       <BgLayer url={s.bgImageUrl} overlay={s.overlayOpacity} />
@@ -382,12 +413,14 @@ function Embed({ section }: { section: Section }) {
           </div>
         ) : isVimeo ? (
           <div style={{ aspectRatio: '16 / 9', maxWidth: 900, margin: '0 auto' }}>
-            <iframe src={url} style={{ width: '100%', height: '100%', border: 0 }} allowFullScreen loading="lazy" />
+            <iframe src={code} style={{ width: '100%', height: '100%', border: 0 }} allowFullScreen loading="lazy" />
           </div>
-        ) : url ? (
+        ) : looksLikeUrl ? (
           <div style={{ maxWidth: 900, margin: '0 auto' }}>
-            <iframe src={url} style={{ width: '100%', minHeight: 400, border: 0 }} loading="lazy" />
+            <iframe src={code} style={{ width: '100%', minHeight: 400, border: 0 }} loading="lazy" />
           </div>
+        ) : code ? (
+          <div dangerouslySetInnerHTML={{ __html: code }} />
         ) : null}
       </div>
     </section>
