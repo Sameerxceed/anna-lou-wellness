@@ -198,9 +198,12 @@ export default function HelpFab() {
   // Anna 19 Jul: mobile CMS getting stuck and not scrolling. Root cause —
   // the FAB sits fixed bottom-right, exactly where thumbs land while
   // scrolling. On phones the finger hits the FAB instead of the page and
-  // the scroll gesture never registers. Fix: hide the floating FAB on
-  // narrow viewports (< 900px so tablets in portrait also get the fix).
-  // Anna can still open Help · Ask via the sidebar page in that case.
+  // the scroll gesture never registers.
+  // Anna 11 Aug: hiding the FAB completely on mobile meant she couldn't
+  // reach Help · Ask from her phone at all. New compromise: on narrow
+  // viewports the FAB moves to TOP-right (out of the thumb-scroll path),
+  // shrinks to an icon-only circle (small footprint), and the panel goes
+  // near-fullscreen when opened so the compact chat still works.
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const check = () => {
@@ -353,26 +356,58 @@ export default function HelpFab() {
   };
 
   if (hidden) return null;
-  // Hide the FAB on narrow viewports so the finger doesn't hit it while
-  // scrolling (see the isNarrow useEffect above for context).
-  if (isNarrow && !open) return null;
 
   if (!open) {
+    // Mobile: small circular icon-only trigger, TOP-right (out of the
+    // thumb-scroll zone so it doesn't block scrolling).
+    // Desktop: original pill in the bottom-right.
+    const fabStyle: React.CSSProperties = isNarrow
+      ? {
+          ...styles.fab,
+          bottom: 'auto',
+          top: 10,
+          right: 10,
+          padding: 0,
+          width: 36,
+          height: 36,
+          borderRadius: 18,
+          justifyContent: 'center',
+          fontSize: 16,
+          boxShadow: '0 3px 10px rgba(0,0,0,0.22)',
+        }
+      : styles.fab;
     return (
       <button
         type="button"
-        style={styles.fab}
+        style={fabStyle}
         onClick={() => setOpen(true)}
         title="Ask the manual"
+        aria-label="Ask the manual"
       >
         <span style={styles.fabIcon} aria-hidden="true">💬</span>
-        Ask
+        {!isNarrow && 'Ask'}
       </button>
     );
   }
 
+  // Panel goes near-fullscreen on mobile so the compact 360×540 layout
+  // doesn't leave the user typing into a tiny box on a phone screen.
+  const panelStyle: React.CSSProperties = isNarrow
+    ? {
+        ...styles.panel,
+        top: 8,
+        right: 8,
+        bottom: 8,
+        left: 8,
+        width: 'auto',
+        maxWidth: 'none',
+        height: 'auto',
+        maxHeight: 'none',
+      }
+    : styles.panel;
+
   return (
-    <div style={styles.panel} role="dialog" aria-label="Help — Ask">
+    <div style={panelStyle} role="dialog" aria-label="Help — Ask">
       <div style={styles.header}>
         <div>
           <h3 style={styles.headerTitle}>Help · Ask</h3>
