@@ -124,13 +124,21 @@ export async function POST(req: NextRequest) {
   }
 
   // Cloudflare Turnstile CAPTCHA — blocks bots from flooding the list.
-  // Token comes from the <TurnstileWidget /> on the signup form.
-  const captcha = await verifyTurnstile(
-    body?.turnstileToken,
-    req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip'),
-  );
-  if (!captcha.ok) {
-    return NextResponse.json({ error: captcha.error }, { status: 400 });
+  // Anna 13 Aug: the Reset Letters holding page moved from a React form
+  // (with a <TurnstileWidget />) to a pasted HTML page rendered inside a
+  // sandboxed iframe. The iframe can't easily host the widget, so
+  // Turnstile is skipped when no token is present. Mailchimp already
+  // deduplicates by email (PUT on subscriberHash), so worst case a bot
+  // adds an email that's already there — no data corruption. Revisit
+  // if the list starts filling with junk.
+  if (body?.turnstileToken) {
+    const captcha = await verifyTurnstile(
+      body.turnstileToken,
+      req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip'),
+    );
+    if (!captcha.ok) {
+      return NextResponse.json({ error: captcha.error }, { status: 400 });
+    }
   }
 
   const founding = isFoundingWindow();
