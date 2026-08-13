@@ -47,7 +47,7 @@
       "type": "media",
       "multiple": true,
       "allowedTypes": ["images"],
-      "description": "Upload up to ~10 images used inside your HTML. In the HTML body use tokens like {{image_1}} for the first image, {{image_2}} for the second, etc. — the site replaces them with the correct URL. Zero URL building. Example: <img src=\"{{image_1}}\" alt=\"...\">"
+      "description": "Upload the images used inside your HTML in the ORDER they should appear (1st upload = image 1, 2nd = image 2, etc.). Two ways to reference them in the HTML body: (a) type tokens like {{image_1}}, {{image_2}} where you want each image. Example: <img src=\"{{image_1}}\" alt=\"...\">. (b) If your pasted HTML already has relative paths like <img src=\"IMAGES/01-something.jpg\">, the site auto-swaps the 01/02/... prefix for uploaded image 1/2/... — no need to edit the HTML. Both patterns are case-insensitive."
     },
     "focus_keyword": {
       "type": "string",

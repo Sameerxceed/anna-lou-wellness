@@ -1431,13 +1431,32 @@ export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLand
     const imageUrls: string[] = Array.isArray(d.images)
       ? d.images.map((m: unknown) => mediaUrl(m as { url?: string })).filter(Boolean)
       : [];
-    // Token substitution: {{image_1}}, {{image_2}}, etc. → actual URLs.
-    // Case-insensitive, tolerates whitespace: {{ image_1 }} also works.
-    // Anna 29 Jul: kills the URL-building friction on Custom HTML pages.
-    const rawHtml = String(d.raw_html || '').replace(/\{\{\s*image_(\d+)\s*\}\}/gi, (_match, num) => {
+    // Token substitution — three patterns supported, all resolve against
+    // the entry's `images` field in upload order:
+    //   1. {{image_1}}, {{image_2}}, ... (explicit tokens Anna types)
+    //   2. IMAGES/01-anything.jpg, IMAGES/02-anything.jpg, ... (relative
+    //      paths from a pasted design where images sat in an IMAGES/ folder
+    //      next to the HTML — Anna 13 Aug shipped 22-image Big Exhale page
+    //      with these paths and every image 404'd inside the iframe).
+    //   3. images/01-anything.jpg (lowercase variant of #2)
+    // All case-insensitive and whitespace-tolerant. Number prefix is 1-indexed.
+    // If the referenced image doesn't exist in the images array, the token
+    // gets replaced with an empty string (broken image → silent, better than
+    // 404-ing the whole file).
+    const substitute = (num: string): string => {
       const idx = Number(num) - 1;
       return imageUrls[idx] || '';
-    });
+    };
+    const rawHtml = String(d.raw_html || '')
+      // {{image_1}} tokens
+      .replace(/\{\{\s*image_(\d+)\s*\}\}/gi, (_m, num) => substitute(num))
+      // IMAGES/01-anything.ext (relative path with numeric prefix) —
+      // matched only where the path is used as a URL (in src="..." or
+      // url(...) contexts) to avoid accidentally rewriting inline text.
+      .replace(/(src\s*=\s*["'])\s*images\/(\d+)-[^"']*(["'])/gi,
+        (_m, pre, num, post) => `${pre}${substitute(num)}${post}`)
+      .replace(/(url\(\s*["']?)\s*images\/(\d+)-[^"')]*(["']?\s*\))/gi,
+        (_m, pre, num, post) => `${pre}${substitute(num)}${post}`);
     return {
       title: d.title || '',
       slug: d.slug || '',
