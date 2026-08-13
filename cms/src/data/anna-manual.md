@@ -1,6 +1,6 @@
 # Anna Lou Wellness â€” User Manual
 
-**Version 1.25 â€” Updated 11 August 2026**
+**Version 1.26 â€” Updated 13 August 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -3668,6 +3668,28 @@ Everything the site does automatically is built. What's left is what Anna needs 
 3. **CMS Email Template copy:** open each of the 14 rows in Â§18.11 in Content Manager â†’ Email Template. Proofread subject / preheader / intro / outro / CTA. Save & Publish.
 4. **Env vars in Coolify:** confirm on the frontend service â€” `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `RESEND_API_KEY`, `EMAIL_FROM` (change from onboarding@resend.dev for prod), `CALENDLY_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
 5. **Calendly webhook:** Calendly â†’ Integrations â†’ Webhooks â†’ Create. URL `https://annalouwellness.com/api/calendly/webhook`. Subscribe to `invitee.created`. Paste the signing key into Coolify as `CALENDLY_WEBHOOK_SECRET`.
+
+### 17.57 Replacing the Reset Letters holding page with your own HTML (13 Aug 2026)
+
+The `/reset-letters` URL is a hardcoded holding page in the site code â€” you cannot change it by editing a Page in Page Builder (pasting HTML into a Page just creates a NEW URL like `/p/whatever`, it does not touch `/reset-letters`).
+
+To replace `/reset-letters` with your own HTML design, use this override:
+
+1. Content Manager â†’ **Custom HTML Landing** â†’ **+ Create new entry**
+2. Title: `Reset Letters` (or whatever â€” only for your reference)
+3. **Slug: `reset-letters`** â€” must match EXACTLY (all lowercase, hyphen not space, no typos). This slug is the magic word that tells `/reset-letters` to render your HTML instead of the default holding page.
+4. **Raw HTML:** paste the whole HTML file from top to bottom (`<!DOCTYPE html>` through `</html>`)
+5. Save + Publish
+
+Live at `/reset-letters` within seconds.
+
+**To revert to the default holding page:** delete OR unpublish the Custom HTML Landing entry with slug `reset-letters`. The site will fall back automatically.
+
+**To iterate on the HTML:** edit the same Custom HTML Landing entry, Save + Publish, refresh. No need to redeploy anything.
+
+**Why iframe:** the HTML is rendered inside a sandboxed iframe (same as `/campaigns/[slug]`) so your custom CSS + fonts + forms + scripts do not collide with the rest of the site's styling. Set `show_site_nav` to false on the entry if you want a completely blank canvas with no site nav or footer around it (recommended for a holding page).
+
+**Same technique applies to other hardcoded pages ONLY if Sameer has wired the slug â€” right now `reset-letters` is the only one. Do not assume this works for any URL. Message Sameer if you want another URL (e.g. `/about`) wired the same way.**
 
 ### 17.56 Focus keyword + supporting keywords + tags (11 Aug 2026)
 
