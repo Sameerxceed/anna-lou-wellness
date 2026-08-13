@@ -20,7 +20,7 @@
       "type": "uid",
       "targetField": "title",
       "required": true,
-      "description": "URL path after /campaigns/. Lowercase, hyphens-not-spaces (e.g. 'feral-and-free' becomes /campaigns/feral-and-free). Auto-fills from title — only edit if you want to change the URL."
+      "description": "URL path after /campaigns/. Lowercase, hyphens-not-spaces (e.g. 'feral-and-free' becomes /campaigns/feral-and-free). Auto-fills from Title the FIRST time you type the title — if it shows 'custom-html-landing' or something wrong, press the circular refresh icon at the right end of this field to regenerate from Title. Or just type it manually. Two special reserved slugs: use 'reset-letters' to override the /reset-letters holding page, or use the same slug as an Experience entry to render your HTML on that experience's detail page."
     },
     "raw_html": {
       "type": "text",
