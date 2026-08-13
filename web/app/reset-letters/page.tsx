@@ -1,6 +1,8 @@
 import { fetchAPI } from '@/lib/strapi';
 import ResetLettersSignupForm from './ResetLettersSignupForm';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+import { getCustomHtmlLanding } from '@/lib/cms';
+import CampaignFrame from '../campaigns/[slug]/CampaignFrame';
 
 const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
   const v = cms?.[key];
@@ -14,6 +16,23 @@ const splitLines = (s: string) =>
   s.split('\n').map((p) => p.trim()).filter(Boolean);
 
 export default async function ResetLettersPage() {
+  // Anna 13 Aug: if there's a Custom HTML Landing entry with slug
+  // `reset-letters`, render its raw HTML instead of the hardcoded
+  // React holding page. Lets Anna paste a fresh design (e.g. the new
+  // signup page HTML she drafted) without a code change. Empty raw_html
+  // or missing entry falls back to the current React layout.
+  const override = await getCustomHtmlLanding('reset-letters');
+  if (override && override.rawHtml.trim()) {
+    return (
+      <CampaignFrame
+        html={override.rawHtml}
+        height={override.iframeHeight || 'auto'}
+        hideChrome={!override.showSiteNav}
+        title={override.title || 'Reset Letters'}
+      />
+    );
+  }
+
   let cms: Record<string, unknown> | null = null;
   try {
     const { data: d } = await fetchAPI('/reset-letters-page', { populate: '*' });
