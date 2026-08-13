@@ -68,6 +68,12 @@ function targetUrl(uid: string, slug: string): string {
       return slug ? `/experiences/${slug}` : '/experiences';
     case 'api::experience.experience':
       return slug ? `/experiences/${slug}` : '/experiences';
+    case 'api::custom-html-landing.custom-html-landing':
+      // Anna 13 Aug: preview was blank because this type had no mapping.
+      // Point at /campaigns/[slug] — always renders the entry's raw HTML,
+      // works whether or not the same slug is also wired to /reset-letters
+      // or /experiences/[slug] via the override routes.
+      return slug ? `/campaigns/${slug}` : '/';
     case 'api::page.page':
       return slug ? `/p/${slug}` : '/';
     case 'api::community-event-page.community-event-page':
