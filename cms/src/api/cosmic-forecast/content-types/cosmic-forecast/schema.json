@@ -42,6 +42,10 @@
       "type": "blocks",
       "description": "300-word summary version for website (NOT the full Substack version). Select text and click the link icon to add a hyperlink — a popup will ask you for the URL. Bold, italic, headings, lists and quotes all work from the toolbar."
     },
+    "youtube_url": {
+      "type": "string",
+      "description": "Optional. Full URL to this week's Cosmic Forecast video on YouTube. When filled, a 'Watch on YouTube' button appears on /cosmic-forecast under the summary. Leave blank to hide the button. Example: https://www.youtube.com/watch?v=XXXXXXXXXXX"
+    },
     "seo_title": {
       "type": "string",
       "description": "Optional SEO title override (60 chars max). Leave blank to use the page/item name. Shown in Google search results and browser tabs."

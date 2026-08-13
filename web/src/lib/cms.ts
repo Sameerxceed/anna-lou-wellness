@@ -1097,6 +1097,7 @@ export interface CosmicForecast {
   summary: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   summaryBlocks: any[] | null;
+  youtubeUrl: string;
 }
 
 /** Get the latest cosmic forecast */
@@ -1117,6 +1118,7 @@ export async function getLatestForecast(): Promise<CosmicForecast | null> {
       stoneOfWeek: d.stone_of_week || '',
       summary: d.summary || '',
       summaryBlocks: Array.isArray(d.summary_v2) && d.summary_v2.length > 0 ? d.summary_v2 : null,
+      youtubeUrl: String(d.youtube_url || '').trim(),
     };
   } catch {
     return null;

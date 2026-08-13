@@ -43,6 +43,22 @@ export default async function CosmicForecastPage() {
                     forecast.summary.split('\n\n').map((p, i) => <p key={i}>{p}</p>)
                   )}
                 </div>
+                {forecast.youtubeUrl && (
+                  <div className="cosmic-youtube-wrap">
+                    <a
+                      href={forecast.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cosmic-youtube-btn"
+                      aria-label="Watch this week's Cosmic Forecast on YouTube"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ marginRight: '0.5rem', verticalAlign: 'middle' }}>
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                      </svg>
+                      <span style={{ verticalAlign: 'middle' }}>Watch this week on YouTube</span>
+                    </a>
+                  </div>
+                )}
               </>
             ) : (
               <>
@@ -85,6 +101,9 @@ const cosmicStyles = `
 .cosmic-summary-blocks em { font-style:italic; }
 .cosmic-summary-blocks h2, .cosmic-summary-blocks h3 { font-family:'Work Sans','Helvetica Neue',sans-serif; font-weight:400; color:#231F20; margin:1rem 0 0.5rem; line-height:1.3; }
 .cosmic-summary-blocks ul, .cosmic-summary-blocks ol { padding-left:1.5rem; margin-bottom:1rem; }
+.cosmic-youtube-wrap { text-align:center; margin:1.5rem 0 2rem; }
+.cosmic-youtube-btn { display:inline-flex; align-items:center; background:#FF0000; color:#fff; font-family:Mulish,sans-serif; font-weight:600; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.85rem 1.6rem; border-radius:4px; text-decoration:none; transition:background 0.2s, transform 0.2s; }
+.cosmic-youtube-btn:hover { background:#CC0000; transform:translateY(-1px); }
 .cosmic-cta { background:#FFF0D2; border-radius:8px; padding:2rem; text-align:center; }
 .cosmic-cta-text { font-family:'EB Garamond',Georgia,serif; font-size:1rem; color:#3D3D3A; line-height:1.6; margin-bottom:1rem; }
 .cosmic-cta-btn { background:#6E3A5A; color:#fff; border:1px solid #6E3A5A; font-family:Mulish,sans-serif; font-weight:500; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.7rem 1.8rem; border-radius:3px; transition:all 0.3s; display:inline-block; text-decoration:none; }
