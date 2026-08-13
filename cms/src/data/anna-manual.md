@@ -1,6 +1,6 @@
 # Anna Lou Wellness â€” User Manual
 
-**Version 1.26 â€” Updated 13 August 2026**
+**Version 1.27 â€” Updated 13 August 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -3668,6 +3668,35 @@ Everything the site does automatically is built. What's left is what Anna needs 
 3. **CMS Email Template copy:** open each of the 14 rows in Â§18.11 in Content Manager â†’ Email Template. Proofread subject / preheader / intro / outro / CTA. Save & Publish.
 4. **Env vars in Coolify:** confirm on the frontend service â€” `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `RESEND_API_KEY`, `EMAIL_FROM` (change from onboarding@resend.dev for prod), `CALENDLY_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
 5. **Calendly webhook:** Calendly â†’ Integrations â†’ Webhooks â†’ Create. URL `https://annalouwellness.com/api/calendly/webhook`. Subscribe to `invitee.created`. Paste the signing key into Coolify as `CALENDLY_WEBHOOK_SECRET`.
+
+### 17.58 Listing a Custom HTML page under Experiences / Retreats / Workshops (13 Aug 2026)
+
+Custom HTML Landing entries do NOT automatically appear under Experiences, Retreats, or Workshops â€” those grids only read from the **Experience** collection. To have your hand-designed HTML page (e.g. The Big Exhale Retreat) show up in the Retreats grid AND render your HTML when someone clicks it, create BOTH entries with the SAME slug.
+
+**Step 1 â€” Custom HTML Landing entry** (you likely already have this)
+- Slug: e.g. `the-big-exhale-retreat`
+- Raw HTML: your full HTML file
+- Save + Publish
+
+**Step 2 â€” Experience entry** (this is the missing piece)
+- Content Manager â†’ **Experience** â†’ + Create new entry
+- Slug: `the-big-exhale-retreat` (**must match Step 1 exactly**)
+- Type: `retreat` (or `workshop`, `corporate`, `speaking` â€” whichever grid you want it in)
+- Name: The Big Exhale Retreat
+- Hero image: upload the card image (what shows in the grid)
+- Date, Location, Price, Booking URL â€” fill whatever applies
+- Is upcoming: tick
+- Save + Publish
+
+**What happens:**
+- The card appears on `/experiences/retreats` (or `/experiences/workshops` etc. depending on Type)
+- Clicking the card goes to `/experiences/the-big-exhale-retreat`
+- Because a Custom HTML Landing exists with the same slug, the site renders your HTML there instead of the auto-generated experience page
+- Breadcrumbs still say Experiences > Retreats > The Big Exhale Retreat, all the site chrome works
+
+**To hide the card but keep the HTML page live:** untick "Is upcoming" on the Experience entry.
+
+**To remove the HTML and use the plain experience page:** unpublish or delete the Custom HTML Landing entry. The Experience detail page reverts to the auto-generated layout.
 
 ### 17.57 Replacing the Reset Letters holding page with your own HTML (13 Aug 2026)
 
