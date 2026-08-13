@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getExperiences, getTestimonials, getFAQs } from '@/lib/cms';
+import { getExperiences, getTestimonials, getFAQs, getCustomHtmlLanding } from '@/lib/cms';
+import CampaignFrame from '../../campaigns/[slug]/CampaignFrame';
 import { getStockImage } from '@/data/stock-images';
 import BookingButton from '@/components/BookingButton';
 import BuyProgrammeButton from '@/components/BuyProgrammeButton';
@@ -72,13 +73,24 @@ function splitParagraphs(s?: string | null): string[] {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const items = await getExperiences();
+  const [items, htmlOverride] = await Promise.all([
+    getExperiences(),
+    getCustomHtmlLanding(slug),
+  ]);
   const item = items.find((e) => e.slug === slug);
   if (!item) return { title: 'Experience Not Found' };
-  const title = item.seoTitle || `${item.name} — Anna Lou Wellness`;
-  const desc = item.seoDescription
-    || (item.description || '').slice(0, 160)
-    || `${item.name}. Book direct with Anna Lou.`;
+  // When the override HTML page exists, prefer its SEO copy (Anna wrote it
+  // for the campaign specifically); otherwise fall back to the Experience
+  // entry's SEO fields, then to auto-derived copy.
+  const title =
+    (htmlOverride?.seoTitle && htmlOverride.seoTitle.trim()) ||
+    item.seoTitle ||
+    `${item.name} — Anna Lou Wellness`;
+  const desc =
+    (htmlOverride?.seoDescription && htmlOverride.seoDescription.trim()) ||
+    item.seoDescription ||
+    (item.description || '').slice(0, 160) ||
+    `${item.name}. Book direct with Anna Lou.`;
   return {
     title,
     description: desc,
@@ -88,13 +100,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ExperienceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const [items, reviews, faqs] = await Promise.all([
+  const [items, reviews, faqs, htmlOverride] = await Promise.all([
     getExperiences(),
     getTestimonials({ tag: slug }),
     getFAQs({ page: slug }),
+    // Anna 13 Aug: same pattern as /reset-letters. If there's a Custom HTML
+    // Landing entry with a slug matching this experience, render its raw
+    // HTML instead of the auto-generated experience page. Lets Anna publish
+    // rich hand-designed sales pages (The Big Exhale Retreat) without
+    // dropping out of the Retreats grid — the Experience entry still
+    // powers the card + breadcrumbs + booking metadata, the HTML override
+    // just replaces the detail body.
+    getCustomHtmlLanding(slug),
   ]);
   const item = items.find((e) => e.slug === slug);
   if (!item) notFound();
+
+  if (htmlOverride && htmlOverride.rawHtml.trim()) {
+    return (
+      <CampaignFrame
+        html={htmlOverride.rawHtml}
+        height={htmlOverride.iframeHeight || 'auto'}
+        hideChrome={!htmlOverride.showSiteNav}
+        title={htmlOverride.title || item.name}
+      />
+    );
+  }
 
   const type = item.type || 'workshop';
   const accent = TYPE_ACCENT[type] || '#6E3A5A';
