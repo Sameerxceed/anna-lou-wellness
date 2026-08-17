@@ -162,6 +162,22 @@ footer a{color:var(--plum)}
 </div>
 <script>
 (function(){
+  // Anchor buttons like CLAIM MY FREE PLACE / COME IN use href="#e".
+  // Default browser behaviour just jumps to the input — imperceptible on
+  // desktop and doesn't focus the field on mobile. Intercept: smooth-scroll
+  // the input into view AND focus it so the keyboard opens on mobile and
+  // the cursor is clearly in the field on desktop.
+  var scrollLinks=document.querySelectorAll('a[href="#e"]');
+  scrollLinks.forEach(function(a){
+    a.addEventListener('click',function(ev){
+      ev.preventDefault();
+      var target=document.getElementById('e');
+      if(!target)return;
+      target.scrollIntoView({behavior:'smooth',block:'center'});
+      // Focus after the scroll settles — 400ms covers most smooth-scroll durations
+      setTimeout(function(){try{target.focus({preventScroll:true});}catch(_){target.focus();}},450);
+    });
+  });
   var t=document.getElementById('tally'),T=500;
   var n=Math.min(parseInt(t.dataset.taken,10)||0,T);
   document.getElementById('left').textContent=T-n;
