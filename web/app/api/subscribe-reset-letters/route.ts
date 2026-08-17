@@ -25,9 +25,48 @@ import { verifyTurnstile } from '@/lib/turnstile';
 
 const LAUNCH_DATE = new Date(process.env.RESET_LETTERS_LAUNCH_DATE || '2026-06-22T00:00:00Z');
 const SUBSTACK_URL = process.env.SUBSTACK_PUBLICATION_URL || 'https://annalouwellness.substack.com';
+const FOUNDING_CAP = Number(process.env.RESET_LETTERS_FOUNDING_CAP || '500');
 
-function isFoundingWindow(): boolean {
-  return new Date() < LAUNCH_DATE;
+async function isFoundingWindow(): Promise<boolean> {
+  // Original rule: founding tag active until BOTH conditions fail:
+  //   - date-based window closes (default 22 Jun 2026) AND
+  //   - founding count reaches the 500 cap
+  // Original code only checked date. Anna 14 Aug: launch date has
+  // passed but the 500-subscriber cap has NOT — so new signups were
+  // getting "Standard Subscribers" tag and her Founding Members
+  // welcome journey was not firing. Fixed: if under cap we still
+  // give founding regardless of date. Once cap is reached, we
+  // switch to Standard for good.
+  if (new Date() < LAUNCH_DATE) return true;
+  const count = await countFoundingMembers();
+  return count < FOUNDING_CAP;
+}
+
+async function countFoundingMembers(): Promise<number> {
+  const apiKey = process.env.MAILCHIMP_API_KEY;
+  const listId = process.env.MAILCHIMP_LIST_ID;
+  const tagName = process.env.MAILCHIMP_TAG_FOUNDING || 'Founding Members';
+  if (!apiKey || !listId) return Number.MAX_SAFE_INTEGER; // fail closed → Standard
+  const dc = apiKey.split('-').pop();
+  if (!dc) return Number.MAX_SAFE_INTEGER;
+  try {
+    // Segment tag members via /segments — cheapest way to get a count.
+    // Fetching /members with a tag filter returns full member objects and
+    // is wasteful when we only want total_items.
+    const res = await fetch(
+      `https://${dc}.api.mailchimp.com/3.0/lists/${listId}/members?count=1&fields=total_items&tag_name=${encodeURIComponent(tagName)}`,
+      {
+        headers: {
+          Authorization: 'Basic ' + Buffer.from('any:' + apiKey).toString('base64'),
+        },
+      },
+    );
+    if (!res.ok) return Number.MAX_SAFE_INTEGER;
+    const j = await res.json();
+    return Number(j?.total_items) || 0;
+  } catch {
+    return Number.MAX_SAFE_INTEGER;
+  }
 }
 
 async function pushToMailchimp(email: string, firstName: string, founding: boolean) {
@@ -141,7 +180,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const founding = isFoundingWindow();
+  const founding = await isFoundingWindow();
 
   const [mailchimp, substack] = await Promise.all([
     pushToMailchimp(email, firstName, founding),

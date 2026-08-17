@@ -182,10 +182,7 @@ footer a{color:var(--plum)}
     .then(function(res){
       if(res.ok){
         // Success — replace form with a thank-you note in place
-        var box=document.getElementById('f').parentNode;
-        box.innerHTML='<p style=\"font-family:var(--head),sans-serif;font-size:18px;color:var(--plum);line-height:1.5;margin:20px 0;\">You're in. Check your inbox for a welcome note.<br><span style=\"font-size:14px;color:var(--muted);\">'+(res.body.founding?'Founding member — free for life.':'Subscribed.')+'</span></p>';
-      } else {
-        e.value='';
+        var box=document.getElementById('f').parentNode;box.innerHTML='';var wrap=document.createElement('div');wrap.style.cssText='font-family:var(--head),sans-serif;font-size:18px;color:var(--plum);line-height:1.5;margin:20px 0;text-align:center;';var line1=document.createElement('p');line1.textContent='You are in. Check your inbox for a welcome note.';var line2=document.createElement('p');line2.style.cssText='font-size:14px;color:var(--muted);margin-top:8px;';line2.textContent=res.body.founding?'Founding member — free for life.':'Subscribed.';wrap.appendChild(line1);wrap.appendChild(line2);box.appendChild(wrap);
         if(btn){btn.disabled=false;if(btn.textContent!==undefined)btn.textContent=origLabel;else btn.value=origLabel;}
         alert((res.body&&res.body.error)||'Something went wrong. Please try again or email hello@annalouwellness.com');
       }
