@@ -46,26 +46,34 @@ async function countFoundingMembers(): Promise<number> {
   const apiKey = process.env.MAILCHIMP_API_KEY;
   const listId = process.env.MAILCHIMP_LIST_ID;
   const tagName = process.env.MAILCHIMP_TAG_FOUNDING || 'Founding Members';
-  if (!apiKey || !listId) return Number.MAX_SAFE_INTEGER; // fail closed → Standard
+  // Fail OPEN — if we can't determine the count, assume under cap and
+  // tag as Founding. This is safer for the current launch phase where
+  // Anna's list is small and she'd rather over-give the founding
+  // benefit than under-tag people the Mailchimp welcome journey
+  // depends on. Once she's confidently past 500 signups, flip this
+  // logic or set RESET_LETTERS_FOUNDING_CAP=0 to force Standard.
+  if (!apiKey || !listId) return 0;
   const dc = apiKey.split('-').pop();
-  if (!dc) return Number.MAX_SAFE_INTEGER;
+  if (!dc) return 0;
+  const auth = 'Basic ' + Buffer.from('any:' + apiKey).toString('base64');
   try {
-    // Segment tag members via /segments — cheapest way to get a count.
-    // Fetching /members with a tag filter returns full member objects and
-    // is wasteful when we only want total_items.
-    const res = await fetch(
-      `https://${dc}.api.mailchimp.com/3.0/lists/${listId}/members?count=1&fields=total_items&tag_name=${encodeURIComponent(tagName)}`,
-      {
-        headers: {
-          Authorization: 'Basic ' + Buffer.from('any:' + apiKey).toString('base64'),
-        },
-      },
+    // Mailchimp tags are stored as segments of type 'static'. First look
+    // up the segment id by tag name, then read total_items on that
+    // segment (cheapest possible count query).
+    const segRes = await fetch(
+      `https://${dc}.api.mailchimp.com/3.0/lists/${listId}/segments?type=static&count=1000&fields=segments.id,segments.name,segments.member_count`,
+      { headers: { Authorization: auth } },
     );
-    if (!res.ok) return Number.MAX_SAFE_INTEGER;
-    const j = await res.json();
-    return Number(j?.total_items) || 0;
+    if (!segRes.ok) return 0;
+    const segJ = await segRes.json();
+    const match = (segJ?.segments || []).find(
+      (s: { name?: string }) =>
+        (s?.name || '').toLowerCase() === tagName.toLowerCase(),
+    );
+    if (!match) return 0; // tag doesn't exist yet → nobody has it
+    return Number((match as { member_count?: number }).member_count) || 0;
   } catch {
-    return Number.MAX_SAFE_INTEGER;
+    return 0;
   }
 }
 
