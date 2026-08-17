@@ -1,6 +1,6 @@
 # Anna Lou Wellness â€” User Manual
 
-**Version 1.27 â€” Updated 13 August 2026**
+**Version 1.28 â€” Updated 17 August 2026**
 
 This is your complete reference for running the website day-to-day. Keep it bookmarked. Anything not covered here, message Sameer.
 
@@ -3668,6 +3668,40 @@ Everything the site does automatically is built. What's left is what Anna needs 
 3. **CMS Email Template copy:** open each of the 14 rows in Â§18.11 in Content Manager â†’ Email Template. Proofread subject / preheader / intro / outro / CTA. Save & Publish.
 4. **Env vars in Coolify:** confirm on the frontend service â€” `MAILCHIMP_API_KEY`, `MAILCHIMP_LIST_ID`, `RESEND_API_KEY`, `EMAIL_FROM` (change from onboarding@resend.dev for prod), `CALENDLY_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
 5. **Calendly webhook:** Calendly â†’ Integrations â†’ Webhooks â†’ Create. URL `https://annalouwellness.com/api/calendly/webhook`. Subscribe to `invitee.created`. Paste the signing key into Coolify as `CALENDLY_WEBHOOK_SECRET`.
+
+### 17.59 Editing buttons and links inside a Custom HTML Landing page (14 Aug 2026)
+
+Cheat sheet for changing, adding or removing button links inside any pasted HTML page (Reset Letters, The Big Exhale Retreat, campaigns).
+
+**Where to edit:** CMS â†’ Content Manager â†’ Custom HTML Landing â†’ open the page â†’ scroll to Raw HTML. Use Ctrl+F / Cmd+F inside the Raw HTML box to find the button label (e.g. "COME IN"). Save and Publish and the change is live in seconds.
+
+**What a button looks like:** every button is a chunk starting with `<a` and ending with `</a>`. Example: `<a class="btn2" href="/community/reset-room">JOIN THE RESET ROOM</a>`. The `href="..."` is the destination; the text between `>` and `</a>` is what people see.
+
+**Four kinds of link:**
+1. Internal page on our site â€” start with `/`, no domain. Example: `href="/community/reset-room"`.
+2. Section on the same page â€” use `#` + an id. Ask Sameer once to add the id to the section, then any button can point at it. Example: `href="#reset-room-block"`.
+3. External site â€” full URL with `https://`. Example: `href="https://resetletters.substack.com"`.
+4. Open in a new tab â€” add `target="_blank"` inside the `<a` tag. Recommended for external sites so people do not lose our page.
+
+**Change button text:** edit whatever sits between `>` and `</a>`. Example: change "COME IN" to "SIGN ME UP" â€” find `<a class="btn2" href="#e">COME IN</a>`, replace COME IN with SIGN ME UP.
+
+**Add a new button:** copy an existing full `<a class="btn2" ...>TEXT</a>` line, paste where you want it, change the text and href.
+
+**Common internal URLs on this site:**
+
+| URL | Page |
+|---|---|
+| `/reset-letters` | Reset Letters holding page |
+| `/community/reset-room` | Reset Room community |
+| `/experiences/retreats` | All retreats |
+| `/experiences/workshops` | All workshops |
+| `/the-work` | Work with Anna hub |
+| `/shop` | Shop |
+| `/reset-stories` | Reset Stories blog |
+| `/about` | About page |
+| `/contact` | Contact page |
+
+**Before saving:** if you are unsure, screenshot the HTML block before you edit so you can paste it back. If a change breaks the page, delete your edit or paste the original back and Save.
 
 ### 17.58 Listing a Custom HTML page under Experiences / Retreats / Workshops (13 Aug 2026)
 
