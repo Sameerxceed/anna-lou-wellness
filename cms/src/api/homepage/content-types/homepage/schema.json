@@ -67,22 +67,22 @@
     "heroSubstackKicker": {
       "type": "string",
       "default": "Reset Letters",
-      "description": "HERO SUBSTACK BOX (below the hero image) — Small uppercase label at the top of the plum box."
+      "description": "PURPLE (PLUM) BANNER on the homepage — small uppercase label at the top of the box. Also called the Reset Letters banner / Join Reset Letters box / Substack promo block. Default: 'RESET LETTERS'."
     },
     "heroSubstackTitle": {
       "type": "string",
       "default": "A quiet correspondence, delivered each week.",
-      "description": "HERO SUBSTACK BOX — Main line inside the box. Keep it short — 2 lines max."
+      "description": "PURPLE (PLUM) BANNER on the homepage — big italic line in the middle of the box. Also called the Reset Letters tagline / Substack promo headline. Keep it short (2 lines max). Default: 'A quiet correspondence, delivered each week.'"
     },
     "heroSubstackCtaLabel": {
       "type": "string",
       "default": "Join Reset Letters",
-      "description": "HERO SUBSTACK BOX — Button label inside the box."
+      "description": "PURPLE (PLUM) BANNER on the homepage — yellow button label. Default: 'Join Reset Letters'."
     },
     "heroSubstackCtaUrl": {
       "type": "string",
       "default": "/reset-letters",
-      "description": "HERO SUBSTACK BOX — Where the button links to. Default is the on-site signup page; can be swapped to a direct Substack URL."
+      "description": "PURPLE (PLUM) BANNER on the homepage — where the yellow button goes when clicked. Default '/reset-letters' points to the on-site signup page. Change to your Substack URL if you'd rather send people direct."
     },
     "featuredFallbackTitle": {
       "type": "string",
