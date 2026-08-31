@@ -54,7 +54,24 @@ export default function CampaignJumpNav({
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [siteHeaderH, setSiteHeaderH] = useState(0);
   const navRef = useRef<HTMLElement>(null);
+
+  // Site header (#mainNav) is sticky at top:0. Measure its height so the
+  // jump nav sits directly beneath it instead of overlapping.
+  useEffect(() => {
+    const measure = () => {
+      const el = document.getElementById('mainNav');
+      setSiteHeaderH(el ? el.getBoundingClientRect().height : 0);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    const interval = window.setInterval(measure, 1500);
+    return () => {
+      window.removeEventListener('resize', measure);
+      window.clearInterval(interval);
+    };
+  }, []);
 
   // Resolve sections by finding matching headings inside the iframe.
   // Retries as the iframe content loads.
@@ -139,11 +156,12 @@ export default function CampaignJumpNav({
       if (!iframe || !target) return;
       const iframeTop = iframe.getBoundingClientRect().top + window.pageYOffset;
       const navHeight = navRef.current?.offsetHeight || 0;
-      const targetY = iframeTop + target.offsetTop - navHeight - extraOffset;
+      // Account for BOTH stacked bars: site header + jump nav.
+      const targetY = iframeTop + target.offsetTop - siteHeaderH - navHeight - extraOffset;
       window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
       setOpen(false);
     },
-    [iframeRef, resolved, extraOffset],
+    [iframeRef, resolved, extraOffset, siteHeaderH],
   );
 
   const handleBookClick = useCallback(
@@ -158,14 +176,14 @@ export default function CampaignJumpNav({
         if (target && iframe) {
           const iframeTop = iframe.getBoundingClientRect().top + window.pageYOffset;
           const navHeight = navRef.current?.offsetHeight || 0;
-          const targetY = iframeTop + target.offsetTop - navHeight - extraOffset;
+          const targetY = iframeTop + target.offsetTop - siteHeaderH - navHeight - extraOffset;
           window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
         }
         setOpen(false);
       }
       // otherwise let the anchor navigate normally
     },
-    [bookHref, iframeRef, extraOffset],
+    [bookHref, iframeRef, extraOffset, siteHeaderH],
   );
 
   const activeLabel = useMemo(
@@ -182,6 +200,7 @@ export default function CampaignJumpNav({
         ref={navRef}
         className={`cj-nav${visible ? ' cj-visible' : ''}${open ? ' cj-open' : ''}`}
         aria-label="Sections of this page"
+        style={{ top: siteHeaderH }}
       >
         <div className="cj-inner">
           <button
