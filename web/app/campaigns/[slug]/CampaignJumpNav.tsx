@@ -114,13 +114,21 @@ export default function CampaignJumpNav({
     if (!iframe) return;
 
     const onScroll = () => {
-      setVisible(window.pageYOffset > showAfter);
+      // Show the nav only when the visitor has scrolled far enough INTO the
+      // retreat content that the iframe's top has slipped under the site
+      // header — i.e. the retreat content occupies the top of the viewport.
+      // A fixed pixel threshold (Anna's original 600) misfired on tall
+      // hero images and on mobile where the fold is different.
+      const iframeRect = iframe.getBoundingClientRect();
+      const shouldShow = iframeRect.top < siteHeaderH - 20;
+      setVisible(shouldShow);
+      if (!shouldShow) return;
       // Active section = last one whose top is above the viewport midline
       const midline = window.pageYOffset + window.innerHeight * 0.35;
-      const iframeTop = iframe.getBoundingClientRect().top + window.pageYOffset;
+      const iframeTopAbs = iframeRect.top + window.pageYOffset;
       let idx = 0;
       for (let i = 0; i < resolved.length; i++) {
-        const yInParent = iframeTop + resolved[i].el.offsetTop;
+        const yInParent = iframeTopAbs + resolved[i].el.offsetTop;
         if (yInParent <= midline) idx = i;
         else break;
       }
