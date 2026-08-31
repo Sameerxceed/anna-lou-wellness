@@ -255,7 +255,11 @@ export default function CampaignJumpNav({
 
 const styles = `
 :root { --cj-bg:#F5F2ED; --cj-ink:#2E1B2C; --cj-plum:#5C2A50; --cj-muted:#7A6B76; --cj-line:rgba(46,27,44,0.16); --cj-gold:#E0A32E; }
-.cj-nav { position:fixed; top:0; left:0; right:0; z-index:900; background:var(--cj-bg); border-bottom:1px solid var(--cj-line); transform:translateY(-102%); transition:transform 260ms ease; font-family:'Work Sans',system-ui,sans-serif; }
+/* z-index 90 keeps the jump nav BELOW the sticky site header (z-index 100)
+   so header dropdowns like WORK & MONEY extend down over the jump nav
+   without being cropped. No visual overlap during normal scroll because
+   the nav is positioned at top: siteHeaderH. */
+.cj-nav { position:fixed; top:0; left:0; right:0; z-index:90; background:var(--cj-bg); border-bottom:1px solid var(--cj-line); transform:translateY(-102%); transition:transform 260ms ease; font-family:'Work Sans',system-ui,sans-serif; }
 .cj-nav.cj-visible { transform:translateY(0); }
 .cj-inner { max-width:1180px; margin:0 auto; padding:0 20px; display:flex; align-items:center; gap:16px; min-height:54px; }
 .cj-toggle { flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:10px; background:none; border:0; padding:15px 0; font:inherit; font-size:15px; color:var(--cj-ink); cursor:pointer; text-align:left; }
