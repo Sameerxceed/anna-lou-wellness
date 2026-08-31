@@ -50,6 +50,7 @@ export default async function CampaignPage({ params }: Props) {
       height={entry.iframeHeight}
       hideChrome={!entry.showSiteNav}
       title={entry.title}
+      jumpNav={entry.jumpNav}
     />
   );
 }

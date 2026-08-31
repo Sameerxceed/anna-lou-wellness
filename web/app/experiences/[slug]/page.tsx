@@ -123,6 +123,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
         height={htmlOverride.iframeHeight || 'auto'}
         hideChrome={!htmlOverride.showSiteNav}
         title={htmlOverride.title || item.name}
+        jumpNav={htmlOverride.jumpNav}
       />
     );
   }

@@ -1418,6 +1418,46 @@ export interface CustomHtmlLanding {
   /** Full URLs of images uploaded to the entry's `images` field, in order.
    *  Substituted into rawHtml via {{image_N}} tokens (1-indexed). */
   imageUrls: string[];
+  /** Parsed jump-nav config. Null when the field is blank or fewer than 3
+   *  sections resolved. See CampaignJumpNav for behaviour. */
+  jumpNav: {
+    sections: { match: string; label: string }[];
+    bookHref: string;
+    bookText: string;
+  } | null;
+}
+
+/**
+ * Parse a `jump_nav_config` field into structured sections + book CTA.
+ * Format: one line per entry, pipe-separated `Label | match text`.
+ * A line where the label is exactly `BOOK` (case-insensitive) is treated
+ * as the pinned book button; its match value becomes the href. Returns
+ * null when fewer than 3 real sections are present (below the minimum
+ * threshold enforced client-side too).
+ */
+function parseJumpNavConfig(raw: string): CustomHtmlLanding['jumpNav'] {
+  const text = raw.trim();
+  if (!text) return null;
+  const sections: { match: string; label: string }[] = [];
+  let bookHref = '#book';
+  let bookText = 'Book a room';
+  for (const line of text.split('\n')) {
+    const parts = line.split('|').map((p) => p.trim());
+    if (parts.length < 2) continue;
+    const [label, value] = parts;
+    if (!label || !value) continue;
+    if (label.toUpperCase() === 'BOOK') {
+      bookHref = value;
+      continue;
+    }
+    if (label.toUpperCase() === 'BOOKTEXT' || label.toUpperCase() === 'BOOK_TEXT') {
+      bookText = value;
+      continue;
+    }
+    sections.push({ label, match: value });
+  }
+  if (sections.length < 3) return null;
+  return { sections, bookHref, bookText };
 }
 
 export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLanding | null> {
@@ -1469,6 +1509,7 @@ export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLand
       seoTitle: d.seo_title || '',
       seoDescription: d.seo_description || '',
       imageUrls,
+      jumpNav: parseJumpNavConfig(String(d.jump_nav_config || '')),
     };
   } catch {
     return null;

@@ -1,12 +1,21 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import CampaignJumpNav, { type JumpNavSection } from './CampaignJumpNav';
 
 interface Props {
   html: string;
   height: string;
   hideChrome: boolean;
   title: string;
+  /** Optional sticky section-nav config. When ≥3 sections resolve inside
+   *  the iframe, a nav bar renders at the parent level (position:fixed
+   *  works properly there). See CampaignJumpNav for the resolution rule. */
+  jumpNav?: {
+    sections: JumpNavSection[];
+    bookHref: string;
+    bookText: string;
+  } | null;
 }
 
 /**
@@ -20,7 +29,7 @@ interface Props {
  * When hideChrome is true, we add a body class the root layout's global
  * CSS uses to hide <nav> + <footer> for a distraction-free landing.
  */
-export default function CampaignFrame({ html, height, hideChrome, title }: Props) {
+export default function CampaignFrame({ html, height, hideChrome, title, jumpNav }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [autoHeight, setAutoHeight] = useState<string>('1200px');
 
@@ -60,6 +69,14 @@ export default function CampaignFrame({ html, height, hideChrome, title }: Props
 
   return (
     <div style={{ width: '100%', margin: 0, padding: 0 }}>
+      {jumpNav && jumpNav.sections.length >= 3 && (
+        <CampaignJumpNav
+          iframeRef={iframeRef}
+          sections={jumpNav.sections}
+          bookHref={jumpNav.bookHref}
+          bookText={jumpNav.bookText}
+        />
+      )}
       <iframe
         ref={iframeRef}
         srcDoc={html}

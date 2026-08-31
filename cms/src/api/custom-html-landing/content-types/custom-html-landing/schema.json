@@ -49,6 +49,10 @@
       "allowedTypes": ["images"],
       "description": "Upload the images used inside your HTML in the ORDER they should appear (1st upload = image 1, 2nd = image 2, etc.). Two ways to reference them in the HTML body: (a) type tokens like {{image_1}}, {{image_2}} where you want each image. Example: <img src=\"{{image_1}}\" alt=\"...\">. (b) If your pasted HTML already has relative paths like <img src=\"IMAGES/01-something.jpg\">, the site auto-swaps the 01/02/... prefix for uploaded image 1/2/... — no need to edit the HTML. Both patterns are case-insensitive."
     },
+    "jump_nav_config": {
+      "type": "text",
+      "description": "Optional sticky JUMP NAV bar for long HTML pages (e.g. retreat sales pages). Adds a slim bar at the top of the browser that lets visitors jump to specific sections + a book button pinned right. Format: one line per section as `Label | match text`. The 'match text' is any snippet of the section's heading (case-insensitive). Add a final line `BOOK | #anchor-id` (or `BOOK | https://...`) for the pinned button. Example: `The days | held from start to finish` on one line, `Rooms and prices | choose your room` on another, `BOOK | #book` last. Leave blank to hide the bar."
+    },
     "focus_keyword": {
       "type": "string",
       "description": "The ONE phrase you most want this campaign page to rank for on Google. Example: 'anna lou toni nagy feral and free'. Feeds into the auto-generated SEO title + description on Save."
