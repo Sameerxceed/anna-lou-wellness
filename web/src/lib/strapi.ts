@@ -77,10 +77,10 @@ export function mediaUrl(media: any, size: MediaSize = 'original'): string {
 }
 
 /** Extract URLs from a Strapi media array (multiple files field) */
-export function mediaUrls(media: any): string[] {
+export function mediaUrls(media: any, size: MediaSize = 'original'): string[] {
   if (!media) return [];
-  if (Array.isArray(media)) return media.map(m => mediaUrl(m)).filter(Boolean);
-  if (media.url) return [mediaUrl(media)];
+  if (Array.isArray(media)) return media.map(m => mediaUrl(m, size)).filter(Boolean);
+  if (media.url) return [mediaUrl(media, size)];
   return [];
 }
 

@@ -54,9 +54,12 @@ export default function AccountSidebar({ greeting, email }: Props) {
         </nav>
         <div className="acct-sidebar-foot">
           <Link href="/account/wishlist" className="acct-sidebar-secondary">Wishlist</Link>
-          <form action="/api/auth/logout" method="post">
-            <button type="submit" className="acct-sidebar-signout">Sign out</button>
-          </form>
+          {/* GET (not POST): the /api/auth/logout POST handler returns
+              raw JSON {ok:true} for fetch-based callers; the GET handler
+              clears the cookie AND redirects to /. Using a plain anchor
+              means the browser follows the redirect back to the homepage
+              instead of stopping on the JSON response. */}
+          <a href="/api/auth/logout" className="acct-sidebar-signout" role="button">Sign out</a>
         </div>
       </aside>
       <style jsx>{`
@@ -123,6 +126,7 @@ export default function AccountSidebar({ greeting, email }: Props) {
         }
         .acct-sidebar-secondary:hover { color: #6E3A5A; }
         .acct-sidebar-signout {
+          display: block;
           background: none;
           border: 1px solid #c8c4bc;
           color: #4a4640;
@@ -131,9 +135,12 @@ export default function AccountSidebar({ greeting, email }: Props) {
           font-size: 0.62rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
+          text-align: center;
+          text-decoration: none;
           padding: 0.7rem 1rem;
           cursor: pointer;
           width: 100%;
+          box-sizing: border-box;
           transition: border-color 0.2s, color 0.2s;
         }
         .acct-sidebar-signout:hover { border-color: #6E3A5A; color: #6E3A5A; }

@@ -135,7 +135,12 @@ export async function getProducts(): Promise<Product[]> {
       descriptionBlocks: Array.isArray(d.description_v2) && d.description_v2.length > 0 ? d.description_v2 : null,
       price: d.price,
       category: d.category?.slug || '',
-      images: mediaUrls(d.images),
+      // Use 'large' (1200px) variant instead of full original upload.
+      // Same URL is used on shop grid cards + PDP hero — 1200px covers
+      // both. mediaUrl falls back to original if the variant is missing,
+      // so no risk. Was pulling multi-MB originals for every card in
+      // the shop grid.
+      images: mediaUrls(d.images, 'large'),
       stock: d.stock ?? 0,
       isFeatured: d.is_featured || false,
       isActive: d.is_active !== false,
@@ -176,7 +181,10 @@ export async function getHomepageFeaturedProducts(limit: number = 3): Promise<Ho
       slug: d.slug,
       name: d.name || '',
       hook: d.homepage_hook || '',
-      image: mediaUrl(Array.isArray(d.images) ? d.images[0] : d.images),
+      // Card thumbnail on the homepage — 'medium' variant (750px) is plenty
+      // and is 5-10x smaller than the original upload. Was pulling full-res
+      // 2-5MB jewellery photos on every homepage visit.
+      image: mediaUrl(Array.isArray(d.images) ? d.images[0] : d.images, 'medium'),
       price: typeof d.price === 'number' ? d.price : Number(d.price ?? 0),
     }));
   } catch {
