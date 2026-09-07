@@ -61,8 +61,11 @@ export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | n
     // `populate[upsells][populate]=*` in the same query throws 500
     // InternalServerError. Fix: use explicit per-field populates only.
     // See memory feedback_strapi_v5_populate_collision.md.
-    // noCache: Anna 24 Jul — programme sales pages need edits to reflect
-    // within the request. Same fix pattern as RC page.
+    // Removed noCache 2026-09-07 — same perf hit as getSiteSettings: this
+    // was called on every programme-page render (~1-2s per Strapi round-
+    // trip). Programme lifecycle hook already fires revalidate on save,
+    // so ISR cache reflects edits within seconds. See global CLAUDE.md
+    // "SSR Performance" section.
     const { data } = await fetchAPI(
       '/programmes',
       {
@@ -71,7 +74,6 @@ export async function getProgrammeBySlug(slug: string): Promise<ProgrammeCMS | n
         'populate[heroImage]': 'true',
         'populate[upsells][populate][image]': 'true',
       },
-      { noCache: true },
     );
     if (Array.isArray(data) && data.length > 0) return data[0] as ProgrammeCMS;
     return null;

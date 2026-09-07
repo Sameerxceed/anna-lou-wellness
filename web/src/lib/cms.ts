@@ -864,7 +864,7 @@ function mapArticle(d: any): Article {
     slug: d.slug || '',
     excerpt: d.excerpt || '',
     body: preferBlocks ?? legacyBody,
-    heroImage: mediaUrl(d.hero_image),
+    heroImage: mediaUrl(d.hero_image, 'large'),
     category: d.category ? {
       name: d.category.name,
       slug: d.category.slug,
@@ -1072,7 +1072,7 @@ export async function getCoachingSessions(): Promise<CoachingSession[]> {
       priceLabel: d.price_label || '',
       tagline: d.tagline || '',
       accentColour: d.accent_colour || '#FAA21B',
-      heroImage: mediaUrl(d.hero_image),
+      heroImage: mediaUrl(d.hero_image, 'large'),
       isActive: d.is_active !== false,
       sortOrder: d.sort_order || 0,
     }));
@@ -1196,7 +1196,7 @@ export async function getExperiences(type?: string): Promise<Experience[]> {
       location: d.location || '',
       price: d.price ?? null,
       priceLabel: d.price_label || '',
-      heroImage: mediaUrl(d.hero_image),
+      heroImage: mediaUrl(d.hero_image, 'large'),
       isUpcoming: d.is_upcoming !== false,
       bookingUrl: d.booking_url || '',
       seoTitle: d.seo_title || '',
@@ -1525,7 +1525,7 @@ export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLand
       rawHtml,
       iframeHeight: d.iframe_height || 'auto',
       showSiteNav: d.show_site_nav !== false,
-      heroImage: d.hero_image ? mediaUrl(d.hero_image) : null,
+      heroImage: d.hero_image ? mediaUrl(d.hero_image, 'large') : null,
       seoTitle: d.seo_title || '',
       seoDescription: d.seo_description || '',
       imageUrls,
@@ -1791,7 +1791,7 @@ export async function getMembership(): Promise<Membership | null> {
       features: Array.isArray(d.features)
         ? d.features.map((f: any) => (typeof f === 'string' ? f : String(f?.text || ''))).filter(Boolean)
         : [],
-      heroImage: mediaUrl(d.hero_image),
+      heroImage: mediaUrl(d.hero_image, 'large'),
       slug: 'reset-room',
       href: '/community/reset-room',
     };

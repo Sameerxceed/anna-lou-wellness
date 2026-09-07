@@ -109,7 +109,14 @@ export default function ShopGrid({ products, categoryTree, initialParent = ALL_S
 
       <div className="grid grid-cols-4 gap-6 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 mt-8">
         {filtered.map((product) => {
-          const productImg = product.images[0] || getStockImage('product', product.slug);
+          // Prefer the product's real photo. If Anna has not uploaded one
+          // yet, show a plain branded placeholder rather than a stock
+          // jewellery photo — the stock pool has only 4 images and cycles
+          // across dozens of products, so multiple cards ended up showing
+          // the same misleading photo. Empty placeholder signals clearly
+          // which products still need Anna's photography.
+          const productImg = product.images[0] || '';
+          const hasImage = Boolean(productImg);
           return (
             <div key={product.slug} className="group reveal">
               <div style={{ position: 'relative' }}>
@@ -122,13 +129,24 @@ export default function ShopGrid({ products, categoryTree, initialParent = ALL_S
                   variant="card"
                 />
                 <Link href={`/shop/${product.slug}`} className="block">
-                  <div className="aspect-square overflow-hidden mb-4 bg-cream">
-                    <img
-                      src={productImg}
-                      alt={product.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                  <div className="aspect-square overflow-hidden mb-4 bg-cream flex items-center justify-center">
+                    {hasImage ? (
+                      <img
+                        src={productImg}
+                        alt={product.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-center px-4" style={{ background: 'linear-gradient(135deg, #F5F0E8, #ECE6DC)' }}>
+                        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '0.95rem', color: '#6E3A5A', lineHeight: 1.25, marginBottom: '0.35rem' }}>
+                          {product.name}
+                        </div>
+                        <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#a89e91' }}>
+                          Photo coming soon
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </Link>
               </div>
