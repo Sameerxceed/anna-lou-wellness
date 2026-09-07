@@ -37,6 +37,8 @@ export default async function AddressesPage() {
       <DefaultAddressForm
         initial={user.default_address || null}
         initialPhone={user.phone || null}
+        initialFirstName={user.firstName || null}
+        initialLastName={user.lastName || null}
       />
     </div>
   );

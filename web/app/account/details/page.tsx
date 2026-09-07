@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getSession } from '@/lib/auth';
+import ProfileForm from '@/components/ProfileForm';
 
 export const metadata: Metadata = {
   title: 'Account details — Anna Lou Wellness',
@@ -10,11 +11,10 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 /**
- * /account/details — read-only profile summary.
- *
- * Launch scope keeps this view-only (name/email/phone/membership status).
- * Full profile editing (change name, change password) lands in the next
- * session. Password reset already works via /login/forgot.
+ * /account/details — editable profile (name + phone) + read-only
+ * membership summary. Editing name/phone POSTs to /api/account/profile.
+ * Email changes still require support (Strapi identifier changes are
+ * risky and email doubles as login).
  */
 export default async function AccountDetailsPage() {
   const session = await getSession();
@@ -22,7 +22,6 @@ export default async function AccountDetailsPage() {
   const { user, isMember, hasRegulatedAccess } = session;
 
   const memberSince = user.memberSince ? new Date(user.memberSince) : null;
-  const nameDisplay = [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || '—';
 
   return (
     <div>
@@ -31,17 +30,17 @@ export default async function AccountDetailsPage() {
         Your profile
       </h1>
       <p style={{ fontFamily: "'Lora', serif", fontSize: '0.95rem', color: '#6e6a62', margin: '0 0 2rem' }}>
-        Basic info we have on file. Editing lands next — for now, email us at{' '}
-        <a href="mailto:hello@annalouwellness.com" style={{ color: '#c4704a' }}>hello@annalouwellness.com</a>{' '}
-        to change anything here.
+        Update your name and phone here. To change your email, message us at{' '}
+        <a href="mailto:hello@annalouwellness.com" style={{ color: '#c4704a' }}>hello@annalouwellness.com</a>.
       </p>
 
-      <div style={{ border: '1px solid #ece6dc' }}>
-        <Row label="Name" value={nameDisplay} />
-        <Row label="Email" value={user.email} />
-        <Row label="Phone" value={user.phone || '—'} />
-        <Row label="Username" value={user.username || '—'} muted />
-      </div>
+      <ProfileForm
+        initialFirstName={user.firstName}
+        initialLastName={user.lastName}
+        initialPhone={user.phone}
+        email={user.email}
+        username={user.username}
+      />
 
       <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', color: '#1a1a18', margin: '2.5rem 0 1rem' }}>Access &amp; membership</h2>
       <div style={{ border: '1px solid #ece6dc' }}>

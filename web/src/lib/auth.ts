@@ -17,6 +17,8 @@ const COOKIE_NAME = 'rr_session';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 export type DefaultAddress = {
+  first_name?: string;
+  last_name?: string;
   line1?: string;
   line2?: string;
   city?: string;

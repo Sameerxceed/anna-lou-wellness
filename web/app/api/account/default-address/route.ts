@@ -18,6 +18,8 @@ const STRAPI_URL = process.env.STRAPI_URL || process.env.NEXT_PUBLIC_STRAPI_URL 
 const COOKIE_NAME = 'rr_session';
 
 type SaveBody = {
+  first_name?: string;
+  last_name?: string;
   line1?: string;
   line2?: string;
   city?: string;
@@ -52,7 +54,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const firstName = String(body.first_name || '').trim();
+  const lastName = String(body.last_name || '').trim();
   const defaultAddress = {
+    first_name: firstName || undefined,
+    last_name: lastName || undefined,
     line1,
     line2: String(body.line2 || '').trim() || undefined,
     city,
@@ -89,10 +95,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Also mirror the customer name onto the user record itself so the
+  // sidebar greeting + /account/details show something friendlier than
+  // the shop-signup auto-username. Only overwrite if the user has not
+  // set a name yet — don't silently trample their profile.
   const updateBody: Record<string, unknown> = { default_address: defaultAddress };
   if (typeof body.phone === 'string') {
     updateBody.phone = body.phone.trim() || null;
   }
+  const meFull = await fetch(`${STRAPI_URL}/api/users/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: 'no-store',
+  }).then((r) => r.ok ? r.json() : null).catch(() => null) as { firstName?: string; lastName?: string } | null;
+  if (firstName && !meFull?.firstName) updateBody.firstName = firstName;
+  if (lastName && !meFull?.lastName) updateBody.lastName = lastName;
 
   const putRes = await fetch(`${STRAPI_URL}/api/users/${me.id}`, {
     method: 'PUT',

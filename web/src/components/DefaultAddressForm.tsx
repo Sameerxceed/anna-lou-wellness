@@ -12,6 +12,11 @@ import type { DefaultAddress } from '@/lib/auth';
 interface Props {
   initial: DefaultAddress | null;
   initialPhone: string | null;
+  // User's account-level name — used as fallback if the saved address
+  // does not carry its own first_name/last_name (older records or a
+  // fresh save where they left the name blank).
+  initialFirstName: string | null;
+  initialLastName: string | null;
 }
 
 const COUNTRIES: Array<{ code: string; name: string }> = [
@@ -43,8 +48,14 @@ const COUNTRIES: Array<{ code: string; name: string }> = [
   { code: 'OTHER', name: 'Other' },
 ];
 
-export default function DefaultAddressForm({ initial, initialPhone }: Props) {
-  const [addr, setAddr] = useState<DefaultAddress>(initial || { country: 'GB' });
+export default function DefaultAddressForm({ initial, initialPhone, initialFirstName, initialLastName }: Props) {
+  const [addr, setAddr] = useState<DefaultAddress>(
+    initial || {
+      country: 'GB',
+      first_name: initialFirstName || '',
+      last_name: initialLastName || '',
+    },
+  );
   const [phone, setPhone] = useState(initialPhone || '');
   const [mode, setMode] = useState<'view' | 'edit'>(initial?.line1 ? 'view' : 'edit');
   const [saving, setSaving] = useState(false);
@@ -102,6 +113,9 @@ export default function DefaultAddressForm({ initial, initialPhone }: Props) {
             </button>
           </div>
           <div style={{ fontFamily: "'Lora', serif", fontSize: '0.95rem', color: '#1a1a18', lineHeight: 1.6 }}>
+            {(addr.first_name || addr.last_name) && (
+              <><strong>{[addr.first_name, addr.last_name].filter(Boolean).join(' ')}</strong><br /></>
+            )}
             {addr.line1}<br />
             {addr.line2 && <>{addr.line2}<br /></>}
             {[addr.city, addr.county].filter(Boolean).join(', ')}<br />
@@ -127,6 +141,10 @@ export default function DefaultAddressForm({ initial, initialPhone }: Props) {
         <div style={{ marginBottom: '1rem', padding: '0.7rem 1rem', background: 'rgba(238,49,47,0.08)', border: '1px solid rgba(238,49,47,0.3)', color: '#a01f1d', fontFamily: "'Lora', serif", fontSize: '0.85rem' }}>{error}</div>
       )}
       <div style={{ display: 'grid', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <Field label="First name *"><input required {...bind('first_name')} style={inp} /></Field>
+          <Field label="Last name *"><input required {...bind('last_name')} style={inp} /></Field>
+        </div>
         <Field label="Address line 1 *"><input required {...bind('line1')} style={inp} /></Field>
         <Field label="Address line 2 (optional)"><input {...bind('line2')} style={inp} /></Field>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
