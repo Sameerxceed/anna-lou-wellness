@@ -67,11 +67,17 @@ export type HomepageData = Record<string, unknown> & {
 
 export async function getHomepage(): Promise<HomepageData | null> {
   try {
-    const { data: d } = await fetchAPI('/homepage', { populate: '*' });
+    // Parallelize the base homepage populate=* and the upsells deep-populate.
+    // They are independent fetches — running them sequentially cost ~2s per
+    // page render (each Strapi round-trip is ~1s cold, less warm). Combined
+    // with the site-settings noCache fix, this is the second biggest hit on
+    // homepage SSR latency.
+    const [baseRes, upsells] = await Promise.all([
+      fetchAPI('/homepage', { populate: '*' }),
+      getUpsellsForSingleton('/homepage'),
+    ]);
+    const d = baseRes?.data;
     if (!d) return null;
-    // Second fetch with deep populate just for upsells (Strapi v5 won't
-    // deep-populate the nested image when combined with `populate=*`).
-    const upsells = await getUpsellsForSingleton('/homepage');
     return { ...(d as HomepageData), upsells };
   } catch {
     return null;
@@ -339,11 +345,17 @@ export async function getContactInfo(): Promise<SiteSettings & { discoveryCall: 
 // ═══ SITE SETTINGS ═══
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    // noCache: Site Settings drive social URLs used on the homepage tiles +
-    // footer icons. Anna 24 Jul: filled youtube_url in CMS but homepage tile
-    // stayed hidden because getSiteSettings had the 24h ISR cache. Bypass so
-    // any Site Settings save reflects on next page load.
-    const { data: d } = await fetchAPI('/site-settings', { populate: '*' }, { noCache: true });
+    // getSiteSettings is called on EVERY page render (nav, footer, and
+    // individual pages that read social URLs / brand meta). It was set
+    // to noCache after Anna 24 Jul reported a youtube_url edit not
+    // appearing — but the site-settings lifecycle hook already fires
+    // site-wide revalidation on every save (see cms/src/api/site-settings
+    // /content-types/site-settings/lifecycles.js -> simpleLifecycles(['*'])).
+    // Keeping noCache was double-safe but cost ~1.5-2s per page render
+    // (Strapi populate=* round-trip). Reverted to default 24h ISR +
+    // hook-based bust — same pattern every other single-type uses.
+    // On any regression: restore { noCache: true } here as third arg.
+    const { data: d } = await fetchAPI('/site-settings', { populate: '*' });
     if (!d) return fallbackSiteSettings;
     return {
       ...fallbackSiteSettings,
