@@ -331,8 +331,9 @@ const navStyles = `
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   /* Right padding bumped from 1rem so the Cart button (esp. with a
-     count badge) doesn't bleed off the viewport edge at desktop widths. */
-  padding: 0.75rem 1.5rem;
+     count badge) doesn't bleed off the viewport edge at desktop widths.
+     2rem gives room for the floating badge corner too. */
+  padding: 0.75rem 2rem;
   gap: 0.3rem;
   position: relative;
 }
@@ -443,20 +444,28 @@ const navStyles = `
 .nav-action-btn:hover { border-color: #6E3A5A; color: #6E3A5A; }
 .nav-action-accent { border-color: #6E3A5A; color: #6E3A5A; background: #6E3A5A; color: #fff; }
 .nav-action-accent:hover { background: #5A2E4A; border-color: #5A2E4A; color: #fff; }
+/* Cart button needs relative positioning so the badge can float on its
+   top-right corner instead of pushing the button width and clipping past
+   the viewport edge. */
+.nav-action-cart { position: relative; overflow: visible; }
 .nav-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 16px;
-  height: 16px;
+  min-width: 18px;
+  height: 18px;
   padding: 0 5px;
-  margin-left: 0.4rem;
   background: #F280AA;
   color: #fff;
+  border: 2px solid #F5F3EF;
   border-radius: 10px;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0;
+  line-height: 1;
 }
 
 /* ═══ HAMBURGER ═══ */
