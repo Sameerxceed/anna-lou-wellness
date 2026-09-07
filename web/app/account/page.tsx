@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { fetchOrdersForUser, fetchOrdersForEmail } from '@/lib/strapi-admin';
 
@@ -13,22 +12,24 @@ export const dynamic = 'force-dynamic';
 
 type AccountSearchParams = { welcome?: string };
 
-export default async function AccountPage({
+/**
+ * Overview page — /account
+ *
+ * Modelled on Araha's dashboard: a welcome header, stat cards (order count
+ * + address status), the 3 most recent orders, then a shortcut grid to the
+ * other sections. Auth + sidebar are handled by the shared layout.
+ */
+export default async function AccountOverview({
   searchParams,
 }: {
   searchParams: Promise<AccountSearchParams>;
 }) {
   const { welcome } = await searchParams;
   const session = await getSession();
-  if (!session) {
-    redirect('/login?next=/account');
-  }
-
+  // Layout already redirects if session is null, but TS needs the narrow.
+  if (!session) return null;
   const { user, isMember, hasRegulatedAccess } = session;
 
-  // Pull orders linked to this user; also include any legacy guest orders
-  // placed against the same email BEFORE the user record existed (auto-link
-  // would be nice but isn't done yet, so fall back to email match).
   const [linkedOrders, emailOrders] = await Promise.all([
     fetchOrdersForUser(user.id),
     fetchOrdersForEmail(user.email),
@@ -39,154 +40,143 @@ export default async function AccountPage({
     ...emailOrders.filter((o: any) => !seenIds.has(o.id)),
   ].sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const greeting = user.firstName || user.username || user.email.split('@')[0];
+  const recent = orders.slice(0, 3);
+  const hasAddress = Boolean(user.default_address?.line1);
 
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: pageStyles }} />
-      <section className="acct-page">
-        <div className="acct-inner">
-          {welcome === '1' && (
-            <div className="acct-welcome-banner">
-              Welcome — your account is set up. Below are your orders, and you can use this email + password to sign in any time.
-            </div>
-          )}
-          <p className="acct-eyebrow">Your account</p>
-          <h1 className="acct-title">Hi {greeting}.</h1>
-          <p className="acct-sub">Your orders and anything you have access to, all in one place.</p>
-
-          {(isMember || hasRegulatedAccess) && (
-            <div className="acct-quick-links">
-              {isMember && (
-                <Link href="/community/reset-room/dashboard" className="acct-quick-link">
-                  <span className="acct-quick-link-label">Reset Room</span>
-                  <span className="acct-quick-link-sub">Vault, replays, account</span>
-                </Link>
-              )}
-              {hasRegulatedAccess && (
-                <Link href="/the-work/regulated/access" className="acct-quick-link">
-                  <span className="acct-quick-link-label">REGULATED</span>
-                  <span className="acct-quick-link-sub">Course access</span>
-                </Link>
-              )}
-            </div>
-          )}
-
-          <div className="acct-section">
-            <h2 className="acct-h2">Your orders</h2>
-            {orders.length === 0 ? (
-              <p className="acct-empty">
-                No orders yet. <Link href="/shop">Visit the shop</Link>.
-              </p>
-            ) : (
-              <ul className="acct-order-list">
-                {orders.map((o: any) => (
-                  <OrderRow key={o.id} order={o} />
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <div className="acct-section">
-            <h2 className="acct-h2">Account</h2>
-            <ul className="acct-meta">
-              <li><strong>Email:</strong> {user.email}</li>
-              {user.firstName && <li><strong>Name:</strong> {user.firstName} {user.lastName || ''}</li>}
-            </ul>
-            <p className="acct-logout">
-              <a href="/api/auth/logout">Sign out</a>
-            </p>
-          </div>
+    <div>
+      {welcome === '1' && (
+        <div style={{ padding: '0.9rem 1.1rem', background: '#f0e8dc', border: '1px solid #d9caae', color: '#5c3f16', fontFamily: "'Lora', serif", fontSize: '0.88rem', marginBottom: '1.5rem' }}>
+          Welcome — your account is set up. Sign in any time with this email + your password.
         </div>
-      </section>
-    </>
-  );
-}
+      )}
+      <p style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#c4704a', margin: 0 }}>Overview</p>
+      <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.4rem', color: '#1a1a18', margin: '0.4rem 0 0.6rem', lineHeight: 1.05 }}>
+        Your account, all in one place.
+      </h1>
+      <p style={{ fontFamily: "'Lora', serif", fontSize: '0.95rem', color: '#6e6a62', margin: '0 0 2rem' }}>
+        Orders, saved address and details at a glance.
+      </p>
 
-const RETURNABLE_STATUSES = new Set(['paid', 'shipped', 'completed']);
-
-function OrderRow({ order }: { order: any }) {
-  const items = Array.isArray(order.items) ? order.items : [];
-  const date = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-  const statusLabel = (order.status || 'pending').replace(/_/g, ' ');
-  const total = Number(order.total || 0).toFixed(2);
-  const canReturn = RETURNABLE_STATUSES.has(order.status);
-  return (
-    <li className="acct-order">
-      <div className="acct-order-head">
-        <div>
-          <p className="acct-order-num">Order {order.order_number}</p>
-          <p className="acct-order-date">{date}</p>
+      {(isMember || hasRegulatedAccess) && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '2rem' }}>
+          {isMember && (
+            <Link href="/community/reset-room/dashboard" style={{ padding: '0.75rem 1.1rem', background: '#6E3A5A', color: '#fff', textDecoration: 'none', fontFamily: "'Josefin Sans', sans-serif", fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+              Reset Room →
+            </Link>
+          )}
+          {hasRegulatedAccess && (
+            <Link href="/the-work/regulated/access" style={{ padding: '0.75rem 1.1rem', background: '#c4704a', color: '#fff', textDecoration: 'none', fontFamily: "'Josefin Sans', sans-serif", fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+              REGULATED →
+            </Link>
+          )}
         </div>
-        <div className="acct-order-meta">
-          <span className={`acct-status acct-status-${order.status || 'pending'}`}>{statusLabel}</span>
-          <p className="acct-order-total">£{total}</p>
+      )}
+
+      {/* Stat cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+        <StatCard number={orders.length} label="Orders" />
+        <StatCard number={hasAddress ? 1 : 0} label="Saved address" />
+      </div>
+
+      {/* Recent orders */}
+      <div style={{ marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1rem' }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#1a1a18', margin: 0 }}>Recent orders</h2>
+          {orders.length > 3 && (
+            <Link href="/account/orders" style={{ fontFamily: "'Josefin Sans', sans-serif", fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#c4704a', textDecoration: 'none' }}>
+              See all orders →
+            </Link>
+          )}
+        </div>
+        {recent.length === 0 ? (
+          <p style={{ fontFamily: "'Lora', serif", fontSize: '0.9rem', color: '#6e6a62', fontStyle: 'italic' }}>
+            No orders yet. <Link href="/shop" style={{ color: '#c4704a' }}>Visit the shop</Link>.
+          </p>
+        ) : (
+          <div style={{ border: '1px solid #ece6dc' }}>
+            {recent.map((o: any, i: number) => (
+              <OrderRow key={o.id} order={o} isLast={i === recent.length - 1} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Shortcuts grid */}
+      <div>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#1a1a18', margin: '0 0 1rem' }}>Shortcuts</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.9rem' }}>
+          <Shortcut href="/account/orders" label="All orders" sub={`${orders.length} in total`} />
+          <Shortcut href="/account/addresses" label="Addresses" sub={hasAddress ? 'Saved · edit' : 'Save default'} />
+          <Shortcut href="/account/details" label="Account details" sub="Name, email, phone" />
+          <Shortcut href="/account/wishlist" label="Wishlist" sub="Saved products" />
         </div>
       </div>
-      <ul className="acct-order-items">
-        {items.map((it: any, i: number) => (
-          <li key={i}>{it.name} &times; {it.qty}</li>
-        ))}
-      </ul>
-      {order.tracking_number && order.tracking_url && (
-        <p className="acct-tracking">
-          <a href={order.tracking_url} target="_blank" rel="noopener">Track parcel: {order.tracking_number}</a>
-        </p>
-      )}
-      {canReturn && (
-        <p className="acct-actions">
-          <Link href={`/account/orders/${order.order_number}/return`} className="acct-action-link">
-            Request a return →
-          </Link>
-        </p>
-      )}
-    </li>
+    </div>
   );
 }
 
-const pageStyles = `
-.acct-page { min-height: 70vh; padding: 4rem 1.5rem; background: #FAF7F0; }
-.acct-inner { max-width: 760px; margin: 0 auto; }
-.acct-welcome-banner { background: #EFE4D8; border: 1px solid #c4704a; padding: 1rem 1.2rem; font-family: 'EB Garamond', Georgia, serif; font-size: 0.95rem; color: #4a3a25; line-height: 1.5; margin-bottom: 2rem; }
-.acct-eyebrow { font-family: 'Josefin Sans', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #c4704a; margin: 0 0 0.6rem; }
-.acct-title { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-size: 2.4rem; color: #231F20; margin: 0 0 0.6rem; line-height: 1.1; }
-.acct-sub { font-family: 'EB Garamond', Georgia, serif; font-size: 1rem; color: #6e6a62; line-height: 1.6; margin: 0 0 2rem; }
+function StatCard({ number, label }: { number: number; label: string }) {
+  return (
+    <div style={{ padding: '1.4rem 1.5rem', background: '#f7f2ea', border: '1px solid #ece6dc' }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', color: '#1a1a18', lineHeight: 1 }}>{number}</div>
+      <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#a89e91', marginTop: '0.5rem' }}>{label}</div>
+    </div>
+  );
+}
 
-.acct-quick-links { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.4rem; }
-.acct-quick-link { flex: 1; min-width: 200px; background: #fff; border: 1px solid rgba(0,0,0,0.08); padding: 1rem 1.2rem; text-decoration: none; transition: border-color 0.2s; }
-.acct-quick-link:hover { border-color: #6E3A5A; }
-.acct-quick-link-label { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; color: #231F20; }
-.acct-quick-link-sub { display: block; font-family: 'EB Garamond', Georgia, serif; font-size: 0.85rem; color: #6e6a62; margin-top: 0.2rem; }
+function Shortcut({ href, label, sub }: { href: string; label: string; sub: string }) {
+  return (
+    <Link href={href} style={{ display: 'block', padding: '1rem 1.15rem', border: '1px solid #ece6dc', textDecoration: 'none', background: '#fff', transition: 'border-color 0.2s, background 0.2s' }}>
+      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.15rem', color: '#1a1a18' }}>{label}</div>
+      <div style={{ fontFamily: "'Lora', serif", fontSize: '0.78rem', color: '#6e6a62', marginTop: '0.2rem' }}>{sub}</div>
+    </Link>
+  );
+}
 
-.acct-section { margin-top: 2.4rem; }
-.acct-h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-size: 1.4rem; color: #231F20; margin: 0 0 1rem; }
-.acct-empty { font-family: 'EB Garamond', Georgia, serif; font-size: 0.95rem; color: #6e6a62; }
-.acct-empty a { color: #6E3A5A; }
+function OrderRow({ order, isLast }: { order: any; isLast: boolean }) {
+  const status = String(order.status || 'pending').toLowerCase();
+  const total = Number(order.total || 0);
+  const created = order.createdAt ? new Date(order.createdAt) : null;
+  return (
+    <Link
+      href={`/account/orders/${order.orderNumber}`}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1.4fr 1fr auto auto',
+        alignItems: 'center',
+        gap: '1rem',
+        padding: '0.95rem 1.1rem',
+        borderBottom: isLast ? 'none' : '1px solid #ece6dc',
+        textDecoration: 'none',
+        color: '#1a1a18',
+      }}
+    >
+      <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400, fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#c4704a' }}>
+        Order {order.orderNumber}
+      </div>
+      <div style={{ fontFamily: "'Lora', serif", fontSize: '0.85rem', color: '#6e6a62', fontStyle: 'italic' }}>
+        {created ? created.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
+      </div>
+      <StatusBadge status={status} />
+      <div style={{ fontFamily: "'Lora', serif", fontSize: '0.95rem' }}>&pound;{total.toFixed(2)}</div>
+    </Link>
+  );
+}
 
-.acct-order-list { list-style: none; padding: 0; margin: 0; }
-.acct-order { background: #fff; border: 1px solid rgba(0,0,0,0.08); padding: 1.1rem 1.3rem; margin-bottom: 0.8rem; }
-.acct-order-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.6rem; }
-.acct-order-num { font-family: 'Josefin Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: #231F20; margin: 0; }
-.acct-order-date { font-family: 'EB Garamond', Georgia, serif; font-size: 0.85rem; color: #6e6a62; margin: 0.2rem 0 0; }
-.acct-order-meta { text-align: right; }
-.acct-order-total { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; color: #231F20; margin: 0.3rem 0 0; }
-
-.acct-status { display: inline-block; padding: 0.2rem 0.6rem; font-family: Mulish, sans-serif; font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 3px; background: #efe4d8; color: #4a3a25; }
-.acct-status-paid { background: #d8e4d8; color: #2a4a2a; }
-.acct-status-shipped { background: #d8e4ef; color: #2a3a4a; }
-.acct-status-completed { background: #d4d8ef; color: #2a2a4a; }
-.acct-status-cancelled { background: #efd8d8; color: #4a2a2a; }
-.acct-status-refunded { background: #efe4d8; color: #4a3a25; }
-
-.acct-order-items { list-style: none; padding: 0; margin: 0; font-family: 'EB Garamond', Georgia, serif; font-size: 0.9rem; color: #4a463e; }
-.acct-order-items li { margin: 0.2rem 0; }
-
-.acct-tracking { margin: 0.6rem 0 0; font-family: 'EB Garamond', Georgia, serif; font-size: 0.88rem; }
-.acct-tracking a { color: #6E3A5A; }
-.acct-actions { margin: 0.5rem 0 0; font-family: 'EB Garamond', Georgia, serif; font-size: 0.88rem; }
-.acct-action-link { color: #6E3A5A; }
-
-.acct-meta { list-style: none; padding: 0; margin: 0; font-family: 'EB Garamond', Georgia, serif; font-size: 0.95rem; color: #4a463e; line-height: 1.8; }
-.acct-logout { margin-top: 1rem; }
-.acct-logout a { color: #6E3A5A; font-family: 'EB Garamond', Georgia, serif; font-size: 0.9rem; }
-`;
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { bg: string; fg: string; label: string }> = {
+    pending:   { bg: '#f0e8dc', fg: '#5c3f16', label: 'Pending' },
+    paid:      { bg: '#dcecdc', fg: '#2c5c2c', label: 'Paid' },
+    shipped:   { bg: '#dce4f0', fg: '#1a3a5c', label: 'Shipped' },
+    delivered: { bg: '#e4dcf0', fg: '#3a1a5c', label: 'Delivered' },
+    cancelled: { bg: '#f0dcdc', fg: '#5c1a1a', label: 'Cancelled' },
+    refunded:  { bg: '#ece6dc', fg: '#4a4640', label: 'Refunded' },
+  };
+  const s = map[status] || { bg: '#ece6dc', fg: '#4a4640', label: status.charAt(0).toUpperCase() + status.slice(1) };
+  return (
+    <span style={{ padding: '0.25rem 0.65rem', background: s.bg, color: s.fg, fontFamily: "'Josefin Sans', sans-serif", fontWeight: 400, fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+      {s.label}
+    </span>
+  );
+}

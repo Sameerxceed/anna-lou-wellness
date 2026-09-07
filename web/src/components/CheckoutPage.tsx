@@ -48,6 +48,16 @@ type InitialUser = {
   email: string;
   phone: string;
   address: string;
+  // Saved default address from /account/addresses, if any. Prefills the
+  // structured address inputs so returning customers don't retype.
+  defaultAddress?: {
+    line1?: string;
+    line2?: string;
+    city?: string;
+    county?: string;
+    postcode?: string;
+    country?: string;
+  } | null;
 } | null;
 
 export default function CheckoutPage({ initialUser = null }: { initialUser?: InitialUser } = {}) {
@@ -294,22 +304,33 @@ export default function CheckoutPage({ initialUser = null }: { initialUser?: Ini
                   fulfilment view.
               The backend still accepts a single `address` string, so we
               concatenate on submit (see handleSubmit). */}
-          <p className="section-label" style={{ marginTop: '0.5rem' }}>Shipping Address *</p>
+          <p className="section-label" style={{ marginTop: '0.5rem' }}>Shipping Address *
+            {initialUser?.defaultAddress?.line1 && (
+              <span style={{ marginLeft: '0.5rem', fontSize: '0.62rem', color: '#6E3A5A', textTransform: 'none', letterSpacing: '0.04em' }}>
+                (prefilled from your saved default — edit if shipping elsewhere)
+              </span>
+            )}
+          </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '0.6rem', marginBottom: '1.4rem' }}>
             <input name="address_line1" required placeholder="Address line 1 (street & number)"
+              defaultValue={initialUser?.defaultAddress?.line1 || ''}
               style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
             <input name="address_line2" placeholder="Address line 2 (apt, suite — optional)"
+              defaultValue={initialUser?.defaultAddress?.line2 || ''}
               style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <input name="address_city" required placeholder="City / Town"
+                defaultValue={initialUser?.defaultAddress?.city || ''}
                 style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
               <input name="address_county" placeholder="County / State (optional)"
+                defaultValue={initialUser?.defaultAddress?.county || ''}
                 style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '1rem' }}>
               <input name="address_postcode" required placeholder="Postcode / ZIP"
+                defaultValue={initialUser?.defaultAddress?.postcode || ''}
                 style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
-              <select name="address_country" required defaultValue="GB"
+              <select name="address_country" required defaultValue={initialUser?.defaultAddress?.country || 'GB'}
                 style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }}>
                 <option value="GB">United Kingdom</option>
                 <option value="IE">Ireland</option>

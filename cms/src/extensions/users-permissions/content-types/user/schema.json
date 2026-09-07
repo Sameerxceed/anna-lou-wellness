@@ -115,6 +115,14 @@
       "target": "api::recording.recording",
       "inversedBy": "buyers",
       "description": "Every Returning Circle recording this user has bought. Auto-updated when they pay on the site. You can also add one manually here if someone paid outside the site."
+    },
+    "default_address": {
+      "type": "json",
+      "description": "Customer's saved shipping address, kept as JSON so we can extend fields without a migration. Shape: { line1, line2, city, county, postcode, country }. Populated when the customer saves a default from /account/addresses. Prefilled into checkout on their next order."
+    },
+    "phone": {
+      "type": "string",
+      "description": "Customer phone number saved from /account/details or picked up from their most recent order. Optional — used for delivery contact only."
     }
   }
 }

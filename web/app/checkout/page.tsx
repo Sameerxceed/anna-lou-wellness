@@ -12,9 +12,12 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function CheckoutRoute() {
-  // Pre-fill the checkout form for returning customers. We grab name +
-  // email from the user record, and the shipping_address from their most
-  // recent order (most useful default — what they actually shipped to last).
+  // Pre-fill the checkout form for returning customers.
+  //   Priority for address + phone:
+  //     1. user.default_address / user.phone (saved from /account/addresses)
+  //     2. shipping_address / customer_phone on their most recent order
+  //     3. blank
+  //   Priority for name/email: user record (always).
   const session = await getSession();
   let initialUser: {
     firstName: string;
@@ -22,26 +25,42 @@ export default async function CheckoutRoute() {
     email: string;
     phone: string;
     address: string;
+    defaultAddress: {
+      line1?: string;
+      line2?: string;
+      city?: string;
+      county?: string;
+      postcode?: string;
+      country?: string;
+    } | null;
   } | null = null;
 
   if (session) {
     let lastAddress = '';
     let lastPhone = '';
-    try {
-      const orders = await fetchOrdersForUser(session.user.id);
-      const latestWithAddress = orders.find((o: any) => o.shipping_address);
-      if (latestWithAddress) {
-        lastAddress = latestWithAddress.shipping_address || '';
-        lastPhone = latestWithAddress.customer_phone || '';
-      }
-    } catch {/* non-fatal */}
+    const savedAddr = session.user.default_address || null;
+    const savedPhone = session.user.phone || '';
+
+    // Fallback to the address on the latest order only if there is no
+    // saved default. Once the user saves a default we always trust that.
+    if (!savedAddr?.line1) {
+      try {
+        const orders = await fetchOrdersForUser(session.user.id);
+        const latestWithAddress = orders.find((o: any) => o.shipping_address);
+        if (latestWithAddress) {
+          lastAddress = latestWithAddress.shipping_address || '';
+          lastPhone = latestWithAddress.customer_phone || '';
+        }
+      } catch {/* non-fatal */}
+    }
 
     initialUser = {
       firstName: session.user.firstName || '',
       lastName: session.user.lastName || '',
       email: session.user.email,
-      phone: lastPhone,
+      phone: savedPhone || lastPhone,
       address: lastAddress,
+      defaultAddress: savedAddr,
     };
   }
 

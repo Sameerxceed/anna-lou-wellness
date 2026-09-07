@@ -16,18 +16,29 @@ const STRAPI_URL = process.env.STRAPI_URL || process.env.NEXT_PUBLIC_STRAPI_URL 
 const COOKIE_NAME = 'rr_session';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
+export type DefaultAddress = {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  county?: string;
+  postcode?: string;
+  country?: string;
+};
+
 export type SessionUser = {
   id: number;
   email: string;
   username: string;
   firstName: string | null;
   lastName: string | null;
+  phone: string | null;
   subscriptionStatus: string | null;
   memberSince: string | null;
   accessUntil: string | null;
   podcastRssUrl: string | null;
   hasRegulatedAccess: boolean;
   regulatedAccessSince: string | null;
+  default_address: DefaultAddress | null;
   role: { id: number; name: string; type: string };
 };
 
