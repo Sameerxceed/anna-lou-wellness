@@ -175,10 +175,17 @@ export default function CartPage() {
           </tr>
         </thead>
         <tbody>
-          {cart.map(item => (
+          {cart.map(item => {
+            // Defensive: cart items from before a schema fix (or with missing
+            // product data) may have undefined price/image. Coerce so the
+            // page still renders instead of crashing the whole tree.
+            const price = Number(item.price) || 0;
+            const qty = Number(item.qty) || 1;
+            const img = item.image || '/placeholder-product.svg';
+            return (
             <tr key={item.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
               <td style={{ padding: '1rem 0' }}>
-                <img src={item.image} alt="" style={{ width: 60, height: 60, objectFit: 'cover' }} />
+                <img src={img} alt="" style={{ width: 60, height: 60, objectFit: 'cover', background: '#f5f0e8' }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }} />
               </td>
               <td>
                 <a href={`/shop/${item.slug}`} style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: '1rem', color: '#1a1a18', textDecoration: 'none' }}>
@@ -186,11 +193,11 @@ export default function CartPage() {
                 </a>
               </td>
               <td style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.8rem', color: '#1a1a18' }}>
-                &pound;{item.price.toFixed(2)}
+                &pound;{price.toFixed(2)}
               </td>
               <td>
                 <input
-                  type="number" value={item.qty} min={1} max={99}
+                  type="number" value={qty} min={1} max={99}
                   onChange={(e) => updateQty(item.id, parseInt(e.target.value) || 1)}
                   style={{
                     width: 46, textAlign: 'center', fontFamily: "'Lora', serif", fontSize: '0.85rem',
@@ -200,7 +207,7 @@ export default function CartPage() {
                 />
               </td>
               <td style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.8rem', color: '#1a1a18' }}>
-                &pound;{(item.price * item.qty).toFixed(2)}
+                &pound;{(price * qty).toFixed(2)}
               </td>
               <td>
                 <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#c8c4bc', padding: '0.2rem', transition: 'color 0.3s' }}
@@ -212,7 +219,8 @@ export default function CartPage() {
                 </button>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
 

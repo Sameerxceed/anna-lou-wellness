@@ -59,7 +59,11 @@ export default function CheckoutPage({ initialUser = null }: { initialUser?: Ini
   const [step, setStep] = useState<'form' | 'processing' | 'confirmed'>('form');
   const [orderNum, setOrderNum] = useState('');
   const [email, setEmail] = useState(initialUser?.email || '');
-  const [paymentMethod, setPaymentMethod] = useState<'bank' | 'stripe'>('bank');
+  // Launch-day: bank transfer disabled until Anna fills her real bank
+  // details in Shop Settings (currently placeholders XX-XX-XX). Stripe
+  // is the only live payment path. When bank details are populated,
+  // set BANK_ENABLED=true and restore the radio in the JSX below.
+  const [paymentMethod, setPaymentMethod] = useState<'bank' | 'stripe'>('stripe');
   const [bankDetails, setBankDetails] = useState<BankDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmedTotal, setConfirmedTotal] = useState(0);
@@ -108,15 +112,43 @@ export default function CheckoutPage({ initialUser = null }: { initialUser?: Ini
     setStep('processing');
 
     const fd = new FormData(e.target as HTMLFormElement);
-    const payment = (fd.get('payment') as 'bank' | 'stripe') || 'bank';
+    // Bank transfer disabled at launch — Stripe is the only path.
+    // Ignore form field, always send 'stripe'.
+    const payment: 'stripe' = 'stripe';
     setPaymentMethod(payment);
+
+    // Concatenate structured address fields into a single formatted
+    // string the backend expects. Once the Order schema is migrated to
+    // separate address_line1/city/postcode/country columns we can drop
+    // this join and pass the object directly.
+    const addrLine1 = String(fd.get('address_line1') || '').trim();
+    const addrLine2 = String(fd.get('address_line2') || '').trim();
+    const addrCity = String(fd.get('address_city') || '').trim();
+    const addrCounty = String(fd.get('address_county') || '').trim();
+    const addrPostcode = String(fd.get('address_postcode') || '').trim();
+    const addrCountry = String(fd.get('address_country') || 'GB').trim();
+    const addressFormatted = [
+      addrLine1,
+      addrLine2,
+      [addrCity, addrCounty].filter(Boolean).join(', '),
+      addrPostcode,
+      addrCountry,
+    ].filter(Boolean).join('\n');
 
     const payload = {
       customer: {
         name: String(fd.get('name') || '').trim(),
         email: String(fd.get('email') || '').trim().toLowerCase(),
         phone: String(fd.get('phone') || '').trim() || undefined,
-        address: String(fd.get('address') || '').trim(),
+        address: addressFormatted,
+        shippingAddress: {
+          line1: addrLine1,
+          line2: addrLine2 || undefined,
+          city: addrCity,
+          county: addrCounty || undefined,
+          postcode: addrPostcode,
+          country: addrCountry,
+        },
       },
       items: cart.map((i) => ({ productId: i.id, qty: i.qty })),
       paymentMethod: payment,
@@ -255,13 +287,58 @@ export default function CheckoutPage({ initialUser = null }: { initialUser?: Ini
               />
             </div>
           ))}
-          <div style={{ marginBottom: '1.4rem' }}>
-            <label style={{ display: 'block', fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.5rem', letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6e6a62', marginBottom: '0.4rem' }}>Shipping Address *</label>
-            <textarea
-              name="address" required placeholder="Full postal address"
-              defaultValue={initialUser?.address || ''}
-              style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: '1px solid #c8c4bc', padding: '0.7rem', outline: 'none', minHeight: 80, resize: 'vertical' }}
-            />
+          {/* Structured shipping address. Individual fields let us:
+              (a) collect country for future int'l shipping rate rules,
+              (b) validate postcodes at submit time,
+              (c) format cleanly on the order confirmation email + Anna's
+                  fulfilment view.
+              The backend still accepts a single `address` string, so we
+              concatenate on submit (see handleSubmit). */}
+          <p className="section-label" style={{ marginTop: '0.5rem' }}>Shipping Address *</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '0.6rem', marginBottom: '1.4rem' }}>
+            <input name="address_line1" required placeholder="Address line 1 (street & number)"
+              style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
+            <input name="address_line2" placeholder="Address line 2 (apt, suite — optional)"
+              style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <input name="address_city" required placeholder="City / Town"
+                style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
+              <input name="address_county" placeholder="County / State (optional)"
+                style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '1rem' }}>
+              <input name="address_postcode" required placeholder="Postcode / ZIP"
+                style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }} />
+              <select name="address_country" required defaultValue="GB"
+                style={{ width: '100%', fontFamily: "'Lora', serif", fontSize: '0.88rem', color: '#1a1a18', background: 'transparent', border: 'none', borderBottom: '1px solid #c8c4bc', padding: '0.6rem 0', outline: 'none' }}>
+                <option value="GB">United Kingdom</option>
+                <option value="IE">Ireland</option>
+                <option value="US">United States</option>
+                <option value="CA">Canada</option>
+                <option value="AU">Australia</option>
+                <option value="NZ">New Zealand</option>
+                <option value="FR">France</option>
+                <option value="DE">Germany</option>
+                <option value="ES">Spain</option>
+                <option value="IT">Italy</option>
+                <option value="NL">Netherlands</option>
+                <option value="BE">Belgium</option>
+                <option value="CH">Switzerland</option>
+                <option value="AT">Austria</option>
+                <option value="SE">Sweden</option>
+                <option value="NO">Norway</option>
+                <option value="DK">Denmark</option>
+                <option value="FI">Finland</option>
+                <option value="PT">Portugal</option>
+                <option value="AE">United Arab Emirates</option>
+                <option value="IN">India</option>
+                <option value="SG">Singapore</option>
+                <option value="HK">Hong Kong</option>
+                <option value="JP">Japan</option>
+                <option value="ZA">South Africa</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
           </div>
 
           {/* Guest account-creation notice — only shown to non-logged-in users */}
@@ -299,21 +376,12 @@ export default function CheckoutPage({ initialUser = null }: { initialUser?: Ini
 
           <div style={{ marginTop: '1.8rem' }}>
             <p className="section-label">Payment Method</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.7rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.75rem 1rem', border: '1px solid rgba(0,0,0,0.06)', cursor: 'pointer' }}>
-                <input type="radio" name="payment" value="bank" defaultChecked style={{ accentColor: '#c4704a' }} />
-                <div>
-                  <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.56rem', letterSpacing: '0.1em', textTransform: 'uppercase' as const }}>Bank Transfer</div>
-                  <div style={{ fontFamily: "'Lora', serif", fontSize: '0.7rem', color: '#6e6a62', marginTop: 2 }}>Pay by bank transfer. Order confirmed on receipt.</div>
-                </div>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.75rem 1rem', border: '1px solid rgba(0,0,0,0.06)', cursor: 'pointer' }}>
-                <input type="radio" name="payment" value="stripe" style={{ accentColor: '#c4704a' }} />
-                <div>
-                  <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.56rem', letterSpacing: '0.1em', textTransform: 'uppercase' as const }}>Card Payment (Stripe)</div>
-                  <div style={{ fontFamily: "'Lora', serif", fontSize: '0.7rem', color: '#6e6a62', marginTop: 2 }}>Visa, Mastercard, Apple Pay.</div>
-                </div>
-              </label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.9rem 1rem', border: '1px solid rgba(0,0,0,0.06)', background: 'rgba(196,112,74,0.04)', marginTop: '0.7rem' }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#c4704a', flexShrink: 0 }} />
+              <div>
+                <div style={{ fontFamily: "'Josefin Sans', sans-serif", fontWeight: 300, fontSize: '0.56rem', letterSpacing: '0.1em', textTransform: 'uppercase' as const }}>Card Payment (Stripe)</div>
+                <div style={{ fontFamily: "'Lora', serif", fontSize: '0.7rem', color: '#6e6a62', marginTop: 2 }}>Visa, Mastercard, Apple Pay. Secure hosted checkout.</div>
+              </div>
             </div>
           </div>
           {error && (

@@ -330,7 +330,9 @@ const navStyles = `
      are guaranteed equal width and the auto-sized logo stays dead centre. */
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  padding: 0.75rem 1rem;
+  /* Right padding bumped from 1rem so the Cart button (esp. with a
+     count badge) doesn't bleed off the viewport edge at desktop widths. */
+  padding: 0.75rem 1.5rem;
   gap: 0.3rem;
   position: relative;
 }
