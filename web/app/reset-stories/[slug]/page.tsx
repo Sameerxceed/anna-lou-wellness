@@ -58,7 +58,6 @@ export default async function ArticlePage({ params }: PageProps) {
 
   if (!article) {
     if (category) {
-    if (category) {
       const [categoryArticles, allCategories] = await Promise.all([
         getArticlesByCategorySlug(slug),
         getArticleCategories('reset-stories'),
