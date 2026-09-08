@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCustomHtmlLanding } from '@/lib/cms';
 import CampaignFrame from './CampaignFrame';
+export const revalidate = 300;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;

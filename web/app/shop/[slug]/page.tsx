@@ -7,6 +7,8 @@ import WishlistHeart from '@/components/WishlistHeart';
 import { ProductSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import { getStockImage } from '@/data/stock-images';
 import BlocksRenderer from '@/components/BlocksRenderer';
+export const revalidate = 300;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;

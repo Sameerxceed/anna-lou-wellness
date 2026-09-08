@@ -5,6 +5,7 @@ import FAQAccordion from '@/components/FAQAccordion';
 import { getMembershipPage, getFAQs } from '@/lib/cms';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 import BlocksRenderer from '@/components/BlocksRenderer';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'The Reset Room',

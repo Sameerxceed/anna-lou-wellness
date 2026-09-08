@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import SubPage from '@/components/SubPage';
 import { getSubPage } from '@/lib/cms';
+export const revalidate = 300;
 
 const fallback = {
   kicker: 'Shop',

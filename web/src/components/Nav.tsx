@@ -125,7 +125,12 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
                         href={child.href}
                         style={{ '--hover-color': item.colour } as any}
                         onClick={e => {
-                          (e.currentTarget.closest('.nav-item') as HTMLElement | null)?.classList.add('nav-item-dismiss');
+                          const el = e.currentTarget.closest('.nav-item') as HTMLElement | null;
+                          el?.classList.add('nav-item-dismiss');
+                          // Force-clear after 500ms so the dropdown re-opens
+                          // even when the click keeps us on the same pathname
+                          // (query-only nav like /shop?category=jewellery).
+                          setTimeout(() => el?.classList.remove('nav-item-dismiss'), 500);
                         }}
                       >
                         {child.label}
@@ -157,7 +162,11 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
           <div className="nav-right-wrap">
             <div className="nav-right">
               {rightNav.map((item, i) => (
-                <div key={item.href} className="nav-item">
+                <div
+                  key={item.href}
+                  className="nav-item"
+                  onMouseLeave={e => e.currentTarget.classList.remove('nav-item-dismiss')}
+                >
                   <Link
                     href={item.href}
                     className={pathname.startsWith(item.href) ? 'active' : ''}
@@ -173,7 +182,9 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
                           href={child.href}
                           style={{ '--hover-color': item.colour } as any}
                           onClick={e => {
-                            (e.currentTarget.closest('.nav-item') as HTMLElement | null)?.classList.add('nav-item-dismiss');
+                            const el = e.currentTarget.closest('.nav-item') as HTMLElement | null;
+                            el?.classList.add('nav-item-dismiss');
+                            setTimeout(() => el?.classList.remove('nav-item-dismiss'), 500);
                           }}
                         >
                           {child.label}

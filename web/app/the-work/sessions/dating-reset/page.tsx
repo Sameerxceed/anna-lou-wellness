@@ -3,6 +3,7 @@ import ResetSessionPage from '@/components/ResetSessionPage';
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug } from '@/lib/programme';
 import { mediaUrl } from '@/lib/strapi';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Dating Reset | 1:1 Coaching Session',

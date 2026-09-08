@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { fetchAPI, mediaUrl } from '@/lib/strapi';
+export const revalidate = 300;
+export const dynamicParams = true;
 
 /**
  * Catch-all standalone-page route.

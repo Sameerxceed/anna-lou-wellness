@@ -7,6 +7,7 @@ import { ServiceSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 import BlocksRenderer from '@/components/BlocksRenderer';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Work with Anna',

@@ -7,6 +7,7 @@ import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, parseStages } from '@/lib/programme';
 import { getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
+export const revalidate = 300;
 
 const STAGE_COLOURS = ['#EE312F', '#FAA21B', '#5DCAA5', '#7BAFDD', '#F280AA'];
 

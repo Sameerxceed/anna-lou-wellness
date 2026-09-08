@@ -7,6 +7,7 @@ import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'One Day | Private Somatic Coaching Intensive',

@@ -13,6 +13,7 @@ import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage, stockCategoryForSection } from '@/data/stock-images';
 import { mediaUrl } from '@/lib/strapi';
 import { accentForText } from '@/lib/colours';
+export const revalidate = 300;
 
 // Section mapping for article links
 const sectionPaths: Record<string, string> = {

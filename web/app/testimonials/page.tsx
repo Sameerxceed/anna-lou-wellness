@@ -5,6 +5,7 @@ import FAQAccordion from '@/components/FAQAccordion';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 import { extractYouTubeId } from '@/lib/youtube';
+export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getTestimonialsPage();

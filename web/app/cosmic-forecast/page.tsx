@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getLatestForecast } from '@/lib/cms';
 import { getGenericPageBySlug } from '@/lib/generic-page';
 import BlocksRenderer from '@/components/BlocksRenderer';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Cosmic Forecast',

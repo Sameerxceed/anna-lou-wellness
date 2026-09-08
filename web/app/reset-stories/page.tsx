@@ -3,6 +3,7 @@ import EditorialFeed from '@/components/EditorialFeed';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getArticles, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Reset Stories',

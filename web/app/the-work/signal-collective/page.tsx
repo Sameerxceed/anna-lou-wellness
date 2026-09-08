@@ -6,6 +6,7 @@ import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug } from '@/lib/programme';
 import { getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'The Signal Collective | Somatic Coaching Mastermind for Women',

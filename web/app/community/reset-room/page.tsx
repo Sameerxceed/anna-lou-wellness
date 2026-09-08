@@ -7,6 +7,7 @@ import JoinResetRoomButton from '@/components/JoinResetRoomButton';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { ServiceSchema, CourseSchema, BreadcrumbSchema, SpeakableSchema, type ReviewInput } from '@/components/StructuredData';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'The Reset Room | Monthly Somatic Membership',

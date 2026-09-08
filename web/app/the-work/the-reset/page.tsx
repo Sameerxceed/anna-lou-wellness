@@ -6,6 +6,7 @@ import { ServiceSchema, CourseSchema, BreadcrumbSchema, type ReviewInput } from 
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'The Reset | 6-Week 1:1 Somatic Coaching Programme',

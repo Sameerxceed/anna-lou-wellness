@@ -7,6 +7,7 @@ import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/StructuredData';
 import { getExperienceBySlug, experienceProps } from '@/lib/experience-page';
 import { getExperiences, getTestimonials, getFAQs } from '@/lib/cms';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Workshops',

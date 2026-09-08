@@ -6,6 +6,7 @@ import { ServiceSchema, BreadcrumbSchema, type ReviewInput } from '@/components/
 import { getStockImage } from '@/data/stock-images';
 import { getProgrammeBySlug, programmeProps } from '@/lib/programme';
 import { getTestimonials, getFAQs } from '@/lib/cms';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Signal & Build | 12-Week 1:1 Coaching for Founders',

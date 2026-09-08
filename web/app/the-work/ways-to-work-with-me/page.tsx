@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import SubPage from '@/components/SubPage';
 import { getGenericPageBySlug, genericPageProps } from '@/lib/generic-page';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Ways to Work With Me',

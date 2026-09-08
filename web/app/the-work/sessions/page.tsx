@@ -6,6 +6,7 @@ import { getSessionsHubPage, getFAQs } from '@/lib/cms';
 import { getProgrammeBySlug } from '@/lib/programme';
 import { mediaUrl } from '@/lib/strapi';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: '1:1 Reset Sessions | Single Somatic Coaching Sessions',

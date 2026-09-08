@@ -8,6 +8,7 @@ import { getStockImage } from '@/data/stock-images';
 import { getExperienceBySlug, parseSecondaryList } from '@/lib/experience-page';
 import { getTestimonials, getFAQs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Speaking | Keynotes, Panels, Online Events',

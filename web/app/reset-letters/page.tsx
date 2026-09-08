@@ -3,6 +3,7 @@ import ResetLettersSignupForm from './ResetLettersSignupForm';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 import { getCustomHtmlLanding } from '@/lib/cms';
 import CampaignFrame from '../campaigns/[slug]/CampaignFrame';
+export const revalidate = 300;
 
 const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
   const v = cms?.[key];

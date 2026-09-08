@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+export const revalidate = 300;
 
 /**
  * /the-work/client-stories — single source of truth is now /testimonials.
