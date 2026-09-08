@@ -5,7 +5,11 @@ import { mediaUrl } from '@/lib/strapi';
 import PageSections from '@/components/PageSections';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 
-export const dynamic = 'force-dynamic';
+// 7 Sep 2026: force-dynamic → 5-min ISR. Custom-page lifecycle fires
+// revalidate on save. generateStaticParams below still runs at build time
+// for known slugs; new pages get generated on first hit via dynamicParams.
+export const revalidate = 300;
+export const dynamicParams = true;
 
 type Params = { slug: string };
 

@@ -14,11 +14,13 @@ export const metadata: Metadata = {
   alternates: { canonical: '/community/the-returning-circle' },
 };
 
-// Anna 24 Jul: publish edits weren't reflecting even after site-wide
-// revalidation because the built-time static output was surviving. Force
-// dynamic so this page always renders from fresh Strapi data. Low-traffic
-// member page — negligible perf cost for zero stale-content risk.
-export const dynamic = 'force-dynamic';
+// 7 Sep 2026: switched from force-dynamic to 5-min ISR. The community-
+// event-page lifecycle already fires revalidate('/community/the-returning-
+// circle') on every save (simpleLifecycles in cms/.../community-event-page
+// /lifecycles.js), so edits reflect immediately anyway. force-dynamic was
+// costing ~1-2s TTFB per hit because Next has to SSR fresh every time.
+// 300s revalidate is a safety-net TTL in case the webhook is skipped.
+export const revalidate = 300;
 
 const ACCENT = '#5DCAA5';
 
@@ -27,7 +29,7 @@ export default async function CirclePage() {
     getCommunityEventBySlug('the-returning-circle'),
     getFAQs({ page: 'the-returning-circle' }),
   ]);
-  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined) || getStockImage('community', 'returning-circle');
+  const heroImage = mediaUrl(cms?.heroImage as { url?: string } | undefined, 'large') || getStockImage('community', 'returning-circle');
 
   return (
     <>

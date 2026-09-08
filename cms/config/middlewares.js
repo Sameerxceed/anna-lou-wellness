@@ -47,6 +47,9 @@ module.exports = ({ env }) => [
     },
   },
   'global::image-resize',
+  // Long-lived Cache-Control on /uploads/* — filenames are content-hashed
+  // by Strapi so caching indefinitely is safe. Massive win on repeat visits.
+  'global::uploads-cache-headers',
   'strapi::session',
   // 'strapi::favicon' MUST stay — Strapi v5's middleware validator marks
   // it as required and refuses to boot without it. Removing this crashed

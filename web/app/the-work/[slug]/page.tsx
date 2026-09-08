@@ -31,10 +31,14 @@ import { getTestimonials, getFAQs } from '@/lib/cms';
  * and the FAQ accordion + Reviews section auto-attach.
  */
 
-// Force dynamic rendering so newly-created Page entries (e.g. REGULATED
-// seeded after the build) are picked up immediately. Without this, Next.js
-// can cache a 404 from the static prerender pass and keep serving it.
-export const dynamic = 'force-dynamic';
+// 7 Sep 2026: switched from force-dynamic to 5-min ISR + dynamicParams.
+// Next.js 15 app router defaults dynamicParams=true, so newly-created
+// programme entries get rendered on first hit (no more cached-404
+// issue). Programme lifecycle hook fires revalidate on save so edits
+// reflect immediately. force-dynamic was costing ~1-2s TTFB per hit
+// on every programme sales page.
+export const revalidate = 300;
+export const dynamicParams = true;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

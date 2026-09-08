@@ -10,7 +10,10 @@ export const metadata: Metadata = {
   description: 'Upcoming retreats, workshops, live dates, and member-only events.',
 };
 
-export const dynamic = 'force-dynamic';
+// 7 Sep 2026: force-dynamic → 5-min ISR. community-event-page + experience
+// lifecycles both fire revalidate on save, so Anna's new events reflect
+// immediately. ISR is just the safety-net TTL.
+export const revalidate = 300;
 
 export default async function EventsPage() {
   const [cms, upcoming, faqs] = await Promise.all([

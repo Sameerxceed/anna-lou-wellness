@@ -29,7 +29,11 @@ import BlocksRenderer from '@/components/BlocksRenderer';
  *   - Upsells ("Where next" — other services Anna chose)
  */
 
-export const dynamic = 'force-dynamic';
+// 7 Sep 2026: force-dynamic → 5-min ISR. Experience + custom-html-landing
+// lifecycles fire revalidate on save so edits reflect immediately. dynamic-
+// Params=true means new experiences render on first hit.
+export const revalidate = 300;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;

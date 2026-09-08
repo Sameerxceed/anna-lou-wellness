@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   description: 'Guides, tools, workshop replays, free nervous system recalibration, and member-only content.',
 };
 
-export const dynamic = 'force-dynamic';
+// 7 Sep 2026: force-dynamic → 5-min ISR. Community-event-page lifecycle
+// fires revalidate on save.
+export const revalidate = 300;
 
 export default async function ResourcesPage() {
   const [cms, faqs] = await Promise.all([
