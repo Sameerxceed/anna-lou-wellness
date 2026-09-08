@@ -18,8 +18,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   return {
     title: {
-      default: `${settings.siteName} — Beautifully Whole`,
-      template: `%s — ${settings.siteName}`,
+      default: `${settings.siteName} | Beautifully Whole`,
+      template: `%s | ${settings.siteName}`,
     },
     description: settings.seoDescription,
     // `<meta name="keywords">` was retired by Google in 2009 and is a mild
@@ -34,14 +34,14 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: settings.siteName,
       locale: 'en_GB',
       type: 'website',
-      title: `${settings.siteName} — Beautifully Whole`,
+      title: `${settings.siteName} | Beautifully Whole`,
       description: settings.seoDescription,
       url: '/',
       images: [{ url: settings.ogDefaultImage || '/og-default.svg', width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${settings.siteName} — Beautifully Whole`,
+      title: `${settings.siteName} | Beautifully Whole`,
       description: settings.seoDescription,
     },
     robots: {

@@ -16,11 +16,17 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 300;
+export const dynamicParams = true;
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, category] = await Promise.all([
+    getArticleBySlug(slug),
+    getArticleCategoryBySlug(slug, 'reset-stories'),
+  ]);
   if (article) {
-    const title = article.seoTitle || `${article.title} — Reset Stories`;
+    const title = article.seoTitle || `${article.title} | Reset Stories`;
     const description = article.seoDescription || article.excerpt || `${article.title}. A Reset Story by Anna Lou.`;
     return {
       title,
@@ -30,10 +36,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       twitter: { card: 'summary_large_image', title, description },
     };
   }
-  // Maybe it's a category
-  const category = await getArticleCategoryBySlug(slug, 'reset-stories');
   if (category) {
-    const title = `${category.name} — Reset Stories`;
+    const title = `${category.name} | Reset Stories`;
     const description = category.description || `Reset Stories: ${category.name}. Honest stories about coming back to yourself.`;
     return {
       title,
@@ -47,11 +51,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, category] = await Promise.all([
+    getArticleBySlug(slug),
+    getArticleCategoryBySlug(slug, 'reset-stories'),
+  ]);
 
   if (!article) {
-    // Try to render as a category filter view
-    const category = await getArticleCategoryBySlug(slug, 'reset-stories');
+    if (category) {
     if (category) {
       const [categoryArticles, allCategories] = await Promise.all([
         getArticlesByCategorySlug(slug),
@@ -112,8 +118,7 @@ export default async function ArticlePage({ params }: PageProps) {
     );
   }
 
-  const relatedArticles = await getArticles('reset-stories');
-  const related = relatedArticles.filter(a => a.slug !== slug).slice(0, 3);
+  const related = (await getArticles('reset-stories')).filter(a => a.slug !== slug).slice(0, 3);
 
   return (
     <>

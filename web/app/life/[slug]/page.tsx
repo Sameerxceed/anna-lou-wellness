@@ -15,11 +15,17 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 300;
+export const dynamicParams = true;
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, category] = await Promise.all([
+    getArticleBySlug(slug),
+    getArticleCategoryBySlug(slug, 'life'),
+  ]);
   if (article) {
-    const title = article.seoTitle || `${article.title} â€” Life`;
+    const title = article.seoTitle || `${article.title} | Life`;
     const description = article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`;
     return {
       title,
@@ -29,9 +35,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       twitter: { card: 'summary_large_image', title, description },
     };
   }
-  const category = await getArticleCategoryBySlug(slug, 'life');
   if (category) {
-    const title = `${category.name} â€” Life`;
+    const title = `${category.name} | Life`;
     return {
       title,
       description: category.description || `Stories about ${category.name}.`,
@@ -43,10 +48,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, category] = await Promise.all([
+    getArticleBySlug(slug),
+    getArticleCategoryBySlug(slug, 'life'),
+  ]);
 
   if (!article) {
-    const category = await getArticleCategoryBySlug(slug, 'life');
     if (category) {
       const [categoryArticles, allCategories] = await Promise.all([
         getArticlesByCategorySlug(slug),
@@ -68,7 +75,7 @@ export default async function ArticlePage({ params }: PageProps) {
       }));
       return (
         <EditorialFeed
-          kicker={`Life Â· ${category.name}`}
+          kicker={`Life · ${category.name}`}
           kickerColour={category.colour}
           title={category.name}
           intro={category.description || ''}
@@ -90,7 +97,7 @@ export default async function ArticlePage({ params }: PageProps) {
           <div className="article-inner">
             <nav className="article-breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
-              <span className="article-breadcrumb-sep">â€º</span>
+              <span className="article-breadcrumb-sep">›</span>
               <Link href="/life">Life</Link>
             </nav>
             <p className="article-kicker" style={{ color: '#FAA21B' }}>Life</p>
@@ -116,7 +123,7 @@ export default async function ArticlePage({ params }: PageProps) {
         <div className="article-inner">
           <nav className="article-breadcrumb" aria-label="Breadcrumb">
             <Link href="/">Home</Link>
-            <span className="article-breadcrumb-sep">â€º</span>
+            <span className="article-breadcrumb-sep">›</span>
             <Link href="/life">Life</Link>
           </nav>
           <p className="article-kicker" style={{ color: accentForText(article.category?.colour) }}>
@@ -125,7 +132,7 @@ export default async function ArticlePage({ params }: PageProps) {
           <h1 className="article-title">{article.title}</h1>
           <p className="article-meta">
             By {article.author} &middot; {article.readingTime}
-            {!article.isFree && <span className="article-paid-badge">Paid Â· Subscribers only</span>}
+            {!article.isFree && <span className="article-paid-badge">Paid · Subscribers only</span>}
             {article.substackUrl && (
               <>
                 {' '}&middot;{' '}
