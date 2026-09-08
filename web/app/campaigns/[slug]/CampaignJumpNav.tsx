@@ -57,18 +57,25 @@ export default function CampaignJumpNav({
   const [siteHeaderH, setSiteHeaderH] = useState(0);
   const navRef = useRef<HTMLElement>(null);
 
-  // Site header (#mainNav) is sticky at top:0. Measure its height so the
-  // jump nav sits directly beneath it instead of overlapping.
+  // Site header (#mainNav) is sticky at top:0 with a non-sticky top-strip
+  // above it. Measure BOTTOM (viewport Y) not height so the jump nav sits
+  // below whatever's currently in the top-of-viewport header stack — either
+  // just mainNav (after user has scrolled past top-strip) or top-strip +
+  // mainNav (before they scroll). Re-measure on scroll so the jump nav
+  // rises as the top-strip scrolls away.
   useEffect(() => {
     const measure = () => {
       const el = document.getElementById('mainNav');
-      setSiteHeaderH(el ? el.getBoundingClientRect().height : 0);
+      const bottom = el ? el.getBoundingClientRect().bottom : 0;
+      setSiteHeaderH(Math.max(0, bottom));
     };
     measure();
     window.addEventListener('resize', measure);
+    window.addEventListener('scroll', measure, { passive: true });
     const interval = window.setInterval(measure, 1500);
     return () => {
       window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', measure);
       window.clearInterval(interval);
     };
   }, []);
