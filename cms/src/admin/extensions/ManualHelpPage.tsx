@@ -224,7 +224,7 @@ export default function ManualHelpPage() {
       };
       const adminJwt = findJwt();
 
-      const res = await fetch('/api/manual-help/ask', {
+      const res = await fetch('/admin/manual-help/ask', {
         method: 'POST',
         credentials: 'include',
         headers: {

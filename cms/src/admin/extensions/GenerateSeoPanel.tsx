@@ -186,7 +186,7 @@ export default function GenerateSeoPanel() {
         return;
       }
 
-      const gen = await adminFetch('/api/seo-generator/generate', {
+      const gen = await adminFetch('/admin/seo-generator/generate', {
         method: 'POST',
         body: JSON.stringify({ name, description }),
       });

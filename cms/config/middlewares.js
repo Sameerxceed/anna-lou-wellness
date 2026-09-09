@@ -51,12 +51,14 @@ module.exports = ({ env }) => [
   // by Strapi so caching indefinitely is safe. Massive win on repeat visits.
   'global::uploads-cache-headers',
   'strapi::session',
-  // NOTE: admin-cookie-broadener middleware DISABLED 9 Sep 17:01 IST —
-  // it was corrupting the Set-Cookie response on Strapi's /admin/init,
-  // which redirected the admin UI to /admin/auth/register-admin with
-  // "An error occurred while requesting the API." Full admin lockout.
-  // Revert is a hotfix to restore CMS access. Help·Ask stays broken
-  // (401) until we find a fix that doesn't touch Set-Cookie shape.
+  // Intercepts /admin/manual-help/ask (etc.) so browser sends the
+  // Path=/admin admin cookie and our controllers verify natively.
+  // Registered BEFORE strapi::favicon + strapi::public so it fires
+  // before the SPA static catch-all. Path-list is inside the middleware
+  // file — see the header there for the full rationale + 9 Sep 2026
+  // debug trail. Does NOT touch Set-Cookie headers (that broke us
+  // earlier today). Falls through cleanly for any non-matched path.
+  'global::admin-endpoint-proxy',
   // 'strapi::favicon' MUST stay — Strapi v5's middleware validator marks
   // it as required and refuses to boot without it. Removing this crashed
   // the container at 04:46 UTC on 24 Jun ("Missing required middlewares
