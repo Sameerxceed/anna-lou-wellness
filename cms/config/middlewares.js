@@ -51,6 +51,11 @@ module.exports = ({ env }) => [
   // by Strapi so caching indefinitely is safe. Massive win on repeat visits.
   'global::uploads-cache-headers',
   'strapi::session',
+  // Duplicates any Strapi admin cookie (Path=/admin) as a broader
+  // Path=/ copy so our custom /api/* endpoints receive an admin token
+  // to verify. See cms/src/middlewares/admin-cookie-broadener.js for
+  // the full rationale and the 9 Sep 2026 debug trail.
+  'global::admin-cookie-broadener',
   // 'strapi::favicon' MUST stay — Strapi v5's middleware validator marks
   // it as required and refuses to boot without it. Removing this crashed
   // the container at 04:46 UTC on 24 Jun ("Missing required middlewares

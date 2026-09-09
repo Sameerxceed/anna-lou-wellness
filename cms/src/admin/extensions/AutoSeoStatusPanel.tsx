@@ -168,7 +168,7 @@ export default function AutoSeoStatusPanel() {
               } catch { /* ignore */ }
               return '';
             })())) || '';
-      const res = await fetch('/admin/seo-generator/regenerate-entry', {
+      const res = await fetch('/api/seo-generator/regenerate-entry', {
         method: 'POST',
         credentials: 'include',
         headers: {

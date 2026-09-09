@@ -79,7 +79,7 @@ export default function SiteUrlsPage() {
               return '';
             })())) || '';
 
-      const res = await fetch('/admin/internal-routes/list', {
+      const res = await fetch('/api/internal-routes/list', {
         credentials: 'include',
         headers: adminJwt
           ? { Authorization: `Bearer ${adminJwt.replace(/^"|"$/g, '')}` }

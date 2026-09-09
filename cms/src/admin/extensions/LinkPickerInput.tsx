@@ -80,7 +80,7 @@ export default function LinkPickerInput({ attribute: _attribute, name, onChange,
             return '';
           })()
         )) || '';
-        const res = await fetch('/admin/internal-routes/list', {
+        const res = await fetch('/api/internal-routes/list', {
           credentials: 'include',
           headers: adminJwt ? { Authorization: `Bearer ${String(adminJwt).replace(/^"|"$/g, '')}` } : {},
         });
