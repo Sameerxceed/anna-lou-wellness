@@ -496,26 +496,36 @@ function extractText(html) {
     .slice(0, 4000);
 }
 
-// Admin JWT verifier — same pattern as manual-help + internal-routes.
+// Admin JWT verifier — same broadened pattern as manual-help +
+// internal-routes. Accepts Bearer header OR any cookie value that
+// looks like a JWT and verifies against admin.auth.secret. Cookie
+// name has drifted across Strapi v5 builds so we don't hard-code it.
 async function verifyAdminJwt(ctx) {
+  const jwt = require('jsonwebtoken');
+  const secret = strapi.config.get('admin.auth.secret');
+  if (!secret) return null;
+  const tryVerify = (token) => {
+    if (!token || typeof token !== 'string') return null;
+    const clean = token.replace(/^"|"$/g, '');
+    if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(clean)) return null;
+    try {
+      const payload = jwt.verify(clean, secret);
+      if (payload && (payload.id || payload.userId)) return payload;
+      return null;
+    } catch {
+      return null;
+    }
+  };
   const auth = ctx.request.header.authorization || '';
-  const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-  const COOKIE_NAMES = ['jwtToken', 'strapi_jwt', 'strapi-jwt'];
-  let cookieToken = '';
-  for (const name of COOKIE_NAMES) {
-    const val = ctx.cookies?.get(name);
-    if (val) { cookieToken = val; break; }
+  const headerHit = tryVerify(auth.startsWith('Bearer ') ? auth.slice(7).trim() : '');
+  if (headerHit) return headerHit;
+  const cookieHeader = ctx.request.header.cookie || '';
+  for (const pair of cookieHeader.split(/;\s*/)) {
+    const eq = pair.indexOf('=');
+    if (eq <= 0) continue;
+    const raw = decodeURIComponent(pair.slice(eq + 1));
+    const hit = tryVerify(raw);
+    if (hit) return hit;
   }
-  const token = headerToken || cookieToken;
-  if (!token) return null;
-  try {
-    const jwt = require('jsonwebtoken');
-    const secret = strapi.config.get('admin.auth.secret');
-    if (!secret) return null;
-    const payload = jwt.verify(token, secret);
-    if (payload && (payload.id || payload.userId)) return payload;
-    return null;
-  } catch {
-    return null;
-  }
+  return null;
 }

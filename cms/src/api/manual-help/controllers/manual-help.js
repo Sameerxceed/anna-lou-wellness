@@ -91,44 +91,60 @@ async function callAnthropic({ apiKey, system, messages }) {
 
 // Verify that the request carries a valid Strapi admin JWT. We do this
 // manually because Strapi v5's admin::isAuthenticatedAdmin policy is
-// unreliable on /api routes. Checks (in order):
+// unreliable on /api routes. Sources tried (any one valid = admin):
 //   1. Authorization: Bearer <token>
-//   2. Several known cookie names Strapi v5 has shipped under different
-//      builds: jwtToken, strapi_jwt, strapi-jwt
-//   3. (Future) custom secret header for trusted internal callers
+//   2. Every cookie on the request whose value is JWT-shaped (three
+//      dot-separated base64url segments). Strapi v5 has shipped different
+//      cookie names across builds (jwtToken, strapi_jwt, strapi-jwt,
+//      strapiAdminJwt, admin_jwt, etc.) — instead of hard-coding names
+//      we accept anything that looks like a JWT and verifies against
+//      admin.auth.secret. Safe because verification requires the secret.
 async function verifyAdminJwt(ctx) {
-  const auth = ctx.request.header.authorization || '';
-  const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-
-  const COOKIE_NAMES = ['jwtToken', 'strapi_jwt', 'strapi-jwt'];
-  let cookieToken = '';
-  for (const name of COOKIE_NAMES) {
-    const val = ctx.cookies?.get(name);
-    if (val) { cookieToken = val; break; }
+  const jwt = require('jsonwebtoken');
+  const secret = strapi.config.get('admin.auth.secret');
+  if (!secret) {
+    strapi.log.warn('[manual-help] admin.auth.secret not configured');
+    return null;
   }
 
-  const token = headerToken || cookieToken;
-  if (!token) return null;
-
-  // Decode directly with jsonwebtoken + admin JWT secret. strapi.service
-  // ('admin::token') returns null in this v5 build, so we skip it. The
-  // secret lives at admin.auth.secret in config (set via ADMIN_JWT_SECRET
-  // env var on Coolify) — same secret Strapi itself uses to sign admin
-  // sessions, so anything that decodes here is a real admin login.
-  try {
-    const jwt = require('jsonwebtoken');
-    const secret = strapi.config.get('admin.auth.secret');
-    if (!secret) {
-      strapi.log.warn('[manual-help] admin.auth.secret not configured');
+  const tryVerify = (token) => {
+    if (!token || typeof token !== 'string') return null;
+    // JWT shape: three base64url segments separated by dots.
+    if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token.replace(/^"|"$/g, ''))) return null;
+    try {
+      const payload = jwt.verify(token.replace(/^"|"$/g, ''), secret);
+      if (payload && (payload.id || payload.userId)) return payload;
+      return null;
+    } catch {
       return null;
     }
-    const payload = jwt.verify(token, secret);
-    if (payload && (payload.id || payload.userId)) return payload;
-    return null;
-  } catch (err) {
-    strapi.log.warn(`[manual-help] JWT verify failed: ${err.message}`);
-    return null;
+  };
+
+  // 1. Authorization header
+  const auth = ctx.request.header.authorization || '';
+  const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+  const headerHit = tryVerify(headerToken);
+  if (headerHit) return headerHit;
+
+  // 2. Any JWT-shaped cookie value that verifies
+  const cookieHeader = ctx.request.header.cookie || '';
+  const cookieNames = [];
+  for (const pair of cookieHeader.split(/;\s*/)) {
+    const eq = pair.indexOf('=');
+    if (eq <= 0) continue;
+    const name = pair.slice(0, eq).trim();
+    if (!name) continue;
+    cookieNames.push(name);
+    const raw = decodeURIComponent(pair.slice(eq + 1));
+    const hit = tryVerify(raw);
+    if (hit) return hit;
   }
+
+  // Nothing verified — log what arrived so we can see the shape in prod.
+  strapi.log.warn(
+    `[manual-help] no valid admin JWT. headerPresent=${!!headerToken} cookies=[${cookieNames.join(',')}]`
+  );
+  return null;
 }
 
 module.exports = {

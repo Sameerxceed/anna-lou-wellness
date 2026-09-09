@@ -288,22 +288,41 @@ export default function HelpFab() {
       : null;
     setAttached(null);
     try {
-      // Strapi v5 admin stores its JWT in sessionStorage / localStorage
-      // under several possible keys depending on build. Grab it and send
-      // as Bearer so the controller can verify even when the httpOnly
-      // cookie isn't included for some reason.
-      const adminJwt =
-        (typeof window !== 'undefined' &&
-          (window.sessionStorage.getItem('jwtToken') ||
-            window.localStorage.getItem('jwtToken') ||
-            (() => {
+      // Strapi v5 admin JWT storage key has drifted across builds
+      // (jwtToken, strapi-userInfo.token, strapiAdminJwt, admin_jwt, …).
+      // Instead of guessing, sweep both storages for the first value
+      // that LOOKS like a JWT (three dot-separated base64url segments)
+      // and send it as Bearer. Server verifies against admin.auth.secret,
+      // so a wrong-shape value just fails harmlessly.
+      const findJwt = (): string => {
+        if (typeof window === 'undefined') return '';
+        const JWT_RE = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
+        const strip = (v: string) => v.replace(/^"|"$/g, '');
+        const stores: Storage[] = [window.sessionStorage, window.localStorage];
+        for (const store of stores) {
+          for (let i = 0; i < store.length; i++) {
+            const key = store.key(i);
+            if (!key) continue;
+            const raw = store.getItem(key);
+            if (!raw) continue;
+            // Direct JWT-shaped value
+            const stripped = strip(raw);
+            if (JWT_RE.test(stripped)) return stripped;
+            // JSON-wrapped { token: '...' } / { jwt: '...' }
+            if (raw.trim().startsWith('{')) {
               try {
-                const ui = window.sessionStorage.getItem('strapi-userInfo') ||
-                  window.localStorage.getItem('strapi-userInfo');
-                if (ui) return JSON.parse(ui)?.token || '';
+                const obj = JSON.parse(raw);
+                for (const field of ['token', 'jwt', 'accessToken']) {
+                  const v = obj?.[field];
+                  if (typeof v === 'string' && JWT_RE.test(strip(v))) return strip(v);
+                }
               } catch { /* ignore */ }
-              return '';
-            })())) || '';
+            }
+          }
+        }
+        return '';
+      };
+      const adminJwt = findJwt();
 
       const res = await fetch('/api/manual-help/ask', {
         method: 'POST',

@@ -194,18 +194,35 @@ export default function ManualHelpPage() {
     setLoading(true);
 
     try {
-      const adminJwt =
-        (typeof window !== 'undefined' &&
-          (window.sessionStorage.getItem('jwtToken') ||
-            window.localStorage.getItem('jwtToken') ||
-            (() => {
+      // Sweep sessionStorage + localStorage for any JWT-shaped value.
+      // Strapi v5's key name has drifted across builds — instead of
+      // hard-coding, accept the first thing that matches JWT shape.
+      const findJwt = (): string => {
+        if (typeof window === 'undefined') return '';
+        const JWT_RE = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
+        const strip = (v: string) => v.replace(/^"|"$/g, '');
+        for (const store of [window.sessionStorage, window.localStorage]) {
+          for (let i = 0; i < store.length; i++) {
+            const key = store.key(i);
+            if (!key) continue;
+            const raw = store.getItem(key);
+            if (!raw) continue;
+            const stripped = strip(raw);
+            if (JWT_RE.test(stripped)) return stripped;
+            if (raw.trim().startsWith('{')) {
               try {
-                const ui = window.sessionStorage.getItem('strapi-userInfo') ||
-                  window.localStorage.getItem('strapi-userInfo');
-                if (ui) return JSON.parse(ui)?.token || '';
+                const obj = JSON.parse(raw);
+                for (const field of ['token', 'jwt', 'accessToken']) {
+                  const v = obj?.[field];
+                  if (typeof v === 'string' && JWT_RE.test(strip(v))) return strip(v);
+                }
               } catch { /* ignore */ }
-              return '';
-            })())) || '';
+            }
+          }
+        }
+        return '';
+      };
+      const adminJwt = findJwt();
 
       const res = await fetch('/api/manual-help/ask', {
         method: 'POST',

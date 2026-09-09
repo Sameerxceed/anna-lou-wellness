@@ -111,42 +111,45 @@ async function findAll(uid, fields, filters) {
   }
 }
 
-// Verify the request carries a valid Strapi admin JWT. Checks the
-// Authorization: Bearer header and several known cookie names. Same
-// helper as cms/src/api/manual-help/controllers/manual-help.js — kept
-// inline (not shared) because there are only two callers and a shared
-// utils module would add indirection for negligible gain.
+// Verify the request carries a valid Strapi admin JWT. Same broadened
+// pattern as manual-help/controllers/manual-help.js — accept the
+// Authorization: Bearer header or any cookie value that both looks
+// like a JWT and verifies against admin.auth.secret. Verification
+// against the secret makes "try every cookie" safe.
 async function verifyAdminJwt(ctx) {
-  const auth = ctx.request.header.authorization || '';
-  const headerToken = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-
-  const COOKIE_NAMES = ['jwtToken', 'strapi_jwt', 'strapi-jwt'];
-  let cookieToken = '';
-  for (const name of COOKIE_NAMES) {
-    const val = ctx.cookies?.get(name);
-    if (val) { cookieToken = val; break; }
+  const jwt = require('jsonwebtoken');
+  const secret = strapi.config.get('admin.auth.secret');
+  if (!secret) {
+    strapi.log.warn('[internal-routes] admin.auth.secret not configured');
+    return null;
   }
-
-  const token = headerToken || cookieToken;
-  if (!token) return null;
-
-  // Direct jsonwebtoken verify — strapi.service('admin::token') returns
-  // null in this v5 build. Uses admin.auth.secret (the same secret Strapi
-  // itself signs admin sessions with).
-  try {
-    const jwt = require('jsonwebtoken');
-    const secret = strapi.config.get('admin.auth.secret');
-    if (!secret) {
-      strapi.log.warn('[internal-routes] admin.auth.secret not configured');
+  const tryVerify = (token) => {
+    if (!token || typeof token !== 'string') return null;
+    const clean = token.replace(/^"|"$/g, '');
+    if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(clean)) return null;
+    try {
+      const payload = jwt.verify(clean, secret);
+      if (payload && (payload.id || payload.userId)) return payload;
+      return null;
+    } catch {
       return null;
     }
-    const payload = jwt.verify(token, secret);
-    if (payload && (payload.id || payload.userId)) return payload;
-    return null;
-  } catch (err) {
-    strapi.log.warn(`[internal-routes] JWT verify failed: ${err.message}`);
-    return null;
+  };
+  const auth = ctx.request.header.authorization || '';
+  const headerHit = tryVerify(auth.startsWith('Bearer ') ? auth.slice(7).trim() : '');
+  if (headerHit) return headerHit;
+  const cookieHeader = ctx.request.header.cookie || '';
+  const seen = [];
+  for (const pair of cookieHeader.split(/;\s*/)) {
+    const eq = pair.indexOf('=');
+    if (eq <= 0) continue;
+    seen.push(pair.slice(0, eq).trim());
+    const raw = decodeURIComponent(pair.slice(eq + 1));
+    const hit = tryVerify(raw);
+    if (hit) return hit;
   }
+  strapi.log.warn(`[internal-routes] no valid admin JWT. cookies=[${seen.join(',')}]`);
+  return null;
 }
 
 module.exports = {
