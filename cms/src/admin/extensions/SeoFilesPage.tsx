@@ -193,7 +193,7 @@ export default function SeoFilesPage() {
 
   const fetchStatus = async () => {
     try {
-      const res = await fetch('/api/seo-generator/backfill-status', {
+      const res = await fetch('/admin/seo-generator/backfill-status', {
         credentials: 'include',
         headers: authHeaders(),
       });
@@ -225,7 +225,7 @@ export default function SeoFilesPage() {
     setTriggerError(null);
     setStarting(true);
     try {
-      const res = await fetch('/api/seo-generator/backfill-start', {
+      const res = await fetch('/admin/seo-generator/backfill-start', {
         method: 'POST',
         credentials: 'include',
         headers: {

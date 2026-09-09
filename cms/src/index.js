@@ -44,6 +44,69 @@ module.exports = {
   },
 
   async bootstrap({ strapi }) {
+    // ═══ Register admin-scoped duplicates of our custom API endpoints ═══
+    //
+    // Root cause we hit 9 Sep 2026: Strapi v5.40 admin panel no longer
+    // persists its JWT to sessionStorage/localStorage — it lives in
+    // Redux memory + an httpOnly cookie scoped to path=/admin. When
+    // Anna's browser POSTs to /api/manual-help/ask (or /api/internal-
+    // routes/list, /api/seo-generator/*), the cookie is NOT sent
+    // (path mismatch) and there's no JWT for the client to read + attach
+    // as a Bearer header. Result: 100% of admin requests to our /api/*
+    // endpoints arrive with zero auth and 401 with "Admin login required."
+    //
+    // Fix: mount the SAME controller handlers at /admin/{path}. Under the
+    // admin path the httpOnly cookie IS sent, and our controller's
+    // broadened cookie-scan verifies it against admin.auth.secret. The
+    // /api/* routes stay in place for any external callers we might add
+    // later, but the client now uses /admin/* which just works.
+    try {
+      const manualHelp = require('./api/manual-help/controllers/manual-help');
+      const internalRoutes = require('./api/internal-routes/controllers/internal-routes');
+      const seoGenerator = require('./api/seo-generator/controllers/seo-generator');
+      strapi.server.routes([
+        {
+          method: 'POST',
+          path: '/manual-help/ask',
+          handler: (ctx) => manualHelp.ask(ctx),
+          config: { type: 'admin', auth: false },
+        },
+        {
+          method: 'GET',
+          path: '/internal-routes/list',
+          handler: (ctx) => internalRoutes.list(ctx),
+          config: { type: 'admin', auth: false },
+        },
+        {
+          method: 'POST',
+          path: '/seo-generator/generate',
+          handler: (ctx) => seoGenerator.generate(ctx),
+          config: { type: 'admin', auth: false },
+        },
+        {
+          method: 'POST',
+          path: '/seo-generator/regenerate-entry',
+          handler: (ctx) => seoGenerator.regenerateEntry(ctx),
+          config: { type: 'admin', auth: false },
+        },
+        {
+          method: 'POST',
+          path: '/seo-generator/backfill-start',
+          handler: (ctx) => seoGenerator.backfillStart(ctx),
+          config: { type: 'admin', auth: false },
+        },
+        {
+          method: 'GET',
+          path: '/seo-generator/backfill-status',
+          handler: (ctx) => seoGenerator.backfillStatus(ctx),
+          config: { type: 'admin', auth: false },
+        },
+      ]);
+      strapi.log.info('[admin-routes] mounted 6 endpoints under /admin (manual-help + internal-routes + seo-generator)');
+    } catch (err) {
+      strapi.log.error(`[admin-routes] failed to mount: ${err.message}`);
+    }
+
     // ═══ Set up Public API permissions ═══
     const publicRole = await strapi.query('plugin::users-permissions.role').findOne({
       where: { type: 'public' },
