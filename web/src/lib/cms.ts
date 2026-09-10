@@ -1509,7 +1509,7 @@ export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLand
       const idx = Number(num) - 1;
       return imageUrls[idx] || '';
     };
-    const rawHtml = String(d.raw_html || '')
+    let rawHtml = String(d.raw_html || '')
       // {{image_1}} tokens
       .replace(/\{\{\s*image_(\d+)\s*\}\}/gi, (_m, num) => substitute(num))
       // IMAGES/01-anything.ext (relative path with numeric prefix) —
@@ -1519,6 +1519,28 @@ export async function getCustomHtmlLanding(slug: string): Promise<CustomHtmlLand
         (_m, pre, num, post) => `${pre}${substitute(num)}${post}`)
       .replace(/(url\(\s*["']?)\s*images\/(\d+)-[^"')]*(["']?\s*\))/gi,
         (_m, pre, num, post) => `${pre}${substitute(num)}${post}`);
+
+    // Hero image override — 9 Sep 2026: Anna repeatedly asked "how do I
+    // change the banner image" and the answer was "edit raw HTML and
+    // find the img tag" which is not a real answer for a non-technical
+    // editor. Now: if hero_image field is set on the entry, swap the
+    // FIRST <img src="…"> OR the FIRST background-image:url(…) in the
+    // rendered HTML with the CMS-uploaded hero_image URL. Anna uploads
+    // once in Media Library, hero swaps everywhere it's used. Falls
+    // back to whatever the raw HTML says if hero_image is blank.
+    const heroUrl = d.hero_image ? mediaUrl(d.hero_image, 'large') : '';
+    if (heroUrl) {
+      let swapped = false;
+      rawHtml = rawHtml.replace(/(<img\b[^>]*\bsrc\s*=\s*["'])([^"']+)(["'])/i,
+        (_m, pre, _oldSrc, post) => {
+          swapped = true;
+          return `${pre}${heroUrl}${post}`;
+        });
+      if (!swapped) {
+        rawHtml = rawHtml.replace(/(background-image\s*:\s*url\(\s*["']?)([^"')]+)(["']?\s*\))/i,
+          (_m, pre, _oldSrc, post) => `${pre}${heroUrl}${post}`);
+      }
+    }
     return {
       title: d.title || '',
       slug: d.slug || '',

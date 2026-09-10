@@ -41,7 +41,7 @@
       "type": "media",
       "multiple": false,
       "allowedTypes": ["images"],
-      "description": "Social share image (Facebook, Twitter, WhatsApp preview). 1200×630 landscape. Optional but recommended — makes the link look inviting when someone shares it."
+      "description": "Main banner photo for the page + social share preview (Facebook, WhatsApp, etc.). Two things happen when you upload here: (1) the site replaces the FIRST big photo at the top of the page with this image, no need to edit the raw HTML to change the banner. (2) same image is used when the link is shared on social. Leave blank to keep whatever image is inside the raw HTML. Recommended size 1200×630 or larger, landscape."
     },
     "images": {
       "type": "media",
