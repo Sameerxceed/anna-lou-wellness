@@ -99,15 +99,11 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
           <span className="top-strip-sep"> · </span>
           <button
             type="button"
-            className="top-strip-search"
+            className="top-strip-search top-strip-link"
             aria-label="Search the site"
             onClick={() => window.dispatchEvent(new Event('alw:open-search'))}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-4.3-4.3" />
-            </svg>
-            <span>Search</span>
+            Search
           </button>
         </p>
       </div>
@@ -347,17 +343,7 @@ const navStyles = `
   letter-spacing: inherit;
   text-transform: inherit;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  vertical-align: middle;
-  transition: color 0.2s;
-}
-.top-strip-search:hover { color: #6E3A5A; }
-.top-strip-search svg {
-  width: 12px;
-  height: 12px;
-  display: inline-block;
+  vertical-align: baseline;
 }
 
 /* ═══ NAV BAR ═══ */
