@@ -120,14 +120,17 @@ export default function CampaignJumpNav({
     const iframe = iframeRef.current;
     if (!iframe) return;
 
+    // Anna 10 Sep 2026: show the jump-nav from first load, not only after
+    // the user scrolls into the retreat content. Previous behaviour hid
+    // the section links behind a scroll threshold — visitors had no
+    // signal the page had structure until they'd already scrolled past
+    // the hero. Now visible from the start so the page's sections are
+    // discoverable immediately. Still tracks active section on scroll.
+    setVisible(true);
+
     const onScroll = () => {
-      // Show the nav only when the visitor has scrolled far enough INTO the
-      // retreat content that the iframe's top has slipped under the site
-      // header — i.e. the retreat content occupies the top of the viewport.
-      // A fixed pixel threshold (Anna's original 600) misfired on tall
-      // hero images and on mobile where the fold is different.
       const iframeRect = iframe.getBoundingClientRect();
-      const shouldShow = iframeRect.top < siteHeaderH - 20;
+      const shouldShow = true; // always visible once sections resolve
       setVisible(shouldShow);
       if (!shouldShow) return;
       // Active section = last one whose top is above the viewport midline
