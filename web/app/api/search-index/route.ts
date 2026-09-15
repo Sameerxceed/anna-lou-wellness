@@ -149,8 +149,41 @@ async function safe<T>(fn: () => Promise<T[]>, label: string): Promise<T[]> {
 export async function GET() {
   const items: SearchItem[] = [...STATIC_ROUTES];
 
+  // Parallelise every CMS fetch — they're independent, so sequential
+  // awaits were serialising ~9 round-trips (2-4s cold). Promise.all cuts
+  // total time to the slowest single call. Empty arrays on failure via
+  // safe() keep the endpoint resilient if one collection times out.
+  const [
+    articles,
+    experiences,
+    products,
+    practitioners,
+    mantras,
+    events,
+    replays,
+    customPageSlugs,
+    landings,
+  ] = await Promise.all([
+    safe(() => getArticles(), 'articles'),
+    safe(() => getExperiences(), 'experiences'),
+    safe(() => getProducts(), 'products'),
+    safe(() => getPractitioners(), 'practitioners'),
+    safe(() => getMantras(), 'mantras'),
+    safe(() => getEvents(), 'events'),
+    safe(() => getWorkshopReplays(), 'workshop-replays'),
+    safe(() => getAllCustomPageSlugs(), 'custom-page-slugs'),
+    safe(async () => {
+      const { data } = await fetchAPI('/custom-html-landings', {
+        'fields[0]': 'title',
+        'fields[1]': 'slug',
+        'fields[2]': 'seo_description',
+        'pagination[pageSize]': '100',
+      });
+      return Array.isArray(data) ? data : [];
+    }, 'custom-html-landings'),
+  ]);
+
   // === Articles (across every section) ===
-  const articles = await safe(() => getArticles(), 'articles');
   for (const a of articles) {
     if (!a?.slug) continue;
     const sectionSlug = a.category?.section || 'reset-stories';
@@ -166,7 +199,6 @@ export async function GET() {
   }
 
   // === Experiences (retreats, workshops, corporate, speaking) ===
-  const experiences = await safe(() => getExperiences(), 'experiences');
   for (const e of experiences) {
     if (!e?.slug) continue;
     // Enrich tags with location aliases: if `location` names an
@@ -189,7 +221,6 @@ export async function GET() {
   }
 
   // === Products (shop) ===
-  const products = await safe(() => getProducts(), 'products');
   for (const p of products) {
     if (!p?.slug || p.isActive === false) continue;
     items.push({
@@ -203,7 +234,6 @@ export async function GET() {
   }
 
   // === Practitioners ===
-  const practitioners = await safe(() => getPractitioners(), 'practitioners');
   for (const pr of practitioners) {
     if (!pr?.name) continue;
     items.push({
@@ -217,7 +247,6 @@ export async function GET() {
   }
 
   // === Mantras ===
-  const mantras = await safe(() => getMantras(), 'mantras');
   for (const m of mantras) {
     if (!m?.title) continue;
     items.push({
@@ -231,7 +260,6 @@ export async function GET() {
   }
 
   // === Community Events ===
-  const events = await safe(() => getEvents(), 'events');
   events.forEach((ev, idx) => {
     if (!ev?.title) return;
     items.push({
@@ -245,7 +273,6 @@ export async function GET() {
   });
 
   // === Workshop replays (public listing, not gated content) ===
-  const replays = await safe(() => getWorkshopReplays(), 'workshop-replays');
   for (const r of replays) {
     if (!r?.slug) continue;
     items.push({
@@ -259,7 +286,6 @@ export async function GET() {
   }
 
   // === Custom pages (Anna's page-builder collection) ===
-  const customPageSlugs = await safe(() => getAllCustomPageSlugs(), 'custom-page-slugs');
   const customPages = await Promise.all(
     customPageSlugs.map((s) => getCustomPageBySlug(s).catch(() => null))
   );
@@ -276,15 +302,6 @@ export async function GET() {
   }
 
   // === Custom HTML Landings (campaigns) ===
-  const landings = await safe(async () => {
-    const { data } = await fetchAPI('/custom-html-landings', {
-      'fields[0]': 'title',
-      'fields[1]': 'slug',
-      'fields[2]': 'seo_description',
-      'pagination[pageSize]': '100',
-    });
-    return Array.isArray(data) ? data : [];
-  }, 'custom-html-landings');
   for (const l of landings) {
     const slug = (l as { slug?: string }).slug;
     if (!slug) continue;

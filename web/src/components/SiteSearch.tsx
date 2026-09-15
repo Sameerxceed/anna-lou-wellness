@@ -309,7 +309,7 @@ export default function SiteSearch() {
                           <Link
                             href={item.url}
                             className="alw-search-hit"
-                            onClick={close}
+                            onClick={() => setTimeout(close, 0)}
                           >
                             <span className="alw-search-hit-title">{item.title}</span>
                             {item.description && (
