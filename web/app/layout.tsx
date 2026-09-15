@@ -8,6 +8,7 @@ import BackToTop from '@/components/BackToTop';
 import ScrollReveal from '@/components/ScrollReveal';
 import Toast from '@/components/Toast';
 import FloatingAskAnna from '@/components/FloatingAskAnna';
+import SiteSearch from '@/components/SiteSearch';
 import DecoderQuizPopup from '@/components/DecoderQuizPopup';
 import UtmCapture from '@/components/UtmCapture';
 import { WebSiteSchema, PersonSchema, LocalBusinessSchema } from '@/components/StructuredData';
@@ -178,6 +179,7 @@ export default async function RootLayout({
         <FloatingAskAnna />
         <DecoderQuizPopup />
         <UtmCapture />
+        <SiteSearch />
       </body>
     </html>
   );

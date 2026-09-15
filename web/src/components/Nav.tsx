@@ -196,6 +196,21 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
               ))}
             </div>
             <div className="nav-actions">
+              {/* Site search — magnifying glass. Fires a window event that
+                  SiteSearch (mounted at layout level) listens for. Kept
+                  visible on all breakpoints because search is the biggest
+                  navigation aid we can give on small screens. */}
+              <button
+                type="button"
+                className="nav-action-btn nav-action-search"
+                aria-label="Search the site"
+                onClick={() => window.dispatchEvent(new Event('alw:open-search'))}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 15, height: 15, verticalAlign: '-2px' }} aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M21 21l-4.3-4.3" />
+                </svg>
+              </button>
               <Link href="/account" className="nav-action-btn" aria-label="Login">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
                   <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -618,7 +633,7 @@ const navStyles = `
      Anna feedback (14 Jul): "Cart icon is not visible from the main website
      navigation". Fix: keep Cart visible on mobile even when Login/Wishlist
      hide. Compact icon-only rendering to save space. */
-  .nav-action-cart {
+  .nav-action-cart, .nav-action-search {
     display: inline-flex !important;
     align-items: center;
     padding: 0.35rem 0.55rem;
