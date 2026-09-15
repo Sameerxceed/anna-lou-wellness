@@ -7,8 +7,8 @@ import {
   getMantras,
   getEvents,
   getWorkshopReplays,
-  fetchAPI,
 } from '@/lib/cms';
+import { fetchAPI } from '@/lib/strapi';
 import { getAllCustomPageSlugs, getCustomPageBySlug } from '@/lib/custom-page';
 
 /**
