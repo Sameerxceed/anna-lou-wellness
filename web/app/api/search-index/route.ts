@@ -109,6 +109,34 @@ function truncate(s: string | null | undefined, len = 200): string {
   return t.length > len ? t.slice(0, len - 1) + '…' : t;
 }
 
+// Location alias table — expand as Anna adds retreats. Keys are lowercased
+// substrings of the `location` field; values are extra keywords that should
+// let the entry surface in search. E.g. searching "australia" will find any
+// retreat whose location contains "port stephens" or "corlette".
+const LOCATION_ALIASES: Array<{ match: string; tags: string[] }> = [
+  { match: 'port stephens', tags: ['Australia', 'NSW', 'New South Wales', 'Sydney'] },
+  { match: 'corlette', tags: ['Australia', 'NSW', 'Port Stephens', 'Sydney'] },
+  { match: 'sydney', tags: ['Australia', 'NSW'] },
+  { match: 'nsw', tags: ['Australia', 'New South Wales', 'Sydney'] },
+  { match: 'australia', tags: ['NSW', 'Sydney'] },
+  { match: 'taggs island', tags: ['UK', 'England', 'Hampton', 'London', 'Surrey'] },
+  { match: 'hampton', tags: ['UK', 'London', 'Surrey'] },
+  { match: 'london', tags: ['UK', 'England'] },
+  { match: 'united kingdom', tags: ['UK', 'England'] },
+  { match: 'ibiza', tags: ['Spain', 'Balearics', 'Europe'] },
+  { match: 'italy', tags: ['Europe', 'Italian'] },
+];
+
+function deriveLocationTags(location: string): string[] {
+  const lc = location.toLowerCase();
+  const out: string[] = [];
+  for (const { match, tags } of LOCATION_ALIASES) {
+    if (lc.includes(match)) out.push(...tags);
+  }
+  // Dedup while preserving order.
+  return Array.from(new Set(out));
+}
+
 async function safe<T>(fn: () => Promise<T[]>, label: string): Promise<T[]> {
   try {
     return await fn();
@@ -141,6 +169,14 @@ export async function GET() {
   const experiences = await safe(() => getExperiences(), 'experiences');
   for (const e of experiences) {
     if (!e?.slug) continue;
+    // Enrich tags with location aliases: if `location` names an
+    // Australian region (Port Stephens, Corlette, NSW, Sydney, etc.)
+    // we add "Australia" to the tags. Same for a handful of other
+    // countries so people searching "australia retreat" or "uk workshop"
+    // find geographically-relevant entries even when the copy uses only
+    // the city or region name. Keep the list small — expand as Anna
+    // adds retreats in new locations.
+    const locationTags = deriveLocationTags(e.location || '');
     items.push({
       id: `experience-${e.slug}`,
       type: 'experience',
@@ -148,6 +184,7 @@ export async function GET() {
       description: truncate(e.description || e.seoDescription),
       url: `/experiences/${e.slug}`,
       section: e.type || 'Experience',
+      tags: [e.location, ...locationTags, e.type].filter(Boolean).join(', '),
     });
   }
 

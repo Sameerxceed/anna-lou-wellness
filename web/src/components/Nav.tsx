@@ -96,6 +96,19 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
                 </span>
               );
             })}
+          <span className="top-strip-sep"> · </span>
+          <button
+            type="button"
+            className="top-strip-search"
+            aria-label="Search the site"
+            onClick={() => window.dispatchEvent(new Event('alw:open-search'))}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.3-4.3" />
+            </svg>
+            <span>Search</span>
+          </button>
         </p>
       </div>
 
@@ -196,21 +209,6 @@ export default function Nav({ transparent = false, navigation, siteSettings, top
               ))}
             </div>
             <div className="nav-actions">
-              {/* Site search — magnifying glass. Fires a window event that
-                  SiteSearch (mounted at layout level) listens for. Kept
-                  visible on all breakpoints because search is the biggest
-                  navigation aid we can give on small screens. */}
-              <button
-                type="button"
-                className="nav-action-btn nav-action-search"
-                aria-label="Search the site"
-                onClick={() => window.dispatchEvent(new Event('alw:open-search'))}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 15, height: 15, verticalAlign: '-2px' }} aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="M21 21l-4.3-4.3" />
-                </svg>
-              </button>
               <Link href="/account" className="nav-action-btn" aria-label="Login">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 14, height: 14, marginRight: 6, verticalAlign: '-2px' }} aria-hidden="true">
                   <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -338,6 +336,28 @@ const navStyles = `
 .top-strip-sep {
   color: #B8B4AC;
   margin: 0 0.15rem;
+}
+.top-strip-search {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  vertical-align: middle;
+  transition: color 0.2s;
+}
+.top-strip-search:hover { color: #6E3A5A; }
+.top-strip-search svg {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
 }
 
 /* ═══ NAV BAR ═══ */
@@ -633,7 +653,7 @@ const navStyles = `
      Anna feedback (14 Jul): "Cart icon is not visible from the main website
      navigation". Fix: keep Cart visible on mobile even when Login/Wishlist
      hide. Compact icon-only rendering to save space. */
-  .nav-action-cart, .nav-action-search {
+  .nav-action-cart {
     display: inline-flex !important;
     align-items: center;
     padding: 0.35rem 0.55rem;

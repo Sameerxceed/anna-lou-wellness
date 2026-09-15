@@ -73,6 +73,48 @@ function normalise(s: string): string {
   return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
+// Bounded Levenshtein — returns edit distance up to `max`, else max+1.
+// We stop early once every value on the current row exceeds max, so the
+// hot path is cheap when strings clearly differ.
+function editDistance(a: string, b: string, max: number): number {
+  const al = a.length;
+  const bl = b.length;
+  if (Math.abs(al - bl) > max) return max + 1;
+  if (a === b) return 0;
+  let prev = new Array(bl + 1);
+  let curr = new Array(bl + 1);
+  for (let j = 0; j <= bl; j++) prev[j] = j;
+  for (let i = 1; i <= al; i++) {
+    curr[0] = i;
+    let rowMin = curr[0];
+    for (let j = 1; j <= bl; j++) {
+      const cost = a.charCodeAt(i - 1) === b.charCodeAt(j - 1) ? 0 : 1;
+      curr[j] = Math.min(
+        prev[j] + 1,
+        curr[j - 1] + 1,
+        prev[j - 1] + cost
+      );
+      if (curr[j] < rowMin) rowMin = curr[j];
+    }
+    if (rowMin > max) return max + 1;
+    [prev, curr] = [curr, prev];
+  }
+  return prev[bl];
+}
+
+// Fuzzy: does any word in `haystack` sit within `max` edits of `word`?
+// Skips words very different in length so we don't run Levenshtein on every
+// token. Used to catch typos like "austalia" -> "australia".
+function fuzzyWordMatch(haystack: string, word: string, max: number): boolean {
+  if (word.length < 4) return false; // typos on short words are ambiguous
+  const words = haystack.split(/[^a-z0-9]+/).filter(Boolean);
+  for (const w of words) {
+    if (Math.abs(w.length - word.length) > max) continue;
+    if (editDistance(w, word, max) <= max) return true;
+  }
+  return false;
+}
+
 function scoreItem(item: SearchItem, needle: string): number {
   const q = normalise(needle);
   if (!q) return 0;
@@ -96,6 +138,16 @@ function scoreItem(item: SearchItem, needle: string): number {
     if (d.includes(w)) score += 10;
     if (tags.includes(w)) score += 20;
     if (section.includes(w)) score += 8;
+  }
+  // Typo tolerance: if nothing has hit yet, allow ~1 edit distance on
+  // words >=4 chars. Small bonuses so exact matches still win.
+  if (score === 0) {
+    for (const w of words) {
+      const max = w.length >= 7 ? 2 : 1;
+      if (fuzzyWordMatch(t, w, max)) score += 60;
+      else if (fuzzyWordMatch(tags, w, max)) score += 40;
+      else if (fuzzyWordMatch(d, w, max)) score += 20;
+    }
   }
   return score;
 }
