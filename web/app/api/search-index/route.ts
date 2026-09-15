@@ -244,7 +244,7 @@ export async function GET() {
       'fields[0]': 'title',
       'fields[1]': 'slug',
       'fields[2]': 'seo_description',
-      'pagination[pageSize]': 100,
+      'pagination[pageSize]': '100',
     });
     return Array.isArray(data) ? data : [];
   }, 'custom-html-landings');
