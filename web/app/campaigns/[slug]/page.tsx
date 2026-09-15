@@ -15,15 +15,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!entry) {
     return { title: 'Not found', robots: { index: false, follow: false } };
   }
+  const title = entry.seoTitle || entry.title;
+  const desc = entry.seoDescription || undefined;
+  const canonicalUrl = `https://annalouwellness.com/campaigns/${entry.slug}`;
   return {
-    title: entry.seoTitle || entry.title,
-    description: entry.seoDescription || undefined,
+    title,
+    description: desc,
     alternates: { canonical: `/campaigns/${entry.slug}` },
     openGraph: {
-      title: entry.seoTitle || entry.title,
-      description: entry.seoDescription || undefined,
-      url: `/campaigns/${entry.slug}`,
-      images: entry.heroImage ? [{ url: entry.heroImage, width: 1200, height: 630 }] : undefined,
+      title,
+      description: desc,
+      type: 'website',
+      url: canonicalUrl,
+      siteName: 'Anna Lou Wellness',
+      images: entry.heroImage ? [{ url: entry.heroImage, width: 1200, height: 630, alt: entry.title }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: desc,
+      images: entry.heroImage ? [entry.heroImage] : undefined,
     },
   };
 }

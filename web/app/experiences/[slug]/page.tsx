@@ -95,10 +95,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     item.seoDescription ||
     (item.description || '').slice(0, 160) ||
     `${item.name}. Book direct with Anna Lou.`;
+  // Per-page OG + Twitter so social previews (WhatsApp, Facebook, LinkedIn)
+  // and directory scrapers get retreat-specific title/description/image
+  // instead of inheriting the sitewide layout defaults. Anna flagged this
+  // 10 Sep 2026 while prepping to submit The Big Exhale to AU tourism
+  // directories — sitewide fallback was making every retreat share the
+  // same 'Anna Lou Wellness | Beautifully Whole' + generic image card.
+  const ogImage = htmlOverride?.heroImage || item.heroImage || undefined;
+  const canonicalUrl = `https://annalouwellness.com/experiences/${slug}`;
   return {
     title,
     description: desc,
     alternates: { canonical: `/experiences/${slug}` },
+    openGraph: {
+      title,
+      description: desc,
+      type: 'website',
+      url: canonicalUrl,
+      siteName: 'Anna Lou Wellness',
+      images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: item.name }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: desc,
+      images: ogImage ? [ogImage] : undefined,
+    },
   };
 }
 
