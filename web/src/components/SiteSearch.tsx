@@ -183,6 +183,31 @@ export default function SiteSearch() {
       .finally(() => setLoading(false));
   }, [open, index, loading]);
 
+  // Warm the index during browser idle time so the first click on the
+  // search button feels instant. If we already fetched (index !== null)
+  // or a fetch is in flight, this is a no-op. requestIdleCallback keeps
+  // us out of the critical-path budget on slow devices.
+  useEffect(() => {
+    if (index || loading) return;
+    const warm = () => {
+      setLoading(true);
+      fetch('/api/search-index', { cache: 'force-cache' })
+        .then((r) => r.json() as Promise<IndexResponse>)
+        .then((data) => setIndex(data.items || []))
+        .catch(() => setIndex([]))
+        .finally(() => setLoading(false));
+    };
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+    const id = w.requestIdleCallback
+      ? w.requestIdleCallback(warm, { timeout: 4000 })
+      : window.setTimeout(warm, 2500);
+    return () => {
+      const cancelIdle = (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
+      if (cancelIdle) cancelIdle(id);
+      else window.clearTimeout(id);
+    };
+  }, [index, loading]);
+
   // Focus the input when overlay opens; lock body scroll while open.
   useEffect(() => {
     if (open) {
@@ -273,7 +298,10 @@ export default function SiteSearch() {
 
           <div className="alw-search-body">
             {loading && !index && (
-              <p className="alw-search-empty">Loading…</p>
+              <div className="alw-search-loading" role="status" aria-live="polite">
+                <span className="alw-spinner" aria-hidden="true" />
+                <span className="alw-search-loading-text">Loading search…</span>
+              </div>
             )}
             {!loading && index && !query.trim() && (
               <div className="alw-search-hint">
@@ -397,6 +425,29 @@ const styles = `
   color: #7A736A;
   text-align: center;
   padding: 2rem 0;
+}
+.alw-search-loading {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 3rem 0 2.5rem;
+}
+.alw-search-loading-text {
+  font-family: Mulish, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6E3A5A;
+}
+.alw-spinner {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2.5px solid #E5DFD3;
+  border-top-color: #6E3A5A;
+  animation: alw-spin 0.9s linear infinite;
+}
+@keyframes alw-spin {
+  to { transform: rotate(360deg); }
 }
 .alw-search-hint { padding: 8px 0 12px; }
 .alw-search-hint-lead {
