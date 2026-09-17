@@ -525,11 +525,17 @@ const navStyles = `
 .mobile-menu {
   position: fixed;
   top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  width: 100vw;
+  /* iOS Safari's URL bar is included in 100vh, so the Login/Cart
+     actions at the bottom of the panel sat behind Safari's chrome —
+     Anna 16 Sep flagged this. Use 100dvh (dynamic vh, shrinks when
+     the URL bar is showing) and add safe-area-inset-bottom so the
+     home indicator on iPhones doesn't overlap them either. */
+  height: 100dvh;
   z-index: 9999;
   background: #F5F3EF;
   overflow-y: auto;
-  padding: 0 1.5rem 2rem;
+  padding: 0 1.5rem calc(2rem + env(safe-area-inset-bottom));
 }
 .mobile-menu-header {
   display: flex; justify-content: space-between; align-items: center;

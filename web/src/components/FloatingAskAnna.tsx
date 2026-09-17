@@ -58,10 +58,39 @@ export default function FloatingAskAnna() {
   const [inIframe, setInIframe] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chat, loading, open]);
+
+  // iOS keyboard handling — Anna 16 Sep flagged that opening the chat on
+  // her iPhone and tapping the input made the keyboard cover the message
+  // area. Root cause: 100dvh does NOT shrink on iOS Safari when the
+  // software keyboard opens — the keyboard just floats over the layout.
+  // The visualViewport API DOES report the visible-area size correctly,
+  // so we resize the panel to match it whenever the viewport changes.
+  // No-op on desktop (visualViewport still exists but never shrinks) and
+  // on browsers that don't support the API.
+  useEffect(() => {
+    if (!open) return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const apply = () => {
+      const panel = panelRef.current;
+      if (!panel) return;
+      // Only clamp on small viewports — desktop chat is a fixed 560px box.
+      if (window.innerWidth > 480) return;
+      panel.style.height = `${vv.height}px`;
+    };
+    apply();
+    vv.addEventListener('resize', apply);
+    vv.addEventListener('scroll', apply);
+    return () => {
+      vv.removeEventListener('resize', apply);
+      vv.removeEventListener('scroll', apply);
+    };
+  }, [open]);
 
   useEffect(() => {
     try {
@@ -171,7 +200,7 @@ export default function FloatingAskAnna() {
       )}
 
       {open && (
-        <div className="faa-panel" role="dialog" aria-label="Chat with Anna">
+        <div ref={panelRef} className="faa-panel" role="dialog" aria-label="Chat with Anna">
           <div className="faa-header">
             <div className="faa-header-text">
               <p className="faa-header-title">Ask Anna</p>
@@ -243,6 +272,13 @@ export default function FloatingAskAnna() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onFocus={() => {
+                // Wait for keyboard animation, then scroll the input
+                // into view. Belt+braces alongside the visualViewport
+                // resize — older iOS Safari doesn't always fire vv
+                // resize on focus alone.
+                setTimeout(() => inputRef.current?.scrollIntoView({ block: 'end' }), 300);
+              }}
               placeholder="Type a message…"
               className="faa-input"
               disabled={loading}
