@@ -1,4 +1,5 @@
 import type { Experience } from '@/lib/cms';
+import { isExperienceSoldOut, placesRemaining } from '@/lib/cms';
 import BookingButton from './BookingButton';
 
 // Renders a grid of upcoming experiences (retreats or workshops) below the
@@ -60,6 +61,20 @@ export default function UpcomingExperiences({ items, accentColour, emptyLabel }:
                         {formatDate(e.date)}
                       </span>
                     )}
+                    {isExperienceSoldOut(e) && (
+                      <span className="upcoming-sold-pill">Sold out</span>
+                    )}
+                    {!isExperienceSoldOut(e) && (() => {
+                      const left = placesRemaining(e);
+                      if (left !== null && left <= 4 && left > 0) {
+                        return (
+                          <span className="upcoming-places-pill" style={{ background: accentColour }}>
+                            {left === 1 ? '1 place left' : `${left} places left`}
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
                     {!e.heroImage && <span className="upcoming-card-image-placeholder">Add a hero image in CMS</span>}
                   </a>
                   <div className="upcoming-card-body">
@@ -89,7 +104,16 @@ export default function UpcomingExperiences({ items, accentColour, emptyLabel }:
                       >
                         Read more &rarr;
                       </a>
-                      {e.bookingUrl ? (
+                      {isExperienceSoldOut(e) ? (
+                        e.waitlistUrl ? (
+                          <BookingButton
+                            url={e.waitlistUrl}
+                            label="Join waitlist →"
+                            className="upcoming-cta"
+                            style={{ color: '#231F20', borderColor: '#231F20' }}
+                          />
+                        ) : null
+                      ) : e.bookingUrl ? (
                         <BookingButton
                           url={e.bookingUrl}
                           label="Book directly →"
@@ -103,10 +127,6 @@ export default function UpcomingExperiences({ items, accentColour, emptyLabel }:
               ))}
             </div>
           )}
-
-          <p className="upcoming-note reveal">
-            Bookings open by email while we finalise the new payment system. Reply within 24 hours.
-          </p>
         </div>
       </section>
     </>
@@ -126,6 +146,8 @@ const upcomingStyles = `
 .upcoming-card-image { display:block; position:relative; aspect-ratio:4/3; background-size:cover; background-position:center; background-color:#EDE8DF; text-decoration:none; }
 .upcoming-card-image-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:Mulish,sans-serif; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(0,0,0,0.25); text-align:center; padding:1rem; }
 .upcoming-date-pill { position:absolute; top:14px; left:14px; color:#F5F3EF; font-family:Mulish,sans-serif; font-weight:600; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.45rem 0.85rem; border-radius:3px; backdrop-filter:blur(4px); }
+.upcoming-sold-pill { position:absolute; top:14px; right:14px; background:#231F20; color:#fff; font-family:Mulish,sans-serif; font-weight:700; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; padding:0.45rem 0.85rem; border-radius:3px; }
+.upcoming-places-pill { position:absolute; top:14px; right:14px; color:#fff; font-family:Mulish,sans-serif; font-weight:600; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.4rem 0.75rem; border-radius:3px; }
 
 .upcoming-card-body { padding:1.2rem 1.4rem 1.4rem; display:flex; flex-direction:column; flex:1; }
 .upcoming-name { font-family:'EB Garamond',Georgia,serif; font-weight:500; font-size:1.25rem; color:#231F20; line-height:1.3; margin:0 0 0.4rem; }

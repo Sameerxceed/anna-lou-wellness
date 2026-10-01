@@ -1164,6 +1164,10 @@ export interface Experience {
   bookingUrl: string;
   seoTitle?: string;
   seoDescription?: string;
+  placesCapacity: number | null;
+  placesSold: number;
+  soldOutOverride: boolean;
+  waitlistUrl: string;
   upsells?: Array<{
     label?: string;
     link?: string;
@@ -1171,6 +1175,27 @@ export interface Experience {
     blurb?: string;
     image?: { url?: string } | null;
   }>;
+}
+
+/** Capacity helper used by Experience pages + grid cards. Mirrors the
+ *  server-side rule in strapi-purchasable.isExperienceSoldOut. */
+export function isExperienceSoldOut(e: {
+  placesCapacity: number | null;
+  placesSold: number;
+  soldOutOverride: boolean;
+}): boolean {
+  if (e.soldOutOverride) return true;
+  if (!e.placesCapacity || e.placesCapacity <= 0) return false;
+  return (e.placesSold || 0) >= e.placesCapacity;
+}
+
+/** Places left — null when unlimited (no capacity set), else max(0, cap - sold). */
+export function placesRemaining(e: {
+  placesCapacity: number | null;
+  placesSold: number;
+}): number | null {
+  if (!e.placesCapacity || e.placesCapacity <= 0) return null;
+  return Math.max(0, e.placesCapacity - (e.placesSold || 0));
 }
 
 export async function getExperiences(type?: string): Promise<Experience[]> {
@@ -1201,6 +1226,13 @@ export async function getExperiences(type?: string): Promise<Experience[]> {
       bookingUrl: d.booking_url || '',
       seoTitle: d.seo_title || '',
       seoDescription: d.seo_description || '',
+      placesCapacity:
+        Number.isFinite(Number(d.places_capacity)) && Number(d.places_capacity) > 0
+          ? Number(d.places_capacity)
+          : null,
+      placesSold: Number.isFinite(Number(d.places_sold)) ? Number(d.places_sold) : 0,
+      soldOutOverride: Boolean(d.sold_out_override),
+      waitlistUrl: d.waitlist_url || '',
       // Upsells — Anna's per-experience "where next" cards. Used by the
       // experience detail page (/experiences/[slug]) to render service
       // upsells instead of automatic product upsells (her 10 Jun ask).

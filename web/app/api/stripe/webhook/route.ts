@@ -16,6 +16,7 @@ import {
   fetchRecordingById,
   fetchCurrentRecording,
   attachRecordingToUser,
+  incrementExperiencePlacesSold,
 } from '@/lib/strapi-admin';
 import { incrementCouponUsage } from '@/lib/strapi-coupon';
 import { sendFromTemplate } from '@/lib/email';
@@ -585,6 +586,17 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
     sendFromTemplate('customer_experience_purchase', {
       lead: { ...context, tag: purchasable.mailchimpTag || 'Experience', type: 'experience' },
     }).catch((e) => console.warn(`[stripe webhook] experience customer email failed:`, e?.message));
+
+    // Capacity bookkeeping: bump places_sold so the Experience page
+    // auto-switches to 'Sold out' / 'Join waitlist' when capacity hits.
+    // Fire-and-forget; a failure here only means Anna has to reconcile
+    // in CMS, it never breaks the receipt flow for the buyer.
+    const experienceId = Number(purchasable.id);
+    if (Number.isFinite(experienceId) && experienceId > 0) {
+      incrementExperiencePlacesSold(experienceId).catch((e) =>
+        console.warn(`[stripe webhook] experience capacity bump failed:`, e?.message),
+      );
+    }
   }
 }
 

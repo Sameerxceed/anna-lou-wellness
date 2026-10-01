@@ -644,6 +644,45 @@ export async function decrementProductStock(productId: number, qty: number): Pro
   }
 }
 
+/**
+ * Bump places_sold on an Experience after a successful Stripe payment.
+ * Fire-and-forget — a failure here never blocks the webhook, we just log
+ * and move on. Anna can manually reconcile from the CMS if needed.
+ *
+ * Called from stripe/webhook/route.ts on checkout.session.completed when
+ * purchasable.type === 'experience'. Idempotency is best-effort: Stripe
+ * can replay the same session_id, so we only bump when the webhook was
+ * triggered by a fresh session. In practice this is handled upstream by
+ * the webhook's deduplication (same session_id does not re-grant).
+ */
+export async function incrementExperiencePlacesSold(experienceId: number): Promise<void> {
+  try {
+    const url = new URL(`${STRAPI_URL}/api/experiences`);
+    url.searchParams.set('filters[id][$eq]', String(experienceId));
+    const findRes = await fetch(url.toString(), { headers: authHeaders(), cache: 'no-store' });
+    if (!findRes.ok) {
+      console.warn(`[strapi] incrementExperiencePlacesSold find ${findRes.status}`);
+      return;
+    }
+    const findJson = await findRes.json();
+    const exp = Array.isArray(findJson?.data) ? findJson.data[0] : null;
+    if (!exp) return;
+    const newSold = Number(exp.places_sold || 0) + 1;
+    const updateRes = await fetch(`${STRAPI_URL}/api/experiences/${encodeURIComponent(exp.documentId)}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({ data: { places_sold: newSold } }),
+    });
+    if (!updateRes.ok) {
+      console.warn(`[strapi] incrementExperiencePlacesSold update ${updateRes.status}: ${await updateRes.text()}`);
+    } else {
+      console.info(`[strapi] experience ${experienceId} places_sold -> ${newSold}`);
+    }
+  } catch (err: any) {
+    console.warn(`[strapi] incrementExperiencePlacesSold failed for experience ${experienceId}:`, err?.message);
+  }
+}
+
 // ─── Circle Recording helpers ───
 
 export type Recording = {

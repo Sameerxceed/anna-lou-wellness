@@ -87,6 +87,24 @@
       "default": true,
       "description": "Untick to HIDE this entry from the public site without deleting it. Useful for seasonal items or things you're drafting privately."
     },
+    "places_capacity": {
+      "type": "integer",
+      "description": "Total places available (e.g. 8 for Big Exhale). Leave blank or 0 for unlimited (standard workshops, speaking). When set, the site shows 'X places left' and auto-closes bookings when sold out."
+    },
+    "places_sold": {
+      "type": "integer",
+      "default": 0,
+      "description": "Auto-managed by the Stripe webhook. Goes up by 1 each time someone pays for this experience. You can override by hand if a seat is cancelled or you took a direct booking outside Stripe."
+    },
+    "sold_out_override": {
+      "type": "boolean",
+      "default": false,
+      "description": "Tick to force the experience to show as SOLD OUT even if places remain. Useful when you want to close bookings early."
+    },
+    "waitlist_url": {
+      "type": "string",
+      "description": "Where the Join waitlist button sends people when the experience is sold out. Paste a Mailchimp form, Google Form or /contact link. Leave blank to hide the waitlist button and show a plain 'Sold out' label instead."
+    },
     "sort_order": {
       "type": "integer",
       "default": 0,

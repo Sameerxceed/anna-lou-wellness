@@ -52,6 +52,11 @@ export type Purchasable = {
   eventLocation: string | null;
   /** Experience-only: time-of-day free-text (e.g. "10am to 4pm UK"). Null otherwise. */
   eventTime: string | null;
+  /** Experience-only capacity bookkeeping. All null for other types. */
+  placesCapacity: number | null;
+  placesSold: number | null;
+  soldOutOverride: boolean;
+  waitlistUrl: string | null;
 };
 
 function parsePwycOptions(raw: unknown): number[] {
@@ -110,7 +115,32 @@ function normalize(type: PurchasableType, raw: any): Purchasable | null {
     eventDate: type === 'experience' && typeof raw.date === 'string' ? raw.date : null,
     eventLocation: type === 'experience' && typeof raw.location === 'string' ? raw.location.trim() : null,
     eventTime: type === 'experience' && typeof raw.time === 'string' ? raw.time.trim() : null,
+    placesCapacity:
+      type === 'experience' && Number.isFinite(Number(raw.places_capacity))
+        ? Number(raw.places_capacity)
+        : null,
+    placesSold:
+      type === 'experience' && Number.isFinite(Number(raw.places_sold))
+        ? Number(raw.places_sold)
+        : null,
+    soldOutOverride: type === 'experience' && Boolean(raw.sold_out_override),
+    waitlistUrl:
+      type === 'experience' && typeof raw.waitlist_url === 'string' && raw.waitlist_url.trim()
+        ? raw.waitlist_url.trim()
+        : null,
   };
+}
+
+/**
+ * Is this experience sold out? True when either the manual override is set
+ * or capacity is defined AND places_sold >= capacity. Unlimited (capacity
+ * 0 or null) always returns false.
+ */
+export function isExperienceSoldOut(p: Purchasable): boolean {
+  if (p.type !== 'experience') return false;
+  if (p.soldOutOverride) return true;
+  if (!p.placesCapacity || p.placesCapacity <= 0) return false;
+  return (p.placesSold || 0) >= p.placesCapacity;
 }
 
 /**
@@ -180,6 +210,13 @@ export async function fetchPurchasable(
  * Returns an error message if anything's wrong, or null if valid.
  */
 export function validateForCheckout(p: Purchasable): string | null {
+  // Capacity gate for experiences — refuse to create a Stripe session for
+  // a sold-out retreat/workshop. Belt + braces with the frontend button,
+  // which also hides itself. Guarantees we never double-book a seat if
+  // two people hit Book Now at the same moment.
+  if (isExperienceSoldOut(p)) {
+    return `${p.name} is sold out.`;
+  }
   // PAY-WHAT-YOU-CAN programmes don't need a fixed pricePence — the buyer
   // picks from pwycOptionsPence. Skip the fixed-price checks in that case.
   if (p.pwycOptionsPence.length > 0) {

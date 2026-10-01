@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getExperiences, getTestimonials, getFAQs, getCustomHtmlLanding } from '@/lib/cms';
+import { getExperiences, getTestimonials, getFAQs, getCustomHtmlLanding, isExperienceSoldOut, placesRemaining } from '@/lib/cms';
 import CampaignFrame from '../../campaigns/[slug]/CampaignFrame';
 import CampaignSEOFallback from '@/components/CampaignSEOFallback';
 import { getStockImage } from '@/data/stock-images';
@@ -244,6 +244,25 @@ export default async function ExperienceDetailPage({ params }: Props) {
               </p>
             )}
             {priceLabel && <p className="exp-price">{priceLabel}</p>}
+            {(() => {
+              // Capacity badge: show 'X places left' once capacity is low
+              // (≤4) so there's social proof + urgency, or 'Sold out' when
+              // we've hit the cap. Hidden entirely when capacity is unset
+              // (open-ended workshops, speaking slots).
+              const remaining = placesRemaining(item);
+              const soldOut = isExperienceSoldOut(item);
+              if (soldOut) {
+                return <p className="exp-places exp-places-out">Sold out</p>;
+              }
+              if (remaining !== null && remaining <= 4) {
+                return (
+                  <p className="exp-places" style={{ color: accent }}>
+                    {remaining === 1 ? 'Only 1 place left' : `Only ${remaining} places left`}
+                  </p>
+                );
+              }
+              return null;
+            })()}
             <div className="exp-cta-row">
               {(() => {
                 // Anna 24 Jul: paid retreats/workshops must go via Stripe
@@ -251,6 +270,33 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 // etc.) so we can lock the seat + fire the Mailchimp tag.
                 // Free/enquire-only experiences keep the direct link.
                 const hasPrice = Number(item.price) > 0;
+                const soldOut = isExperienceSoldOut(item);
+                // Sold out: show Join waitlist (if URL set) or a plain
+                // disabled 'Sold out' button. Stops anyone pushing through
+                // to Stripe — the server-side guard rejects too, this is
+                // just belt + braces for UX.
+                if (soldOut) {
+                  if (item.waitlistUrl) {
+                    return (
+                      <BookingButton
+                        url={item.waitlistUrl}
+                        label="Join waitlist"
+                        className="exp-book-btn"
+                        style={{ background: '#231F20', color: '#fff' }}
+                      />
+                    );
+                  }
+                  return (
+                    <button
+                      type="button"
+                      disabled
+                      className="exp-book-btn exp-book-btn-disabled"
+                      aria-disabled="true"
+                    >
+                      Sold out
+                    </button>
+                  );
+                }
                 if (hasPrice) {
                   return (
                     <BuyProgrammeButton
@@ -363,10 +409,14 @@ const pageStyles = `
 .exp-title { font-family: 'Work Sans', sans-serif; font-weight: 300; font-size: clamp(2rem, 5vw, 3.2rem); color: #231F20; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 1rem; }
 .exp-meta { font-family: 'EB Garamond', Georgia, serif; font-size: 1.05rem; color: #3D3D3A; margin-bottom: 0.4rem; }
 .exp-meta-sep { color: #c8c4bc; margin: 0 0.2rem; }
-.exp-price { font-family: 'EB Garamond', Georgia, serif; font-size: 1.2rem; color: #6E3A5A; font-style: italic; margin-bottom: 1.5rem; }
+.exp-price { font-family: 'EB Garamond', Georgia, serif; font-size: 1.2rem; color: #6E3A5A; font-style: italic; margin-bottom: 1rem; }
+.exp-places { font-family: Mulish, sans-serif; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 1.2rem; }
+.exp-places-out { color: #B12B2B; }
 .exp-cta-row { display: flex; gap: 0.8rem; }
-.exp-book-btn { display: inline-block; padding: 0.95rem 1.8rem; font-family: Mulish, sans-serif; font-weight: 500; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; border-radius: 4px; text-decoration: none; transition: opacity 0.2s; }
+.exp-book-btn { display: inline-block; padding: 0.95rem 1.8rem; font-family: Mulish, sans-serif; font-weight: 500; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; border-radius: 4px; text-decoration: none; transition: opacity 0.2s; border: none; cursor: pointer; }
 .exp-book-btn:hover { opacity: 0.9; }
+.exp-book-btn-disabled { background: #c8c4bc; color: #5D5A52; cursor: not-allowed; }
+.exp-book-btn-disabled:hover { opacity: 1; }
 
 .exp-body { background: #fff; padding: 3rem 2rem; }
 .exp-body-inner { max-width: 800px; margin: 0 auto; }
