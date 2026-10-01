@@ -29,29 +29,45 @@ const PROTECTED_PREFIXES = [
   '/the-work/regulated/access',
 ];
 
+// Hostnames we treat as non-production. Must stay in sync with the
+// Coolify FQDN list. Any request on these gets a sitewide noindex header
+// so Google / Bing / AI crawlers never index the duplicate copy. Anna
+// 25 Sep: staging.annalouwellness.com was publicly indexed and appeared
+// above the live site for the Big Exhale retreat. Blocking at the HTTP
+// header level is faster than robots.txt alone and covers API routes too.
+const NON_INDEXABLE_HOSTS = new Set([
+  'staging.annalouwellness.com',
+]);
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isProtected = PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + '/'));
-  if (!isProtected) return NextResponse.next();
+  const host = req.headers.get('host')?.toLowerCase() || '';
+  const isNonIndexable = NON_INDEXABLE_HOSTS.has(host);
 
-  const token = req.cookies.get(SESSION_COOKIE)?.value;
-  if (!token) {
-    const loginUrl = new URL('/login', req.url);
-    loginUrl.searchParams.set('next', pathname);
-    return NextResponse.redirect(loginUrl);
+  const isProtected = PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + '/'));
+  if (isProtected) {
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
+    if (!token) {
+      const loginUrl = new URL('/login', req.url);
+      loginUrl.searchParams.set('next', pathname);
+      const res = NextResponse.redirect(loginUrl);
+      if (isNonIndexable) res.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      return res;
+    }
   }
 
-  return NextResponse.next();
+  const res = NextResponse.next();
+  if (isNonIndexable) res.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  return res;
 }
 
 export const config = {
+  // Run on every request so the X-Robots-Tag goes out sitewide on
+  // non-indexable hosts. The protected-route auth check is a cheap
+  // string compare, no DB call, so the overhead per request is tiny.
   matcher: [
-    '/account/:path*',
-    '/account',
-    '/community/reset-room/dashboard/:path*',
-    '/community/reset-room/vault/:path*',
-    '/community/reset-room/replays/:path*',
-    '/community/reset-room/account/:path*',
-    '/the-work/regulated/access/:path*',
+    // Everything except static assets, _next internals, and favicons.
+    // Matches the Next.js recommended "sitewide middleware" pattern.
+    '/((?!_next/static|_next/image|favicon.ico|apple-touch-icon.png|.*\\.svg$|.*\\.png$|.*\\.jpg$|.*\\.webp$|.*\\.ico$).*)',
   ],
 };
