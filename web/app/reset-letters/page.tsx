@@ -3,6 +3,7 @@ import ResetLettersSignupForm from './ResetLettersSignupForm';
 import UpsellBlockForSingleton from '@/components/UpsellBlockForSingleton';
 import { getCustomHtmlLanding } from '@/lib/cms';
 import CampaignFrame from '../campaigns/[slug]/CampaignFrame';
+import CampaignSEOFallback from '@/components/CampaignSEOFallback';
 export const revalidate = 300;
 
 const f = (cms: Record<string, unknown> | null, key: string, fallback: string): string => {
@@ -25,12 +26,18 @@ export default async function ResetLettersPage() {
   const override = await getCustomHtmlLanding('reset-letters');
   if (override && override.rawHtml.trim()) {
     return (
-      <CampaignFrame
-        html={override.rawHtml}
-        height={override.iframeHeight || 'auto'}
-        hideChrome={!override.showSiteNav}
-        title={override.title || 'Reset Letters'}
-      />
+      <>
+        <CampaignFrame
+          html={override.rawHtml}
+          height={override.iframeHeight || 'auto'}
+          hideChrome={!override.showSiteNav}
+          title={override.title || 'Reset Letters'}
+        />
+        <CampaignSEOFallback
+          rawHtml={override.rawHtml}
+          heading={override.title || 'Reset Letters'}
+        />
+      </>
     );
   }
 

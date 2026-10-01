@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCustomHtmlLanding } from '@/lib/cms';
 import CampaignFrame from './CampaignFrame';
+import CampaignSEOFallback from '@/components/CampaignSEOFallback';
 export const revalidate = 300;
 export const dynamicParams = true;
 
@@ -58,12 +59,15 @@ export default async function CampaignPage({ params }: Props) {
   if (!entry) return notFound();
 
   return (
-    <CampaignFrame
-      html={entry.rawHtml}
-      height={entry.iframeHeight}
-      hideChrome={!entry.showSiteNav}
-      title={entry.title}
-      jumpNav={entry.jumpNav}
-    />
+    <>
+      <CampaignFrame
+        html={entry.rawHtml}
+        height={entry.iframeHeight}
+        hideChrome={!entry.showSiteNav}
+        title={entry.title}
+        jumpNav={entry.jumpNav}
+      />
+      <CampaignSEOFallback rawHtml={entry.rawHtml} heading={entry.title} />
+    </>
   );
 }

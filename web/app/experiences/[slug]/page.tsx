@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getExperiences, getTestimonials, getFAQs, getCustomHtmlLanding } from '@/lib/cms';
 import CampaignFrame from '../../campaigns/[slug]/CampaignFrame';
+import CampaignSEOFallback from '@/components/CampaignSEOFallback';
 import { getStockImage } from '@/data/stock-images';
 import BookingButton from '@/components/BookingButton';
 import BuyProgrammeButton from '@/components/BuyProgrammeButton';
@@ -144,13 +145,28 @@ export default async function ExperienceDetailPage({ params }: Props) {
 
   if (htmlOverride && htmlOverride.rawHtml.trim()) {
     return (
-      <CampaignFrame
-        html={htmlOverride.rawHtml}
-        height={htmlOverride.iframeHeight || 'auto'}
-        hideChrome={!htmlOverride.showSiteNav}
-        title={htmlOverride.title || item.name}
-        jumpNav={htmlOverride.jumpNav}
-      />
+      <>
+        <CampaignFrame
+          html={htmlOverride.rawHtml}
+          height={htmlOverride.iframeHeight || 'auto'}
+          hideChrome={!htmlOverride.showSiteNav}
+          title={htmlOverride.title || item.name}
+          jumpNav={htmlOverride.jumpNav}
+        />
+        {/*
+          SEO fallback: Custom HTML Landings render their body inside a
+          sandbox iframe (srcDoc), which crawlers do not step into. We
+          emit the same content as hidden plain text in the parent DOM
+          so Googlebot, GPTBot, ClaudeBot, PerplexityBot can read dates,
+          price, inclusions, and body copy. Anna 25 Sep flagged that
+          Big Exhale was invisible to her AI assistant for exactly this
+          reason. Not cloaking — identical content, second rendering.
+        */}
+        <CampaignSEOFallback
+          rawHtml={htmlOverride.rawHtml}
+          heading={htmlOverride.title || item.name}
+        />
+      </>
     );
   }
 
