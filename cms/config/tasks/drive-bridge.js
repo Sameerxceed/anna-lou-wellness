@@ -152,28 +152,37 @@ async function uploadErrorNote(token, folderId, filename, body) {
   if (!res.ok) throw new Error(`Drive error-note upload: ${res.status}`);
 }
 
-async function uploadMediaToStrapi(strapiUrl, strapiToken, mediaUrl, filename) {
+async function uploadMediaToStrapi(strapi, mediaUrl, filename) {
   const mediaRes = await fetch(mediaUrl);
   if (!mediaRes.ok) throw new Error(`Fetch media: ${mediaRes.status}`);
   const buf = Buffer.from(await mediaRes.arrayBuffer());
-  const form = new FormData();
-  const blob = new Blob([buf]);
-  form.append('files', blob, filename || 'upload.bin');
-  const res = await fetch(`${strapiUrl}/api/upload`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${strapiToken}` },
-    body: form,
+
+  const uploadService = strapi.plugin('upload').service('upload');
+  // Strapi's upload service expects a Multer-style file descriptor.
+  const [uploaded] = await uploadService.upload({
+    data: {},
+    files: {
+      path: null,
+      name: filename || 'upload.bin',
+      type: mediaRes.headers.get('content-type') || 'application/octet-stream',
+      size: buf.length,
+      buffer: buf,
+    },
   });
-  if (!res.ok) throw new Error(`Strapi upload: ${res.status} ${await res.text()}`);
-  const j = await res.json();
-  if (!Array.isArray(j) || !j[0]?.id) throw new Error('Strapi upload returned unexpected shape');
-  return j[0].id;
+  if (!uploaded?.id) throw new Error('Strapi upload returned no id');
+  return uploaded.id;
 }
 
 const TYPE_TO_ENDPOINT = {
   'article': 'articles',
   'vault-journey': 'vault-journeys',
   'product': 'products',
+};
+
+const TYPE_TO_UID = {
+  'article': 'api::article.article',
+  'vault-journey': 'api::vault-journey.vault-journey',
+  'product': 'api::product.product',
 };
 
 // Slug derivation when the robot omits one. Strapi's REST API doesn't
@@ -206,59 +215,30 @@ const TYPE_MEDIA_FIELD = {
   'product': 'images',
 };
 
-async function createStrapiEntry(strapiUrl, strapiToken, type, data) {
-  const endpoint = TYPE_TO_ENDPOINT[type];
-  if (!endpoint) throw new Error(`Unknown type: ${type}`);
-  // Strapi 5 model: every entry with draftAndPublish:true has BOTH a
-  // draft version AND a published version. POST creates both, which
-  // makes the entry visible on the public site immediately. To keep
-  // it hidden until Anna reviews, we POST then unpublish.
-  // Product has draftAndPublish:false, so no unpublish step — the
-  // is_active:false flag on the body keeps the product off the shop.
-  const body = { data: { ...data } };
+async function createStrapiEntry(strapi, type, data) {
+  const uid = TYPE_TO_UID[type];
+  if (!uid) throw new Error(`Unknown type: ${type}`);
+  // Use Strapi's internal Document Service directly. The REST Content
+  // API has no way to create a draft-only entry — publishedAt:null in
+  // body is ignored, ?status=draft on URL is ignored, publish/unpublish
+  // actions aren't exposed as token permissions. Internal API has none
+  // of these limitations: just set status: 'draft' on the create call
+  // and the entry lands as a draft, invisible to the public site.
+  const payload = { ...data };
   if (type === 'product') {
-    body.data.is_active = false;
+    // Product has draftAndPublish:false, so status:'draft' is not a
+    // thing. is_active:false hides it from the public shop until Anna
+    // reviews.
+    payload.is_active = false;
   }
-  const res = await fetch(`${strapiUrl}/api/${endpoint}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${strapiToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
+  const created = await strapi.documents(uid).create({
+    data: payload,
+    status: type === 'product' ? undefined : 'draft',
   });
-  if (!res.ok) {
-    const errBody = await res.text();
-    throw new Error(`Strapi create ${endpoint}: ${res.status} ${errBody}`);
-  }
-  const created = await res.json();
-
-  // Unpublish immediately for draft-aware types. The token needs
-  // 'publish' permission on the content type for this to work; if the
-  // call 403s, we log a warning but don't fail — the entry still
-  // exists in Strapi, Anna can unpublish by hand from the three-dot
-  // menu on the entry row.
-  if (type !== 'product' && created?.data?.documentId) {
-    const unpubRes = await fetch(
-      `${strapiUrl}/api/${endpoint}/${encodeURIComponent(created.data.documentId)}/actions/unpublish`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${strapiToken}`,
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-    if (!unpubRes.ok) {
-      const unpubErr = await unpubRes.text();
-      console.warn(`[drive-bridge] unpublish ${endpoint}/${created.data.documentId}: ${unpubRes.status} ${unpubErr}`);
-    }
-  }
-
   return created;
 }
 
-async function processFile(strapi, token, strapiUrl, strapiToken, file, env) {
+async function processFile(strapi, token, file) {
   const bodyText = await downloadFile(token, file.id);
   let parsed;
   try {
@@ -274,8 +254,7 @@ async function processFile(strapi, token, strapiUrl, strapiToken, file, env) {
   if (!data || typeof data !== 'object') throw new Error('data must be an object');
 
   // Auto-derive slug from the title/name field when the robot omits
-  // one. Strapi's REST API returns a 400 for null uid fields; the
-  // admin UI auto-fills them but we have to do it ourselves here.
+  // one. The Document Service enforces required UIDs just like REST.
   if (!data.slug) {
     const titleField = TYPE_TITLE_FIELD[type];
     const titleValue = data[titleField];
@@ -287,7 +266,7 @@ async function processFile(strapi, token, strapiUrl, strapiToken, file, env) {
   // Optional media sideload: if media_url is present, download it,
   // upload to Strapi, and attach to the correct field for this type.
   if (parsed.media_url) {
-    const mediaId = await uploadMediaToStrapi(strapiUrl, strapiToken, parsed.media_url, parsed.media_filename);
+    const mediaId = await uploadMediaToStrapi(strapi, parsed.media_url, parsed.media_filename);
     const fieldName = parsed.media_field_name || TYPE_MEDIA_FIELD[type];
     if (type === 'product') {
       data[fieldName] = [mediaId];
@@ -296,8 +275,8 @@ async function processFile(strapi, token, strapiUrl, strapiToken, file, env) {
     }
   }
 
-  const created = await createStrapiEntry(strapiUrl, strapiToken, type, data);
-  strapi.log.info(`[drive-bridge] created ${type} id=${created?.data?.id} from "${file.name}"`);
+  const created = await createStrapiEntry(strapi, type, data);
+  strapi.log.info(`[drive-bridge] created ${type} id=${created?.id} documentId=${created?.documentId} from "${file.name}"`);
 }
 
 async function pollDriveInbox(strapi) {
@@ -313,12 +292,10 @@ async function pollDriveInbox(strapi) {
   if (!inboxId || !doneId || !errorsId) {
     return { skipped: true };
   }
-  const strapiUrl = process.env.DRIVE_BRIDGE_STRAPI_URL || 'http://localhost:1337';
-  const strapiToken = process.env.DRIVE_BRIDGE_STRAPI_TOKEN || process.env.STRAPI_ADMIN_API_TOKEN;
-  if (!strapiToken) {
-    strapi.log.warn('[drive-bridge] no Strapi token configured; skipping');
-    return { skipped: true };
-  }
+  // Strapi URL/token no longer needed — we talk to Strapi via its
+  // internal Document Service directly (same process). This also
+  // eliminates the token-permission limitations on the REST Content API
+  // (publish/unpublish not exposed, draft creation not possible).
 
   const token = await mintAccessToken(sa);
   const files = await listInboxFiles(token, inboxId);
@@ -326,7 +303,7 @@ async function pollDriveInbox(strapi) {
 
   for (const file of files) {
     try {
-      await processFile(strapi, token, strapiUrl, strapiToken, file, {});
+      await processFile(strapi, token, file);
       await moveFile(token, file.id, doneId, inboxId);
       stats.processed++;
     } catch (err) {
