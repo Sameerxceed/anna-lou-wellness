@@ -209,16 +209,19 @@ const TYPE_MEDIA_FIELD = {
 async function createStrapiEntry(strapiUrl, strapiToken, type, data) {
   const endpoint = TYPE_TO_ENDPOINT[type];
   if (!endpoint) throw new Error(`Unknown type: ${type}`);
-  // Draft flag — article + vault-journey use publishedAt: null;
-  // product has draftAndPublish: false so we force is_active: false
-  // instead so it stays hidden from the public site.
+  // Strapi 5 draft behaviour differs from v4. In v4 you set
+  // publishedAt: null in the body. In v5 you append ?status=draft to
+  // the URL — publishedAt in the body is ignored on create. Product
+  // has draftAndPublish:false, so there is no draft concept; we fall
+  // back to is_active:false to keep it hidden until Anna reviews.
   const body = { data: { ...data } };
+  let url = `${strapiUrl}/api/${endpoint}`;
   if (type === 'product') {
     body.data.is_active = false;
   } else {
-    body.data.publishedAt = null;
+    url += '?status=draft';
   }
-  const res = await fetch(`${strapiUrl}/api/${endpoint}`, {
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${strapiToken}`,
