@@ -209,19 +209,17 @@ const TYPE_MEDIA_FIELD = {
 async function createStrapiEntry(strapiUrl, strapiToken, type, data) {
   const endpoint = TYPE_TO_ENDPOINT[type];
   if (!endpoint) throw new Error(`Unknown type: ${type}`);
-  // Strapi 5 draft behaviour differs from v4. In v4 you set
-  // publishedAt: null in the body. In v5 you append ?status=draft to
-  // the URL — publishedAt in the body is ignored on create. Product
-  // has draftAndPublish:false, so there is no draft concept; we fall
-  // back to is_active:false to keep it hidden until Anna reviews.
+  // Strapi 5 model: every entry with draftAndPublish:true has BOTH a
+  // draft version AND a published version. POST creates both, which
+  // makes the entry visible on the public site immediately. To keep
+  // it hidden until Anna reviews, we POST then unpublish.
+  // Product has draftAndPublish:false, so no unpublish step — the
+  // is_active:false flag on the body keeps the product off the shop.
   const body = { data: { ...data } };
-  let url = `${strapiUrl}/api/${endpoint}`;
   if (type === 'product') {
     body.data.is_active = false;
-  } else {
-    url += '?status=draft';
   }
-  const res = await fetch(url, {
+  const res = await fetch(`${strapiUrl}/api/${endpoint}`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${strapiToken}`,
@@ -233,7 +231,31 @@ async function createStrapiEntry(strapiUrl, strapiToken, type, data) {
     const errBody = await res.text();
     throw new Error(`Strapi create ${endpoint}: ${res.status} ${errBody}`);
   }
-  return res.json();
+  const created = await res.json();
+
+  // Unpublish immediately for draft-aware types. The token needs
+  // 'publish' permission on the content type for this to work; if the
+  // call 403s, we log a warning but don't fail — the entry still
+  // exists in Strapi, Anna can unpublish by hand from the three-dot
+  // menu on the entry row.
+  if (type !== 'product' && created?.data?.documentId) {
+    const unpubRes = await fetch(
+      `${strapiUrl}/api/${endpoint}/${encodeURIComponent(created.data.documentId)}/actions/unpublish`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (!unpubRes.ok) {
+      const unpubErr = await unpubRes.text();
+      console.warn(`[drive-bridge] unpublish ${endpoint}/${created.data.documentId}: ${unpubRes.status} ${unpubErr}`);
+    }
+  }
+
+  return created;
 }
 
 async function processFile(strapi, token, strapiUrl, strapiToken, file, env) {
