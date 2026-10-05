@@ -176,6 +176,26 @@ const TYPE_TO_ENDPOINT = {
   'product': 'products',
 };
 
+// Slug derivation when the robot omits one. Strapi's REST API doesn't
+// run the UID auto-fill that the admin UI does, so a missing slug is
+// a hard 400. Mirror the standard lowercase+hyphens pattern that
+// Strapi's own UID field uses.
+function slugify(s) {
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60) || 'untitled-' + Date.now().toString(36);
+}
+
+const TYPE_TITLE_FIELD = {
+  'article': 'title',
+  'vault-journey': 'name',
+  'product': 'name',
+};
+
 // For each type, what fields hold a media reference the bridge should
 // swap for a Strapi media id. The media_url top-level field is the
 // generic one; type-specific media_field_name lets Anna aim at a
@@ -228,6 +248,17 @@ async function processFile(strapi, token, strapiUrl, strapiToken, file, env) {
   const data = parsed.data || {};
   if (!data || typeof data !== 'object') throw new Error('data must be an object');
 
+  // Auto-derive slug from the title/name field when the robot omits
+  // one. Strapi's REST API returns a 400 for null uid fields; the
+  // admin UI auto-fills them but we have to do it ourselves here.
+  if (!data.slug) {
+    const titleField = TYPE_TITLE_FIELD[type];
+    const titleValue = data[titleField];
+    if (titleValue) {
+      data.slug = slugify(titleValue);
+    }
+  }
+
   // Optional media sideload: if media_url is present, download it,
   // upload to Strapi, and attach to the correct field for this type.
   if (parsed.media_url) {
@@ -275,6 +306,10 @@ async function pollDriveInbox(strapi) {
       stats.processed++;
     } catch (err) {
       strapi.log.error(`[drive-bridge] "${file.name}" failed: ${err.message}`);
+      // Try to leave a sibling .error.txt in the errors folder for
+      // Anna's visibility, but do NOT let a failure here stop us from
+      // moving the file out of inbox — otherwise we loop forever on
+      // the same bad file every 10 minutes.
       try {
         await uploadErrorNote(
           token,
@@ -282,6 +317,10 @@ async function pollDriveInbox(strapi) {
           `${file.name.replace(/\.json$/i, '')}.error.txt`,
           `Failed at ${new Date().toISOString()}\n\n${err.message}`,
         );
+      } catch (noteErr) {
+        strapi.log.warn(`[drive-bridge] error-note upload failed for "${file.name}": ${noteErr.message}`);
+      }
+      try {
         await moveFile(token, file.id, errorsId, inboxId);
       } catch (moveErr) {
         strapi.log.error(`[drive-bridge] could not move "${file.name}" to errors: ${moveErr.message}`);
