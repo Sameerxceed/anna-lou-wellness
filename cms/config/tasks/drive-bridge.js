@@ -218,23 +218,32 @@ const TYPE_MEDIA_FIELD = {
 async function createStrapiEntry(strapi, type, data) {
   const uid = TYPE_TO_UID[type];
   if (!uid) throw new Error(`Unknown type: ${type}`);
-  // Use Strapi's internal Document Service directly. The REST Content
-  // API has no way to create a draft-only entry — publishedAt:null in
-  // body is ignored, ?status=draft on URL is ignored, publish/unpublish
-  // actions aren't exposed as token permissions. Internal API has none
-  // of these limitations: just set status: 'draft' on the create call
-  // and the entry lands as a draft, invisible to the public site.
   const payload = { ...data };
   if (type === 'product') {
-    // Product has draftAndPublish:false, so status:'draft' is not a
-    // thing. is_active:false hides it from the public shop until Anna
-    // reviews.
+    // Product has draftAndPublish:false. is_active:false hides it from
+    // the public shop until Anna reviews.
     payload.is_active = false;
   }
+
+  // Strapi 5.40 Document Service: create() with status:'draft' is
+  // supposed to produce a draft-only entry, but in 5.40 it still
+  // produces both a draft and a published version. So we follow up
+  // with an explicit unpublish for draft-aware types. Unpublish keeps
+  // the draft version intact, just removes the published copy — which
+  // is exactly what 'draft only' should look like.
   const created = await strapi.documents(uid).create({
     data: payload,
     status: type === 'product' ? undefined : 'draft',
   });
+
+  if (type !== 'product' && created?.documentId) {
+    try {
+      await strapi.documents(uid).unpublish({ documentId: created.documentId });
+    } catch (err) {
+      strapi.log.warn(`[drive-bridge] unpublish ${uid}/${created.documentId}: ${err.message}`);
+    }
+  }
+
   return created;
 }
 
