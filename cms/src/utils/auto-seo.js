@@ -268,19 +268,33 @@ function runAfter(event, uid, opts = {}) {
       } catch (err) {
         strapi.log.warn(`[auto-seo] ${uid}/${documentId} draft update: ${err.message}`);
       }
+      // IMPORTANT: only touch the published version if one actually
+      // exists. In Strapi 5.40, calling update({ status: 'published' })
+      // on an entry with no published version doesn't fail — it CREATES
+      // the published version from the draft. That silently publishes
+      // every draft (incl. ones from the Drive Bridge) a few hundred ms
+      // after create. Check first, only update if there's something
+      // there to update.
+      let publishedExists = false;
       try {
-        await strapi.documents(uid).update({
+        const pub = await strapi.documents(uid).findOne({
           documentId,
-          data: patch,
           status: 'published',
         });
-      } catch (err) {
-        // Published may not exist yet for fresh drafts — that's fine.
-        if (!String(err.message).includes('not found')) {
+        publishedExists = !!pub;
+      } catch { /* not found = stays false */ }
+      if (publishedExists) {
+        try {
+          await strapi.documents(uid).update({
+            documentId,
+            data: patch,
+            status: 'published',
+          });
+        } catch (err) {
           strapi.log.warn(`[auto-seo] ${uid}/${documentId} published update: ${err.message}`);
         }
       }
-      strapi.log.info(`[auto-seo] ${uid}/${documentId} filled SEO fields`);
+      strapi.log.info(`[auto-seo] ${uid}/${documentId} filled SEO fields${publishedExists ? ' (draft + published)' : ' (draft only)'}`);
     } catch (err) {
       strapi.log.warn(`[auto-seo] unexpected: ${err.message}`);
     }
