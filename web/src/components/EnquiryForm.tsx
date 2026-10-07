@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
 import { getStoredUtmSource } from '@/lib/utm';
+import TurnstileWidget from './TurnstileWidget';
 
 export interface EnquiryField {
   name: string;
@@ -35,6 +36,14 @@ export default function EnquiryForm({
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Cloudflare Turnstile token. Mostly-invisible CAPTCHA. The widget
+  // fills this on page load; if a visitor is suspicious Cloudflare
+  // shows an interactive challenge, otherwise it's seamless.
+  const [turnstileToken, setTurnstileToken] = useState('');
+  // Honeypot field — real humans can't see it, bots fill every input
+  // they find. If this comes back non-empty on the server, drop the
+  // request. Belt + braces alongside Turnstile.
+  const [honeypot, setHoneypot] = useState('');
 
   function update(name: string, val: string) {
     setValues(v => ({ ...v, [name]: val }));
@@ -42,6 +51,19 @@ export default function EnquiryForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    // Honeypot tripped — silently pretend success so bots don't learn
+    // to adapt. From the visitor's perspective it just worked.
+    if (honeypot) {
+      setDone(true);
+      return;
+    }
+    // Require Turnstile token before submission. If the widget hasn't
+    // verified yet (slow network, first visit), ask the visitor to wait
+    // half a second and try again.
+    if (!turnstileToken) {
+      setError('One moment — verifying you are human. Try again in a few seconds.');
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -52,7 +74,12 @@ export default function EnquiryForm({
       // the contact with "Origin: <source>" so Anna can build per-source
       // Mailchimp Customer Journeys.
       const utmSource = getStoredUtmSource();
-      const payload = utmSource ? { ...values, utm_source: utmSource } : values;
+      const payload = {
+        ...values,
+        turnstileToken,
+        _honeypot: honeypot, // server also checks this; empty on real submits
+        ...(utmSource ? { utm_source: utmSource } : {}),
+      };
       await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -116,11 +143,35 @@ export default function EnquiryForm({
           </label>
         ))}
 
+        {/* Honeypot — hidden from humans (CSS off-screen + aria-hidden +
+            autocomplete off) but bots that auto-fill every input will
+            trip it. The server drops any submission where this comes
+            back non-empty. Named 'website' because that's a common bait. */}
+        <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
+          <label>
+            Website (leave empty)
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+            />
+          </label>
+        </div>
+
+        {/* Cloudflare Turnstile — mostly invisible, challenges only on
+            suspicious traffic. compact size keeps the form tidy. */}
+        <div className="enq-turnstile">
+          <TurnstileWidget onVerify={setTurnstileToken} size="compact" />
+        </div>
+
         {error && <p className="enq-error">{error}</p>}
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || !turnstileToken}
           className="enq-submit"
           style={{ background: accentColour }}
         >
@@ -173,6 +224,10 @@ const styles = `
   padding: 0.7rem 1rem; border-radius: 0 4px 4px 0;
   font-family: 'EB Garamond', Georgia, serif;
   font-size: 0.9rem; color: #3D3D3A; margin-bottom: 0.8rem;
+}
+.enq-turnstile {
+  margin: 0.6rem 0 0.8rem;
+  display: flex; justify-content: center;
 }
 
 .enq-success {

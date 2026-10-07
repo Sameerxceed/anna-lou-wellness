@@ -14,6 +14,7 @@
 
 import { useEffect, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
+import TurnstileWidget from './TurnstileWidget';
 
 interface Props {
   accentColour?: string;
@@ -39,6 +40,8 @@ export default function PractitionerEnquiryButton({
     practice: '',
     message: '',
   });
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [honeypot, setHoneypot] = useState('');
 
   useEffect(() => {
     if (!open) return;
@@ -51,13 +54,22 @@ export default function PractitionerEnquiryButton({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Honeypot — silently drop bot submissions.
+    if (honeypot) {
+      setDone(true);
+      return;
+    }
+    if (!turnstileToken) {
+      setError('One moment — verifying you are human. Try again in a few seconds.');
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
       const res = await fetch('/api/lead/practitioner-enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, turnstileToken, _honeypot: honeypot }),
       });
       if (!res.ok) {
         const txt = await res.text();
@@ -179,12 +191,32 @@ export default function PractitionerEnquiryButton({
                   />
                 </label>
 
+                {/* Honeypot — hidden from humans, bots fill it. */}
+                <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
+                  <label>
+                    Website (leave empty)
+                    <input
+                      type="text"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                {/* Cloudflare Turnstile — mostly invisible. */}
+                <div style={{ display: 'flex', justifyContent: 'center', margin: '0.4rem 0 0.8rem' }}>
+                  <TurnstileWidget onVerify={setTurnstileToken} size="compact" />
+                </div>
+
                 {error && <p className="pe-error">{error}</p>}
 
                 <div className="pe-actions">
                   <button
                     type="submit"
-                    disabled={submitting}
+                    disabled={submitting || !turnstileToken}
                     className="pe-submit"
                     style={{ background: accentColour }}
                   >

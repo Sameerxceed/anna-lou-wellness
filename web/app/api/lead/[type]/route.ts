@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { subscribeAndTag } from '@/lib/mailchimp';
 import { sendFromTemplate } from '@/lib/email';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 /**
  * Generic lead-capture endpoint for every EnquiryForm on the site.
@@ -23,10 +24,12 @@ import { sendFromTemplate } from '@/lib/email';
  * The Mailchimp tag fires whichever Customer Journey Anna has wired to
  * that trigger in her account.
  *
- * Why no Turnstile here yet: the existing EnquiryForm component doesn't
- * pass a turnstile token. Adding Turnstile is a follow-up that touches
- * every form. For now, server-side rate-limit + Mailchimp's own
- * duplicate-subscriber dedup gives us a reasonable baseline.
+ * Bot protection (added 7 Oct 2026 after Anna reported bot spam):
+ *   - Honeypot field `_honeypot` on the body — real humans can't see
+ *     the hidden input, bots fill every field they find. Silently drop.
+ *   - Cloudflare Turnstile token in `turnstileToken` — mostly-invisible
+ *     CAPTCHA, verified server-side via @/lib/turnstile.
+ *   - Both checks run before the lead is persisted or Anna emailed.
  */
 
 const KNOWN_TYPES: Record<string, string> = {
@@ -99,6 +102,27 @@ export async function POST(
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  // Honeypot — bots fill every input, humans can't see this field. If
+  // it's non-empty, pretend success so bots don't learn to adapt and
+  // drop the request silently. No Mailchimp, no email, no log noise.
+  if (body._honeypot && String(body._honeypot).trim()) {
+    console.info(`[lead/${cleanType}] honeypot tripped, dropping`);
+    return NextResponse.json({ ok: true, type: cleanType });
+  }
+
+  // Cloudflare Turnstile — mostly-invisible CAPTCHA. Verifies the
+  // token server-side with Cloudflare's challenge endpoint. If the
+  // token is missing / invalid / replayed we reject with 400 so the
+  // visitor sees an error and can retry. Honest failure beats silent
+  // bypass. The env var TURNSTILE_SECRET_KEY must be set — if not,
+  // the verifier fails closed (safe default).
+  const remoteIp = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || '';
+  const captcha = await verifyTurnstile(body.turnstileToken, remoteIp);
+  if (!captcha.ok) {
+    console.warn(`[lead/${cleanType}] turnstile failed: ${captcha.error}`);
+    return NextResponse.json({ error: captcha.error || 'Verification failed' }, { status: 400 });
   }
 
   const email = pickEmail(body);
