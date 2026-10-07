@@ -1,0 +1,19 @@
+{
+  "action": "create",
+  "type": "experience",
+  "data": {
+    "name": "The Big Exhale Retreat — Port Stephens 2027",
+    "type": "retreat",
+    "description": "A 4-day waterfront retreat in Corlette, Port Stephens for people running on empty. Somatic release, deep rest, and nervous system work.",
+    "date": "2027-03-15",
+    "time": "Arrivals from 2pm",
+    "location": "Corlette, Port Stephens, NSW, Australia",
+    "price": 2800,
+    "price_label": "AUD 2,800 all-inclusive",
+    "hero_image": { "from_file": "big-exhale-port-stephens-hero.jpg" },
+    "places_capacity": 8,
+    "sort_order": 10,
+    "focus_keyword": "Port Stephens retreat",
+    "supporting_keywords": "Australia retreat, NSW wellness retreat, somatic retreat"
+  }
+}

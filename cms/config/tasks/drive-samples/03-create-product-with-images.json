@@ -1,0 +1,16 @@
+{
+  "action": "create",
+  "type": "product",
+  "data": {
+    "name": "Rose Quartz Heart Pendant",
+    "price": 89.00,
+    "short_description": "Hand-set rose quartz heart on an 18-inch silver chain.",
+    "description_v2": "A long-form description of the piece. Add material notes, care instructions, meaning.",
+    "stock": 12,
+    "images": [
+      { "from_file": "rose-quartz-pendant-front.jpg" },
+      { "from_file": "rose-quartz-pendant-worn.jpg" },
+      { "from_file": "rose-quartz-pendant-back.jpg" }
+    ]
+  }
+}

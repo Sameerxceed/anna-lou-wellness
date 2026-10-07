@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * Drive Bridge — poll Anna's Google Drive inbox folder every 10 minutes
- * and create Strapi drafts from any JSON files found.
+ * Drive Bridge — polls Anna's Google Drive inbox folder every 10 minutes
+ * and performs CRUD operations against Strapi based on JSON instructions.
  *
  * Why: Anna's AI assistant (Claude robots) cannot POST to our Strapi API
  * directly — her side blocks outbound HTTPS to arbitrary domains with a
@@ -10,39 +10,49 @@
  * pull from a folder she owns instead of letting her robot push to us.
  *
  * Flow per tick:
- *   1. List *.json files in INBOX folder (query = parents + mimeType)
- *   2. For each file: download, parse, validate shape
- *   3. If media_url is present, download it, upload to Strapi media,
- *      swap the URL for the returned media id
- *   4. POST to Strapi as draft (publishedAt: null for article/vault-journey;
- *      is_active: false for product since it has no draft/publish toggle)
- *   5. Move file to DONE/YYYY-MM-DD/ subfolder on success, or to ERRORS/
- *      with a sibling .error.txt explaining what Strapi rejected
+ *   1. List *.json files in INBOX folder
+ *   2. For each file: download, parse, dispatch on `action`
+ *   3. Move file to DONE/YYYY-MM-DD/ on success, ERRORS/ on failure
  *
- * JSON file shape expected (one entry per file):
+ * JSON shape — all actions share this top-level envelope:
  *   {
- *     "type": "article" | "vault-journey" | "product",
- *     "data": { ...fields matching the schema... },
- *     "media_url": "https://example.com/image.jpg"   // optional
+ *     "action": "create" | "update" | "unpublish" | "publish",
+ *     "type":   "article" | "experience" | "page" | "product" | "vault-journey",
+ *     "slug":   "my-item"      // required for update/unpublish/publish
+ *     "data":   { ... }        // field map, required for create/update
  *   }
+ *
+ * action defaults to "create" so old files written before the update
+ * feature still work.
+ *
+ * Image handling: any string field can be replaced with
+ *   { "from_file": "hero.jpg" }
+ * which tells the bridge to look up `hero.jpg` in the IMAGES Drive
+ * folder, upload to Strapi media library, and attach the returned id
+ * to that field. Works at any depth inside `data`.
+ *
+ * Legacy `media_url` on the top level still works for backwards compat
+ * with Anna's existing robot output.
  *
  * Auth: service account JSON (not an OAuth app) so there's no refresh-
  * token dance. We mint a short-lived access token from the JWT every
  * tick. No npm deps — raw crypto + fetch only.
  *
  * Env vars:
- *   DRIVE_BRIDGE_SA_JSON       Full service account JSON (one-line, no newlines in private key — use \\n)
- *   DRIVE_BRIDGE_INBOX_ID      Google Drive folder ID of the inbox
- *   DRIVE_BRIDGE_DONE_ID       Google Drive folder ID for completed files
- *   DRIVE_BRIDGE_ERRORS_ID     Google Drive folder ID for failed files
- *   DRIVE_BRIDGE_STRAPI_URL    (defaults to http://localhost:1337)
- *   DRIVE_BRIDGE_STRAPI_TOKEN  (defaults to admin token used elsewhere)
+ *   DRIVE_BRIDGE_SA_JSON       Full service account JSON (one line, with \n for newlines in private_key)
+ *   DRIVE_BRIDGE_INBOX_ID      Drive folder id for incoming instructions
+ *   DRIVE_BRIDGE_DONE_ID       Drive folder id for completed files
+ *   DRIVE_BRIDGE_ERRORS_ID     Drive folder id for failed files
+ *   DRIVE_BRIDGE_IMAGES_ID     (optional) Drive folder id for images referenced by `from_file`
  *
- * Anna's setup side:
- *   - Create a folder 'ALW CMS Bridge' in her Drive
- *   - Create subfolders: inbox, done, errors
- *   - Share the parent folder with the service account email (Editor)
- *   - Send the three folder IDs to Sameer who sets the env vars
+ * Anna's Drive layout:
+ *   ALW CMS Bridge/
+ *     inbox/      JSON instruction files land here
+ *     done/       successfully processed files
+ *     errors/     failed files + sibling .error.txt
+ *     images/     photos referenced via { "from_file": "name.jpg" }
+ *     samples/    worked examples of each action
+ *     README.md   field cheat sheet + action examples
  */
 
 const crypto = require('crypto');
@@ -50,6 +60,8 @@ const crypto = require('crypto');
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const DRIVE_API = 'https://www.googleapis.com/drive/v3';
 const DRIVE_UPLOAD_API = 'https://www.googleapis.com/upload/drive/v3';
+
+// ─── Google Drive auth ────────────────────────────────────────────────
 
 function base64url(input) {
   return Buffer.from(input).toString('base64')
@@ -101,6 +113,8 @@ async function mintAccessToken(sa) {
   return j.access_token;
 }
 
+// ─── Drive helpers ────────────────────────────────────────────────────
+
 async function listInboxFiles(token, inboxId) {
   const q = encodeURIComponent(`'${inboxId}' in parents and mimeType = 'application/json' and trashed = false`);
   const url = `${DRIVE_API}/files?q=${q}&fields=files(id,name,mimeType)&pageSize=50`;
@@ -116,6 +130,29 @@ async function downloadFile(token, fileId) {
   });
   if (!res.ok) throw new Error(`Drive download: ${res.status}`);
   return res.text();
+}
+
+async function downloadBinaryFile(token, fileId) {
+  const res = await fetch(`${DRIVE_API}/files/${fileId}?alt=media`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error(`Drive download: ${res.status}`);
+  const contentType = res.headers.get('content-type') || 'application/octet-stream';
+  const buf = Buffer.from(await res.arrayBuffer());
+  return { buffer: buf, contentType };
+}
+
+async function findFileByNameInFolder(token, folderId, filename) {
+  // Match on exact name OR starts-with (so "hero.jpg" can match
+  // "hero.jpg" OR Google-Drive-rewritten "hero (1).jpg" or similar).
+  const safeName = String(filename).replace(/'/g, "\\'");
+  const q = encodeURIComponent(`'${folderId}' in parents and name = '${safeName}' and trashed = false`);
+  const url = `${DRIVE_API}/files?q=${q}&fields=files(id,name,mimeType)&pageSize=5`;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`Drive find-by-name: ${res.status} ${await res.text()}`);
+  const j = await res.json();
+  const files = j.files || [];
+  return files[0] || null;
 }
 
 async function moveFile(token, fileId, toParentId, fromParentId) {
@@ -152,43 +189,118 @@ async function uploadErrorNote(token, folderId, filename, body) {
   if (!res.ok) throw new Error(`Drive error-note upload: ${res.status}`);
 }
 
-async function uploadMediaToStrapi(strapi, mediaUrl, filename) {
-  const mediaRes = await fetch(mediaUrl);
-  if (!mediaRes.ok) throw new Error(`Fetch media: ${mediaRes.status}`);
-  const buf = Buffer.from(await mediaRes.arrayBuffer());
+// ─── Strapi helpers ───────────────────────────────────────────────────
 
+async function uploadBufferToStrapi(strapi, buffer, filename, contentType) {
   const uploadService = strapi.plugin('upload').service('upload');
-  // Strapi's upload service expects a Multer-style file descriptor.
   const [uploaded] = await uploadService.upload({
     data: {},
     files: {
       path: null,
       name: filename || 'upload.bin',
-      type: mediaRes.headers.get('content-type') || 'application/octet-stream',
-      size: buf.length,
-      buffer: buf,
+      type: contentType || 'application/octet-stream',
+      size: buffer.length,
+      buffer,
     },
   });
   if (!uploaded?.id) throw new Error('Strapi upload returned no id');
   return uploaded.id;
 }
 
-const TYPE_TO_ENDPOINT = {
-  'article': 'articles',
-  'vault-journey': 'vault-journeys',
-  'product': 'products',
-};
+async function uploadUrlToStrapi(strapi, mediaUrl, filename) {
+  const mediaRes = await fetch(mediaUrl);
+  if (!mediaRes.ok) throw new Error(`Fetch media: ${mediaRes.status}`);
+  const buf = Buffer.from(await mediaRes.arrayBuffer());
+  return uploadBufferToStrapi(
+    strapi,
+    buf,
+    filename || mediaUrl.split('/').pop() || 'upload.bin',
+    mediaRes.headers.get('content-type'),
+  );
+}
+
+async function uploadDriveFileToStrapi(strapi, token, imagesFolderId, filename) {
+  if (!imagesFolderId) {
+    throw new Error(`DRIVE_BRIDGE_IMAGES_ID is not set, cannot resolve "${filename}"`);
+  }
+  const file = await findFileByNameInFolder(token, imagesFolderId, filename);
+  if (!file) {
+    throw new Error(`Image "${filename}" not found in Drive images folder`);
+  }
+  const { buffer, contentType } = await downloadBinaryFile(token, file.id);
+  return uploadBufferToStrapi(strapi, buffer, filename, contentType);
+}
+
+// ─── Media reference resolution ──────────────────────────────────────
+//
+// Walk the data object; wherever we find `{ from_file: 'name' }` or
+// `{ from_url: 'https://...' }` as a value, resolve to a Strapi media
+// id. Arrays of such references become arrays of ids. Supports nested
+// objects (components) and arrays (multi-media fields).
+
+async function resolveMediaReferences(strapi, token, imagesFolderId, value) {
+  if (value === null || value === undefined) return value;
+  if (Array.isArray(value)) {
+    const out = [];
+    for (const item of value) {
+      out.push(await resolveMediaReferences(strapi, token, imagesFolderId, item));
+    }
+    return out;
+  }
+  if (typeof value === 'object') {
+    if (typeof value.from_file === 'string') {
+      return uploadDriveFileToStrapi(strapi, token, imagesFolderId, value.from_file);
+    }
+    if (typeof value.from_url === 'string') {
+      return uploadUrlToStrapi(strapi, value.from_url, value.filename);
+    }
+    const out = {};
+    for (const [k, v] of Object.entries(value)) {
+      out[k] = await resolveMediaReferences(strapi, token, imagesFolderId, v);
+    }
+    return out;
+  }
+  return value;
+}
+
+// ─── Type registry ───────────────────────────────────────────────────
 
 const TYPE_TO_UID = {
   'article': 'api::article.article',
-  'vault-journey': 'api::vault-journey.vault-journey',
+  'experience': 'api::experience.experience',
+  'page': 'api::page.page',
   'product': 'api::product.product',
+  'vault-journey': 'api::vault-journey.vault-journey',
 };
 
-// Slug derivation when the robot omits one. Strapi's REST API doesn't
-// run the UID auto-fill that the admin UI does, so a missing slug is
-// a hard 400. Mirror the standard lowercase+hyphens pattern that
-// Strapi's own UID field uses.
+const TYPE_TITLE_FIELD = {
+  'article': 'title',
+  'experience': 'name',
+  'page': 'title',
+  'product': 'name',
+  'vault-journey': 'name',
+};
+
+// Legacy media_url field — which attribute to attach to by default
+// when the robot sends media_url at the top level instead of inside
+// data via from_file. Kept for backwards compat with Anna's early robot.
+const TYPE_DEFAULT_MEDIA_FIELD = {
+  'article': 'hero_image',
+  'experience': 'hero_image',
+  'page': 'hero_image',
+  'product': 'images',
+  'vault-journey': 'video_thumbnail',
+};
+
+// Which types have draftAndPublish:true. Products do not.
+const TYPE_HAS_DRAFT_PUBLISH = {
+  'article': true,
+  'experience': true,
+  'page': true,
+  'product': false,
+  'vault-journey': true,
+};
+
 function slugify(s) {
   return String(s || '')
     .toLowerCase()
@@ -199,55 +311,121 @@ function slugify(s) {
     .slice(0, 60) || 'untitled-' + Date.now().toString(36);
 }
 
-const TYPE_TITLE_FIELD = {
-  'article': 'title',
-  'vault-journey': 'name',
-  'product': 'name',
-};
+// ─── Strapi operations ───────────────────────────────────────────────
 
-// For each type, what fields hold a media reference the bridge should
-// swap for a Strapi media id. The media_url top-level field is the
-// generic one; type-specific media_field_name lets Anna aim at a
-// different attribute (e.g. hero_image vs images[]).
-const TYPE_MEDIA_FIELD = {
-  'article': 'hero_image',
-  'vault-journey': 'video_thumbnail',
-  'product': 'images',
-};
+async function findBySlug(strapi, uid, slug) {
+  // Look for the draft version first (will exist for any entry Anna is
+  // actively working on), then fall back to published. documentId is
+  // the same across versions so either works for update/publish calls.
+  const draft = await strapi.documents(uid).findFirst({
+    filters: { slug },
+    status: 'draft',
+  });
+  if (draft) return draft;
+  return strapi.documents(uid).findFirst({
+    filters: { slug },
+    status: 'published',
+  });
+}
 
 async function createStrapiEntry(strapi, type, data) {
   const uid = TYPE_TO_UID[type];
-  if (!uid) throw new Error(`Unknown type: ${type}`);
   const payload = { ...data };
-  if (type === 'product') {
-    // Product has draftAndPublish:false. is_active:false hides it from
-    // the public shop until Anna reviews.
+  if (!TYPE_HAS_DRAFT_PUBLISH[type]) {
+    // Product etc. — no draft concept, so is_active:false keeps it off
+    // the public shop until Anna approves.
     payload.is_active = false;
   }
-
-  // Strapi 5.40 Document Service: create() with status:'draft' is
-  // supposed to produce a draft-only entry, but in 5.40 it still
-  // produces both a draft and a published version. So we follow up
-  // with an explicit unpublish for draft-aware types. Unpublish keeps
-  // the draft version intact, just removes the published copy — which
-  // is exactly what 'draft only' should look like.
   const created = await strapi.documents(uid).create({
     data: payload,
-    status: type === 'product' ? undefined : 'draft',
+    status: TYPE_HAS_DRAFT_PUBLISH[type] ? 'draft' : undefined,
   });
-
-  if (type !== 'product' && created?.documentId) {
+  if (TYPE_HAS_DRAFT_PUBLISH[type] && created?.documentId) {
     try {
       await strapi.documents(uid).unpublish({ documentId: created.documentId });
     } catch (err) {
       strapi.log.warn(`[drive-bridge] unpublish ${uid}/${created.documentId}: ${err.message}`);
     }
   }
-
   return created;
 }
 
-async function processFile(strapi, token, file) {
+async function updateStrapiEntry(strapi, type, slug, data) {
+  const uid = TYPE_TO_UID[type];
+  const existing = await findBySlug(strapi, uid, slug);
+  if (!existing) {
+    throw new Error(`No ${type} found with slug "${slug}"`);
+  }
+  const documentId = existing.documentId;
+
+  // Always update the draft version. If a published version also
+  // exists, update it too so the live site reflects Anna's change
+  // immediately — matches the pattern in src/utils/auto-seo.js.
+  const results = {};
+  try {
+    results.draft = await strapi.documents(uid).update({
+      documentId,
+      data,
+      status: 'draft',
+    });
+  } catch (err) {
+    strapi.log.warn(`[drive-bridge] update draft ${uid}/${documentId}: ${err.message}`);
+  }
+  if (TYPE_HAS_DRAFT_PUBLISH[type]) {
+    let publishedExists = false;
+    try {
+      const pub = await strapi.documents(uid).findOne({ documentId, status: 'published' });
+      publishedExists = !!pub;
+    } catch { /* not found */ }
+    if (publishedExists) {
+      try {
+        results.published = await strapi.documents(uid).update({
+          documentId,
+          data,
+          status: 'published',
+        });
+      } catch (err) {
+        strapi.log.warn(`[drive-bridge] update published ${uid}/${documentId}: ${err.message}`);
+      }
+    }
+  }
+  return { ...existing, documentId };
+}
+
+async function unpublishStrapiEntry(strapi, type, slug) {
+  const uid = TYPE_TO_UID[type];
+  if (!TYPE_HAS_DRAFT_PUBLISH[type]) {
+    // Products use is_active toggle instead.
+    const existing = await findBySlug(strapi, uid, slug);
+    if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
+    return strapi.documents(uid).update({
+      documentId: existing.documentId,
+      data: { is_active: false },
+    });
+  }
+  const existing = await findBySlug(strapi, uid, slug);
+  if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
+  return strapi.documents(uid).unpublish({ documentId: existing.documentId });
+}
+
+async function publishStrapiEntry(strapi, type, slug) {
+  const uid = TYPE_TO_UID[type];
+  if (!TYPE_HAS_DRAFT_PUBLISH[type]) {
+    const existing = await findBySlug(strapi, uid, slug);
+    if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
+    return strapi.documents(uid).update({
+      documentId: existing.documentId,
+      data: { is_active: true },
+    });
+  }
+  const existing = await findBySlug(strapi, uid, slug);
+  if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
+  return strapi.documents(uid).publish({ documentId: existing.documentId });
+}
+
+// ─── File processor ──────────────────────────────────────────────────
+
+async function processFile(strapi, token, imagesFolderId, file) {
   const bodyText = await downloadFile(token, file.id);
   let parsed;
   try {
@@ -255,56 +433,74 @@ async function processFile(strapi, token, file) {
   } catch (err) {
     throw new Error(`Invalid JSON: ${err.message}`);
   }
+
   const type = String(parsed.type || '').toLowerCase();
-  if (!TYPE_TO_ENDPOINT[type]) {
-    throw new Error(`type must be one of: ${Object.keys(TYPE_TO_ENDPOINT).join(', ')} (got "${parsed.type}")`);
+  if (!TYPE_TO_UID[type]) {
+    throw new Error(`type must be one of: ${Object.keys(TYPE_TO_UID).join(', ')} (got "${parsed.type}")`);
   }
+
+  const action = String(parsed.action || 'create').toLowerCase();
+
+  // ─── unpublish / publish — slug only, no data ───
+  if (action === 'unpublish' || action === 'publish') {
+    const slug = parsed.slug;
+    if (!slug) throw new Error(`"${action}" requires "slug"`);
+    const op = action === 'unpublish' ? unpublishStrapiEntry : publishStrapiEntry;
+    const result = await op(strapi, type, slug);
+    strapi.log.info(`[drive-bridge] ${action} ${type}/${slug} ok (documentId=${result?.documentId})`);
+    return;
+  }
+
+  // ─── create / update — need data ───
   const data = parsed.data || {};
-  if (!data || typeof data !== 'object') throw new Error('data must be an object');
-
-  // Auto-derive slug from the title/name field when the robot omits
-  // one. The Document Service enforces required UIDs just like REST.
-  if (!data.slug) {
-    const titleField = TYPE_TITLE_FIELD[type];
-    const titleValue = data[titleField];
-    if (titleValue) {
-      data.slug = slugify(titleValue);
-    }
+  if (typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('data must be an object');
   }
 
-  // Optional media sideload: if media_url is present, download it,
-  // upload to Strapi, and attach to the correct field for this type.
-  if (parsed.media_url) {
-    const mediaId = await uploadMediaToStrapi(strapi, parsed.media_url, parsed.media_filename);
-    const fieldName = parsed.media_field_name || TYPE_MEDIA_FIELD[type];
-    if (type === 'product') {
-      data[fieldName] = [mediaId];
-    } else {
-      data[fieldName] = mediaId;
-    }
+  // Resolve any { from_file / from_url } references inside data.
+  // Also handle legacy top-level media_url for backwards compat.
+  const resolvedData = await resolveMediaReferences(strapi, token, imagesFolderId, data);
+  if (parsed.media_url && !resolvedData[TYPE_DEFAULT_MEDIA_FIELD[type]]) {
+    const mediaId = await uploadUrlToStrapi(strapi, parsed.media_url, parsed.media_filename);
+    const fieldName = parsed.media_field_name || TYPE_DEFAULT_MEDIA_FIELD[type];
+    resolvedData[fieldName] = TYPE_DEFAULT_MEDIA_FIELD[type] === 'images'
+      ? [mediaId]
+      : mediaId;
   }
 
-  const created = await createStrapiEntry(strapi, type, data);
-  strapi.log.info(`[drive-bridge] created ${type} id=${created?.id} documentId=${created?.documentId} from "${file.name}"`);
+  if (action === 'create') {
+    if (!resolvedData.slug) {
+      const titleValue = resolvedData[TYPE_TITLE_FIELD[type]];
+      if (titleValue) resolvedData.slug = slugify(titleValue);
+    }
+    const created = await createStrapiEntry(strapi, type, resolvedData);
+    strapi.log.info(`[drive-bridge] created ${type} slug=${created?.slug} documentId=${created?.documentId} from "${file.name}"`);
+    return;
+  }
+
+  if (action === 'update') {
+    const slug = parsed.slug;
+    if (!slug) throw new Error('"update" requires "slug" at the top level');
+    const updated = await updateStrapiEntry(strapi, type, slug, resolvedData);
+    strapi.log.info(`[drive-bridge] updated ${type}/${slug} documentId=${updated?.documentId} from "${file.name}"`);
+    return;
+  }
+
+  throw new Error(`action must be one of: create, update, unpublish, publish (got "${action}")`);
 }
+
+// ─── Cron entry point ────────────────────────────────────────────────
 
 async function pollDriveInbox(strapi) {
   const sa = loadServiceAccount();
-  if (!sa) {
-    // Not configured — silently skip. Logging a warning every 10 min
-    // would be noisy; Anna probably hasn't sent folder IDs yet.
-    return { skipped: true };
-  }
+  if (!sa) return { skipped: true };
+
   const inboxId = process.env.DRIVE_BRIDGE_INBOX_ID;
   const doneId = process.env.DRIVE_BRIDGE_DONE_ID;
   const errorsId = process.env.DRIVE_BRIDGE_ERRORS_ID;
-  if (!inboxId || !doneId || !errorsId) {
-    return { skipped: true };
-  }
-  // Strapi URL/token no longer needed — we talk to Strapi via its
-  // internal Document Service directly (same process). This also
-  // eliminates the token-permission limitations on the REST Content API
-  // (publish/unpublish not exposed, draft creation not possible).
+  if (!inboxId || !doneId || !errorsId) return { skipped: true };
+
+  const imagesId = process.env.DRIVE_BRIDGE_IMAGES_ID || null;
 
   const token = await mintAccessToken(sa);
   const files = await listInboxFiles(token, inboxId);
@@ -312,15 +508,11 @@ async function pollDriveInbox(strapi) {
 
   for (const file of files) {
     try {
-      await processFile(strapi, token, file);
+      await processFile(strapi, token, imagesId, file);
       await moveFile(token, file.id, doneId, inboxId);
       stats.processed++;
     } catch (err) {
       strapi.log.error(`[drive-bridge] "${file.name}" failed: ${err.message}`);
-      // Try to leave a sibling .error.txt in the errors folder for
-      // Anna's visibility, but do NOT let a failure here stop us from
-      // moving the file out of inbox — otherwise we loop forever on
-      // the same bad file every 10 minutes.
       try {
         await uploadErrorNote(
           token,

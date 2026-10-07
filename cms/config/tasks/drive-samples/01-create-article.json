@@ -1,0 +1,13 @@
+{
+  "action": "create",
+  "type": "article",
+  "data": {
+    "title": "Three months to reclaim yourself",
+    "excerpt": "A honest account of what it took to come back to myself after burnout.",
+    "body_v2": "Paragraph one of the body.\n\nParagraph two. Add more text here.",
+    "author": "Anna Lou",
+    "reading_time": "6 min read",
+    "focus_keyword": "nervous system recovery",
+    "supporting_keywords": "burnout recovery, somatic healing, trauma therapy"
+  }
+}

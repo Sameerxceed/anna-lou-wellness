@@ -1,0 +1,11 @@
+{
+  "action": "update",
+  "type": "experience",
+  "slug": "big-exhale-retreat-port-stephens-2027",
+  "data": {
+    "price": 2950,
+    "price_label": "AUD 2,950 all-inclusive",
+    "description": "Updated description with the new price and a couple of extra details about the accommodation.",
+    "hero_image": { "from_file": "big-exhale-new-hero-sunset.jpg" }
+  }
+}
