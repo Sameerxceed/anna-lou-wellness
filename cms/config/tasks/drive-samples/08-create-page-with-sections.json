@@ -1,0 +1,33 @@
+{
+  "action": "create",
+  "type": "page",
+  "data": {
+    "title": "The Lock In",
+    "summary": "A short one-line summary used as the Google / social preview.",
+    "sections": [
+      {
+        "__component": "sections.hero",
+        "title": "The Lock In",
+        "subtitle": "Optional eyebrow / tagline line under the title."
+      },
+      {
+        "__component": "sections.text-block",
+        "heading": "The invitation",
+        "body_v2": "This is the main body paragraph. Paragraphs are separated by a single newline when using the blocks field.\n\nAdd a second paragraph by using a blank line like this.\n\nUse plain text here; rich formatting (links, bold) can be added inside the CMS once the page is created.",
+        "layout": "center"
+      },
+      {
+        "__component": "sections.text-block",
+        "heading": "What's included",
+        "body_v2": "Another text block below the first. Repeat sections.text-block for as many body sections as you need.",
+        "layout": "left"
+      },
+      {
+        "__component": "sections.cta-banner",
+        "heading": "Ready to book your place?",
+        "button_label": "Enquire",
+        "button_href": "/contact"
+      }
+    ]
+  }
+}

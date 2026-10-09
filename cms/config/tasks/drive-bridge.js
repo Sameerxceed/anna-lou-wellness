@@ -143,16 +143,33 @@ async function downloadBinaryFile(token, fileId) {
 }
 
 async function findFileByNameInFolder(token, folderId, filename) {
-  // Match on exact name OR starts-with (so "hero.jpg" can match
-  // "hero.jpg" OR Google-Drive-rewritten "hero (1).jpg" or similar).
-  const safeName = String(filename).replace(/'/g, "\\'");
-  const q = encodeURIComponent(`'${folderId}' in parents and name = '${safeName}' and trashed = false`);
-  const url = `${DRIVE_API}/files?q=${q}&fields=files(id,name,mimeType)&pageSize=5`;
+  // Case-insensitive lookup. Google Drive stores filenames exactly as
+  // uploaded (IMG_7950.JPG vs IMG_7950.jpg are different). An exact
+  // name= filter misses when case differs between what Anna puts in
+  // the JSON and what Drive actually stored. We list ALL files in the
+  // folder and compare case-insensitively client-side.
+  //
+  // Also matches on the "stem" (filename without extension) if an exact
+  // match fails, so "hero" finds "hero.jpg" without Anna having to
+  // specify the extension. If multiple candidates match, prefer the
+  // exact-case match, then the exact-case stem, then the first.
+  const url = `${DRIVE_API}/files?q=${encodeURIComponent(`'${folderId}' in parents and trashed = false`)}&fields=files(id,name,mimeType)&pageSize=1000`;
   const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  if (!res.ok) throw new Error(`Drive find-by-name: ${res.status} ${await res.text()}`);
+  if (!res.ok) throw new Error(`Drive list images folder: ${res.status} ${await res.text()}`);
   const j = await res.json();
   const files = j.files || [];
-  return files[0] || null;
+
+  const target = String(filename).trim();
+  const targetLower = target.toLowerCase();
+  const targetStem = target.replace(/\.[^./\\]+$/, '').toLowerCase();
+
+  const exact = files.find((f) => f.name === target);
+  if (exact) return exact;
+  const caseInsensitive = files.find((f) => f.name.toLowerCase() === targetLower);
+  if (caseInsensitive) return caseInsensitive;
+  const stemMatch = files.find((f) => f.name.replace(/\.[^./\\]+$/, '').toLowerCase() === targetStem);
+  if (stemMatch) return stemMatch;
+  return null;
 }
 
 async function moveFile(token, fileId, toParentId, fromParentId) {
@@ -208,9 +225,19 @@ async function uploadBufferToStrapi(strapi, buffer, filename, contentType) {
 }
 
 async function uploadUrlToStrapi(strapi, mediaUrl, filename) {
-  const mediaRes = await fetch(mediaUrl);
-  if (!mediaRes.ok) throw new Error(`Fetch media: ${mediaRes.status}`);
+  let mediaRes;
+  try {
+    mediaRes = await fetch(mediaUrl);
+  } catch (err) {
+    throw new Error(`from_url "${String(mediaUrl).slice(0, 80)}" network error: ${err.message}`);
+  }
+  if (!mediaRes.ok) {
+    throw new Error(`from_url "${String(mediaUrl).slice(0, 80)}" returned HTTP ${mediaRes.status}. If this is a signed/temporary URL it may have expired — the bridge polls every 10 min so links need to live longer than that, or use from_file instead.`);
+  }
   const buf = Buffer.from(await mediaRes.arrayBuffer());
+  if (buf.length === 0) {
+    throw new Error(`from_url "${String(mediaUrl).slice(0, 80)}" returned empty body`);
+  }
   return uploadBufferToStrapi(
     strapi,
     buf,
@@ -221,14 +248,17 @@ async function uploadUrlToStrapi(strapi, mediaUrl, filename) {
 
 async function uploadDriveFileToStrapi(strapi, token, imagesFolderId, filename) {
   if (!imagesFolderId) {
-    throw new Error(`DRIVE_BRIDGE_IMAGES_ID is not set, cannot resolve "${filename}"`);
+    throw new Error(`from_file "${filename}" can't be resolved: DRIVE_BRIDGE_IMAGES_ID env var is not set on the server. Ask Sameer.`);
   }
   const file = await findFileByNameInFolder(token, imagesFolderId, filename);
   if (!file) {
-    throw new Error(`Image "${filename}" not found in Drive images folder`);
+    throw new Error(`from_file "${filename}" not found in Drive images folder. Checked exact match, case-insensitive, and extension-less. Confirm the file is in images/, spelled right, and the images folder is shared with the service account email.`);
   }
   const { buffer, contentType } = await downloadBinaryFile(token, file.id);
-  return uploadBufferToStrapi(strapi, buffer, filename, contentType);
+  if (buffer.length === 0) {
+    throw new Error(`from_file "${filename}" downloaded 0 bytes from Drive`);
+  }
+  return uploadBufferToStrapi(strapi, buffer, file.name, contentType);
 }
 
 // ─── Media reference resolution ──────────────────────────────────────
@@ -301,6 +331,39 @@ const TYPE_HAS_DRAFT_PUBLISH = {
   'vault-journey': true,
 };
 
+// ─── Schema validation ───────────────────────────────────────────────
+//
+// Strapi silently drops fields that don't exist on the schema. That
+// means "I sent body_v2 on a Page and the page is empty" produces a
+// successful 200 and a draft with no content — bridge moves the file
+// to done thinking all is well. This validator catches unknown fields
+// up-front and fails the operation with a clear message naming the
+// bad field(s) and listing what IS valid.
+
+function listSchemaAttributes(strapi, uid) {
+  const model = strapi.getModel(uid);
+  if (!model?.attributes) return [];
+  return Object.keys(model.attributes);
+}
+
+function validateDataAgainstSchema(strapi, uid, data) {
+  const valid = new Set(listSchemaAttributes(strapi, uid));
+  // Internal / managed fields that are OK to pass even though they
+  // aren't user attributes.
+  const alwaysOk = new Set(['publishedAt', 'locale']);
+  const unknown = [];
+  for (const key of Object.keys(data || {})) {
+    if (!valid.has(key) && !alwaysOk.has(key)) unknown.push(key);
+  }
+  if (unknown.length === 0) return;
+  const validList = Array.from(valid).sort().join(', ');
+  throw new Error(
+    `Unknown field(s) for ${uid}: ${unknown.join(', ')}. ` +
+    `Valid fields are: ${validList}. ` +
+    `(Common mistake: Page has no body_v2 at the top level — use sections: [{ "__component": "sections.text-block", "body_v2": "..." }] instead.)`
+  );
+}
+
 function slugify(s) {
   return String(s || '')
     .toLowerCase()
@@ -330,6 +393,7 @@ async function findBySlug(strapi, uid, slug) {
 
 async function createStrapiEntry(strapi, type, data) {
   const uid = TYPE_TO_UID[type];
+  validateDataAgainstSchema(strapi, uid, data);
   const payload = { ...data };
   if (!TYPE_HAS_DRAFT_PUBLISH[type]) {
     // Product etc. — no draft concept, so is_active:false keeps it off
@@ -352,6 +416,7 @@ async function createStrapiEntry(strapi, type, data) {
 
 async function updateStrapiEntry(strapi, type, slug, data) {
   const uid = TYPE_TO_UID[type];
+  validateDataAgainstSchema(strapi, uid, data);
   const existing = await findBySlug(strapi, uid, slug);
   if (!existing) {
     throw new Error(`No ${type} found with slug "${slug}"`);
@@ -513,20 +578,32 @@ async function pollDriveInbox(strapi) {
       stats.processed++;
     } catch (err) {
       strapi.log.error(`[drive-bridge] "${file.name}" failed: ${err.message}`);
+      const noteName = `${file.name.replace(/\.json$/i, '')}.error.txt`;
+      const noteBody = `Failed at ${new Date().toISOString()}\n\n${err.message}\n\n` +
+        `What to do:\n- Fix the JSON (see error above)\n- Drop the fixed file back into inbox/\n- Delete this .error.txt and the broken file from errors/ (or inbox/) to tidy up\n`;
+      // Try errors folder first. If that 403s (sharing inheritance
+      // issue), fall back to inbox so Anna definitely sees the note
+      // sitting next to her broken file. Belt + braces.
+      let noteWrittenTo = null;
       try {
-        await uploadErrorNote(
-          token,
-          errorsId,
-          `${file.name.replace(/\.json$/i, '')}.error.txt`,
-          `Failed at ${new Date().toISOString()}\n\n${err.message}`,
-        );
+        await uploadErrorNote(token, errorsId, noteName, noteBody);
+        noteWrittenTo = 'errors';
       } catch (noteErr) {
-        strapi.log.warn(`[drive-bridge] error-note upload failed for "${file.name}": ${noteErr.message}`);
+        strapi.log.warn(`[drive-bridge] error-note upload to errors failed for "${file.name}": ${noteErr.message} — falling back to inbox`);
+        try {
+          await uploadErrorNote(token, inboxId, noteName, noteBody);
+          noteWrittenTo = 'inbox';
+        } catch (fallbackErr) {
+          strapi.log.error(`[drive-bridge] error-note upload failed in BOTH errors and inbox for "${file.name}": ${fallbackErr.message}`);
+        }
+      }
+      if (noteWrittenTo) {
+        strapi.log.info(`[drive-bridge] wrote ${noteName} to ${noteWrittenTo}/`);
       }
       try {
         await moveFile(token, file.id, errorsId, inboxId);
       } catch (moveErr) {
-        strapi.log.error(`[drive-bridge] could not move "${file.name}" to errors: ${moveErr.message}`);
+        strapi.log.error(`[drive-bridge] could not move "${file.name}" to errors (file stays in inbox): ${moveErr.message}`);
       }
       stats.failed++;
     }
