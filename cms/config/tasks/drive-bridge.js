@@ -119,12 +119,45 @@ async function mintAccessToken(sa) {
 // ─── Drive helpers ────────────────────────────────────────────────────
 
 async function listInboxFiles(token, inboxId) {
-  const q = encodeURIComponent(`'${inboxId}' in parents and mimeType = 'application/json' and trashed = false`);
-  const url = `${DRIVE_API}/files?q=${q}&fields=files(id,name,mimeType)&pageSize=50`;
+  // Filter by extension client-side, NOT by mimeType. Google Drive
+  // sometimes stores files with mimeType "text/plain" even when
+  // they're named .json (depends on how they were uploaded — drag-drop
+  // sometimes sniffs content, API uploads use the type the caller
+  // provides). A mimeType filter missed files Anna uploaded manually.
+  // Anna 16 Oct: reset-story-you-already-know-why.json sat in inbox
+  // for 7+ hours because of this. Fix: list everything, filter on
+  // .json extension here.
+  const q = encodeURIComponent(`'${inboxId}' in parents and trashed = false`);
+  const url = `${DRIVE_API}/files?q=${q}&fields=files(id,name,mimeType)&pageSize=200`;
   const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) throw new Error(`Drive list: ${res.status} ${await res.text()}`);
   const j = await res.json();
-  return j.files || [];
+  const all = j.files || [];
+  // Keep only .json / .JSON regardless of mimeType. Also skip our own
+  // .error.txt notes if they somehow land here.
+  return all.filter((f) => /\.json$/i.test(f.name) && !/\.error\.txt$/i.test(f.name));
+}
+
+async function renameFile(token, fileId, newName) {
+  // Rename a Drive file in place. Used as the last-resort error channel:
+  // even if we can't write a sibling .error.txt, we can always rename
+  // the file to include an error marker so Anna sees WHY it failed.
+  // Filenames are hard to miss; .error.txt files sometimes don't appear.
+  const res = await fetch(
+    `${DRIVE_API}/files/${fileId}?fields=id,name&supportsAllDrives=true`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: newName }),
+    },
+  );
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Drive rename: ${res.status} ${txt.slice(0, 200)}`);
+  }
 }
 
 async function downloadFile(token, fileId) {
@@ -177,7 +210,7 @@ async function findFileByNameInFolder(token, folderId, filename) {
 
 async function moveFile(token, fileId, toParentId, fromParentId) {
   const res = await fetch(
-    `${DRIVE_API}/files/${fileId}?addParents=${toParentId}&removeParents=${fromParentId}&fields=id,parents`,
+    `${DRIVE_API}/files/${fileId}?addParents=${toParentId}&removeParents=${fromParentId}&fields=id,parents&supportsAllDrives=true`,
     { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } },
   );
   if (!res.ok) throw new Error(`Drive move: ${res.status} ${await res.text()}`);
@@ -198,7 +231,9 @@ async function uploadErrorNote(token, folderId, filename, body) {
     'Content-Type: text/plain; charset=UTF-8\r\n\r\n' +
     body + '\r\n' +
     `--${boundary}--`;
-  const res = await fetch(`${DRIVE_UPLOAD_API}/files?uploadType=multipart`, {
+  // supportsAllDrives=true handles both regular + shared drives.
+  // Harmless on non-shared drives; required for shared drives.
+  const res = await fetch(`${DRIVE_UPLOAD_API}/files?uploadType=multipart&supportsAllDrives=true`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -206,7 +241,10 @@ async function uploadErrorNote(token, folderId, filename, body) {
     },
     body: multipart,
   });
-  if (!res.ok) throw new Error(`Drive error-note upload: ${res.status}`);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Drive error-note upload: ${res.status} ${txt.slice(0, 300)}`);
+  }
 }
 
 // ─── Strapi helpers ───────────────────────────────────────────────────
@@ -457,16 +495,27 @@ async function updateStrapiEntry(strapi, type, slug, data) {
     strapi.log.warn(`[drive-bridge] update draft ${uid}/${documentId}: ${err.message}`);
   }
   if (TYPE_HAS_DRAFT_PUBLISH[type]) {
-    let publishedExists = false;
+    let publishedEntry = null;
     try {
-      const pub = await strapi.documents(uid).findOne({ documentId, status: 'published' });
-      publishedExists = !!pub;
+      publishedEntry = await strapi.documents(uid).findOne({ documentId, status: 'published' });
     } catch { /* not found */ }
-    if (publishedExists) {
+    if (publishedEntry) {
+      // Preserve the ORIGINAL publishedAt unless the caller explicitly
+      // sent one. Anna 16 Oct: image-only and keywords-only updates
+      // were resetting publishedAt to "now", which would stamp every
+      // post with today's date if she swept all 78 — losing the real
+      // publication dates and telling Google the whole blog went up
+      // on one day. Fix: read the current publishedAt from the live
+      // version and include it in the update payload so Strapi doesn't
+      // auto-bump it.
+      const dataWithPreservedDate = { ...data };
+      if (!Object.prototype.hasOwnProperty.call(data, 'publishedAt') && publishedEntry.publishedAt) {
+        dataWithPreservedDate.publishedAt = publishedEntry.publishedAt;
+      }
       try {
         results.published = await strapi.documents(uid).update({
           documentId,
-          data,
+          data: dataWithPreservedDate,
           status: 'published',
         });
       } catch (err) {
@@ -606,7 +655,7 @@ async function uploadJsonToDrive(token, folderId, filename, jsonText) {
     'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
     jsonText + '\r\n' +
     `--${boundary}--`;
-  const res = await fetch(`${DRIVE_UPLOAD_API}/files?uploadType=multipart`, {
+  const res = await fetch(`${DRIVE_UPLOAD_API}/files?uploadType=multipart&supportsAllDrives=true`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -614,7 +663,10 @@ async function uploadJsonToDrive(token, folderId, filename, jsonText) {
     },
     body: multipart,
   });
-  if (!res.ok) throw new Error(`Drive export upload: ${res.status} ${await res.text()}`);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Drive export upload: ${res.status} ${txt.slice(0, 300)}`);
+  }
 }
 
 async function exportStrapiEntries(strapi, type, { slug, all }) {
@@ -645,17 +697,25 @@ async function exportStrapiEntries(strapi, type, { slug, all }) {
   }
 
   // all: true — paginate through everything, published versions.
+  // Strapi 5 Document Service findMany uses start/limit directly (not
+  // wrapped in pagination:{}). Explicit pageSize of 100 keeps response
+  // sizes sane and matches Strapi's default max.
   const results = [];
   let start = 0;
   const limit = 100;
   while (true) {
-    const page = await strapi.documents(uid).findMany({
-      status: 'published',
-      populate: '*',
-      start,
-      limit,
-    });
-    if (!page.length) break;
+    let page;
+    try {
+      page = await strapi.documents(uid).findMany({
+        status: 'published',
+        populate: '*',
+        start,
+        limit,
+      });
+    } catch (err) {
+      throw new Error(`findMany ${uid} (start=${start}): ${err.message}`);
+    }
+    if (!page || !page.length) break;
     results.push(...page);
     if (page.length < limit) break;
     start += limit;
@@ -770,32 +830,64 @@ async function pollDriveInbox(strapi) {
       stats.processed++;
     } catch (err) {
       strapi.log.error(`[drive-bridge] "${file.name}" failed: ${err.message}`);
-      const noteName = `${file.name.replace(/\.json$/i, '')}.error.txt`;
-      const noteBody = `Failed at ${new Date().toISOString()}\n\n${err.message}\n\n` +
-        `What to do:\n- Fix the JSON (see error above)\n- Drop the fixed file back into inbox/\n- Delete this .error.txt and the broken file from errors/ (or inbox/) to tidy up\n`;
-      // Try errors folder first. If that 403s (sharing inheritance
-      // issue), fall back to inbox so Anna definitely sees the note
-      // sitting next to her broken file. Belt + braces.
-      let noteWrittenTo = null;
+
+      // === Fallback hierarchy for error visibility ===
+      // Service accounts creating NEW files in a user-owned Drive
+      // folder often hit storage-quota issues (service account has 0
+      // quota of its own). The .error.txt upload may fail silently
+      // because of this, even though sharing is correct. So we have 3
+      // visibility channels, from most-reliable to least:
+      //
+      //   1. RENAME the file in place to include an error marker.
+      //      Rename uses PATCH, no storage required, almost never
+      //      fails. Anna sees the filename alone and knows WHY.
+      //   2. Move file to errors/ folder (if we can).
+      //   3. Try to upload a .error.txt sibling (may fail due to
+      //      quota — logged in Coolify either way).
+      //
+      // We always attempt all three. If the first works, the user is
+      // informed even if the rest fail.
+
+      const shortErr = err.message.slice(0, 80).replace(/[\/\\:*?"<>|]/g, '-');
+      const renamedName = `FAILED-[${shortErr}]-${file.name}`;
+      let renamed = false;
       try {
-        await uploadErrorNote(token, errorsId, noteName, noteBody);
-        noteWrittenTo = 'errors';
-      } catch (noteErr) {
-        strapi.log.warn(`[drive-bridge] error-note upload to errors failed for "${file.name}": ${noteErr.message} — falling back to inbox`);
+        await renameFile(token, file.id, renamedName);
+        renamed = true;
+        strapi.log.info(`[drive-bridge] renamed "${file.name}" -> "${renamedName}"`);
+      } catch (renameErr) {
+        strapi.log.error(`[drive-bridge] rename failed for "${file.name}": ${renameErr.message}`);
+      }
+
+      const displayName = renamed ? renamedName : file.name;
+      const noteName = `${displayName.replace(/\.json$/i, '')}.error.txt`;
+      const noteBody = `Failed at ${new Date().toISOString()}\n\n` +
+        `Original file: ${file.name}\n` +
+        `Error:\n${err.message}\n\n` +
+        `What to do:\n- Fix the JSON (see error above)\n- Drop the fixed file back into inbox/ with its ORIGINAL name\n- Delete this .error.txt and the FAILED-* file to tidy up\n`;
+
+      try {
+        await moveFile(token, file.id, errorsId, inboxId);
+      } catch (moveErr) {
+        strapi.log.error(`[drive-bridge] could not move "${displayName}" to errors (file stays in inbox with FAILED- prefix): ${moveErr.message}`);
+      }
+
+      // Try to also write a .error.txt. If it fails, the rename above
+      // is still the primary visibility channel.
+      let noteWrittenTo = null;
+      for (const [name, folderId] of [['errors', errorsId], ['inbox', inboxId]]) {
         try {
-          await uploadErrorNote(token, inboxId, noteName, noteBody);
-          noteWrittenTo = 'inbox';
-        } catch (fallbackErr) {
-          strapi.log.error(`[drive-bridge] error-note upload failed in BOTH errors and inbox for "${file.name}": ${fallbackErr.message}`);
+          await uploadErrorNote(token, folderId, noteName, noteBody);
+          noteWrittenTo = name;
+          break;
+        } catch (noteErr) {
+          strapi.log.warn(`[drive-bridge] error-note upload to ${name}/ failed: ${noteErr.message}`);
         }
       }
       if (noteWrittenTo) {
         strapi.log.info(`[drive-bridge] wrote ${noteName} to ${noteWrittenTo}/`);
-      }
-      try {
-        await moveFile(token, file.id, errorsId, inboxId);
-      } catch (moveErr) {
-        strapi.log.error(`[drive-bridge] could not move "${file.name}" to errors (file stays in inbox): ${moveErr.message}`);
+      } else {
+        strapi.log.error(`[drive-bridge] all error-note targets failed — the FAILED- prefix on the file IS the error record`);
       }
       stats.failed++;
     }
