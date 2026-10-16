@@ -56,6 +56,9 @@
  */
 
 const crypto = require('crypto');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const DRIVE_API = 'https://www.googleapis.com/drive/v3';
@@ -209,19 +212,36 @@ async function uploadErrorNote(token, folderId, filename, body) {
 // ─── Strapi helpers ───────────────────────────────────────────────────
 
 async function uploadBufferToStrapi(strapi, buffer, filename, contentType) {
-  const uploadService = strapi.plugin('upload').service('upload');
-  const [uploaded] = await uploadService.upload({
-    data: {},
-    files: {
-      path: null,
-      name: filename || 'upload.bin',
-      type: contentType || 'application/octet-stream',
-      size: buffer.length,
-      buffer,
-    },
-  });
-  if (!uploaded?.id) throw new Error('Strapi upload returned no id');
-  return uploaded.id;
+  // Strapi 5's upload service expects a Formidable-style file descriptor
+  // backed by a REAL filesystem path. Earlier versions tolerated an
+  // in-memory buffer, but 5.40 silently returns nothing when the file
+  // has no filepath — which is why uploads looked successful but no
+  // media ever appeared. Fix: write the buffer to a tmp file, pass the
+  // path, delete after.
+  const safeName = String(filename || 'upload.bin').replace(/[^a-zA-Z0-9._-]/g, '_');
+  const tmpPath = path.join(os.tmpdir(), `drive-bridge-${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`);
+  fs.writeFileSync(tmpPath, buffer);
+
+  try {
+    const uploadService = strapi.plugin('upload').service('upload');
+    const uploaded = await uploadService.upload({
+      data: {},
+      files: {
+        filepath: tmpPath,
+        originalFilename: safeName,
+        mimetype: contentType || 'application/octet-stream',
+        size: buffer.length,
+      },
+    });
+    const first = Array.isArray(uploaded) ? uploaded[0] : uploaded;
+    if (!first?.id) {
+      throw new Error(`Strapi upload service returned no id for "${safeName}" (${buffer.length} bytes, ${contentType}). Response: ${JSON.stringify(uploaded).slice(0, 200)}`);
+    }
+    strapi.log.info(`[drive-bridge] uploaded "${safeName}" to media library as id=${first.id} (${buffer.length} bytes)`);
+    return first.id;
+  } finally {
+    try { fs.unlinkSync(tmpPath); } catch { /* ignore */ }
+  }
 }
 
 async function uploadUrlToStrapi(strapi, mediaUrl, filename) {
@@ -488,9 +508,164 @@ async function publishStrapiEntry(strapi, type, slug) {
   return strapi.documents(uid).publish({ documentId: existing.documentId });
 }
 
+// ─── Export (read) action ────────────────────────────────────────────
+//
+// Writes a full entry out to Drive as a JSON file so Anna's robot can
+// read the real body, SEO fields, image URL etc. and then write back
+// an update. Previously the robot only had the summary from the public
+// site, which is why it couldn't fix body text without rewriting blind.
+//
+// Shape: { "action": "export", "type": "article", "slug": "..." }
+//   or:  { "action": "export", "type": "article", "all": true }
+//
+// Outputs land in the DRIVE_BRIDGE_EXPORTS_ID folder if set, else in
+// the done folder with filenames prefixed "export-" so Anna can filter.
+
+function toPlainText(blocks) {
+  // Flatten Strapi 5 "blocks" (editor.js style) to plain text so the
+  // robot can read without parsing the block tree. The robot only
+  // needs to understand + rewrite content, not the formatting.
+  if (!Array.isArray(blocks)) return typeof blocks === 'string' ? blocks : '';
+  const parts = [];
+  for (const b of blocks) {
+    const inner = Array.isArray(b.children)
+      ? b.children.map((c) => c.text || '').join('')
+      : '';
+    parts.push(inner);
+  }
+  return parts.join('\n\n');
+}
+
+function mediaUrlOf(media) {
+  if (!media) return null;
+  if (typeof media === 'string') return media;
+  const url = media.url || media?.data?.attributes?.url || null;
+  if (!url) return null;
+  if (url.startsWith('http')) return url;
+  // Local upload — attach the Strapi public URL prefix. In Coolify
+  // the CMS is reachable at cms.annalouwellness.com so we hard-code
+  // that here. Only used in the export view, not stored.
+  return `https://cms.annalouwellness.com${url}`;
+}
+
+function buildExportPayload(type, entry) {
+  const data = { ...entry };
+  // Normalise media fields to just the URL so the robot can look at
+  // the actual image. Keep the id separately in case the robot wants
+  // to reuse an already-uploaded media item (attach by id works).
+  const mediaFields = [];
+  for (const [k, v] of Object.entries(entry)) {
+    if (v && typeof v === 'object' && (v.url || v.mime)) {
+      mediaFields.push(k);
+      data[`${k}_url`] = mediaUrlOf(v);
+      data[`${k}_media_id`] = v.id || null;
+      delete data[k];
+    }
+    if (Array.isArray(v) && v.length && v[0]?.url) {
+      mediaFields.push(k);
+      data[`${k}_urls`] = v.map(mediaUrlOf);
+      data[`${k}_media_ids`] = v.map((m) => m.id).filter(Boolean);
+      delete data[k];
+    }
+  }
+  // Flatten blocks body to plain text for ease. Keep original blocks
+  // under _blocks suffix in case the robot wants the structure.
+  if (Array.isArray(data.body_v2)) {
+    data.body_v2_plain = toPlainText(data.body_v2);
+    data.body_v2_blocks = data.body_v2;
+    delete data.body_v2;
+  }
+  if (Array.isArray(data.description_v2)) {
+    data.description_v2_plain = toPlainText(data.description_v2);
+    data.description_v2_blocks = data.description_v2;
+    delete data.description_v2;
+  }
+  // Strip internal / noisy fields the robot doesn't need.
+  delete data.createdAt;
+  delete data.updatedAt;
+  delete data.publishedAt;
+  delete data.documentId;
+  delete data.id;
+  delete data.locale;
+  return {
+    exported_at: new Date().toISOString(),
+    type,
+    slug: entry.slug,
+    data,
+  };
+}
+
+async function uploadJsonToDrive(token, folderId, filename, jsonText) {
+  const metadata = { name: filename, parents: [folderId], mimeType: 'application/json' };
+  const boundary = '-----alw-export-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+  const multipart =
+    `--${boundary}\r\n` +
+    'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+    JSON.stringify(metadata) + '\r\n' +
+    `--${boundary}\r\n` +
+    'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+    jsonText + '\r\n' +
+    `--${boundary}--`;
+  const res = await fetch(`${DRIVE_UPLOAD_API}/files?uploadType=multipart`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': `multipart/related; boundary=${boundary}`,
+    },
+    body: multipart,
+  });
+  if (!res.ok) throw new Error(`Drive export upload: ${res.status} ${await res.text()}`);
+}
+
+async function exportStrapiEntries(strapi, type, { slug, all }) {
+  const uid = TYPE_TO_UID[type];
+  if (!uid) throw new Error(`Unknown type: ${type}`);
+  if (!slug && !all) throw new Error('export requires either "slug" or "all": true');
+
+  if (slug) {
+    // Prefer the published version (that's what the public site shows)
+    // and fall back to draft if no published copy exists.
+    let entry = null;
+    try {
+      entry = await strapi.documents(uid).findFirst({
+        filters: { slug },
+        status: 'published',
+        populate: '*',
+      });
+    } catch { /* not found */ }
+    if (!entry) {
+      entry = await strapi.documents(uid).findFirst({
+        filters: { slug },
+        status: 'draft',
+        populate: '*',
+      });
+    }
+    if (!entry) throw new Error(`No ${type} found with slug "${slug}"`);
+    return [entry];
+  }
+
+  // all: true — paginate through everything, published versions.
+  const results = [];
+  let start = 0;
+  const limit = 100;
+  while (true) {
+    const page = await strapi.documents(uid).findMany({
+      status: 'published',
+      populate: '*',
+      start,
+      limit,
+    });
+    if (!page.length) break;
+    results.push(...page);
+    if (page.length < limit) break;
+    start += limit;
+  }
+  return results;
+}
+
 // ─── File processor ──────────────────────────────────────────────────
 
-async function processFile(strapi, token, imagesFolderId, file) {
+async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneId, file) {
   const bodyText = await downloadFile(token, file.id);
   let parsed;
   try {
@@ -505,6 +680,22 @@ async function processFile(strapi, token, imagesFolderId, file) {
   }
 
   const action = String(parsed.action || 'create').toLowerCase();
+
+  // ─── export — write entry(ies) to Drive as JSON ───
+  if (action === 'export' || action === 'read') {
+    const entries = await exportStrapiEntries(strapi, type, {
+      slug: parsed.slug,
+      all: parsed.all === true,
+    });
+    const targetFolder = exportsFolderId || doneId;
+    for (const entry of entries) {
+      const payload = buildExportPayload(type, entry);
+      const filename = `export-${type}-${entry.slug || entry.id}.json`;
+      await uploadJsonToDrive(token, targetFolder, filename, JSON.stringify(payload, null, 2));
+    }
+    strapi.log.info(`[drive-bridge] exported ${entries.length} ${type}(s) to ${exportsFolderId ? 'exports' : 'done'}/`);
+    return;
+  }
 
   // ─── unpublish / publish — slug only, no data ───
   if (action === 'unpublish' || action === 'publish') {
@@ -551,7 +742,7 @@ async function processFile(strapi, token, imagesFolderId, file) {
     return;
   }
 
-  throw new Error(`action must be one of: create, update, unpublish, publish (got "${action}")`);
+  throw new Error(`action must be one of: create, update, unpublish, publish, export (got "${action}")`);
 }
 
 // ─── Cron entry point ────────────────────────────────────────────────
@@ -566,6 +757,7 @@ async function pollDriveInbox(strapi) {
   if (!inboxId || !doneId || !errorsId) return { skipped: true };
 
   const imagesId = process.env.DRIVE_BRIDGE_IMAGES_ID || null;
+  const exportsId = process.env.DRIVE_BRIDGE_EXPORTS_ID || null;
 
   const token = await mintAccessToken(sa);
   const files = await listInboxFiles(token, inboxId);
@@ -573,7 +765,7 @@ async function pollDriveInbox(strapi) {
 
   for (const file of files) {
     try {
-      await processFile(strapi, token, imagesId, file);
+      await processFile(strapi, token, imagesId, exportsId, doneId, file);
       await moveFile(token, file.id, doneId, inboxId);
       stats.processed++;
     } catch (err) {

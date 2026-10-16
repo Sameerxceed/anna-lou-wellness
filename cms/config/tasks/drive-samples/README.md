@@ -12,7 +12,7 @@ Every file has this shape:
 
 ```json
 {
-  "action": "create" | "update" | "unpublish" | "publish",
+  "action": "create" | "update" | "unpublish" | "publish" | "export",
   "type":   "article" | "experience" | "page" | "product" | "vault-journey",
   "slug":   "my-item-slug",
   "data":   { ... fields ... }
@@ -20,8 +20,60 @@ Every file has this shape:
 ```
 
 - `action` is optional. Defaults to `"create"` so old files keep working.
-- `slug` is required for `update`, `unpublish`, `publish`. For `create` it auto-fills from the title/name if omitted.
-- `data` is required for `create` and `update`. Not needed for `unpublish` or `publish`.
+- `slug` is required for `update`, `unpublish`, `publish`, and `export` (unless `all: true`). For `create` it auto-fills from the title/name if omitted.
+- `data` is required for `create` and `update`. Not needed for `unpublish`, `publish`, or `export`.
+
+## Reading posts back (export action)
+
+The robot can request a full copy of any existing entry so it can read
+the real body + SEO fields before making corrections. One at a time:
+
+```json
+{ "action": "export", "type": "article", "slug": "my-post" }
+```
+
+All at once (useful for a batch sweep of a whole collection):
+
+```json
+{ "action": "export", "type": "article", "all": true }
+```
+
+Each exported entry writes a file called `export-{type}-{slug}.json` to
+either the `exports/` folder (if DRIVE_BRIDGE_EXPORTS_ID is set) or the
+`done/` folder as a fallback. The file contains:
+
+- All editable fields (title, body_v2_plain, seo_title, seo_description,
+  focus_keyword, supporting_keywords, tags, author, reading_time, etc.)
+- Image URLs (`hero_image_url`) so the robot can look at the actual
+  photo, plus the media id (`hero_image_media_id`) if it wants to
+  reattach the same image via an update
+- Body text in BOTH plain form (`body_v2_plain`) and the original
+  blocks structure (`body_v2_blocks`) so the robot can choose which to
+  work with
+
+The robot reads the export, modifies what it wants, then writes back
+an `update` action with the changes.
+
+## Updating SEO fields
+
+Yes, meta title and meta description are editable via the `update`
+action. Example in `samples/11-update-seo-fields.json`:
+
+```json
+{
+  "action": "update",
+  "type": "article",
+  "slug": "my-post",
+  "data": {
+    "seo_title": "Short Google-friendly title, 50-60 chars",
+    "seo_description": "One-sentence meta description that would make a real human click. 140-160 chars."
+  }
+}
+```
+
+The site's auto-SEO lifecycle will leave your values alone (it only
+fills blanks). Updates to seo_title and seo_description reflect on the
+live site within a minute.
 
 ## Type values (what to put after `"type":`)
 
@@ -179,3 +231,6 @@ In the `samples/` folder:
 - `06-unpublish-old-retreat.json` — take an old retreat off the site
 - `07-publish-draft.json` — publish something that was in draft
 - `08-create-page-with-sections.json` — build a page from sections
+- `09-export-one-article.json` — read a single article's full content
+- `10-export-all-articles.json` — read all articles in one batch
+- `11-update-seo-fields.json` — change meta title and description
