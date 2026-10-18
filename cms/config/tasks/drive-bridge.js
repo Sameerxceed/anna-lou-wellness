@@ -500,26 +500,32 @@ async function updateStrapiEntry(strapi, type, slug, data) {
       publishedEntry = await strapi.documents(uid).findOne({ documentId, status: 'published' });
     } catch { /* not found */ }
     if (publishedEntry) {
-      // Preserve the ORIGINAL publishedAt unless the caller explicitly
-      // sent one. Anna 16 Oct: image-only and keywords-only updates
-      // were resetting publishedAt to "now", which would stamp every
-      // post with today's date if she swept all 78 — losing the real
-      // publication dates and telling Google the whole blog went up
-      // on one day. Fix: read the current publishedAt from the live
-      // version and include it in the update payload so Strapi doesn't
-      // auto-bump it.
-      const dataWithPreservedDate = { ...data };
-      if (!Object.prototype.hasOwnProperty.call(data, 'publishedAt') && publishedEntry.publishedAt) {
-        dataWithPreservedDate.publishedAt = publishedEntry.publishedAt;
-      }
+      // Preserve the ORIGINAL publishedAt. Anna 17 Oct: Strapi 5's
+      // Document Service always re-stamps publishedAt on
+      // update({status:'published'}) because publishedAt is a managed
+      // field — passing it in `data` gets stripped. Across 78 posts
+      // this would set every post's date to today, destroying the
+      // real publication timeline.
+      //
+      // Fix: do the published-version update via the raw query engine
+      // (strapi.db.query) which bypasses the Document Service's
+      // managed-field logic. Pulls the published row by documentId +
+      // publishedAt not null, writes just the fields Anna sent,
+      // leaves publishedAt alone.
+      const originalPublishedAt = publishedEntry.publishedAt;
       try {
-        results.published = await strapi.documents(uid).update({
-          documentId,
-          data: dataWithPreservedDate,
-          status: 'published',
+        // Strip any client-sent publishedAt unless they deliberately
+        // want to change it (unlikely but allowed).
+        const dbWrite = Object.prototype.hasOwnProperty.call(data, 'publishedAt')
+          ? { ...data }
+          : { ...data };
+        await strapi.db.query(uid).update({
+          where: { documentId, publishedAt: { $notNull: true } },
+          data: dbWrite,
         });
+        results.published = { preserved_published_at: originalPublishedAt };
       } catch (err) {
-        strapi.log.warn(`[drive-bridge] update published ${uid}/${documentId}: ${err.message}`);
+        strapi.log.warn(`[drive-bridge] db-update published ${uid}/${documentId}: ${err.message}`);
       }
     }
   }
@@ -669,6 +675,62 @@ async function uploadJsonToDrive(token, folderId, filename, jsonText) {
   }
 }
 
+async function updateFileContent(token, fileId, jsonText) {
+  // PATCH the content of an EXISTING file. The owner (Anna) still owns
+  // the file, so storage is charged to her — the service account doesn't
+  // need its own quota. This is the workaround for the fact that a
+  // service account can't create new files in a user-owned Drive
+  // folder (Anna 17 Oct). She creates empty placeholder .json files;
+  // we overwrite their content.
+  const res = await fetch(
+    `${DRIVE_UPLOAD_API}/files/${fileId}?uploadType=media&supportsAllDrives=true`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonText,
+    },
+  );
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Drive update file content: ${res.status} ${txt.slice(0, 300)}`);
+  }
+}
+
+async function writeExportToDrive(token, folderId, filename, jsonText) {
+  // Preferred path: find an existing placeholder with this name and
+  // PATCH its content (works without SA storage quota).
+  // Fallback path: try to create a new file (fails on personal gmail
+  // Drives because of the service-account storage-quota issue, but
+  // works on Workspace drives). Error message tells Anna what to do
+  // if both fail.
+  const existing = await findFileByNameInFolder(token, folderId, filename);
+  if (existing) {
+    await updateFileContent(token, existing.id, jsonText);
+    return { mode: 'updated', id: existing.id };
+  }
+  // Also try an "export-output.json" universal fallback for quick
+  // one-off tests before Anna has placeholders set up.
+  const universal = await findFileByNameInFolder(token, folderId, 'export-output.json');
+  if (universal) {
+    await updateFileContent(token, universal.id, jsonText);
+    return { mode: 'updated-universal', id: universal.id, name: 'export-output.json' };
+  }
+  // No placeholder — try creating. Will 403 on personal Drives.
+  try {
+    await uploadJsonToDrive(token, folderId, filename, jsonText);
+    return { mode: 'created' };
+  } catch (err) {
+    throw new Error(
+      `Could not write export "${filename}". No placeholder file found in exports folder, and creating a new file failed with: ${err.message}. ` +
+      `Workaround: in your Drive exports folder, create an empty file called "${filename}" (right-click, New, choose any type — the bridge will overwrite the content). ` +
+      `Or create "export-output.json" as a single catch-all placeholder for one-off tests.`
+    );
+  }
+}
+
 async function exportStrapiEntries(strapi, type, { slug, all }) {
   const uid = TYPE_TO_UID[type];
   if (!uid) throw new Error(`Unknown type: ${type}`);
@@ -748,12 +810,24 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
       all: parsed.all === true,
     });
     const targetFolder = exportsFolderId || doneId;
+    const results = { updated: 0, created: 0, universal: 0 };
+    const failures = [];
     for (const entry of entries) {
       const payload = buildExportPayload(type, entry);
       const filename = `export-${type}-${entry.slug || entry.id}.json`;
-      await uploadJsonToDrive(token, targetFolder, filename, JSON.stringify(payload, null, 2));
+      try {
+        const res = await writeExportToDrive(token, targetFolder, filename, JSON.stringify(payload, null, 2));
+        if (res.mode === 'updated') results.updated++;
+        else if (res.mode === 'updated-universal') results.universal++;
+        else results.created++;
+      } catch (err) {
+        failures.push(`${filename}: ${err.message}`);
+      }
     }
-    strapi.log.info(`[drive-bridge] exported ${entries.length} ${type}(s) to ${exportsFolderId ? 'exports' : 'done'}/`);
+    strapi.log.info(`[drive-bridge] export ${type}: ${results.updated} updated placeholders, ${results.universal} written to universal fallback, ${results.created} newly created, ${failures.length} failed`);
+    if (failures.length) {
+      throw new Error(`Export completed with ${failures.length} failure(s):\n${failures.slice(0, 5).join('\n')}${failures.length > 5 ? `\n...and ${failures.length - 5} more` : ''}`);
+    }
     return;
   }
 
