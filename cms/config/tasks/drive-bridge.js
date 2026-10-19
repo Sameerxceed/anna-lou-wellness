@@ -178,22 +178,25 @@ async function downloadBinaryFile(token, fileId) {
   return { buffer: buf, contentType };
 }
 
-async function findFileByNameInFolder(token, folderId, filename) {
-  // Case-insensitive lookup. Google Drive stores filenames exactly as
-  // uploaded (IMG_7950.JPG vs IMG_7950.jpg are different). An exact
-  // name= filter misses when case differs between what Anna puts in
-  // the JSON and what Drive actually stored. We list ALL files in the
-  // folder and compare case-insensitively client-side.
-  //
-  // Also matches on the "stem" (filename without extension) if an exact
-  // match fails, so "hero" finds "hero.jpg" without Anna having to
-  // specify the extension. If multiple candidates match, prefer the
-  // exact-case match, then the exact-case stem, then the first.
-  const url = `${DRIVE_API}/files?q=${encodeURIComponent(`'${folderId}' in parents and trashed = false`)}&fields=files(id,name,mimeType)&pageSize=1000`;
+async function listFilesInFolder(token, folderId) {
+  // supportsAllDrives + includeItemsFromAllDrives cover both regular
+  // user Drives (shared with the SA) and Shared Drives. Harmless on
+  // either. corpora=allDrives widens the search beyond "My Drive".
+  const url = `${DRIVE_API}/files?q=${encodeURIComponent(`'${folderId}' in parents and trashed = false`)}` +
+    `&fields=files(id,name,mimeType,parents,owners(emailAddress))` +
+    `&pageSize=1000&supportsAllDrives=true&includeItemsFromAllDrives=true`;
   const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  if (!res.ok) throw new Error(`Drive list images folder: ${res.status} ${await res.text()}`);
+  if (!res.ok) throw new Error(`Drive list folder ${folderId}: ${res.status} ${await res.text()}`);
   const j = await res.json();
-  const files = j.files || [];
+  return j.files || [];
+}
+
+async function findFileByNameInFolder(token, folderId, filename) {
+  // Case-insensitive + stem-matching lookup across every file the
+  // service account can see in `folderId`. If the SA cannot see a file
+  // the user put there (sharing / parent misconfig), this returns null
+  // and the caller is responsible for giving a diagnostic error.
+  const files = await listFilesInFolder(token, folderId);
 
   const target = String(filename).trim();
   const targetLower = target.toLowerCase();
@@ -699,34 +702,54 @@ async function updateFileContent(token, fileId, jsonText) {
   }
 }
 
-async function writeExportToDrive(token, folderId, filename, jsonText) {
+async function writeExportToDrive(strapi, token, folderId, filename, jsonText) {
   // Preferred path: find an existing placeholder with this name and
   // PATCH its content (works without SA storage quota).
-  // Fallback path: try to create a new file (fails on personal gmail
-  // Drives because of the service-account storage-quota issue, but
-  // works on Workspace drives). Error message tells Anna what to do
-  // if both fail.
-  const existing = await findFileByNameInFolder(token, folderId, filename);
-  if (existing) {
-    await updateFileContent(token, existing.id, jsonText);
-    return { mode: 'updated', id: existing.id };
+  // Fallback 1: universal "export-output.json" placeholder.
+  // Fallback 2: try to CREATE (fails on personal gmail Drives — SA
+  // has 0 storage quota of its own).
+  //
+  // Diagnostic logging: list everything the SA can see in the folder.
+  // When something fails, include the folder contents in the error so
+  // Anna sees in the FAILED-filename exactly what files the SA found
+  // (confirms whether sharing is actually working).
+  const folderContents = await listFilesInFolder(token, folderId);
+  strapi.log.info(`[drive-bridge] export: folder ${folderId} contains ${folderContents.length} file(s): ${folderContents.map((f) => f.name).join(', ') || '(empty)'}`);
+
+  const target = String(filename).trim();
+  const targetLower = target.toLowerCase();
+  const targetStem = target.replace(/\.[^./\\]+$/, '').toLowerCase();
+
+  const exact = folderContents.find((f) => f.name === target);
+  const ci = folderContents.find((f) => f.name.toLowerCase() === targetLower);
+  const stem = folderContents.find((f) => f.name.replace(/\.[^./\\]+$/, '').toLowerCase() === targetStem);
+  const matchedFile = exact || ci || stem;
+  if (matchedFile) {
+    strapi.log.info(`[drive-bridge] export: matched placeholder "${matchedFile.name}" (id=${matchedFile.id})`);
+    await updateFileContent(token, matchedFile.id, jsonText);
+    return { mode: 'updated', id: matchedFile.id, name: matchedFile.name };
   }
-  // Also try an "export-output.json" universal fallback for quick
-  // one-off tests before Anna has placeholders set up.
-  const universal = await findFileByNameInFolder(token, folderId, 'export-output.json');
+
+  const universal = folderContents.find((f) => f.name.toLowerCase() === 'export-output.json');
   if (universal) {
+    strapi.log.info(`[drive-bridge] export: no exact match, using universal placeholder "${universal.name}" (id=${universal.id})`);
     await updateFileContent(token, universal.id, jsonText);
-    return { mode: 'updated-universal', id: universal.id, name: 'export-output.json' };
+    return { mode: 'updated-universal', id: universal.id, name: universal.name };
   }
-  // No placeholder — try creating. Will 403 on personal Drives.
+
+  // No placeholder found at all — try create as last resort.
   try {
     await uploadJsonToDrive(token, folderId, filename, jsonText);
     return { mode: 'created' };
   } catch (err) {
+    const contents = folderContents.length === 0
+      ? '(empty)'
+      : folderContents.map((f) => f.name).join(', ');
     throw new Error(
-      `Could not write export "${filename}". No placeholder file found in exports folder, and creating a new file failed with: ${err.message}. ` +
-      `Workaround: in your Drive exports folder, create an empty file called "${filename}" (right-click, New, choose any type — the bridge will overwrite the content). ` +
-      `Or create "export-output.json" as a single catch-all placeholder for one-off tests.`
+      `Could not write "${filename}". Looked for exact match + "export-output.json" fallback in exports folder, found neither. ` +
+      `Create failed with: ${err.message}. ` +
+      `Folder contents the service account can see: [${contents}]. ` +
+      `If "export-output.json" IS in the folder but not listed above, the service account cannot see it (sharing issue — re-share the exports folder with the service account as Editor).`
     );
   }
 }
@@ -816,7 +839,7 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
       const payload = buildExportPayload(type, entry);
       const filename = `export-${type}-${entry.slug || entry.id}.json`;
       try {
-        const res = await writeExportToDrive(token, targetFolder, filename, JSON.stringify(payload, null, 2));
+        const res = await writeExportToDrive(strapi, token, targetFolder, filename, JSON.stringify(payload, null, 2));
         if (res.mode === 'updated') results.updated++;
         else if (res.mode === 'updated-universal') results.universal++;
         else results.created++;
