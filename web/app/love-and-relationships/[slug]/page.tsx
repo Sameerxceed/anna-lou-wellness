@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlug, getArticleCategories } from '@/lib/cms';
+import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlugPage, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
+import Pagination from '@/components/Pagination';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
 import { getStockImage } from '@/data/stock-images';
 import Paywall from '@/components/Paywall';
@@ -13,6 +14,7 @@ import { accentForText } from '@/lib/colours';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export const revalidate = 300;
@@ -46,8 +48,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return { title: 'Not Found' };
 }
 
-export default async function ArticlePage({ params }: PageProps) {
+export default async function ArticlePage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam || '1', 10) || 1);
   const [article, category] = await Promise.all([
     getArticleBySlug(slug),
     getArticleCategoryBySlug(slug, 'love-and-relationships'),
@@ -55,10 +59,11 @@ export default async function ArticlePage({ params }: PageProps) {
 
   if (!article) {
     if (category) {
-      const [categoryArticles, allCategories] = await Promise.all([
-        getArticlesByCategorySlug(slug),
+      const [categoryPage, allCategories] = await Promise.all([
+        getArticlesByCategorySlugPage(slug, { page: currentPage, pageSize: 12 }),
         getArticleCategories('love-and-relationships'),
       ]);
+      const categoryArticles = categoryPage.items;
       const feedArticles = categoryArticles.map(a => ({
         slug: a.slug,
         title: a.title,
@@ -74,19 +79,28 @@ export default async function ArticlePage({ params }: PageProps) {
         href: `/love-and-relationships/${c.slug}`,
       }));
       return (
-        <EditorialFeed
-          kicker={`Love & Relationships · ${category.name}`}
-          kickerColour={category.colour}
-          title={category.name}
-          intro={category.description || ''}
-          articles={feedArticles}
-          sectionHref="/love-and-relationships"
-          subcategories={subcategories}
-          activeSubcategoryHref={`/love-and-relationships/${slug}`}
-          stockCategory="love-and-relationships"
-          breadcrumb={{ parentLabel: 'Love & Relationships', parentHref: '/love-and-relationships', currentLabel: category.name }}
-          hideKicker
-        />
+        <>
+          <EditorialFeed
+            kicker={`Love & Relationships · ${category.name}`}
+            kickerColour={category.colour}
+            title={category.name}
+            intro={category.description || ''}
+            articles={feedArticles}
+            sectionHref="/love-and-relationships"
+            subcategories={subcategories}
+            activeSubcategoryHref={`/love-and-relationships/${slug}`}
+            stockCategory="love-and-relationships"
+            breadcrumb={{ parentLabel: 'Love & Relationships', parentHref: '/love-and-relationships', currentLabel: category.name }}
+            hideKicker
+          />
+          <Pagination
+            basePath={`/love-and-relationships/${slug}`}
+            page={categoryPage.page}
+            pageCount={categoryPage.pageCount}
+            total={categoryPage.total}
+            accentColour={category.colour}
+          />
+        </>
       );
     }
     const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());

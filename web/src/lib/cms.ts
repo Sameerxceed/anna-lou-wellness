@@ -994,6 +994,73 @@ export async function getArticleCategoryBySlug(slug: string, section: string): P
   }
 }
 
+// ─── Paginated article helpers ───────────────────────────────────────
+// Return shape mirrors Strapi's own pagination meta so section pages
+// can render Prev/Next/N-of-M controls. pageSize default 12 matches
+// what Anna's editorial feed currently renders without feeling sparse.
+// Max pageSize 100 (Strapi's hard cap).
+
+export interface ArticlePage {
+  items: Article[];
+  page: number;
+  pageSize: number;
+  total: number;
+  pageCount: number;
+}
+
+const EMPTY_PAGE: ArticlePage = { items: [], page: 1, pageSize: 12, total: 0, pageCount: 0 };
+
+export async function getArticlesPage(
+  section: string | undefined,
+  opts: { page?: number; pageSize?: number } = {},
+): Promise<ArticlePage> {
+  const page = Math.max(1, Math.floor(opts.page || 1));
+  const pageSize = Math.min(100, Math.max(1, Math.floor(opts.pageSize || 12)));
+  try {
+    const params: Record<string, string> = {
+      populate: '*',
+      sort: 'publishedAt:desc',
+      'pagination[page]': String(page),
+      'pagination[pageSize]': String(pageSize),
+    };
+    if (section) {
+      params['filters[$or][0][category][section][$eq]'] = section;
+      params['filters[$or][1][additional_categories][section][$eq]'] = section;
+    }
+    const { data, meta } = await fetchAPI('/articles', params);
+    const items = (data || []).map(mapArticle);
+    const total = meta?.pagination?.total ?? items.length;
+    const pageCount = meta?.pagination?.pageCount ?? Math.max(1, Math.ceil(total / pageSize));
+    return { items, page, pageSize, total, pageCount };
+  } catch {
+    return { ...EMPTY_PAGE, page, pageSize };
+  }
+}
+
+export async function getArticlesByCategorySlugPage(
+  categorySlug: string,
+  opts: { page?: number; pageSize?: number } = {},
+): Promise<ArticlePage> {
+  const page = Math.max(1, Math.floor(opts.page || 1));
+  const pageSize = Math.min(100, Math.max(1, Math.floor(opts.pageSize || 12)));
+  try {
+    const { data, meta } = await fetchAPI('/articles', {
+      populate: '*',
+      sort: 'publishedAt:desc',
+      'filters[$or][0][category][slug][$eq]': categorySlug,
+      'filters[$or][1][additional_categories][slug][$eq]': categorySlug,
+      'pagination[page]': String(page),
+      'pagination[pageSize]': String(pageSize),
+    });
+    const items = (data || []).map(mapArticle);
+    const total = meta?.pagination?.total ?? items.length;
+    const pageCount = meta?.pagination?.pageCount ?? Math.max(1, Math.ceil(total / pageSize));
+    return { items, page, pageSize, total, pageCount };
+  } catch {
+    return { ...EMPTY_PAGE, page, pageSize };
+  }
+}
+
 /** Get articles filtered by category slug */
 export async function getArticlesByCategorySlug(categorySlug: string): Promise<Article[]> {
   try {

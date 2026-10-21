@@ -2,7 +2,8 @@ import { Metadata } from 'next';
 import EditorialFeed from '@/components/EditorialFeed';
 import FAQAccordion from '@/components/FAQAccordion';
 import UpsellBlock, { type UpsellItem } from '@/components/UpsellBlock';
-import { getArticles, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
+import Pagination from '@/components/Pagination';
+import { getArticlesPage, getArticleCategories, getSectionLandingPage, getFAQs } from '@/lib/cms';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
@@ -14,9 +15,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function WorkAndMoneyPage() {
-  const [articles, categories, page, faqs] = await Promise.all([
-    getArticles('work-and-money'),
+interface Props { searchParams: Promise<{ page?: string }> }
+
+export default async function WorkAndMoneyPage({ searchParams }: Props) {
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam || '1', 10) || 1);
+  const [articlesPage, categories, page, faqs] = await Promise.all([
+    getArticlesPage('work-and-money', { page: currentPage, pageSize: 12 }),
     getArticleCategories('work-and-money'),
     getSectionLandingPage('/work-and-money-page', {
       kicker: 'Work & Money',
@@ -27,6 +32,7 @@ export default async function WorkAndMoneyPage() {
     }),
     getFAQs({ page: 'work-and-money' }).catch(() => []),
   ]);
+  const articles = articlesPage.items;
 
   const feedArticles = articles.map(a => ({
     slug: a.slug,
@@ -57,6 +63,13 @@ export default async function WorkAndMoneyPage() {
         subcategories={subcategories}
         stockCategory="work-and-money"
         breadcrumb={{ parentLabel: 'Stories', parentHref: '/', currentLabel: 'Work & Money' }}
+      />
+      <Pagination
+        basePath="/work-and-money"
+        page={articlesPage.page}
+        pageCount={articlesPage.pageCount}
+        total={articlesPage.total}
+        accentColour="#FFD07A"
       />
       <FAQAccordion faqs={faqs} accentColour="#FFD07A" background="#F5F3EF" />
       <UpsellBlock items={page.upsells as unknown as UpsellItem[]} title="Where next." kicker="Continue exploring" />
