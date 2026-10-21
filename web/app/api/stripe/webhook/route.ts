@@ -529,6 +529,23 @@ async function handleSuccessfulPurchase(event: StripeEvent) {
     try {
       const result = await grantResetRoomMembership({ email });
       console.info(`[stripe webhook] Reset Room ${result.created ? 'created' : 'updated'} user ${result.userId}`);
+      // Send the warm branded welcome email ONLY for brand-new members.
+      // Existing-user upgrades (someone who already had an account for
+      // the shop and is now subscribing to Reset Room, or someone who
+      // cancelled and rejoined) skip this — they already know how to
+      // log in. The Strapi password-reset email fires separately from
+      // grantResetRoomMembership > createUser > sendPasswordReset so
+      // both lands in the member's inbox within a minute of each other.
+      if (result.created) {
+        sendFromTemplate('customer_reset_room_welcome', {
+          account: {
+            email,
+            first_name: email.split('@')[0],
+          },
+        }).catch((e) =>
+          console.warn(`[stripe webhook] reset room welcome email failed for ${email}:`, e?.message),
+        );
+      }
     } catch (err: any) {
       console.error(`[stripe webhook] Strapi grant failed for ${email}:`, err?.message);
     }

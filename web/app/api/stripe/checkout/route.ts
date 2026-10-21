@@ -84,8 +84,13 @@ export async function POST(req: NextRequest) {
   // For Calendly redirects we can't rely on session_id substitution the way
   // we can with internal paths — but we still append it as a query string so
   // downstream tracking (if Anna wires GA cross-domain) has the correlation.
+  // Reset Room members land on a welcome page (not the dashboard
+  // directly) because they're not logged in yet — the webhook creates
+  // their user + sends a password-set email a few seconds after
+  // checkout. The welcome page tells them to check their email and
+  // provides a login link once they've set a password.
   const successPath = purchasable.grantsResetRoomAccess
-    ? '/community/reset-room/dashboard'
+    ? '/community/reset-room/welcome'
     : purchasable.grantsRegulatedAccess
       ? '/the-work/regulated/access'
       : '/thank-you';

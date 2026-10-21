@@ -380,6 +380,22 @@ const DEFAULTS = [
     include_bank_details: false,
     include_shipping_address: false,
   },
+  {
+    key: 'customer_reset_room_welcome',
+    name: 'Reset Room welcome (new member)',
+    when_it_fires: 'Someone pays for the Reset Room membership for the first time. Fires AFTER the Strapi "set your password" email, so the subscriber receives both: this warm welcome, and the practical password-set link. If they are already a member and just paying again, this one does NOT fire.',
+    audience: 'customer',
+    enabled: true,
+    subject: 'Welcome to the Reset Room',
+    preheader: "Your membership is active. Here's where to find everything.",
+    intro: 'Hi {{first_name}},\n\nWelcome to the Reset Room. Your monthly membership is now active and you have full access to the Vault, the workshop replays, and the next live call.\n\nYou should have a second email from us with a link to set your password. That one is the practical bit — click it, choose something you will remember, and you are in. If it has not arrived in the next few minutes, check your spam folder, and if it is still missing just reply to this email and we will send another.\n\nOnce you are logged in, the member dashboard lives at {{site_url}}/community/reset-room/dashboard. The next live call date is in there too.\n\nTake your time with it. This is somewhere to come back to, not somewhere to rush through.',
+    outro: 'You can cancel any time from your account — no questions, no form.\n\nAnna',
+    cta_label: 'Go to the member dashboard',
+    cta_url: '{{site_url}}/community/reset-room/dashboard',
+    include_order_summary: false,
+    include_bank_details: false,
+    include_shipping_address: false,
+  },
 ];
 
 async function seedEmailTemplates(strapi) {
