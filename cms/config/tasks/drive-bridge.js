@@ -16,11 +16,21 @@
  *
  * JSON shape — all actions share this top-level envelope:
  *   {
- *     "action": "create" | "update" | "unpublish" | "publish",
- *     "type":   "article" | "experience" | "page" | "product" | "vault-journey",
- *     "slug":   "my-item"      // required for update/unpublish/publish
+ *     "action": "create" | "update" | "unpublish" | "publish" | "export",
+ *     "type":   "article" | "experience" | "page" | "product" | "vault-journey"
+ *             | "programme" | "experience-page" | "practitioner"
+ *             | "decoder-quiz-page",
+ *     "slug":   "my-item"      // required for update/unpublish/publish on
+ *                              // slug-keyed types. For "practitioner" use
+ *                              // "name" instead. Single-types
+ *                              // (decoder-quiz-page) need no key.
  *     "data":   { ... }        // field map, required for create/update
  *   }
+ *
+ * Batch export aggregation (fix 2026-10-26): when "all": true, the
+ * bridge writes ONE aggregate file (export-output.json) containing an
+ * array of all entries, instead of one file per entry. This matches
+ * Anna's placeholder setup (one universal placeholder = all entries).
  *
  * action defaults to "create" so old files written before the update
  * feature still work.
@@ -362,6 +372,10 @@ const TYPE_TO_UID = {
   'page': 'api::page.page',
   'product': 'api::product.product',
   'vault-journey': 'api::vault-journey.vault-journey',
+  'programme': 'api::programme.programme',
+  'experience-page': 'api::experience-page.experience-page',
+  'practitioner': 'api::practitioner.practitioner',
+  'decoder-quiz-page': 'api::decoder-quiz-page.decoder-quiz-page',
 };
 
 const TYPE_TITLE_FIELD = {
@@ -370,6 +384,10 @@ const TYPE_TITLE_FIELD = {
   'page': 'title',
   'product': 'name',
   'vault-journey': 'name',
+  'programme': 'title',
+  'experience-page': 'title',
+  'practitioner': 'name',
+  'decoder-quiz-page': 'title',
 };
 
 // Legacy media_url field — which attribute to attach to by default
@@ -381,6 +399,10 @@ const TYPE_DEFAULT_MEDIA_FIELD = {
   'page': 'hero_image',
   'product': 'images',
   'vault-journey': 'video_thumbnail',
+  'programme': 'heroImage',
+  'experience-page': 'heroImage',
+  'practitioner': 'portrait',
+  'decoder-quiz-page': 'hero_image',
 };
 
 // Which types have draftAndPublish:true. Products do not.
@@ -390,6 +412,24 @@ const TYPE_HAS_DRAFT_PUBLISH = {
   'page': true,
   'product': false,
   'vault-journey': true,
+  'programme': true,
+  'experience-page': true,
+  'practitioner': true,
+  'decoder-quiz-page': true,
+};
+
+// Which field uniquely identifies an entry for update/publish/export.
+// Defaults to 'slug' when not listed. Practitioner has no slug field —
+// Anna keys by full name instead (e.g. "Sarah Hughes").
+const TYPE_KEY_FIELD = {
+  'practitioner': 'name',
+};
+
+// Single-type content types (one row only, no slug, no filter). The
+// bridge operates on them by UID alone — update/export/publish all
+// target the single row directly.
+const TYPE_IS_SINGLE_TYPE = {
+  'decoder-quiz-page': true,
 };
 
 // ─── Schema validation ───────────────────────────────────────────────
@@ -437,19 +477,91 @@ function slugify(s) {
 
 // ─── Strapi operations ───────────────────────────────────────────────
 
-async function findBySlug(strapi, uid, slug) {
+async function findByKey(strapi, type, keyValue) {
   // Look for the draft version first (will exist for any entry Anna is
   // actively working on), then fall back to published. documentId is
   // the same across versions so either works for update/publish calls.
+  //
+  // Three cases:
+  //   1. Single-type (decoder-quiz-page) — one row, no filter.
+  //   2. Collection with slug (article, experience, programme, …) —
+  //      filter by slug.
+  //   3. Collection without slug (practitioner) — filter by `name`
+  //      (TYPE_KEY_FIELD override).
+  const uid = TYPE_TO_UID[type];
+  if (TYPE_IS_SINGLE_TYPE[type]) {
+    const draft = await strapi.documents(uid).findFirst({ status: 'draft' });
+    if (draft) return draft;
+    return strapi.documents(uid).findFirst({ status: 'published' });
+  }
+  const keyField = TYPE_KEY_FIELD[type] || 'slug';
   const draft = await strapi.documents(uid).findFirst({
-    filters: { slug },
+    filters: { [keyField]: keyValue },
     status: 'draft',
   });
   if (draft) return draft;
   return strapi.documents(uid).findFirst({
-    filters: { slug },
+    filters: { [keyField]: keyValue },
     status: 'published',
   });
+}
+
+function getKeyFieldName(type) {
+  if (TYPE_IS_SINGLE_TYPE[type]) return null;
+  return TYPE_KEY_FIELD[type] || 'slug';
+}
+
+function readKeyFromEnvelope(type, parsed) {
+  // Pull the identifying value from the top-level envelope. Primary
+  // is the type's actual key field (slug for most, name for
+  // practitioner). Also accept the generic "slug" so files Anna's
+  // robot wrote against the older allowlist still work when she
+  // retries them against new types.
+  if (TYPE_IS_SINGLE_TYPE[type]) return null;
+  const keyField = getKeyFieldName(type);
+  if (parsed[keyField] != null) return parsed[keyField];
+  if (parsed.slug != null) return parsed.slug;
+  if (parsed.name != null) return parsed.name;
+  return null;
+}
+
+async function updateSingleTypeEntry(strapi, type, data) {
+  // Single-type update. If the single-type has no row yet, create one.
+  // Otherwise update the draft, and if a published row exists update
+  // it too via the raw query engine (preserving publishedAt — same
+  // rationale as updateStrapiEntry).
+  const uid = TYPE_TO_UID[type];
+  validateDataAgainstSchema(strapi, uid, data);
+  const existing = await findByKey(strapi, type, null);
+  if (!existing) {
+    return strapi.documents(uid).create({
+      data,
+      status: TYPE_HAS_DRAFT_PUBLISH[type] ? 'draft' : undefined,
+    });
+  }
+  const documentId = existing.documentId;
+  const result = await strapi.documents(uid).update({
+    documentId,
+    data,
+    status: 'draft',
+  });
+  if (TYPE_HAS_DRAFT_PUBLISH[type]) {
+    let publishedEntry = null;
+    try {
+      publishedEntry = await strapi.documents(uid).findOne({ documentId, status: 'published' });
+    } catch { /* not found */ }
+    if (publishedEntry) {
+      try {
+        await strapi.db.query(uid).update({
+          where: { documentId, publishedAt: { $notNull: true } },
+          data,
+        });
+      } catch (err) {
+        strapi.log.warn(`[drive-bridge] db-update published ${uid}/${documentId}: ${err.message}`);
+      }
+    }
+  }
+  return result;
 }
 
 async function createStrapiEntry(strapi, type, data) {
@@ -475,12 +587,13 @@ async function createStrapiEntry(strapi, type, data) {
   return created;
 }
 
-async function updateStrapiEntry(strapi, type, slug, data) {
+async function updateStrapiEntry(strapi, type, keyValue, data) {
   const uid = TYPE_TO_UID[type];
   validateDataAgainstSchema(strapi, uid, data);
-  const existing = await findBySlug(strapi, uid, slug);
+  const existing = await findByKey(strapi, type, keyValue);
   if (!existing) {
-    throw new Error(`No ${type} found with slug "${slug}"`);
+    const keyField = getKeyFieldName(type) || 'id';
+    throw new Error(`No ${type} found with ${keyField} "${keyValue}"`);
   }
   const documentId = existing.documentId;
 
@@ -535,34 +648,36 @@ async function updateStrapiEntry(strapi, type, slug, data) {
   return { ...existing, documentId };
 }
 
-async function unpublishStrapiEntry(strapi, type, slug) {
+async function unpublishStrapiEntry(strapi, type, keyValue) {
   const uid = TYPE_TO_UID[type];
+  const existing = await findByKey(strapi, type, keyValue);
+  if (!existing) {
+    const keyField = getKeyFieldName(type) || 'entry';
+    throw new Error(`No ${type} found with ${keyField} "${keyValue}"`);
+  }
   if (!TYPE_HAS_DRAFT_PUBLISH[type]) {
     // Products use is_active toggle instead.
-    const existing = await findBySlug(strapi, uid, slug);
-    if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
     return strapi.documents(uid).update({
       documentId: existing.documentId,
       data: { is_active: false },
     });
   }
-  const existing = await findBySlug(strapi, uid, slug);
-  if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
   return strapi.documents(uid).unpublish({ documentId: existing.documentId });
 }
 
-async function publishStrapiEntry(strapi, type, slug) {
+async function publishStrapiEntry(strapi, type, keyValue) {
   const uid = TYPE_TO_UID[type];
+  const existing = await findByKey(strapi, type, keyValue);
+  if (!existing) {
+    const keyField = getKeyFieldName(type) || 'entry';
+    throw new Error(`No ${type} found with ${keyField} "${keyValue}"`);
+  }
   if (!TYPE_HAS_DRAFT_PUBLISH[type]) {
-    const existing = await findBySlug(strapi, uid, slug);
-    if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
     return strapi.documents(uid).update({
       documentId: existing.documentId,
       data: { is_active: true },
     });
   }
-  const existing = await findBySlug(strapi, uid, slug);
-  if (!existing) throw new Error(`No ${type} found with slug "${slug}"`);
   return strapi.documents(uid).publish({ documentId: existing.documentId });
 }
 
@@ -754,30 +869,49 @@ async function writeExportToDrive(strapi, token, folderId, filename, jsonText) {
   }
 }
 
-async function exportStrapiEntries(strapi, type, { slug, all }) {
+async function exportStrapiEntries(strapi, type, { keyValue, all }) {
   const uid = TYPE_TO_UID[type];
   if (!uid) throw new Error(`Unknown type: ${type}`);
-  if (!slug && !all) throw new Error('export requires either "slug" or "all": true');
 
-  if (slug) {
+  // Single-type: one row, no slug, no "all" required. Just read the
+  // one entry (published preferred, draft fallback).
+  if (TYPE_IS_SINGLE_TYPE[type]) {
+    let entry = null;
+    try {
+      entry = await strapi.documents(uid).findFirst({ status: 'published', populate: '*' });
+    } catch { /* not found */ }
+    if (!entry) {
+      entry = await strapi.documents(uid).findFirst({ status: 'draft', populate: '*' });
+    }
+    if (!entry) throw new Error(`No ${type} content yet (single-type is empty)`);
+    return [entry];
+  }
+
+  if (!keyValue && !all) {
+    const keyField = getKeyFieldName(type);
+    throw new Error(`export requires either "${keyField}" or "all": true`);
+  }
+
+  if (keyValue) {
+    const keyField = getKeyFieldName(type);
     // Prefer the published version (that's what the public site shows)
     // and fall back to draft if no published copy exists.
     let entry = null;
     try {
       entry = await strapi.documents(uid).findFirst({
-        filters: { slug },
+        filters: { [keyField]: keyValue },
         status: 'published',
         populate: '*',
       });
     } catch { /* not found */ }
     if (!entry) {
       entry = await strapi.documents(uid).findFirst({
-        filters: { slug },
+        filters: { [keyField]: keyValue },
         status: 'draft',
         populate: '*',
       });
     }
-    if (!entry) throw new Error(`No ${type} found with slug "${slug}"`);
+    if (!entry) throw new Error(`No ${type} found with ${keyField} "${keyValue}"`);
     return [entry];
   }
 
@@ -825,19 +959,48 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
   }
 
   const action = String(parsed.action || 'create').toLowerCase();
+  const isSingle = !!TYPE_IS_SINGLE_TYPE[type];
 
   // ─── export — write entry(ies) to Drive as JSON ───
   if (action === 'export' || action === 'read') {
     const entries = await exportStrapiEntries(strapi, type, {
-      slug: parsed.slug,
+      keyValue: readKeyFromEnvelope(type, parsed),
       all: parsed.all === true,
     });
     const targetFolder = exportsFolderId || doneId;
+
+    if (parsed.all === true && entries.length > 1) {
+      // Batch mode — write ONE aggregate file. Writing each entry to
+      // its own filename was broken: when Anna only has a universal
+      // `export-output.json` placeholder in the exports folder, every
+      // write hits the same file and overwrites the previous entry.
+      // Anna 2026-10-26: "I got 1 experience back out of 8".
+      // Fix: aggregate N entries into a single JSON array and write
+      // once to export-output.json. One placeholder = all entries.
+      const aggregate = {
+        exported_at: new Date().toISOString(),
+        type,
+        count: entries.length,
+        entries: entries.map((e) => buildExportPayload(type, e)),
+      };
+      const filename = 'export-output.json';
+      try {
+        const res = await writeExportToDrive(strapi, token, targetFolder, filename, JSON.stringify(aggregate, null, 2));
+        strapi.log.info(`[drive-bridge] export ${type} batch (${entries.length} entries): mode=${res.mode}, file="${res.name || filename}"`);
+      } catch (err) {
+        throw new Error(`Batch export failed: ${err.message}`);
+      }
+      return;
+    }
+
+    // Single entry (or single-type) — per-slug filename, universal
+    // fallback kept for backward compat with existing placeholders.
     const results = { updated: 0, created: 0, universal: 0 };
     const failures = [];
     for (const entry of entries) {
       const payload = buildExportPayload(type, entry);
-      const filename = `export-${type}-${entry.slug || entry.id}.json`;
+      const nameToken = entry.slug || entry.id || type;
+      const filename = `export-${type}-${nameToken}.json`;
       try {
         const res = await writeExportToDrive(strapi, token, targetFolder, filename, JSON.stringify(payload, null, 2));
         if (res.mode === 'updated') results.updated++;
@@ -854,13 +1017,21 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
     return;
   }
 
-  // ─── unpublish / publish — slug only, no data ───
+  // ─── unpublish / publish — key only, no data ───
   if (action === 'unpublish' || action === 'publish') {
-    const slug = parsed.slug;
-    if (!slug) throw new Error(`"${action}" requires "slug"`);
     const op = action === 'unpublish' ? unpublishStrapiEntry : publishStrapiEntry;
-    const result = await op(strapi, type, slug);
-    strapi.log.info(`[drive-bridge] ${action} ${type}/${slug} ok (documentId=${result?.documentId})`);
+    if (isSingle) {
+      const result = await op(strapi, type, null);
+      strapi.log.info(`[drive-bridge] ${action} ${type} (single-type) ok (documentId=${result?.documentId})`);
+      return;
+    }
+    const keyValue = readKeyFromEnvelope(type, parsed);
+    if (!keyValue) {
+      const keyField = getKeyFieldName(type);
+      throw new Error(`"${action}" requires "${keyField}"`);
+    }
+    const result = await op(strapi, type, keyValue);
+    strapi.log.info(`[drive-bridge] ${action} ${type}/${keyValue} ok (documentId=${result?.documentId})`);
     return;
   }
 
@@ -881,21 +1052,40 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
       : mediaId;
   }
 
+  // Single-type: there's no create vs update distinction — one row
+  // only. Route both actions through updateSingleTypeEntry (which
+  // creates on first write if the row doesn't exist yet).
+  if (isSingle) {
+    if (action !== 'create' && action !== 'update') {
+      throw new Error(`action must be one of: create, update, unpublish, publish, export (got "${action}")`);
+    }
+    const result = await updateSingleTypeEntry(strapi, type, resolvedData);
+    strapi.log.info(`[drive-bridge] ${action} ${type} (single-type) documentId=${result?.documentId} from "${file.name}"`);
+    return;
+  }
+
   if (action === 'create') {
-    if (!resolvedData.slug) {
+    const keyField = getKeyFieldName(type);
+    // Auto-generate slug from title for slug-keyed types if the robot
+    // didn't supply one. Not needed for practitioner (keyed by name).
+    if (keyField === 'slug' && !resolvedData.slug) {
       const titleValue = resolvedData[TYPE_TITLE_FIELD[type]];
       if (titleValue) resolvedData.slug = slugify(titleValue);
     }
     const created = await createStrapiEntry(strapi, type, resolvedData);
-    strapi.log.info(`[drive-bridge] created ${type} slug=${created?.slug} documentId=${created?.documentId} from "${file.name}"`);
+    const createdKey = created?.[keyField] || created?.slug;
+    strapi.log.info(`[drive-bridge] created ${type} ${keyField}=${createdKey} documentId=${created?.documentId} from "${file.name}"`);
     return;
   }
 
   if (action === 'update') {
-    const slug = parsed.slug;
-    if (!slug) throw new Error('"update" requires "slug" at the top level');
-    const updated = await updateStrapiEntry(strapi, type, slug, resolvedData);
-    strapi.log.info(`[drive-bridge] updated ${type}/${slug} documentId=${updated?.documentId} from "${file.name}"`);
+    const keyValue = readKeyFromEnvelope(type, parsed);
+    if (!keyValue) {
+      const keyField = getKeyFieldName(type);
+      throw new Error(`"update" requires "${keyField}" at the top level`);
+    }
+    const updated = await updateStrapiEntry(strapi, type, keyValue, resolvedData);
+    strapi.log.info(`[drive-bridge] updated ${type}/${keyValue} documentId=${updated?.documentId} from "${file.name}"`);
     return;
   }
 

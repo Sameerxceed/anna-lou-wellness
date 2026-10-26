@@ -34,6 +34,15 @@ const nextConfig = {
         destination: '/about/anna-story',
         permanent: true,
       },
+      // 26 Oct 2026: the "money fear" post was published with a
+      // placeholder slug of `article`. Anna is renaming it to
+      // `money-fear` in CMS. This 301 keeps the original URL alive so
+      // Google-indexed links and any shares still land on the post.
+      {
+        source: '/love-and-relationships/article',
+        destination: '/love-and-relationships/money-fear',
+        permanent: true,
+      },
     ];
   },
 };
