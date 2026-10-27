@@ -24,6 +24,10 @@
  *                              // slug-keyed types. For "practitioner" use
  *                              // "name" instead. Single-types
  *                              // (decoder-quiz-page) need no key.
+ *                              // Alternatives (rename-safe): send
+ *                              // "documentId" or "id" at the top level
+ *                              // and the bridge will resolve to the
+ *                              // current key value.
  *     "data":   { ... }        // field map, required for create/update
  *   }
  *
@@ -525,6 +529,44 @@ function readKeyFromEnvelope(type, parsed) {
   return null;
 }
 
+async function resolveEnvelopeToKey(strapi, type, parsed) {
+  // Resolve the envelope's identifier to a keyValue the normal
+  // findByKey path can use. Accepts (in priority order):
+  //   1. documentId — the Strapi 5 stable id (unambiguous)
+  //   2. id         — legacy numeric id (unambiguous)
+  //   3. the type's own key field (slug / name / …)
+  //
+  // Added 2026-10-27 after Anna hit the practitioner rename problem —
+  // keying by `name` requires knowing the current name, which you
+  // don't have if you're trying to rename it. documentId / id are
+  // rename-safe.
+  if (TYPE_IS_SINGLE_TYPE[type]) return null;
+  const uid = TYPE_TO_UID[type];
+  const keyField = getKeyFieldName(type);
+
+  if (parsed.documentId) {
+    let row = null;
+    try { row = await strapi.documents(uid).findOne({ documentId: parsed.documentId, status: 'draft' }); } catch { /* not found */ }
+    if (!row) {
+      try { row = await strapi.documents(uid).findOne({ documentId: parsed.documentId, status: 'published' }); } catch { /* not found */ }
+    }
+    if (!row) throw new Error(`No ${type} found with documentId "${parsed.documentId}"`);
+    const kv = row[keyField];
+    if (kv == null) throw new Error(`${type} documentId=${parsed.documentId} has no ${keyField} to use as key`);
+    return kv;
+  }
+
+  if (parsed.id != null) {
+    const row = await strapi.db.query(uid).findOne({ where: { id: parsed.id } });
+    if (!row) throw new Error(`No ${type} found with id ${parsed.id}`);
+    const kv = row[keyField];
+    if (kv == null) throw new Error(`${type} id=${parsed.id} has no ${keyField} to use as key`);
+    return kv;
+  }
+
+  return readKeyFromEnvelope(type, parsed);
+}
+
 async function updateSingleTypeEntry(strapi, type, data) {
   // Single-type update. If the single-type has no row yet, create one.
   // Otherwise update the draft, and if a published row exists update
@@ -916,9 +958,19 @@ async function exportStrapiEntries(strapi, type, { keyValue, all }) {
   }
 
   // all: true — paginate through everything, published versions.
-  // Strapi 5 Document Service findMany uses start/limit directly (not
-  // wrapped in pagination:{}). Explicit pageSize of 100 keeps response
-  // sizes sane and matches Strapi's default max.
+  //
+  // Bug 2026-10-27: `findMany({populate: '*'})` on a collection with
+  // a `blocks` field (body_v2 on article) returns the blocks column
+  // as `null` for every row even when the DB has real content.
+  // Single-slug `findFirst` with the exact same populate string
+  // returns the real blocks. Anna almost blanked 79 articles rewriting
+  // endings off a bulk export that read every body_v2 as null.
+  //
+  // Workaround: use findMany only to get the slug list (lightweight,
+  // no populate), then re-fetch each entry via findFirst — the same
+  // code path as single-slug export, which we know returns the real
+  // blocks. ~5-10s cost for 79 articles. Acceptable.
+  const keyField = getKeyFieldName(type);
   const results = [];
   let start = 0;
   const limit = 100;
@@ -927,7 +979,7 @@ async function exportStrapiEntries(strapi, type, { keyValue, all }) {
     try {
       page = await strapi.documents(uid).findMany({
         status: 'published',
-        populate: '*',
+        fields: [keyField],
         start,
         limit,
       });
@@ -935,7 +987,20 @@ async function exportStrapiEntries(strapi, type, { keyValue, all }) {
       throw new Error(`findMany ${uid} (start=${start}): ${err.message}`);
     }
     if (!page || !page.length) break;
-    results.push(...page);
+    for (const stub of page) {
+      const kv = stub && stub[keyField];
+      if (kv == null) continue;
+      try {
+        const full = await strapi.documents(uid).findFirst({
+          filters: { [keyField]: kv },
+          status: 'published',
+          populate: '*',
+        });
+        if (full) results.push(full);
+      } catch (err) {
+        strapi.log.warn(`[drive-bridge] bulk-export: skipping ${type}/${kv}: ${err.message}`);
+      }
+    }
     if (page.length < limit) break;
     start += limit;
   }
@@ -963,10 +1028,21 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
 
   // ─── export — write entry(ies) to Drive as JSON ───
   if (action === 'export' || action === 'read') {
+    const keyValueForExport = parsed.all === true
+      ? null
+      : (isSingle ? null : await resolveEnvelopeToKey(strapi, type, parsed));
     const entries = await exportStrapiEntries(strapi, type, {
-      keyValue: readKeyFromEnvelope(type, parsed),
+      keyValue: keyValueForExport,
       all: parsed.all === true,
     });
+    if (!entries || entries.length === 0) {
+      // Hard-fail on zero matches so the file lands in errors with a
+      // visible reason. Previously (bug 2026-10-27) a mistyped slug
+      // would silently succeed and leave Anna wondering why nothing
+      // appeared in the exports folder.
+      const where = parsed.all === true ? 'bulk export' : `single export for ${JSON.stringify({ slug: parsed.slug, name: parsed.name, id: parsed.id, documentId: parsed.documentId })}`;
+      throw new Error(`Export matched zero ${type} entries — ${where}. If this is a slug/name typo, re-drop the file with the correct value. If the entry is draft-only, note that bulk exports only include published entries (use a single-slug export to read drafts).`);
+    }
     const targetFolder = exportsFolderId || doneId;
 
     if (parsed.all === true && entries.length > 1) {
@@ -1025,10 +1101,10 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
       strapi.log.info(`[drive-bridge] ${action} ${type} (single-type) ok (documentId=${result?.documentId})`);
       return;
     }
-    const keyValue = readKeyFromEnvelope(type, parsed);
+    const keyValue = await resolveEnvelopeToKey(strapi, type, parsed);
     if (!keyValue) {
       const keyField = getKeyFieldName(type);
-      throw new Error(`"${action}" requires "${keyField}"`);
+      throw new Error(`"${action}" requires one of: "${keyField}", "documentId", or "id"`);
     }
     const result = await op(strapi, type, keyValue);
     strapi.log.info(`[drive-bridge] ${action} ${type}/${keyValue} ok (documentId=${result?.documentId})`);
@@ -1050,6 +1126,20 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
     resolvedData[fieldName] = TYPE_DEFAULT_MEDIA_FIELD[type] === 'images'
       ? [mediaId]
       : mediaId;
+  }
+
+  // Safety net 2026-10-27: never let a null in a known rich-text /
+  // dynamic-zone field reach Strapi on a write. If the robot read an
+  // older bulk export (where body_v2 came back as `null` instead of
+  // the real blocks) and round-trips the shape without rewriting, we
+  // would blank the content. Treat null here as "no change intended".
+  // Robots that genuinely want to clear a field can send an empty
+  // string or empty array.
+  for (const field of ['body_v2', 'description_v2']) {
+    if (Object.prototype.hasOwnProperty.call(resolvedData, field) && resolvedData[field] === null) {
+      strapi.log.warn(`[drive-bridge] stripped null ${field} from "${file.name}" to protect existing content`);
+      delete resolvedData[field];
+    }
   }
 
   // Single-type: there's no create vs update distinction — one row
@@ -1079,10 +1169,10 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
   }
 
   if (action === 'update') {
-    const keyValue = readKeyFromEnvelope(type, parsed);
+    const keyValue = await resolveEnvelopeToKey(strapi, type, parsed);
     if (!keyValue) {
       const keyField = getKeyFieldName(type);
-      throw new Error(`"update" requires "${keyField}" at the top level`);
+      throw new Error(`"update" requires one of: "${keyField}", "documentId", or "id" at the top level`);
     }
     const updated = await updateStrapiEntry(strapi, type, keyValue, resolvedData);
     strapi.log.info(`[drive-bridge] updated ${type}/${keyValue} documentId=${updated?.documentId} from "${file.name}"`);
