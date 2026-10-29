@@ -529,6 +529,90 @@ function readKeyFromEnvelope(type, parsed) {
   return null;
 }
 
+async function resolveRelationValue(strapi, targetUid, value) {
+  // Resolve a scalar reference (slug / name / numeric id / documentId)
+  // to the target entry's documentId. Returns null if nothing matches.
+  // Tries in order: numeric id → slug → name → documentId direct.
+  if (typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value))) {
+    try {
+      const row = await strapi.db.query(targetUid).findOne({ where: { id: Number(value) } });
+      if (row && row.documentId) return row.documentId;
+    } catch { /* swallow */ }
+  }
+  if (typeof value !== 'string') return null;
+  const targetModel = strapi.getModel(targetUid);
+  const targetAttrs = (targetModel && targetModel.attributes) || {};
+  if (targetAttrs.slug) {
+    try {
+      const row = await strapi.documents(targetUid).findFirst({ filters: { slug: value } });
+      if (row && row.documentId) return row.documentId;
+    } catch { /* swallow */ }
+  }
+  if (targetAttrs.name) {
+    try {
+      const row = await strapi.documents(targetUid).findFirst({ filters: { name: value } });
+      if (row && row.documentId) return row.documentId;
+    } catch { /* swallow */ }
+  }
+  try {
+    const row = await strapi.documents(targetUid).findOne({ documentId: value });
+    if (row && row.documentId) return row.documentId;
+  } catch { /* swallow */ }
+  return null;
+}
+
+async function resolveRelationReferences(strapi, uid, data) {
+  // Walk the schema attributes of `uid` and resolve any scalar values
+  // written to relation fields into real documentIds.
+  //
+  // Why: Anna's robot (and humans) naturally write
+  //   {"category": "sessions"}
+  // but Strapi's Document Service needs a documentId or numeric id for
+  // a relation field. A slug string on `category` is silently coerced
+  // to null — the write "succeeds", the relation stays empty, and the
+  // product can't be filed. Anna hit this trying to put 14 one-to-one
+  // sessions into the Sessions category (26 Oct) — revenue blocker.
+  //
+  // After this helper: "sessions" is looked up on the target type by
+  // slug / name / id, swapped for a real documentId. If nothing
+  // matches, THROW loudly so the file lands in the errors folder with
+  // a clear reason — matches the "fail rather than clear" rule Anna
+  // asked for.
+  //
+  // Objects pass through unchanged (caller may be using Strapi's
+  // {connect: [...]} / {disconnect: [...]} / {id: N} forms).
+  const model = strapi.getModel(uid);
+  if (!model || !model.attributes) return data;
+  const result = { ...data };
+  for (const [field, def] of Object.entries(model.attributes)) {
+    if (def.type !== 'relation') continue;
+    const value = result[field];
+    if (value == null) continue;
+    const targetUid = def.target;
+    if (!targetUid) continue;
+    if (typeof value === 'string' || typeof value === 'number') {
+      const resolved = await resolveRelationValue(strapi, targetUid, value);
+      if (!resolved) {
+        throw new Error(`Relation "${field}" → ${targetUid}: no entry found matching "${value}". Tried slug, name, numeric id, and documentId. Supply a valid value or send the documentId directly.`);
+      }
+      result[field] = resolved;
+      continue;
+    }
+    if (Array.isArray(value) && value.every((v) => typeof v === 'string' || typeof v === 'number')) {
+      const resolved = [];
+      for (const v of value) {
+        const r = await resolveRelationValue(strapi, targetUid, v);
+        if (!r) {
+          throw new Error(`Relation "${field}[]" → ${targetUid}: no entry found matching "${v}" in the array. Tried slug, name, numeric id, and documentId.`);
+        }
+        resolved.push(r);
+      }
+      result[field] = resolved;
+    }
+  }
+  return result;
+}
+
 async function resolveEnvelopeToKey(strapi, type, parsed) {
   // Resolve the envelope's identifier to a keyValue the normal
   // findByKey path can use. Accepts (in priority order):
@@ -1119,7 +1203,7 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
 
   // Resolve any { from_file / from_url } references inside data.
   // Also handle legacy top-level media_url for backwards compat.
-  const resolvedData = await resolveMediaReferences(strapi, token, imagesFolderId, data);
+  let resolvedData = await resolveMediaReferences(strapi, token, imagesFolderId, data);
   if (parsed.media_url && !resolvedData[TYPE_DEFAULT_MEDIA_FIELD[type]]) {
     const mediaId = await uploadUrlToStrapi(strapi, parsed.media_url, parsed.media_filename);
     const fieldName = parsed.media_field_name || TYPE_DEFAULT_MEDIA_FIELD[type];
@@ -1127,6 +1211,12 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
       ? [mediaId]
       : mediaId;
   }
+
+  // Resolve scalar values written to relation fields (e.g.
+  // `category: "sessions"` on a product) into documentIds. Throws on
+  // any unresolved relation so the file lands in errors — see
+  // resolveRelationReferences for the full why.
+  resolvedData = await resolveRelationReferences(strapi, TYPE_TO_UID[type], resolvedData);
 
   // Safety net 2026-10-27: never let a null in a known rich-text /
   // dynamic-zone field reach Strapi on a write. If the robot read an
