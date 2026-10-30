@@ -182,6 +182,7 @@ Being transparent so there are no surprises later. The full ownership picture to
 | Google Analytics 4 + Search Console | You | Your Google account, verified via DNS TXT record on the domain. |
 | Resend email account | Shared / check | Confirm with Sameer which account owns the API key — likely his, worth moving to yours. |
 | Anthropic API key (AskAnna + auto-SEO) | Sameer / Xceed | Billed on Xceed's Anthropic account. Low monthly cost (~£5-10). |
+| Cloudflare R2 (backup storage) | **You** (pending setup) | Daily database backups will land here. Free tier covers ALW's size easily. See "Backups" below for the setup task. |
 
 ### Logins & links — the full inventory
 
@@ -197,6 +198,7 @@ Day-to-day you only need the first one. The rest are listed so you (or a future 
 - Google Search Console: https://search.google.com/search-console — SEO health, indexed pages, click data.
 - IONOS: https://my.ionos.com — your VPS billing + server management panel.
 - Google Drive bridge folder: your "ALW CMS Bridge" folder in your Google Drive.
+- Cloudflare: https://dash.cloudflare.com — once set up, this will hold your R2 bucket of daily database backups. See "Backups" below.
 - Domain registrar: wherever you registered annalouwellness.com (check your records).
 
 **Sameer / Xceed — you don't need these day-to-day:**
@@ -209,18 +211,38 @@ Day-to-day you only need the first one. The rest are listed so you (or a future 
 
 ### Backups
 
-**Current state (honest):**
+**Current state (honest, as of 30 Oct 2026):**
 
 - **Content drafts (Layer 1):** All editorial content types have draft/publish turned on. If you accidentally publish something wrong, the previous draft is kept, and you can revert in the CMS Save/Publish history. This covers ~98% of edit-mistake scenarios.
 - **Media uploads:** Images sit on a persistent disk volume mounted into the CMS container. Container restarts, redeploys, and code updates no longer wipe them (bug we fixed in June 2026).
-- **Daily database backup:** NOT currently configured. If a catastrophic data loss event hit the VPS today, we'd lose everything added since the last manual snapshot.
+- **Daily database backup:** NOT YET configured. If a catastrophic data loss event hit the VPS today, we'd lose everything added since the last manual snapshot.
 
-**What's being set up now (29 Oct 2026):** Sameer is enabling Coolify's built-in daily Postgres backup — 03:00 UTC, 7-day rolling history. Once configured, backups land in Coolify and can be restored with 1 click. See `ops/COOLIFY_DB_BACKUPS.md` in the codebase for the full runbook. This section will be updated once the backup is confirmed running and verified.
+**The plan — waiting on you for one setup task:**
+
+We're using Cloudflare R2 as the backup destination. R2 is Cloudflare's S3-compatible storage, with a 10GB free tier that comfortably fits ALW's database size (currently well under 1GB). This is the same pattern we use on other agency projects — proven in production since August 2026.
+
+**Why R2 and not just the Google Drive bridge:** we considered reusing Anna's Google Drive via the Drive Bridge service account, but Google Drive isn't S3-compatible and would need a custom script running on the VPS (fragile, no 1-click restore). R2 is Coolify-native (or usable via standard `aws` CLI), battle-tested, and the backup belongs in storage owned by you.
+
+**What we need from you (5 min):**
+
+1. Sign up for a Cloudflare account at https://dash.cloudflare.com/sign-up using your business email. Free. No credit card required for the free tier.
+2. In the dashboard, click **R2 Object Storage** in the left sidebar. On first use Cloudflare will ask you to enable R2 — accept. R2 does require a credit card on file even for free-tier usage (Cloudflare's anti-abuse policy); you won't be charged unless you exceed 10GB or do huge egress, neither of which applies here.
+3. **Create a bucket** called `anna-lou-wellness-backups`. Default settings. Location hint: choose a region close to the UK (e.g. "Eastern Europe (EEUR)" or "Western Europe (WEUR)").
+4. **Create an R2 API Token:** R2 → "Manage R2 API Tokens" → "Create API Token". Permissions: **Object Read & Write**, scoped to just the `anna-lou-wellness-backups` bucket. TTL: no expiry (or 1 year — your call).
+5. Copy and send to Sameer (via a secure channel — password manager share, or encrypted email):
+   - **Account ID** (shown on the R2 overview page)
+   - **Access Key ID**
+   - **Secret Access Key**
+   - **Bucket name:** `anna-lou-wellness-backups`
+
+Once Sameer has those, he wires it to a daily cron on the VPS (~30 min of work on his side) that does: `pg_dump → gzip → upload to R2`. Retention: 7 rolling days. First successful backup confirmed within 24 hours of setup.
 
 **What a backup does and doesn't cover:**
 
 - Covers: all CMS content, orders, products, members, FAQs, article bodies, images stored on the volume.
 - Doesn't cover: production secrets (those live in Coolify's own config, not the database) and third-party service data (Mailchimp subscribers, Stripe customers — those are backed up by Mailchimp and Stripe themselves).
+
+**Restoring from a backup** (if the worst happens): Sameer downloads the latest `.sql.gz` from your R2 bucket, pipes it into `pg_restore` against the Postgres container. ~5 minutes of downtime. You lose any content edits made between the last backup (daily, 03:00 UTC) and the restore point.
 
 ### What this means in practice
 

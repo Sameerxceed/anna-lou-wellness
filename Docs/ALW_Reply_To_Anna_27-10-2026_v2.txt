@@ -1,0 +1,78 @@
+Hi Anna,
+
+Good tests. One technical fix went out just now, the rest are answers.
+
+1. Breathwork post with no blocks
+
+Checked it directly in Strapi. The body_v2 field on that post is genuinely empty — it is an older post that still carries content in the legacy "body" field, which the bulk export doesn't currently include. So no bug, but a real gap: a handful of old posts have content in body (not body_v2) and the current export silently reads that as nothing. I will extend the export to also return the legacy body as body_plain alongside body_v2_blocks, so your robot can see both. That is one small follow-up, not blocking.
+
+2. Zero-match loud fail — working, nothing to do here.
+
+3. Sessions category — fixed and deployed just now.
+
+Root cause was broader than the Sessions case. On a Strapi relation field like product.category, the Document Service only accepts a documentId or a numeric id. A slug string ("sessions") gets silently coerced to null and the write looks successful. I have added a relation resolver to the bridge: when the robot writes {"category": "sessions"} on a product, the bridge now looks "sessions" up on the target type by slug, name, or id, substitutes the real documentId, and writes. If nothing matches, the file now fails loudly and lands in errors with the field and value echoed back (same "fail rather than clear" rule you asked for). Same resolver works for any relation on any type.
+
+Please retry {"action": "update", "type": "product", "slug": "the-deep-return", "data": {"category": "sessions"}} and it should stick this time. Confirm by reading the product back.
+
+4. Practitioner rename test
+
+Record 2 is Maria Alvaravo. Use that as the current name, or send:
+{"action": "update", "type": "practitioner", "id": 2, "data": {"name": "..."}}
+with id instead of name. Either works.
+
+5. Call-in-your-spirit single export — probably not a bug
+
+I pulled the article directly from Strapi and it has 49 blocks, so the entry is fine. The most likely explanation: your single-slug export went to export-output.json via the universal fallback, not to a per-slug file. The bridge writes to export-article-call-in-your-spirit-teams-and-get-clear-on-what-you-are-asking-for.json first, but if that specific placeholder doesn't exist in the exports folder, it falls back to writing to the universal export-output.json. Could you check export-output.json? If the content is there, this is just a UX trap — I'll either make it noisier in the log or write a sibling .info.txt into the done folder saying "wrote to export-output.json" so there is no ambiguity. If the content is NOT in export-output.json, then it is a real bug and we dig into it with that confirmation.
+
+6. Multi-op requests in one file
+
+Fair ask. 72 single-file ops is painful. I'll add support for an "operations" array at the envelope level, so one file can carry N ops, each with its own action/type/key/data. If any fail, the whole file lands in errors with the per-op failures listed. Separate commit, I will send it over when it's live.
+
+For a true "append to body_v2 without resending it", I'd rather hold on it until the operations-array ships — the array already removes most of the pain, and append has edge cases (where in the block tree, duplicate paragraphs, formatting inheritance) that need a design pass with you.
+
+7. Align & Amplify
+
+The experience page is still there. It is a type "experience", slug "align-and-amplify", living at https://annalouwellness.com/experiences/align-and-amplify. Your recent bulk export was on type "experience-page", which is specifically the 4 category pages (retreats, workshops, corporate-wellbeing, speaking) — so Align & Amplify correctly wouldn't appear there. To pull it, use:
+{"action": "export", "type": "experience", "slug": "align-and-amplify"}
+
+The product at £150 (slug align-amplify-the-codes) is a separate entry. If you want to collapse the two into a programme instead, that works technically: our programme content type has a pricePence field wired to Stripe checkout and we already use the one-off £150 pattern on REGULATED, so a programme can take a one-off £150 payment the same way the product does. If you want to go this way:
+
+- You rebuild the content as a programme (sectioned layout, same editor you've been using on Signal / The Reset / Signal & Build).
+- I set up a 301 redirect from the old product URL to the new programme URL, same way we did for money-fear last week.
+- The product can either be unpublished (invisible but recoverable) or deleted (gone for good). I'd suggest unpublish, in case we want the old copy as a reference.
+
+Let me know and I'll do the redirect + unpublish once the programme is live.
+
+Let me know how the Sessions retry goes once Coolify has finished redeploying.
+
+Sameer
+
+
+---------------------------------------------------------------
+SEPARATE SHORT ASK — can also send as its own email
+---------------------------------------------------------------
+
+Hi Anna,
+
+One quick setup task from your side, five minutes of clicks, to close a gap I want to tighten.
+
+Right now the site has strong editor-level safety (every content type has draft/publish, so you can revert a bad save), and image uploads live on a persistent disk that survives container restarts. But we don't yet have a daily OFF-server backup of the database. If the VPS were lost tomorrow we'd have nothing to restore from.
+
+The fix is a free Cloudflare account with their R2 storage. It's the same pattern we use on other projects, battle-tested, costs nothing within the free tier (which comfortably fits ALW's size), and because it's in your name the backups belong to you — not to me.
+
+What I need you to do:
+
+1. Sign up at https://dash.cloudflare.com/sign-up with your business email. Free.
+2. In the dashboard, click R2 Object Storage in the left sidebar. Cloudflare will ask you to enable R2 — accept. They do require a credit card on file for anti-abuse reasons even on the free tier; you won't be charged for ALW usage.
+3. Create a bucket called anna-lou-wellness-backups. Pick a region near the UK (Western Europe or Eastern Europe).
+4. Create an R2 API Token: R2 → Manage R2 API Tokens → Create API Token. Permissions: Object Read & Write, scoped to just the anna-lou-wellness-backups bucket.
+5. Send me (via WhatsApp or email, your call):
+   - Account ID (shown on the R2 overview page)
+   - Access Key ID
+   - Secret Access Key
+   - Bucket name: anna-lou-wellness-backups
+
+Once I have those I'll wire up a cron on the VPS that pushes a daily database dump to that bucket at 3am UTC with 7-day retention. First successful backup verified within 24 hours.
+
+Thanks,
+Sameer
