@@ -1,0 +1,5 @@
+# Always check out shell scripts with Unix line endings so they execute
+# correctly on the Linux VPS even when edited on Windows. Bash fails
+# noisily on scripts with CRLF (`\r` characters surface as "command not
+# found" errors).
+*.sh text eol=lf
