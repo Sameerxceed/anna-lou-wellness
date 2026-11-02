@@ -43,6 +43,15 @@ const nextConfig = {
         destination: '/love-and-relationships/money-fear',
         permanent: true,
       },
+      // 30 Oct 2026: Anna has rebuilt the About page as a Page Builder
+      // entry at /p/about-1. She has already repointed her nav links.
+      // 301 so Google-indexed /about links and anyone with the old URL
+      // bookmarked still lands on the new About page.
+      {
+        source: '/about',
+        destination: '/p/about-1',
+        permanent: true,
+      },
     ];
   },
 };

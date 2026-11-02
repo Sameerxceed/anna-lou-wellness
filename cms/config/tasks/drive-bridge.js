@@ -531,12 +531,21 @@ function readKeyFromEnvelope(type, parsed) {
 
 async function resolveRelationValue(strapi, targetUid, value) {
   // Resolve a scalar reference (slug / name / numeric id / documentId)
-  // to the target entry's documentId. Returns null if nothing matches.
+  // to the target entry's NUMERIC id. Returns null if nothing matches.
   // Tries in order: numeric id → slug → name → documentId direct.
+  //
+  // Returns the NUMERIC id (not documentId) because Strapi 5's write
+  // paths — both Document Service `.update()` AND the raw
+  // `strapi.db.query().update()` the bridge uses for published-version
+  // writes — need the FK numeric id to actually attach the relation.
+  // Writing a documentId string into a relation field via db.query
+  // silently fails (wrong column type), which is why Anna's
+  // {"category":"sessions"} on a product kept clearing to done with
+  // category still null (30 Oct).
   if (typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value))) {
     try {
       const row = await strapi.db.query(targetUid).findOne({ where: { id: Number(value) } });
-      if (row && row.documentId) return row.documentId;
+      if (row && row.id) return row.id;
     } catch { /* swallow */ }
   }
   if (typeof value !== 'string') return null;
@@ -545,18 +554,18 @@ async function resolveRelationValue(strapi, targetUid, value) {
   if (targetAttrs.slug) {
     try {
       const row = await strapi.documents(targetUid).findFirst({ filters: { slug: value } });
-      if (row && row.documentId) return row.documentId;
+      if (row && row.id) return row.id;
     } catch { /* swallow */ }
   }
   if (targetAttrs.name) {
     try {
       const row = await strapi.documents(targetUid).findFirst({ filters: { name: value } });
-      if (row && row.documentId) return row.documentId;
+      if (row && row.id) return row.id;
     } catch { /* swallow */ }
   }
   try {
-    const row = await strapi.documents(targetUid).findOne({ documentId: value });
-    if (row && row.documentId) return row.documentId;
+    const row = await strapi.db.query(targetUid).findOne({ where: { documentId: value } });
+    if (row && row.id) return row.id;
   } catch { /* swallow */ }
   return null;
 }
@@ -723,10 +732,30 @@ async function updateStrapiEntry(strapi, type, keyValue, data) {
   }
   const documentId = existing.documentId;
 
-  // Always update the draft version. If a published version also
-  // exists, update it too so the live site reflects Anna's change
-  // immediately — matches the pattern in src/utils/auto-seo.js.
   const results = {};
+
+  // Non-draft-and-publish types (product, product-category, …) only
+  // have one version. Calling update({status:'draft'}) on them either
+  // throws or silently no-ops, and the error was being caught + logged
+  // as a warning — so processFile saw "success" and moved the file to
+  // done while nothing actually changed. Anna 30 Oct:
+  // {"category":"sessions"} on `the-deep-return` kept landing in done
+  // with category still null, blocking the 14 one-to-one sessions.
+  // Fix: branch on TYPE_HAS_DRAFT_PUBLISH and skip the status arg
+  // when the type has no draft concept, and let errors propagate.
+  if (!TYPE_HAS_DRAFT_PUBLISH[type]) {
+    results.direct = await strapi.documents(uid).update({
+      documentId,
+      data,
+    });
+    return { ...existing, documentId };
+  }
+
+  // Draft + published handling (original path). Update the draft
+  // version first; if a published version exists, update it too via
+  // db.query so the live site reflects Anna's change immediately —
+  // matches the pattern in src/utils/auto-seo.js and preserves the
+  // original publishedAt (see note below).
   try {
     results.draft = await strapi.documents(uid).update({
       documentId,
@@ -820,6 +849,23 @@ async function publishStrapiEntry(strapi, type, keyValue) {
 // Outputs land in the DRIVE_BRIDGE_EXPORTS_ID folder if set, else in
 // the done folder with filenames prefixed "export-" so Anna can filter.
 
+function flattenNode(node) {
+  // Recursively collect text from a Strapi 5 blocks node. Needed for
+  // nodes that wrap text in a child array (links, lists, nested
+  // formatting). Anna 30 Oct: closing paragraphs on 72 posts contained
+  // links, and body_v2_plain dropped the link wording — "visit the
+  // reset room" rendered as empty — because the previous code did
+  // `c.text || ''` on each top-level child, which is empty for link
+  // nodes since the text sits one level deeper in `.children`.
+  if (node == null) return '';
+  if (typeof node === 'string') return node;
+  if (typeof node.text === 'string') return node.text;
+  if (Array.isArray(node.children)) {
+    return node.children.map(flattenNode).join('');
+  }
+  return '';
+}
+
 function toPlainText(blocks) {
   // Flatten Strapi 5 "blocks" (editor.js style) to plain text so the
   // robot can read without parsing the block tree. The robot only
@@ -827,10 +873,7 @@ function toPlainText(blocks) {
   if (!Array.isArray(blocks)) return typeof blocks === 'string' ? blocks : '';
   const parts = [];
   for (const b of blocks) {
-    const inner = Array.isArray(b.children)
-      ? b.children.map((c) => c.text || '').join('')
-      : '';
-    parts.push(inner);
+    parts.push(flattenNode(b));
   }
   return parts.join('\n\n');
 }

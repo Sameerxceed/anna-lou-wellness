@@ -63,6 +63,8 @@ export default async function CommunityPage() {
   const resetRoomDesc = page.resetRoomDescription;
   const resetRoomPrice = page.resetRoomPrice;
   const resetRoomFeatures = page.resetRoomFeatures;
+  const circleImage = page.circleImage;
+  const resetRoomImage = page.resetRoomImage;
   const eventsTitle = page.eventsTitle;
   const eventsDesc = page.eventsDescription;
   const resourcesTitle = page.resourcesTitle;
@@ -95,7 +97,11 @@ export default async function CommunityPage() {
       {(circleTitle || hasContent(circleDesc)) && (
         <section className="com-section">
           <div className="com-section-inner">
-            <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#dcc8c0,#c8b0a8)' }} />
+            {circleImage ? (
+              <img src={circleImage} alt={circleTitle || 'The Returning Circle'} className="com-section-image reveal" />
+            ) : (
+              <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#dcc8c0,#c8b0a8)' }} />
+            )}
             <div className="reveal rd1">
               {circleTitle && <h2 className="com-section-title">{circleTitle}</h2>}
               {hasContent(circleDesc) && (
@@ -126,7 +132,11 @@ export default async function CommunityPage() {
               )}
               <Link href="/community/membership" className="com-link">Join the Reset Room <span>&rarr;</span></Link>
             </div>
-            <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#e0d4c8,#d2c4b6)' }} />
+            {resetRoomImage ? (
+              <img src={resetRoomImage} alt={resetRoomTitle || 'The Reset Room'} className="com-section-image reveal" />
+            ) : (
+              <div className="com-section-image reveal" style={{ background: 'linear-gradient(160deg,#e0d4c8,#d2c4b6)' }} />
+            )}
           </div>
         </section>
       )}
