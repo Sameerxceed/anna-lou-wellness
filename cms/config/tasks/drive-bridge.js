@@ -886,6 +886,14 @@ function buildExportPayload(type, entry) {
   delete data.documentId;
   delete data.id;
   delete data.locale;
+  // SECURITY (Anna 30 Oct 2026): populate: '*' pulls full admin user
+  // records for Strapi's automatic createdBy / updatedBy relations,
+  // which contain the admin email AND the bcrypt-hashed password.
+  // Those were landing in every export file in Drive. Strip them
+  // before writing. Nothing downstream reads these fields; they only
+  // existed as a side effect of the wildcard populate.
+  delete data.createdBy;
+  delete data.updatedBy;
   return {
     exported_at: new Date().toISOString(),
     type,
