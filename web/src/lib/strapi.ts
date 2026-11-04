@@ -33,9 +33,16 @@ export async function fetchAPI<T = any>(
   // (typically paired with `export const dynamic = 'force-dynamic'`)
   // pass noCache: true so the fetch skips Next.js data cache entirely.
   // Default is the 24h ISR cache (busted on save via site-wide revalidation).
+  //
+  // Cache tag: every fetch is tagged with its endpoint path so the CMS
+  // lifecycle hooks can target invalidation precisely via revalidateTag.
+  // Without tags, revalidatePath only clears the rendered page; the
+  // underlying fetch result stays cached until TTL expiry, so re-renders
+  // after save still serve stale data (Anna 30 Oct 2026 — reset-room-page
+  // edits visible in API but not in the HTML until next deploy).
   const cacheOpts = options.noCache
     ? { cache: 'no-store' as const }
-    : { next: { revalidate: REVALIDATE } };
+    : { next: { revalidate: REVALIDATE, tags: [`strapi:${endpoint}`] } };
 
   const res = await fetch(url.toString(), {
     headers: {

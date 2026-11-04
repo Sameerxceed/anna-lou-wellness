@@ -4,7 +4,7 @@
  * Called by Strapi lifecycle hooks whenever a content type changes
  * (article saved, experience updated, product deleted, etc.) so the
  * public-facing page reflects the change within seconds instead of
- * waiting up to 1 hour for ISR to expire on its own.
+ * waiting for ISR to expire on its own.
  *
  * Security: requires a shared secret matching REVALIDATE_SECRET env var.
  * Without the secret, the endpoint returns 401 — no auth bypass.
@@ -12,12 +12,24 @@
  * Usage:
  *   POST /api/revalidate
  *   Headers: Content-Type: application/json
- *   Body: { "paths": ["/reset-stories/my-slug", "/reset-stories"], "secret": "..." }
- *   Returns: { revalidated: true, paths: [...], now: timestamp }
+ *   Body: {
+ *     "paths": ["/reset-stories/my-slug", "/reset-stories"],
+ *     "tags":  ["strapi:/articles"],   // optional, revalidateTag
+ *     "secret": "..."
+ *   }
+ *   Returns: { revalidated: true, paths, tags, layout, now }
+ *
+ * Why both paths AND tags: revalidatePath invalidates the rendered page
+ * cache but Next.js keeps fetch() results in a SEPARATE data cache keyed
+ * by URL. Without tags, the page re-renders after invalidation but pulls
+ * stale Strapi data from the 24h-TTL data cache. revalidateTag targets
+ * the data cache directly so fresh CMS data lands immediately. Anna 30
+ * Oct 2026 — reset-room-page edits showed in API but not HTML until next
+ * deploy; this is the fix.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +42,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let body: { paths?: unknown; secret?: unknown };
+  let body: { paths?: unknown; tags?: unknown; secret?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -42,8 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Accept either real paths starting with "/" OR the special sentinel "*"
-  // which means "revalidate the entire site at the layout level" (used for
-  // navigation / footer / site-settings changes that affect every page).
+  // which means "revalidate the entire site at the layout level".
   const rawPaths = Array.isArray(body.paths) ? body.paths : [];
   const paths: string[] = [];
   let revalidateLayout = false;
@@ -55,8 +66,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  if (paths.length === 0 && !revalidateLayout) {
-    return NextResponse.json({ error: 'No valid paths provided' }, { status: 400 });
+  // Tags target the Data Cache (fetch results) which revalidatePath does
+  // NOT invalidate. Required to bust stale Strapi fetch data.
+  const rawTags = Array.isArray(body.tags) ? body.tags : [];
+  const tags: string[] = rawTags.filter((t): t is string => typeof t === 'string' && t.length > 0);
+
+  if (paths.length === 0 && !revalidateLayout && tags.length === 0) {
+    return NextResponse.json({ error: 'No valid paths or tags provided' }, { status: 400 });
   }
 
   for (const path of paths) {
@@ -64,14 +80,21 @@ export async function POST(req: NextRequest) {
       revalidatePath(path);
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error(`[revalidate] failed for ${path}:`, err);
+      console.error(`[revalidate] path ${path} failed:`, err);
+    }
+  }
+
+  for (const tag of tags) {
+    try {
+      revalidateTag(tag);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(`[revalidate] tag ${tag} failed:`, err);
     }
   }
 
   if (revalidateLayout) {
     try {
-      // Revalidate every page in the App Router at the layout level —
-      // used for nav / footer / site-settings changes.
       revalidatePath('/', 'layout');
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -82,6 +105,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     revalidated: true,
     paths,
+    tags,
     layout: revalidateLayout,
     now: Date.now(),
   });

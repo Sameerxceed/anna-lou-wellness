@@ -16,20 +16,36 @@
  *
  * JSON shape — all actions share this top-level envelope:
  *   {
- *     "action": "create" | "update" | "unpublish" | "publish" | "export",
+ *     "action": "create" | "update" | "unpublish" | "publish" | "export"
+ *             | "append",
  *     "type":   "article" | "experience" | "page" | "product" | "vault-journey"
  *             | "programme" | "experience-page" | "practitioner"
  *             | "decoder-quiz-page",
- *     "slug":   "my-item"      // required for update/unpublish/publish on
- *                              // slug-keyed types. For "practitioner" use
- *                              // "name" instead. Single-types
+ *     "slug":   "my-item"      // required for update/unpublish/publish/append
+ *                              // on slug-keyed types. For "practitioner"
+ *                              // use "name" instead. Single-types
  *                              // (decoder-quiz-page) need no key.
  *                              // Alternatives (rename-safe): send
  *                              // "documentId" or "id" at the top level
  *                              // and the bridge will resolve to the
  *                              // current key value.
- *     "data":   { ... }        // field map, required for create/update
+ *     "data":   { ... }        // field map, required for create/update;
+ *                              // array of nodes for action=append.
+ *     "field":  "body_v2"      // append only: name of the field to
+ *                              // append to.
  *   }
+ *
+ * Batch mode — send N operations in one file:
+ *   {
+ *     "operations": [
+ *       { "action":"update", "type":"article", "slug":"a", "data":{...} },
+ *       { "action":"append", "type":"article", "slug":"a",
+ *         "field":"body_v2", "data":[{...}] },
+ *       ...
+ *     ]
+ *   }
+ * Ops are applied in order. Any failure lands the file in errors with
+ * per-op details; successful ops are NOT rolled back.
  *
  * Batch export aggregation (fix 2026-10-26): when "all": true, the
  * bridge writes ONE aggregate file (export-output.json) containing an
@@ -1153,6 +1169,45 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
     throw new Error(`Invalid JSON: ${err.message}`);
   }
 
+  // Operations array envelope — process N ops from one file in order.
+  // Anna 30 Oct: 72 posts × one-file-per-op was painful. This lets a
+  // single file carry a batch.
+  //   { "operations": [ {action,type,...}, {action,type,...} ] }
+  // If any op fails, the whole file lands in errors with the failure
+  // details per-op. Successful ops are NOT rolled back — each op is
+  // committed as it runs.
+  if (Array.isArray(parsed.operations)) {
+    const ops = parsed.operations;
+    if (ops.length === 0) throw new Error('operations array is empty');
+    const failures = [];
+    let successes = 0;
+    for (let i = 0; i < ops.length; i++) {
+      const op = ops[i];
+      try {
+        await applyEnvelope(strapi, token, imagesFolderId, exportsFolderId, doneId, file, op);
+        successes++;
+      } catch (err) {
+        failures.push({
+          index: i,
+          type: op && op.type,
+          key: op && (op.slug || op.name || op.id || op.documentId),
+          error: err.message,
+        });
+      }
+    }
+    strapi.log.info(`[drive-bridge] operations from "${file.name}": ${successes}/${ops.length} ok, ${failures.length} failed`);
+    if (failures.length) {
+      const lines = failures.slice(0, 10).map((f) => `  op[${f.index}] ${f.type || '?'}/${f.key || '?'}: ${f.error}`);
+      const more = failures.length > 10 ? `\n...and ${failures.length - 10} more` : '';
+      throw new Error(`Operations completed with ${failures.length} failure(s):\n${lines.join('\n')}${more}`);
+    }
+    return;
+  }
+
+  return applyEnvelope(strapi, token, imagesFolderId, exportsFolderId, doneId, file, parsed);
+}
+
+async function applyEnvelope(strapi, token, imagesFolderId, exportsFolderId, doneId, file, parsed) {
   const type = String(parsed.type || '').toLowerCase();
   if (!TYPE_TO_UID[type]) {
     throw new Error(`type must be one of: ${Object.keys(TYPE_TO_UID).join(', ')} (got "${parsed.type}")`);
@@ -1246,6 +1301,59 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
     return;
   }
 
+  // ─── append — add blocks / items to an array-shaped field without
+  // resending the whole field. Anna 30 Oct 2026: closing paragraphs on
+  // 72 posts previously required 72 full-body round-trips. Append reads
+  // the current field, concatenates the new items at the end, writes
+  // back. Use for `body_v2`, `description_v2`, any blocks or
+  // repeatable-component field.
+  //
+  // Shape:
+  //   { "action": "append", "type": "article", "slug": "...",
+  //     "field": "body_v2",
+  //     "data": [ { "type":"paragraph", "children":[...] } ] }
+  if (action === 'append') {
+    const fieldName = parsed.field;
+    const appendData = parsed.data;
+    if (!fieldName || typeof fieldName !== 'string') {
+      throw new Error('"append" requires "field" (name of the array/blocks field to append to)');
+    }
+    if (!Array.isArray(appendData)) {
+      throw new Error('"append" data must be an array (blocks nodes or repeatable items)');
+    }
+
+    // Load the existing entry to read the current field value.
+    let existing;
+    if (isSingle) {
+      existing = await findByKey(strapi, type, null);
+      if (!existing) throw new Error(`No ${type} content yet (single-type empty) — cannot append`);
+    } else {
+      const keyValue = await resolveEnvelopeToKey(strapi, type, parsed);
+      if (!keyValue) {
+        const keyField = getKeyFieldName(type);
+        throw new Error(`"append" requires one of: "${keyField}", "documentId", or "id"`);
+      }
+      existing = await findByKey(strapi, type, keyValue);
+      if (!existing) throw new Error(`No ${type} found with key "${keyValue}" — cannot append`);
+    }
+
+    const current = existing[fieldName];
+    if (current != null && !Array.isArray(current)) {
+      throw new Error(`Field "${fieldName}" on ${type} is not an array/blocks field — append only works on array-shaped fields (body_v2, description_v2, repeatable components, etc.)`);
+    }
+    const newValue = [...(current || []), ...appendData];
+
+    if (isSingle) {
+      const result = await updateSingleTypeEntry(strapi, type, { [fieldName]: newValue });
+      strapi.log.info(`[drive-bridge] append ${type}.${fieldName} (single-type): added ${appendData.length} items, total now ${newValue.length}, from "${file.name}" documentId=${result?.documentId}`);
+    } else {
+      const keyValue = await resolveEnvelopeToKey(strapi, type, parsed);
+      const updated = await updateStrapiEntry(strapi, type, keyValue, { [fieldName]: newValue });
+      strapi.log.info(`[drive-bridge] append ${type}/${keyValue}.${fieldName}: added ${appendData.length} items, total now ${newValue.length}, from "${file.name}" documentId=${updated?.documentId}`);
+    }
+    return;
+  }
+
   // ─── create / update — need data ───
   const data = parsed.data || {};
   if (typeof data !== 'object' || Array.isArray(data)) {
@@ -1288,7 +1396,7 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
   // creates on first write if the row doesn't exist yet).
   if (isSingle) {
     if (action !== 'create' && action !== 'update') {
-      throw new Error(`action must be one of: create, update, unpublish, publish, export (got "${action}")`);
+      throw new Error(`action must be one of: create, update, unpublish, publish, export, append (got "${action}")`);
     }
     const result = await updateSingleTypeEntry(strapi, type, resolvedData);
     strapi.log.info(`[drive-bridge] ${action} ${type} (single-type) documentId=${result?.documentId} from "${file.name}"`);
@@ -1320,7 +1428,7 @@ async function processFile(strapi, token, imagesFolderId, exportsFolderId, doneI
     return;
   }
 
-  throw new Error(`action must be one of: create, update, unpublish, publish, export (got "${action}")`);
+  throw new Error(`action must be one of: create, update, unpublish, publish, export, append (got "${action}")`);
 }
 
 // ─── Cron entry point ────────────────────────────────────────────────

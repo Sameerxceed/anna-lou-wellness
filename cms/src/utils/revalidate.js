@@ -21,26 +21,39 @@
  * never blocked by a revalidation hiccup.
  */
 
-async function notifyRevalidate(strapi, requestedPaths) {
+async function notifyRevalidate(strapi, requestedPaths, options = {}) {
   // Anna 23 Jul: kept hitting "my edit isn't showing" on pages that were
-  // never listed in a specific lifecycle's paths array (e.g. Page entries
-  // served at /the-work/<slug> vs the lifecycle only knowing /p/<slug>).
-  // Each individual gap was a whack-a-mole fix.
+  // never listed in a specific lifecycle's paths array. Each individual
+  // gap was a whack-a-mole fix. Structural fix was site-wide layout
+  // refresh on every save via "*" sentinel.
   //
-  // Structural fix: every save now triggers a SITE-WIDE layout refresh.
-  // Whatever paths a specific lifecycle passes are ignored here; we always
-  // ask Next.js to revalidate the whole tree via the "*" sentinel. Cost is
-  // ~30 extra ISR writes per save (well under Vercel/self-hosted budget for
-  // this site's traffic + save cadence) and eliminates the entire class of
-  // "did I remember to add this path?" bugs.
+  // Anna 30 Oct: site-wide refresh via revalidatePath('/', 'layout')
+  // invalidates the rendered page cache, but Next.js keeps fetch()
+  // results in a SEPARATE Data Cache keyed by URL. Without cache tags,
+  // the page re-renders after invalidation but pulls stale Strapi data
+  // from the 24h TTL. Reset-room-page edits showed in API but not HTML
+  // until next deploy.
   //
-  // The requestedPaths argument is kept for logging visibility only.
+  // Fix: send cache tags matching the Strapi endpoint affected. The web
+  // side auto-tags every fetchAPI call with `strapi:${endpoint}`, so
+  // sending the same tag here invalidates the data cache for every
+  // page that fetches that content type.
+  //
+  // options.tags: string[] of cache tags to invalidate
+  // options.endpoint: convenience — if passed, we add `strapi:${endpoint}`
+  //   to the tags array automatically.
   const baseUrl = process.env.PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL;
   const secret = process.env.REVALIDATE_SECRET;
   if (!baseUrl || !secret) {
     strapi.log.warn('[revalidate] PUBLIC_SITE_URL or REVALIDATE_SECRET not set — skipping');
     return;
   }
+
+  const tags = Array.from(new Set([
+    ...(Array.isArray(options.tags) ? options.tags : []),
+    ...(options.endpoint ? [`strapi:${options.endpoint}`] : []),
+  ]));
+
   const label = Array.isArray(requestedPaths) && requestedPaths.length > 0
     ? requestedPaths.join(', ')
     : '(no paths passed)';
@@ -48,13 +61,13 @@ async function notifyRevalidate(strapi, requestedPaths) {
     const res = await fetch(`${baseUrl}/api/revalidate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paths: ['*'], secret }),
+      body: JSON.stringify({ paths: ['*'], tags, secret }),
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
       strapi.log.warn(`[revalidate] ${res.status}: ${text} (triggered by ${label})`);
     } else {
-      strapi.log.info(`[revalidate] site-wide refresh (triggered by ${label})`);
+      strapi.log.info(`[revalidate] site-wide refresh + ${tags.length} tag(s): ${tags.join(', ') || '(none)'} (triggered by ${label})`);
     }
   } catch (err) {
     strapi.log.warn(`[revalidate] network error: ${err.message}`);
@@ -62,11 +75,38 @@ async function notifyRevalidate(strapi, requestedPaths) {
 }
 
 // Convenience: wraps every standard lifecycle (afterCreate/Update/Delete)
-// with the same revalidate call. Use when paths don't depend on entry data.
+// with the same revalidate call. Auto-derives a cache tag from the
+// content-type UID so Next.js data cache gets busted correctly, not just
+// the page cache. If a lifecycle needs extra tags beyond the auto-derived
+// one, pass them as the second arg.
 //   module.exports = simpleLifecycles(['/the-work', '/the-work/sessions']);
-function simpleLifecycles(paths) {
-  const run = async () => {
-    await notifyRevalidate(global.strapi, paths);
+//   module.exports = simpleLifecycles(['/'], ['strapi:/site-settings']);
+function simpleLifecycles(paths, extraTags = []) {
+  const run = async (event) => {
+    // Strapi 5 lifecycle events carry { model: { uid, info } } — derive
+    // the Strapi REST endpoint from the UID so we tag the exact fetch
+    // the web side made for this content type.
+    //   'api::reset-room-page.reset-room-page' → '/reset-room-page'
+    //   'api::article.article' → '/articles' (pluralised for collections)
+    let endpoint = null;
+    try {
+      const info = event && event.model && event.model.info;
+      const uid = event && event.model && event.model.uid;
+      if (info) {
+        // Collection types use pluralName; single types use singularName.
+        // Strapi 5 REST paths follow kebab-case of these names.
+        const kind = event.model.kind;
+        const name = kind === 'singleType' ? info.singularName : info.pluralName;
+        if (name) endpoint = `/${name}`;
+      } else if (uid) {
+        // Fallback: last segment of UID (works for singletons; collections
+        // may be wrong if pluralName differs from singularName).
+        endpoint = `/${uid.split('.').pop()}`;
+      }
+    } catch { /* swallow — endpoint stays null */ }
+
+    const tags = Array.isArray(extraTags) ? extraTags.slice() : [];
+    await notifyRevalidate(global.strapi, paths, { tags, endpoint });
   };
   return {
     afterCreate: run,
