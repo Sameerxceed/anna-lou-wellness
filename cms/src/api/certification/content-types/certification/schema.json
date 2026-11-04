@@ -4,7 +4,7 @@
     "info":  {
                  "singularName":  "certification",
                  "pluralName":  "certifications",
-                 "displayName":  "Trust Â· Certification Badge",
+                 "displayName":  "Trust · Certification Badge",
                  "description":  "Professional accreditation badges shown in the \u0027Certified\u0027 strip on the homepage (ICF, CPD, TRE, etc.)."
              },
     "options":  {

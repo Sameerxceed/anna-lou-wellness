@@ -4,7 +4,7 @@
     "info":  {
                  "singularName":  "faq",
                  "pluralName":  "faqs",
-                 "displayName":  "FAQ Â· Per Page",
+                 "displayName":  "FAQ · Per Page",
                  "description":  "Frequently asked questions. Each entry binds to one page (e.g. The Reset, Retreats, Reset Room). Auto-renders as accordion on the page + JSON-LD schema for AI/Google rich snippets."
              },
     "options":  {

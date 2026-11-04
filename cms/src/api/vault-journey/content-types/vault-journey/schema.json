@@ -4,7 +4,7 @@
     "info":  {
                  "singularName":  "vault-journey",
                  "pluralName":  "vault-journeys",
-                 "displayName":  "Reset Room Â· Vault Journey",
+                 "displayName":  "Reset Room · Vault Journey",
                  "description":  "Member-only guided journeys inside the Reset Room vault. Each one can have audio (private podcast) and/or video (Bunny.net Stream) plus a companion PDF."
              },
     "options":  {

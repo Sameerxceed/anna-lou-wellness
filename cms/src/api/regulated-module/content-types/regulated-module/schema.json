@@ -4,7 +4,7 @@
     "info":  {
                  "singularName":  "regulated-module",
                  "pluralName":  "regulated-modules",
-                 "displayName":  "REGULATED Â· Module",
+                 "displayName":  "REGULATED · Module",
                  "description":  "Course modules (lessons) shown to anyone who has purchased REGULATED. Listed in sort_order on /the-work/regulated/access. Each module can be text-only, video, audio, downloadable, or any combination â€” fields are all optional except title + sort_order. Modules are MEMBER-ONLY â€” they are NOT publicly readable; the access page fetches them server-side using the admin token."
              },
     "options":  {

@@ -4,7 +4,7 @@
     "info":  {
                  "singularName":  "press-mention",
                  "pluralName":  "press-mentions",
-                 "displayName":  "Trust Â· Press Mention",
+                 "displayName":  "Trust · Press Mention",
                  "description":  "Press logos shown in the \u0027As seen in\u0027 strip on the homepage. Add one entry per publication or retailer (Harrods, Selfridges, The Telegraph, etc.)."
              },
     "options":  {
