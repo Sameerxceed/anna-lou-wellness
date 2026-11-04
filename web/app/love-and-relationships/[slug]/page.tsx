@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlugPage, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
@@ -29,11 +30,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (article) {
     const title = article.seoTitle || `${article.title} | Love & Relationships`;
     const description = article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`;
+    // Canonical always points to the article's TRUE section home. Because
+    // the article routes are decorative (every /section/<slug> renders
+    // every matching slug), without this, each path self-canonicalized
+    // and Google saw N duplicate copies of each article. Anna flagged
+    // this 2 Nov. Fix: use article.category?.section as the authoritative
+    // section, falling back to this route's section if the article has
+    // no category set.
+    const trueSection = article.category?.section || 'love-and-relationships';
+    const canonicalPath = `/${trueSection}/${slug}`;
     return {
       title,
       description,
-      alternates: { canonical: `/love-and-relationships/${slug}` },
-      openGraph: { title, description, type: 'article', url: `/love-and-relationships/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
+      alternates: { canonical: canonicalPath },
+      openGraph: { title, description, type: 'article', url: canonicalPath, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
       twitter: { card: 'summary_large_image', title, description },
     };
   }
@@ -103,26 +113,12 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
         </>
       );
     }
-    const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    return (
-      <>
-        <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
-        <article className="article-page">
-          <div className="article-inner">
-            <nav className="article-breadcrumb" aria-label="Breadcrumb">
-              <Link href="/">Home</Link>
-              <span className="article-breadcrumb-sep">›</span>
-              <Link href="/love-and-relationships">Love & Relationships</Link>
-            </nav>
-            <p className="article-kicker" style={{ color: '#F280AA' }}>Love & Relationships</p>
-            <h1 className="article-title">{title}</h1>
-            <p className="article-meta">By Anna Lou</p>
-            <img src={getStockImage('love-and-relationships', slug)} alt={title} className="article-hero-img" style={{ objectFit: 'cover' }} />
-            <div className="article-content"><p>This article is coming soon.</p></div>
-          </div>
-        </article>
-      </>
-    );
+    // No article, no category — real 404, not a soft 200 with a "coming
+    // soon" placeholder. The old placeholder generated infinite
+    // crawl-but-not-index pages for every typo'd URL across 4 section
+    // paths. Anna flagged 2 Nov; same anti-pattern she'd previously hit
+    // on the jewellery site.
+    notFound();
   }
 
   const relatedArticles = await getArticles('love-and-relationships');

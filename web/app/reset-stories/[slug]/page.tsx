@@ -30,11 +30,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (article) {
     const title = article.seoTitle || `${article.title} | Reset Stories`;
     const description = article.seoDescription || article.excerpt || `${article.title}. A Reset Story by Anna Lou.`;
+    // Canonical always points to the article's TRUE section home. See
+    // the matching note in /love-and-relationships/[slug]/page.tsx.
+    const trueSection = article.category?.section || 'reset-stories';
+    const canonicalPath = `/${trueSection}/${slug}`;
     return {
       title,
       description,
-      alternates: { canonical: `/reset-stories/${slug}` },
-      openGraph: { title, description, type: 'article', url: `/reset-stories/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
+      alternates: { canonical: canonicalPath },
+      openGraph: { title, description, type: 'article', url: canonicalPath, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
       twitter: { card: 'summary_large_image', title, description },
     };
   }
@@ -106,29 +110,9 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
         </>
       );
     }
-    // Coming-soon fallback
-    const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    return (
-      <>
-        <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
-        <article className="article-page">
-          <div className="article-inner">
-            <nav className="article-breadcrumb" aria-label="Breadcrumb">
-              <Link href="/">Home</Link>
-              <span className="article-breadcrumb-sep">›</span>
-              <Link href="/reset-stories">Reset Stories</Link>
-            </nav>
-            <p className="article-kicker" style={{ color: '#6E3A5A' }}>Reset Stories</p>
-            <h1 className="article-title">{title}</h1>
-            <p className="article-meta">By Anna Lou</p>
-            <img src={getStockImage('reset-stories', slug)} alt={title} className="article-hero-img" style={{ objectFit: 'cover' }} />
-            <div className="article-content">
-              <p>This article is coming soon. Check back shortly.</p>
-            </div>
-          </div>
-        </article>
-      </>
-    );
+    // No article, no category — real 404. See matching note in
+    // /love-and-relationships/[slug]/page.tsx.
+    notFound();
   }
 
   const related = (await getArticles('reset-stories')).filter(a => a.slug !== slug).slice(0, 3);

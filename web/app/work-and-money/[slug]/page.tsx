@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { getArticleBySlug, getArticles, getArticleCategoryBySlug, getArticlesByCategorySlugPage, getArticleCategories } from '@/lib/cms';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/StructuredData';
 import EditorialFeed from '@/components/EditorialFeed';
@@ -29,11 +30,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (article) {
     const title = article.seoTitle || `${article.title} | Work & Money`;
     const description = article.seoDescription || article.excerpt || `${article.title}. Anna Lou Wellness.`;
+    // Canonical always points to the article's TRUE section home. See
+    // the matching note in /love-and-relationships/[slug]/page.tsx.
+    const trueSection = article.category?.section || 'work-and-money';
+    const canonicalPath = `/${trueSection}/${slug}`;
     return {
       title,
       description,
-      alternates: { canonical: `/work-and-money/${slug}` },
-      openGraph: { title, description, type: 'article', url: `/work-and-money/${slug}`, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
+      alternates: { canonical: canonicalPath },
+      openGraph: { title, description, type: 'article', url: canonicalPath, images: article.heroImage ? [{ url: article.heroImage }] : undefined },
       twitter: { card: 'summary_large_image', title, description },
     };
   }
@@ -103,26 +108,9 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
         </>
       );
     }
-    const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    return (
-      <>
-        <style dangerouslySetInnerHTML={{ __html: articleStyles }} />
-        <article className="article-page">
-          <div className="article-inner">
-            <nav className="article-breadcrumb" aria-label="Breadcrumb">
-              <Link href="/">Home</Link>
-              <span className="article-breadcrumb-sep">›</span>
-              <Link href="/work-and-money">Work & Money</Link>
-            </nav>
-            <p className="article-kicker" style={{ color: '#FFD07A' }}>Work & Money</p>
-            <h1 className="article-title">{title}</h1>
-            <p className="article-meta">By Anna Lou</p>
-            <img src={getStockImage('work-and-money', slug)} alt={title} className="article-hero-img" style={{ objectFit: 'cover' }} />
-            <div className="article-content"><p>This article is coming soon.</p></div>
-          </div>
-        </article>
-      </>
-    );
+    // No article, no category — real 404. See matching note in
+    // /love-and-relationships/[slug]/page.tsx.
+    notFound();
   }
 
   const relatedArticles = await getArticles('work-and-money');
