@@ -1,0 +1,59 @@
+Hi Anna,
+
+Thank you for pushing on this. You were right to ask.
+
+Short answer to your first question: today, if I were ill for two weeks, you would wait for me. That is not acceptable and it is now fixed.
+
+Here is where everything stands.
+
+1. Coolify admin access
+
+Done. I have invited Anna@annalouoflondon.com as an Admin on the Root Team (the one that owns the anna-lou-wellness CMS and web apps). You will receive the invitation link separately via WhatsApp — do not use plain email, the link is a one-shot login token. Click the link, set your password, and you are in with full admin: you can read every environment variable, redeploy either app, restart containers, and invite anyone else.
+
+2. Strapi super admin
+
+Already in place. Your account at anna@annalouoflondon.com is listed as Super Admin and Active. Log in at https://cms.annalouwellness.com/admin and you will have the full Settings menu available — API tokens, user management, permissions, all of it.
+
+3. GitHub collaborator access
+
+Ready to add you the moment you send your GitHub username. Create the account at https://github.com/join using Anna@annalouoflondon.com (or any email you prefer), pick a username, send it to me and I will add you as an Admin collaborator within an hour. That gives you clone / push / settings / webhook access — effectively everything except deletion of the repo itself.
+
+Repository transfer has been dropped per your email on 3 November — collaborator access is what you asked for and that is what you get.
+
+4. Daily backup — plan corrected
+
+You were right about the pg_dump gap. The previous document said it covered images on the volume; it does not. pg_dump is database-only. The media sits on a separate persistent disk and needs its own sync.
+
+The backup now covers TWO artefacts, both into the same R2 bucket:
+- Database dump (pg_dump → gzip → R2), 7-day rolling retention.
+- Media volume sync (rclone sync of the uploads directory → R2), mirror layout with R2 object versioning for a 30-day accidental-delete safety net.
+
+Please go ahead with the Cloudflare and R2 setup this week. When you send the account ID, access key, secret, and bucket name through a password manager share, I wire it in and run the first backup manually before the cron takes over. First successful run of BOTH artefacts confirmed to you by email, same day.
+
+5. One-page written runbook
+
+Updated and attached as the new ANNA_CMS_GUIDE.docx. The relevant new sections for you are:
+
+- "What this means in practice — day to day" (what you can now do yourself vs what still needs a developer)
+- "Shared responsibility" (please read once — covers what is and isn't included in standard support given your new admin access)
+- "Touch at your peril" (specific list of actions where you should check with me first vs actions that are completely safe)
+- "If Sameer is unreachable (new state)" (the practical answer to your Tuesday-in-a-crisis question — hand off to any developer in 2 minutes)
+- Backup section rewritten to reflect the DB + media correction above
+
+6. Who at Xceed can get in if I cannot — honest answer
+
+Before today: nobody. That was the problem.
+
+After today: you can. You now hold admin access to the three systems that matter (Coolify, Strapi, GitHub as soon as you send the username). You can bring in any developer and give them the same access in two minutes. The gatekeeper role is gone by design.
+
+I am still your first call for anything code-level, but I am no longer the only route in. That is the right shape.
+
+A note on what you can safely do with the keys
+
+The "Touch at your peril" section in the runbook lists specifically which actions are routine (redeploys, restarts, CMS editing, inviting others, reading env vars) versus which ones I would like a heads-up on before you do them (editing env variables, deleting any Coolify resource, changing Strapi content-type schemas, altering role permissions, changing GitHub repo settings). Not gatekeeping — the second list is just where a wrong click gets expensive to unwind, and a 30-second "I am thinking of doing X" message beats hours of debugging later.
+
+Please read that section once and you are fully equipped.
+
+Thanks again for being clear and direct about this. You were right, I should have had this in place before you had to ask twice.
+
+Sameer

@@ -164,17 +164,18 @@ Coolify is the hosting panel that runs the CMS and the main site on a VPS. Think
 3. Try on your phone on cellular (not Wi-Fi) — rules out your home network.
 4. If it's still broken, send Sameer a screenshot with the URL in the address bar visible, and a one-line note of what you were trying to do.
 
-### Who owns what
+### Who owns what — post-handover (6 Nov 2026)
 
-Being transparent so there are no surprises later. The full ownership picture today:
+Updated after the admin handover. You now have direct access to everything you need to run the site, with Sameer kept as a second admin for support.
 
 | Thing | Owned by | Notes |
 |---|---|---|
-| Website code (GitHub repo) | Sameer / Xceed | github.com/Sameerxceed/anna-lou-wellness. Your GitHub account would need to be added as a collaborator to see or edit it. |
-| Hosting panel (Coolify) | Sameer / Xceed | Admin login is Sameer's. Runs on your IONOS VPS. |
+| Website code (GitHub repo) | Sameer / Xceed account; **you have admin collaborator access** | github.com/Sameerxceed/anna-lou-wellness. You can clone, push, manage webhooks, invite other developers. Repo transfer parked per your preference — collaborator access is enough. |
+| Hosting panel (Coolify) | **You have admin access** (shared with Sameer) | Admin login at Anna@annalouoflondon.com. You can read env variables, trigger redeploys, restart containers, invite others. Sameer remains as admin for support. |
 | VPS server (IONOS) | **You** | Billed on your IONOS account. Server at 217.160.147.201. Sameer has SSH access to administer it. |
 | Postgres database | **You** | Lives on your VPS. Hosts all CMS content, orders, members. See "Backups" below. |
-| Production secrets (Stripe keys, Mailchimp key, Drive bridge, Anthropic, Resend) | Sameer / Xceed | Stored as environment variables inside Coolify. Only Coolify admin can read them. |
+| Production secrets (Stripe keys, Mailchimp key, Drive bridge, Anthropic, Resend) | **You can now read them** via Coolify admin | Stored as environment variables inside Coolify under each app's "Environment Variables" tab. You can read, copy, or (carefully) edit them. |
+| Strapi CMS admin | **You are Super Admin** | You can create API tokens, change role permissions, create collections. The full set of settings is available to you. |
 | Domain name (annalouwellness.com) | You | Registered in your name with your registrar. DNS points at the IONOS VPS. |
 | Stripe merchant account | You | Payments land in your bank. Sameer has API-key access to charge cards; funds are yours. |
 | Mailchimp account | You | Your login, your audience (`8bcbe7b0d1`), your billing. |
@@ -235,26 +236,70 @@ We're using Cloudflare R2 as the backup destination. R2 is Cloudflare's S3-compa
    - **Secret Access Key**
    - **Bucket name:** `anna-lou-wellness-backups`
 
-Once Sameer has those, he wires it to a daily cron on the VPS (~30 min of work on his side) that does: `pg_dump → gzip → upload to R2`. Retention: 7 rolling days. First successful backup confirmed within 24 hours of setup.
+Once Sameer has those, he wires a daily cron on the VPS (~30 min of work on his side) that produces **TWO artefacts** in the same R2 bucket:
+
+1. **Database dump** (`cms-db-<timestamp>.sql.gz`) — `pg_dump` of Postgres, gzipped. Covers every CMS record: articles, products, orders, members, FAQs, settings.
+2. **Media sync** (`uploads/`) — incremental sync of the persistent image volume. Covers every photograph, video, PDF you've uploaded.
+
+Retention: 7 rolling days for DB dumps, mirror-style sync for media (matches current volume, previous versions kept via R2 object versioning).
+
+**Thank you for catching this on 3 Nov** — earlier documentation incorrectly said the pg_dump covered images. pg_dump is database-only. Media lives on a separate disk volume, which is why it survives redeploys but is NOT in the SQL dump. Media needs its own sync. Both now run in the same nightly job.
 
 **What a backup does and doesn't cover:**
 
-- Covers: all CMS content, orders, products, members, FAQs, article bodies, images stored on the volume.
-- Doesn't cover: production secrets (those live in Coolify's own config, not the database) and third-party service data (Mailchimp subscribers, Stripe customers — those are backed up by Mailchimp and Stripe themselves).
+- **Covers:** all CMS content (articles, orders, products, members, FAQs, article bodies), AND all uploaded media (images, videos, PDFs on the persistent volume).
+- **Doesn't cover:** production secrets (those live in Coolify's own config, not the database — you can see them in Coolify env vars but they're not in the backup bucket) and third-party service data (Mailchimp subscribers, Stripe customers — those are backed up by Mailchimp and Stripe themselves on their side).
 
-**Restoring from a backup** (if the worst happens): Sameer downloads the latest `.sql.gz` from your R2 bucket, pipes it into `pg_restore` against the Postgres container. ~5 minutes of downtime. You lose any content edits made between the last backup (daily, 03:00 UTC) and the restore point.
+**Restoring from a backup** (if the worst happens): download the latest `.sql.gz` + the `uploads/` folder from R2. Restore the DB via `pg_restore` into the Postgres container (~5 min downtime). Copy the uploads back to the media volume (a few minutes depending on size). You lose any content edits made between the last backup (daily, 03:00 UTC) and the restore point. Full procedure in `ops/R2_BACKUPS.md` in the repo.
 
-### What this means in practice
+### What this means in practice — day to day
 
-**Day-to-day:** nothing changes. You edit in the CMS, Sameer ships code, everything just works.
+**For normal work:** nothing changes. You edit content in the CMS, images render, pages publish, orders flow through Stripe. Sameer continues to ship code changes via git push → auto-deploy.
 
-**If you ever want to transfer ownership** (bringing in a new developer, consolidating under your own org, wind-down scenario) — the work splits roughly like this. Shorter than most agency projects because the VPS, domain, Stripe, Mailchimp and GA/GSC are already in your name:
+**For the "something's broken on a Tuesday" scenario:** you now have the keys. You can:
+- Log into Coolify yourself and hit **Redeploy** or **Restart** on either app.
+- Read every production env variable (Stripe keys, Mailchimp key, etc.) in case you need to hand them to another developer in an emergency.
+- Log into Strapi as Super Admin, change settings, generate new API tokens, manage other admin users.
+- Clone the GitHub repo locally if you ever want to inspect or back up the code.
 
-- GitHub repo transfer: 1 hour. Transfer repo to your own GitHub account or org, re-add Sameer as collaborator if he's still involved. Webhooks and deploy config re-point automatically.
-- Coolify admin: 15 min. Create a Coolify admin user for you (or your new developer); Sameer stays as admin or steps down.
-- Secrets rotation: half a day. New Stripe/Mailchimp/Anthropic/Resend keys issued, old ones revoked. Only needed if Sameer / Xceed is stepping away entirely.
-- Documentation + handover call: half a day. Walk through the ops runbook with you or your new developer.
+**For code-level emergencies** (new feature, bug fix, something only a developer can do): Sameer is still your first call. If he's unreachable, you can now hand the Coolify + GitHub + Strapi access to any other developer — they can be up and running in an hour, no gatekeeper needed.
 
-Total: roughly 1-1.5 days of work, cost quotable at the time. Much lighter than a typical agency handover because the infrastructure is already yours.
+### Shared responsibility — please read once
 
-**If something urgent happens and Sameer is unreachable:** today you'd be stuck for Coolify-level operations (redeploy, restart container, read logs) until he resurfaces. The cheapest insurance is a second person with Coolify admin credentials in a locked vault — easiest options are (a) you learn to use Coolify yourself for Restart/Redeploy only, or (b) a second developer at Xceed is given admin as a backup. Ask Sameer to set this up before launch-sensitive periods (big campaigns, press pushes, etc.).
+Now that you have admin access on Coolify, GitHub and Strapi, you can change almost anything on the site. That's the point of having the keys. It also means a few things to be aware of:
+
+- **Every change is logged.** Coolify records who triggered a deploy or edited an env variable. GitHub records every commit's author and pusher. Strapi records who edited each content entry and who logged in when. If something breaks after a change, the activity log will show who made it. This isn't surveillance; it's just how shared-admin systems work. The audit trail protects both of us.
+- **Routine actions are covered by the standard support retainer** — redeploys, restarts, CMS content editing, inviting another user, reading env variables. These are low-risk and expected.
+- **Non-routine admin actions are NOT covered by the retainer** — editing or deleting environment variables, deleting Coolify resources (apps, databases, volumes), changing Strapi content-type schemas, altering role permissions, changing GitHub repo settings. If a change in any of these categories breaks something, diagnosing and fixing it falls outside standard support and will be billed hourly. Not a punishment — just reflects that these actions require rollback expertise and often take hours to diagnose.
+- **If in doubt, send Sameer a one-line "I'm thinking of doing X" before doing it.** 30 seconds of his time beats hours of mine on a fix later.
+
+### Touch at your peril — things to check first
+
+**Safe, go ahead:**
+- Editing any content in the CMS Content Manager (articles, products, settings, pages).
+- Hitting **Redeploy** or **Restart** on either Coolify app.
+- Reading environment variables (clicking the eye icon to view values).
+- Inviting other users to Coolify or Strapi.
+- Cloning the GitHub repo, reading code.
+- Using the Drive Bridge (dropping JSON files into the inbox folder).
+
+**Check with Sameer first:**
+- **Editing an environment variable value** (Coolify → app → Environment Variables → Update). Old keys get overwritten; wrong value = broken deploy. Keep the old value in a scratch note before changing.
+- **Deleting any Coolify resource** — Stop, Delete, Danger Zone actions on any app, database, or volume. Irreversible without a backup.
+- **Content-Type Builder changes in Strapi** (Settings → Content-Type Builder). Adding or removing fields rewrites the database schema and can break the live site in ways that are hard to undo. Content Manager edits are safe; Content-Type Builder edits are not.
+- **Deleting a collection in Strapi** (not deleting entries — deleting the whole collection/content type). Wipes the table.
+- **Changing Strapi role permissions** (Settings → Users & Permissions → Roles). Can lock Anna, Sameer, or the Drive Bridge out of writing to things.
+- **GitHub repo settings** (branch protection, webhooks, deploy keys, default branch). Can break auto-deploy.
+- **Rotating any production API key** (Stripe, Mailchimp, Resend, Anthropic). Easy to issue a new key; forgetting to update Coolify breaks every payment or email until it's fixed.
+
+The one-line "I'm thinking of doing X" message is always the right first move for anything in this second list.
+
+### If Sameer is unreachable (new state)
+
+You can now:
+- Redeploy / restart either app yourself (Coolify).
+- Hand Coolify + GitHub + Strapi access to any other developer in 2 minutes (invite via each system).
+- Read every production credential so you're never blocked by "we don't have the keys".
+- Restore from R2 backups (procedure in `ops/R2_BACKUPS.md`, your new developer can follow it).
+
+Previously this was a "wait for Sameer" problem. It isn't any more.
