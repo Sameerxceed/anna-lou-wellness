@@ -32,9 +32,17 @@ const bullets = (raw: string): string[] =>
 export default async function ResetRoomPage() {
   let cms: Record<string, unknown> | null = null;
   try {
-    // populate=* + deep populate for upsells (component nested image needs it)
+    // Explicit per-field populate ONLY. Previously combined populate=*
+    // with populate[upsells][populate]=* — a known-broken Strapi v5
+    // combination that silently returns zero data on EVERY field
+    // (documented in project memory from the June hit). Anna's edits
+    // weren't appearing because none of the fields were coming through
+    // — the page rendered defaults every time, not because of cache but
+    // because the fetch itself returned nothing usable.
+    // reset-room-page schema has only two populate-requiring fields:
+    // heroImage (media) and upsells (repeatable component).
     const { data: d } = await fetchAPI('/reset-room-page', {
-      populate: '*',
+      'populate[heroImage]': 'true',
       'populate[upsells][populate]': '*',
     });
     cms = (d as Record<string, unknown>) || null;
