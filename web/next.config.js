@@ -52,6 +52,18 @@ const nextConfig = {
         destination: '/p/about-1',
         permanent: true,
       },
+      // 5 Nov 2026: Anna identified duplicate Work-with-Anna pages.
+      // /the-work was a hardcoded Next.js page (not in the pages
+      // collection, so Anna couldn't edit it) with no images on any
+      // programme card. /p/work-with-anna is a Page Builder entry she
+      // owns and prefers. 301 so SEO ranking transfers cleanly.
+      // Exact-path match only — children /the-work/signal-and-build,
+      // /the-work/one-day etc. stay as separate programme pages.
+      {
+        source: '/the-work',
+        destination: '/p/work-with-anna',
+        permanent: true,
+      },
     ];
   },
 };

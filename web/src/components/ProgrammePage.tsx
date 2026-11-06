@@ -42,7 +42,7 @@ export default function ProgrammePage({ hero, intro, sections, pricing, cta, acc
             <nav className="prog-breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
               <span className="prog-breadcrumb-sep">›</span>
-              <Link href="/the-work">Work with Anna</Link>
+              <Link href="/p/work-with-anna">Work with Anna</Link>
             </nav>
             <p className="prog-eyebrow" style={{ color: accentColour }}>Work with Anna</p>
             {hero.title && <h1 className="prog-title">{hero.title}</h1>}

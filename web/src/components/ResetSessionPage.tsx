@@ -39,7 +39,7 @@ export default function ResetSessionPage({
             <nav className="rsp-breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
               <span className="rsp-breadcrumb-sep">›</span>
-              <Link href="/the-work">Work with Anna</Link>
+              <Link href="/p/work-with-anna">Work with Anna</Link>
               <span className="rsp-breadcrumb-sep">›</span>
               <Link href="/the-work/sessions">Sessions</Link>
             </nav>
